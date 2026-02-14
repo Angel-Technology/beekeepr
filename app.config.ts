@@ -14,7 +14,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ...config,
     name: envConfig.name,
     slug: 'da-template',
-    version: "0.0.1",
+    version: '0.0.1',
     orientation: 'portrait',
     scheme: envConfig.scheme,
     userInterfaceStyle: 'automatic',
@@ -23,7 +23,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ...config.ios,
       supportsTablet: true,
       bundleIdentifier: envConfig.bundleIdentifier,
-      buildNumber: "0",
+      buildNumber: '0',
       infoPlist: {
         ...config.ios?.infoPlist,
         CFBundleURLTypes: [
@@ -36,7 +36,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     android: {
       ...config.android,
       adaptiveIcon: {
-        foregroundImage: './assets/images/adaptive-icon.png',
+        foregroundImage: './src/assets/images/adaptive-icon.png',
         backgroundColor: '#ffffff',
       },
       edgeToEdgeEnabled: true,
@@ -49,12 +49,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         'expo-splash-screen',
         {
-          image: './assets/images/splash-icon.png',
+          image: './src/assets/images/splash-icon.png',
           imageWidth: 302,
           resizeMode: 'contain',
           backgroundColor: '#F6F7F9',
           android: {
-            image: './assets/images/splash-icon-android.png',
+            image: './src/assets/images/splash-icon-android.png',
             imageWidth: 240,
             resizeMode: 'contain',
             backgroundColor: '#F6F7F9',

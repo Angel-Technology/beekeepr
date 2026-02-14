@@ -1,64 +1,64 @@
 # Note: firebase_token should be set via environment variable in CI, not committed
-firebase_token: "${FIREBASE_TOKEN}"
-ios_team_id: "XXXXXXXXXX"
+firebase_token: '${FIREBASE_TOKEN}'
+ios_team_id: 'XXXXXXXXXX'
 
 # Note: Version is defined in app.config.ts (APP_VERSION constant)
 # This is the single source of truth for app version
 
 environments:
   dev:
-    env_file: ".env.dev"
+    env_file: '.env.dev'
     android:
-      flavor: "release"
-      gradle_task: "assembleRelease"
-      firebase_app_id: "1:000000000000:android:dev_placeholder"
-      bundle_id: "com.antech.connect.dev"
-      app_name: "DA Template Dev"
+      flavor: 'release'
+      gradle_task: 'assembleRelease'
+      firebase_app_id: '1:000000000000:android:dev_placeholder'
+      bundle_id: 'com.antech.connect.dev'
+      app_name: 'DA Template Dev'
     ios:
-      scheme: "DATemplate"
-      export_options_plist: "fastlane/ExportOptions.Development.plist"
-      firebase_app_id: "1:000000000000:ios:dev_placeholder"
-      bundle_id: "com.antech.connect.dev"
-      app_name: "DA Template Dev"
-      provisioning_profile: "DA Template Dev Release Provisioning"
-    url_scheme: "datemplate-dev"
-    icon_path: "./assets/images/icon-dev.png"
-    tester_groups: "internal-testers"
+      scheme: 'DATemplate'
+      export_options_plist: 'fastlane/ExportOptions.Development.plist'
+      firebase_app_id: '1:000000000000:ios:dev_placeholder'
+      bundle_id: 'com.antech.connect.dev'
+      app_name: 'DA Template Dev'
+      provisioning_profile: 'DA Template Dev Release Provisioning'
+    url_scheme: 'datemplate-dev'
+    icon_path: './src/assets/images/icon-dev.png'
+    tester_groups: 'internal-testers'
 
   test:
-    env_file: ".env.test"
+    env_file: '.env.test'
     android:
-      flavor: "release"
-      gradle_task: "assembleRelease"
-      firebase_app_id: "1:000000000000:android:test_placeholder"
-      bundle_id: "com.antech.connect.test"
-      app_name: "DA Template Test"
+      flavor: 'release'
+      gradle_task: 'assembleRelease'
+      firebase_app_id: '1:000000000000:android:test_placeholder'
+      bundle_id: 'com.antech.connect.test'
+      app_name: 'DA Template Test'
     ios:
-      scheme: "DATemplate"
-      export_options_plist: "fastlane/ExportOptions.Test.plist"
-      firebase_app_id: "1:000000000000:ios:test_placeholder"
-      bundle_id: "com.antech.connect.test"
-      app_name: "DA Template Test"
-      provisioning_profile: "DA Template Test Release Provisioning"
-    url_scheme: "datemplate-test"
-    icon_path: "./assets/images/icon-test.png"
-    tester_groups: "internal-testers"
+      scheme: 'DATemplate'
+      export_options_plist: 'fastlane/ExportOptions.Test.plist'
+      firebase_app_id: '1:000000000000:ios:test_placeholder'
+      bundle_id: 'com.antech.connect.test'
+      app_name: 'DA Template Test'
+      provisioning_profile: 'DA Template Test Release Provisioning'
+    url_scheme: 'datemplate-test'
+    icon_path: './src/assets/images/icon-test.png'
+    tester_groups: 'internal-testers'
 
   prod:
-    env_file: ".env.prod"
+    env_file: '.env.prod'
     android:
-      flavor: "release"
-      gradle_task: "assembleRelease"
-      firebase_app_id: "1:000000000000:android:prod_placeholder"
-      bundle_id: "com.antech.connect"
-      app_name: "DA Template"
+      flavor: 'release'
+      gradle_task: 'assembleRelease'
+      firebase_app_id: '1:000000000000:android:prod_placeholder'
+      bundle_id: 'com.antech.connect'
+      app_name: 'DA Template'
     ios:
-      scheme: "DATemplate"
-      export_options_plist: "fastlane/ExportOptions.Production.plist"
-      firebase_app_id: "1:000000000000:ios:prod_placeholder"
-      bundle_id: "com.antech.connect"
-      app_name: "DA Template"
-      provisioning_profile: "DA Template Prod Provisioning Profile"
-    url_scheme: "datemplate"
-    icon_path: "./assets/images/icon.png"
-    tester_groups: "internal-testers"
+      scheme: 'DATemplate'
+      export_options_plist: 'fastlane/ExportOptions.Production.plist'
+      firebase_app_id: '1:000000000000:ios:prod_placeholder'
+      bundle_id: 'com.antech.connect'
+      app_name: 'DA Template'
+      provisioning_profile: 'DA Template Prod Provisioning Profile'
+    url_scheme: 'datemplate'
+    icon_path: './src/assets/images/icon.png'
+    tester_groups: 'internal-testers'

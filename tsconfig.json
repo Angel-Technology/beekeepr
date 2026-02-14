@@ -6,27 +6,12 @@
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "paths": {
-      "@src/*": [
-        "src/*"
-      ],
-      "@assets/*": [
-        "assets/*"
-      ],
-      "@screens/*": [
-        "src/screens/*"
-      ],
-      "@hooks/*": [
-        "src/hooks/*"
-      ],
-      "@actions/*": [
-        "src/actions/*"
-      ],
-      "@data/*": [
-        "src/data/*"
-      ],
-      "@domain/*": [
-        "src/domain/*"
-      ]
+      "@src/*": ["src/*"],
+      "@assets/*": ["assets/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@actions/*": ["src/actions/*"],
+      "@data/*": ["src/data/*"],
+      "@domain/*": ["src/domain/*"]
     }
   },
   "include": [

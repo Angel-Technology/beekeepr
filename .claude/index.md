@@ -21,47 +21,53 @@ src/
 
 TypeScript path aliases are configured for cleaner imports:
 
-| Alias | Path |
-|-------|------|
-| `@src/*` | `src/*` |
-| `@assets/*` | `assets/*` |
+| Alias        | Path            |
+| ------------ | --------------- |
+| `@src/*`     | `src/*`         |
+| `@assets/*`  | `assets/*`      |
 | `@screens/*` | `src/screens/*` |
-| `@hooks/*` | `src/hooks/*` |
+| `@hooks/*`   | `src/hooks/*`   |
 | `@actions/*` | `src/actions/*` |
-| `@data/*` | `src/data/*` |
-| `@domain/*` | `src/domain/*` |
+| `@data/*`    | `src/data/*`    |
+| `@domain/*`  | `src/domain/*`  |
 
 Example: `import { HomeScreen } from '@screens';`
 
 ## Layer Responsibilities
 
 ### app/ (Routes)
+
 - File-based routing via expo-router
 - Thin wrappers that render corresponding screen components
 - No business logic - only navigation concerns
 
 ### screens/ (Views)
+
 - UI components for each page/route
 - Receives data and callbacks from hooks
 - Easily testable in isolation
 - Follows MVVM pattern where hooks serve as the ViewModel
 
 ### hooks/ (ViewModels)
+
 - Custom React hooks that wire up actions to UI state
 - Manages loading, error, and success states
 - Consumed by screens
 
 ### actions/ (Use Cases)
+
 - Business logic layer
 - Calls repositories to fetch/mutate data
 - Framework-agnostic (no React dependencies)
 
 ### data/ (Data Layer)
+
 - GraphQL client setup and queries/mutations
 - Repository implementations
 - API communication
 
 ### domain/ (Domain Layer)
+
 - `utils/` - helper functions
 - `constants/` - app-wide constants
 - `models/` - TypeScript interfaces and types
@@ -82,11 +88,13 @@ Route (app/) → Screen (screens/) → Hook (hooks/) → Action (actions/) → R
 ## Environment Configuration
 
 The app variant is determined by `EXPO_PUBLIC_APP_VARIANT` environment variable:
+
 - `dev` - Development build
 - `test` - Test/QA build
 - `prod` - Production build
 
 Each environment has distinct:
+
 - Bundle identifiers
 - App icons
 - URL schemes
