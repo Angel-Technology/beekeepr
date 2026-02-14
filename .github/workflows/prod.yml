@@ -1,0 +1,88 @@
+name: Production Build & Upload
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: prod-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ios:
+    name: iOS → TestFlight
+    runs-on: macos-latest
+
+    env:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+      ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+      IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+
+      - run: corepack enable
+      - run: yarn install --immutable
+      - run: yarn type-check
+      - run: yarn lint
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - run: bundle exec fastlane ios build
+      - run: bundle exec fastlane ios testflight
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-build
+          path: build/*.ipa
+          retention-days: 14
+
+  android:
+    name: Android → Play Internal
+    runs-on: ubuntu-latest
+
+    env:
+      PLAY_JSON_KEY_DATA: ${{ secrets.PLAY_JSON_KEY_DATA }}
+      PLAY_TRACK: internal
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+
+      - run: corepack enable
+      - run: yarn install --immutable
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - run: bundle exec fastlane android build
+      - run: bundle exec fastlane android play
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-build
+          path: build/*.aab
+          retention-days: 14

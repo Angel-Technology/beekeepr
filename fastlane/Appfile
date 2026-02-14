@@ -1,11 +1,11 @@
-# Appfile - App configuration for Fastlane
-# Dynamic configuration is loaded from deploy.yml in Fastfile
+# fastlane/Appfile
 
-# Default values (overridden per-lane based on environment)
-# app_identifier and apple_id are set dynamically in each lane
+# Your Apple Developer Team ID (10 characters)
+team_id(ENV["IOS_TEAM_ID"])  # set in CI as a secret/env var
 
-# Team ID for Apple Developer Portal
-team_id(ENV["IOS_TEAM_ID"] || "XXXXXXXXXX")
+# Optional but nice if you have it:
+# apple_id("you@company.com")
 
-# For App Store Connect API (recommended over password auth)
-# json_key_file("path/to/api_key.json")
+# Optional: only needed if you want fastlane to know an identifier up front.
+# With multiple variants, you can leave this out or set it to prod.
+# app_identifier("com.beekeepr.app")
