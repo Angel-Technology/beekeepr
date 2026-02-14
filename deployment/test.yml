@@ -1,0 +1,9 @@
+# Test Environment Deployment Pipeline
+# Builds and deploys to Firebase App Distribution for test/QA environment
+# TODO: Implement when ready
+
+variables:
+  EXPO_PUBLIC_APP_VARIANT: "test"
+
+# Placeholder - will mirror dev.yml structure with test-specific config
+# Triggered on: release branches or manual trigger

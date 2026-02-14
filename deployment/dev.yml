@@ -1,0 +1,58 @@
+# Dev Environment Deployment Pipeline
+# Builds and deploys to Firebase App Distribution for dev environment
+
+# Build iOS for dev
+build-ios-dev:
+  extends: .build_job
+  stage: build
+  variables:
+    EXPO_PUBLIC_APP_VARIANT: "dev"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+  script:
+    - bundle exec fastlane ios build_dev
+  artifacts:
+    paths:
+      - build/*.ipa
+    expire_in: 1 week
+
+# Build Android for dev
+build-android-dev:
+  extends: .build_job
+  stage: build
+  variables:
+    EXPO_PUBLIC_APP_VARIANT: "dev"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+  script:
+    - bundle exec fastlane android build_dev
+  artifacts:
+    paths:
+      - build/*.apk
+    expire_in: 1 week
+
+# Deploy iOS to Firebase App Distribution
+deploy-ios-dev:
+  extends: .ruby_job
+  stage: deploy
+  variables:
+    EXPO_PUBLIC_APP_VARIANT: "dev"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+  needs:
+    - build-ios-dev
+  script:
+    - bundle exec fastlane ios distribute_dev
+
+# Deploy Android to Firebase App Distribution
+deploy-android-dev:
+  extends: .ruby_job
+  stage: deploy
+  variables:
+    EXPO_PUBLIC_APP_VARIANT: "dev"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+  needs:
+    - build-android-dev
+  script:
+    - bundle exec fastlane android distribute_dev

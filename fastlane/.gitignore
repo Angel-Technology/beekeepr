@@ -1,0 +1,19 @@
+# Fastlane specific
+report.xml
+Preview.html
+screenshots
+test_output
+
+# Environment variables
+# Allow all environment files to be checked in
+# .env*
+# !.env.example
+
+# Fastlane builds
+builds/
+*.ipa
+*.apk
+*.aab
+
+# Fastlane plugins
+Pluginfile.lock

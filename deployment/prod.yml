@@ -1,0 +1,12 @@
+# Production Environment Deployment Pipeline
+# Builds and deploys to App Store / Play Store
+# TODO: Implement when ready
+
+variables:
+  EXPO_PUBLIC_APP_VARIANT: "prod"
+
+# Placeholder - will include:
+# - Build jobs for iOS and Android
+# - Deploy to TestFlight / Play Store internal track
+# - Manual approval gate for production release
+# Triggered on: tags or manual trigger from main branch

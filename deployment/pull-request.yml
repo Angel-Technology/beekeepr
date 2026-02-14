@@ -1,0 +1,62 @@
+# Pull Request Validation Pipeline
+# Runs type-check, lint, tests, and build validation for every MR
+
+# Type checking job
+type-check:
+  extends: .node_job
+  stage: validate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yarn type-check
+
+# Linting job
+lint:
+  extends: .node_job
+  stage: validate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yarn lint
+
+# Unit tests with coverage
+test:
+  extends: .node_job
+  stage: validate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yarn test --ci --coverage
+  artifacts:
+    when: always
+    paths:
+      - coverage/
+      - test-results/
+    reports:
+      junit: test-results/junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+
+# Build validation (expo prebuild check)
+build-check:
+  extends: .build_job
+  stage: build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yarn build:check
+
+# Fastlane dependency validation
+validate-fastlane:
+  extends: .ruby_job
+  stage: validate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - Gemfile
+        - Gemfile.lock
+        - fastlane/**/*
+  script:
+    - bundle exec fastlane --version

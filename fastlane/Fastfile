@@ -1,0 +1,168 @@
+# Fastfile - Fastlane automation for DA Template
+# Reads configuration from deploy.yml (single source of truth)
+
+require 'yaml'
+
+# Load deploy configuration
+DEPLOY_CONFIG = YAML.load_file(File.join(__dir__, 'deploy.yml'))
+
+# Helper to get environment config
+def env_config(environment)
+  DEPLOY_CONFIG['environments'][environment.to_s]
+end
+
+# ==================== iOS Platform ====================
+platform :ios do
+  desc "Build iOS app for dev environment"
+  lane :build_dev do
+    build_ios(environment: :dev)
+  end
+
+  desc "Build iOS app for test environment"
+  lane :build_test do
+    build_ios(environment: :test)
+  end
+
+  desc "Build iOS app for production"
+  lane :build_prod do
+    build_ios(environment: :prod)
+  end
+
+  desc "Distribute iOS dev build to Firebase"
+  lane :distribute_dev do
+    distribute_ios(environment: :dev)
+  end
+
+  desc "Distribute iOS test build to Firebase"
+  lane :distribute_test do
+    distribute_ios(environment: :test)
+  end
+
+  desc "Distribute iOS prod build to Firebase"
+  lane :distribute_prod do
+    distribute_ios(environment: :prod)
+  end
+
+  # ---- Private Lanes ----
+
+  private_lane :build_ios do |options|
+    environment = options[:environment]
+    config = env_config(environment)
+    ios_config = config['ios']
+
+    UI.message("Building iOS for #{environment} environment")
+
+    # Run expo prebuild to generate native projects
+    sh("cd .. && EXPO_PUBLIC_APP_VARIANT=#{environment} npx expo prebuild --platform ios --clean")
+
+    # Install CocoaPods
+    cocoapods(
+      podfile: "../ios/Podfile",
+      use_bundle_exec: true
+    )
+
+    # Build the app
+    gym(
+      workspace: "../ios/DATemplate.xcworkspace",
+      scheme: ios_config['scheme'],
+      configuration: "Release",
+      export_method: "enterprise", # or "app-store" for prod
+      export_options: {
+        provisioningProfiles: {
+          ios_config['bundle_id'] => ios_config['provisioning_profile']
+        }
+      },
+      output_directory: "../build",
+      output_name: "DATemplate-#{environment}.ipa",
+      clean: true
+    )
+  end
+
+  private_lane :distribute_ios do |options|
+    environment = options[:environment]
+    config = env_config(environment)
+    ios_config = config['ios']
+
+    UI.message("Distributing iOS #{environment} build to Firebase")
+
+    firebase_app_distribution(
+      app: ios_config['firebase_app_id'],
+      ipa_path: "../build/DATemplate-#{environment}.ipa",
+      groups: config['tester_groups'],
+      firebase_cli_token: ENV["FIREBASE_TOKEN"] || DEPLOY_CONFIG['firebase_token']
+    )
+  end
+end
+
+# ==================== Android Platform ====================
+platform :android do
+  desc "Build Android app for dev environment"
+  lane :build_dev do
+    build_android(environment: :dev)
+  end
+
+  desc "Build Android app for test environment"
+  lane :build_test do
+    build_android(environment: :test)
+  end
+
+  desc "Build Android app for production"
+  lane :build_prod do
+    build_android(environment: :prod)
+  end
+
+  desc "Distribute Android dev build to Firebase"
+  lane :distribute_dev do
+    distribute_android(environment: :dev)
+  end
+
+  desc "Distribute Android test build to Firebase"
+  lane :distribute_test do
+    distribute_android(environment: :test)
+  end
+
+  desc "Distribute Android prod build to Firebase"
+  lane :distribute_prod do
+    distribute_android(environment: :prod)
+  end
+
+  # ---- Private Lanes ----
+
+  private_lane :build_android do |options|
+    environment = options[:environment]
+    config = env_config(environment)
+    android_config = config['android']
+
+    UI.message("Building Android for #{environment} environment")
+
+    # Run expo prebuild to generate native projects
+    sh("cd .. && EXPO_PUBLIC_APP_VARIANT=#{environment} npx expo prebuild --platform android --clean")
+
+    # Build the APK
+    gradle(
+      project_dir: "../android",
+      task: android_config['gradle_task'],
+      flavor: android_config['flavor'],
+      build_type: "Release"
+    )
+
+    # Copy APK to build directory
+    sh("mkdir -p ../build")
+    sh("cp ../android/app/build/outputs/apk/release/*.apk ../build/DATemplate-#{environment}.apk")
+  end
+
+  private_lane :distribute_android do |options|
+    environment = options[:environment]
+    config = env_config(environment)
+    android_config = config['android']
+
+    UI.message("Distributing Android #{environment} build to Firebase")
+
+    firebase_app_distribution(
+      app: android_config['firebase_app_id'],
+      apk_path: "../build/DATemplate-#{environment}.apk",
+      groups: config['tester_groups'],
+      firebase_cli_token: ENV["FIREBASE_TOKEN"] || DEPLOY_CONFIG['firebase_token']
+    )
+  end
+end

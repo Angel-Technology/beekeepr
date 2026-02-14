@@ -1,0 +1,11 @@
+# Appfile - App configuration for Fastlane
+# Dynamic configuration is loaded from deploy.yml in Fastfile
+
+# Default values (overridden per-lane based on environment)
+# app_identifier and apple_id are set dynamically in each lane
+
+# Team ID for Apple Developer Portal
+team_id(ENV["IOS_TEAM_ID"] || "XXXXXXXXXX")
+
+# For App Store Connect API (recommended over password auth)
+# json_key_file("path/to/api_key.json")
