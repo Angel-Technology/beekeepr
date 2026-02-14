@@ -1,28 +1,10 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 
 export function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>DA Template</Text>
-      <Text style={styles.subtitle}>Home Screen</Text>
+    <View className="flex-1 items-center justify-center bg-white">
+      <Text className="text-blue-900 text-xl font-bold">DA Template</Text>
+      <Text className="mt-2 text-base text-gray-600">Home Screen</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F6F7F9',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-  },
-});

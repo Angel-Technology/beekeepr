@@ -1,5 +1,5 @@
 import { HomeScreen } from '@src/screens';
 
-export default function Index() {
+export default function LandingPage() {
   return <HomeScreen />;
 }
