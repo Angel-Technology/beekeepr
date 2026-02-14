@@ -17,3 +17,6 @@ builds/
 
 # Fastlane plugins
 Pluginfile.lock
+
+fastlane/.tmp/
+build/
