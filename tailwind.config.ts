@@ -25,7 +25,18 @@ module.exports = {
   presets: [require('nativewind/preset')],
 
   theme: {
-    extend: {},
+    extend: {
+      /**
+       * Color system based on Helios Design System
+       * Provides semantic color tokens for consistent branding and theming
+       */
+      colors: {},
+      /**
+       * Spacing scale - Consistent spacing tokens
+       * Provides a harmonious spacing system for layouts and components
+       */
+      spacing: {},
+    },
   },
   plugins: [],
 };

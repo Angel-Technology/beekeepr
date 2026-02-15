@@ -72,6 +72,15 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 
     icon: APP.icon,
     plugins: [
+      'expo-router',
+      [
+        'expo-splash-screen',
+        {
+          image: './src/assets/images/splash-icon.png',
+          resizeMode: 'cover',
+          backgroundColor: '#FFFFFF',
+        },
+      ],
       [
         'expo-font',
         {
