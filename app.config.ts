@@ -1,34 +1,33 @@
 import { ExpoConfig, ConfigContext } from 'expo/config';
 
-/**
- * ============================================
- * Environment Config Types
- * ============================================
- */
-
-export type EnvironmentConfig = {
+type EnvironmentConfig = {
   name: string;
   slug: string;
   scheme: string;
+
+  // icon assets
   icon: string;
+  // platform identifiers
   bundleIdentifier: string;
   androidPackage: string;
-};
 
-/**
- * ============================================
- * Beekeepr (Single App Variant)
- * ============================================
- * One bundle id, one app, TestFlight controls access via groups.
- */
+  // adaptive icon assets (android)
+  androidAdaptiveIconForeground: string;
+  androidAdaptiveIconBackgroundColor: string;
+};
 
 const APP: EnvironmentConfig = {
   name: 'Beekeepr',
   slug: 'beekeepr',
   scheme: 'beekeepr',
-  icon: './src/assets/images/icon.png',
-  bundleIdentifier: 'com.beekeepr.app', // iOS
-  androidPackage: 'com.beekeepr.app', // Android
+
+  icon: './src/assets/images/app-icon.png',
+
+  bundleIdentifier: 'com.beekeepr.app',
+  androidPackage: 'com.beekeepr.app',
+
+  androidAdaptiveIconForeground: './src/assets/images/adaptive-icon.png',
+  androidAdaptiveIconBackgroundColor: '#ffffff',
 };
 
 export default ({ config }: ConfigContext): ExpoConfig => {
@@ -43,11 +42,18 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     userInterfaceStyle: 'light',
     newArchEnabled: true,
 
+    // Fallback icon (Expo requires this; use your preferred default)
+    icon: APP.icon,
+
     ios: {
       ...config.ios,
       supportsTablet: true,
       bundleIdentifier: APP.bundleIdentifier,
       buildNumber: config.ios?.buildNumber ?? '1',
+
+      // iOS app icon (static). Pick the best looking one (usually light bg).
+      icon: APP.icon,
+
       infoPlist: {
         ...config.ios?.infoPlist,
         CFBundleDisplayName: APP.name,
@@ -63,22 +69,30 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ...config.android,
       package: APP.androidPackage,
       versionCode: config.android?.versionCode ?? 1,
+
+      // Android app icon setup
+      icon: APP.icon, // legacy (some launchers still use this)
+
       adaptiveIcon: {
-        foregroundImage: './src/assets/images/adaptive-icon.png',
-        backgroundColor: '#ffffff',
+        foregroundImage: APP.androidAdaptiveIconForeground,
+        backgroundColor: APP.androidAdaptiveIconBackgroundColor,
       },
+
       edgeToEdgeEnabled: true,
     },
 
-    icon: APP.icon,
     plugins: [
       'expo-router',
       [
         'expo-splash-screen',
         {
           image: './src/assets/images/splash-icon.png',
+          dark: {
+            image: './src/assets/images/splash-icon.png',
+            backgroundColor: '#151718',
+          },
+          backgroundColor: '#ECEDEE',
           resizeMode: 'cover',
-          backgroundColor: '#FFFFFF',
         },
       ],
       [
