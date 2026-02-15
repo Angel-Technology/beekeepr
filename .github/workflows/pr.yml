@@ -2,7 +2,7 @@ name: PR - Quality Checks
 
 on:
   pull_request:
-    branches: [develop, main]
+    branches: [main]
   workflow_dispatch: {}
 
 concurrency:
@@ -12,8 +12,6 @@ concurrency:
 jobs:
   checks:
     runs-on: ubuntu-latest
-    env:
-      EXPO_PUBLIC_APP_VARIANT: dev
 
     steps:
       - uses: actions/checkout@v4

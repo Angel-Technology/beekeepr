@@ -15,10 +15,16 @@ jobs:
     runs-on: macos-latest
 
     env:
+      # Required by Fastfile
+      IOS_BUNDLE_ID: com.beekeepr.app
+
+      # App Store Connect API key
       ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
       ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
       ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
       ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+
+      # Optional signing/team
       IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
 
     steps:
@@ -36,11 +42,11 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
+          ruby-version: '3.3' # or '3.3.6' if you want exact
           bundler-cache: true
 
       - run: bundle exec fastlane ios build
-      - run: bundle exec fastlane ios testflight
+      - run: bundle exec fastlane ios upload_testflight
 
       - uses: actions/upload-artifact@v4
         with:
@@ -75,7 +81,7 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
+          ruby-version: '3.3'
           bundler-cache: true
 
       - run: bundle exec fastlane android build

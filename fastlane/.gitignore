@@ -6,8 +6,8 @@ test_output
 
 # Environment variables
 # Allow all environment files to be checked in
-# .env*
-# !.env.example
+.env*
+!.env.example
 
 # Fastlane builds
 builds/
