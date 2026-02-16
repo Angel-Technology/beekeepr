@@ -1,47 +1,5 @@
 # fastlane/Fastfile
-# Beekeepr - Single app (one env) build + distribution
-#
-# iOS:
-#   - Prebuild iOS (Expo)
-#   - Pods install
-#   - Build IPA (dynamic export options; no ExportOptions.plist needed)
-#   - Validate ASC API key (hits App Store Connect)
-#   - Upload to TestFlight
-#   - Optional: Submit for App Store review
-#
-# Android:
-#   - Prebuild Android (Expo)
-#   - Build AAB
-#   - Upload to Google Play (track)
-#
-# Required CI env vars / GitHub Secrets:
-# iOS (App Store Connect API key):
-#   ASC_KEY_ID
-#   ASC_ISSUER_ID
-#   ASC_KEY_P8
-#   ASC_KEY_P8_BASE64   ("true" if ASC_KEY_P8 is base64)
-#   IOS_BUNDLE_ID
-#
-# Optional iOS:
-#   IOS_TEAM_ID         (only if signing/team selection is needed)
-#   IOS_SCHEME          (defaults to "Beekeepr")
-#   IOS_WORKSPACE       (defaults to "../ios/<scheme>.xcworkspace")
-#   IOS_EXPORT_METHOD   (app-store|ad-hoc|enterprise|development) default "app-store"
-#
-# Android (Google Play service account):
-#   PLAY_JSON_KEY_DATA  (service account JSON contents) OR PLAY_JSON_KEY_PATH
-#
-# Optional Android:
-#   PLAY_TRACK          (internal|closed|open|production) default "internal"
-#   RELEASE_NOTES       (string)
-#
-# Optional deliver/supply flags:
-#   SKIP_METADATA=true
-#   SKIP_SCREENSHOTS=true
-#   SKIP_IMAGES=true
-#
-# Local dev:
-#   fastlane/.env.local (gitignored) can hold the env vars above.
+# Beekeepr - Single app (App Store only)
 
 require "fileutils"
 
@@ -51,11 +9,15 @@ default_platform(:ios)
 APP_NAME = "Beekeepr"
 
 SCHEME    = ENV["IOS_SCHEME"] || "Beekeepr"
-WORKSPACE = ENV["IOS_WORKSPACE"] || "../ios/#{SCHEME}.xcworkspace"
+WORKSPACE = ENV["IOS_WORKSPACE"] || "ios/#{SCHEME}.xcworkspace"
 
-BUILD_DIR   = "../build"
-IOS_IPA     = "#{BUILD_DIR}/#{APP_NAME}.ipa"
-ANDROID_AAB = "#{BUILD_DIR}/#{APP_NAME}.aab"
+BUILD_DIR   = File.expand_path("../build", __dir__) # <repo>/build
+IOS_IPA     = File.join(BUILD_DIR, "#{APP_NAME}.ipa")
+ANDROID_AAB = File.join(BUILD_DIR, "#{APP_NAME}.aab")
+
+# ---------------------------------------
+# Helpers
+# ---------------------------------------
 
 def project_root
   File.expand_path("..", __dir__)
@@ -71,22 +33,23 @@ end
 
 def ensure_ios_bundle_id!
   bundle_id = ENV["IOS_BUNDLE_ID"].to_s.strip
-  UI.user_error!("Missing IOS_BUNDLE_ID (e.g. com.beekeepr.app)") if bundle_id.empty?
+  UI.user_error!("Missing IOS_BUNDLE_ID") if bundle_id.empty?
   bundle_id
+end
+
+def ensure_ios_team_id!
+  team_id = ENV["IOS_TEAM_ID"].to_s.strip
+  UI.user_error!("Missing IOS_TEAM_ID") if team_id.empty?
+  team_id
 end
 
 def setup_asc_api_key!
   UI.user_error!("Missing ASC_KEY_ID") if ENV["ASC_KEY_ID"].to_s.strip.empty?
   UI.user_error!("Missing ASC_ISSUER_ID") if ENV["ASC_ISSUER_ID"].to_s.strip.empty?
 
-  key_content =
-    if ENV["ASC_KEY_P8"].to_s.strip.length > 0
-      ENV["ASC_KEY_P8"]
-    else
-      `security find-generic-password -s ASC_API_KEY_P8 -w`.strip
-    end
+  key_content = ENV["ASC_KEY_P8"]
 
-  UI.user_error!("No ASC private key found (env or keychain)") if key_content.empty?
+  UI.user_error!("Missing ASC_KEY_P8") if key_content.to_s.strip.empty?
 
   app_store_connect_api_key(
     key_id: ENV["ASC_KEY_ID"],
@@ -96,12 +59,11 @@ def setup_asc_api_key!
   )
 end
 
-
 def resolve_play_json_key_path!
   return ENV["PLAY_JSON_KEY_PATH"] if ENV["PLAY_JSON_KEY_PATH"].to_s.strip.length > 0
 
   json_data = ENV["PLAY_JSON_KEY_DATA"].to_s
-  UI.user_error!("Missing PLAY_JSON_KEY_PATH or PLAY_JSON_KEY_DATA") if json_data.strip.length == 0
+  UI.user_error!("Missing PLAY_JSON_KEY_DATA") if json_data.strip.length == 0
 
   tmp_dir = File.join(__dir__, ".tmp")
   FileUtils.mkdir_p(tmp_dir)
@@ -111,72 +73,97 @@ def resolve_play_json_key_path!
   path
 end
 
-# ============================
+# ==========================================
 # iOS
-# ============================
+# ==========================================
+
 platform :ios do
-  desc "Check fastlane setup"
-  lane :doctor do
-    sh("ruby -v")
-    sh("bundle exec fastlane -v")
-    sh("xcodebuild -version")
+
+  desc "Sync App Store signing (match)"
+  lane :sync_signing do
+    setup_asc_api_key!
+
+    match(
+      type: "appstore",
+      readonly: ENV["CI"] == "true",
+      team_id: ensure_ios_team_id!,
+      git_url: ENV["MATCH_GIT_URL"],
+      git_branch: "master",
+      app_identifier: [ensure_ios_bundle_id!]
+    )
   end
 
-  desc "Validate App Store Connect API key"
-  lane :validate_asc do
-    setup_asc_api_key!  # don't capture return value
-
-    require "spaceship"
-    apps = Spaceship::ConnectAPI::App.all
-
-    UI.success("ASC key validated ✅ (apps accessible: #{apps.length})")
-    UI.message("Using bundle id: #{ensure_ios_bundle_id!}")
-  end
-
-  desc "Build iOS IPA"
+  desc "Build signed IPA for TestFlight / App Store"
   lane :build do
     ensure_build_dir!
-    ensure_ios_bundle_id!
+
+    bundle_id = ensure_ios_bundle_id!
+    team_id   = ensure_ios_team_id!
 
     UI.message("Building iOS (#{APP_NAME})")
 
+    # Generate ios folder
     expo_prebuild("ios")
+
+    # Set team
+    update_project_team(
+      path: "ios/Beekeepr.xcodeproj",
+      teamid: team_id
+    )
 
     cocoapods(
       podfile: "ios/Podfile",
       use_bundle_exec: true
     )
 
-    export_method = (ENV["IOS_EXPORT_METHOD"] || "app-store").strip
+    # Pull certs & profiles
+    sync_signing
+
+    # Force manual signing for Release
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "ios/Beekeepr.xcodeproj",
+      team_id: team_id,
+      bundle_identifier: bundle_id,
+      profile_name: "match AppStore #{bundle_id}",
+      code_sign_identity: "Apple Distribution"
+    )
 
     gym(
       workspace: WORKSPACE,
       scheme: SCHEME,
       configuration: "Release",
       clean: true,
+      export_method: "app-store",
+      export_team_id: team_id,
+      xcargs: "CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=#{team_id} CODE_SIGN_IDENTITY='Apple Distribution' PROVISIONING_PROFILE_SPECIFIER='match AppStore #{bundle_id}'",
       export_options: {
-        method: export_method,
-        uploadSymbols: true,
-        uploadBitcode: false
+        method: "app-store",
+        signingStyle: "manual",
+        teamID: team_id,
+        provisioningProfiles: {
+          bundle_id => "match AppStore #{bundle_id}"
+        }
       },
       output_directory: BUILD_DIR,
-      output_name: "#{APP_NAME}.ipa",
-      export_team_id: (ENV["IOS_TEAM_ID"].to_s.strip.length > 0 ? ENV["IOS_TEAM_ID"].to_s.strip : nil)
+      output_name: "#{APP_NAME}.ipa"
     )
 
-    UI.message("Built IPA: #{IOS_IPA}")
+    UI.success("IPA built at #{IOS_IPA}")
   end
 
-  desc "Upload IPA to TestFlight"
-  lane :upload_testflight do
-    UI.user_error!("Missing IPA at #{IOS_IPA}. Run `fastlane ios build` first.") unless File.exist?(IOS_IPA)
-
+  desc "Upload to TestFlight"
+  lane :upload_testflight do |options|
+    ipa_path = options[:ipa] || IOS_IPA
+    UI.user_error!("IPA not found at #{ipa_path}.") unless File.exist?(ipa_path)
+  
     setup_asc_api_key!
-
+  
     pilot(
-      ipa: IOS_IPA,
+      ipa: ipa_path,
       app_identifier: ensure_ios_bundle_id!,
-      skip_waiting_for_build_processing: true
+      skip_waiting_for_build_processing: true,
+      changelog: ENV["RELEASE_NOTES"]
     )
   end
 
@@ -186,22 +173,25 @@ platform :ios do
 
     deliver(
       app_identifier: ensure_ios_bundle_id!,
-      force: true,
       submit_for_review: true,
       automatic_release: false,
-      skip_screenshots: ENV["SKIP_SCREENSHOTS"] == "true",
-      skip_metadata: ENV["SKIP_METADATA"] == "true"
+      force: true,
+      skip_screenshots: true,
+      skip_metadata: true
     )
   end
 end
 
-# ============================
+# ==========================================
 # Android
-# ============================
+# ==========================================
+
 platform :android do
+
   desc "Build Android AAB"
   lane :build do
     ensure_build_dir!
+
     UI.message("Building Android (#{APP_NAME})")
 
     expo_prebuild("android")
@@ -212,22 +202,23 @@ platform :android do
     )
 
     sh("cp ../android/app/build/outputs/bundle/release/*.aab #{ANDROID_AAB}")
-    UI.message("Built AAB: #{ANDROID_AAB}")
+
+    UI.success("AAB built at #{ANDROID_AAB}")
   end
 
-  desc "Upload AAB to Google Play"
+  desc "Upload to Google Play"
   lane :play do
-    UI.user_error!("Missing AAB at #{ANDROID_AAB}. Run `fastlane android build` first.") unless File.exist?(ANDROID_AAB)
+    UI.user_error!("AAB not found. Run android build first.") unless File.exist?(ANDROID_AAB)
 
     supply(
       aab: ANDROID_AAB,
-      track: (ENV["PLAY_TRACK"] || "internal").strip,
+      track: (ENV["PLAY_TRACK"] || "internal"),
       json_key: resolve_play_json_key_path!,
       release_status: "draft",
       changelog: ENV["RELEASE_NOTES"],
-      skip_upload_metadata: ENV["SKIP_METADATA"] == "true",
-      skip_upload_images: ENV["SKIP_IMAGES"] == "true",
-      skip_upload_screenshots: ENV["SKIP_SCREENSHOTS"] == "true"
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
     )
   end
 end

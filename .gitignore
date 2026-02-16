@@ -48,3 +48,10 @@ yarn-error.*
 
 # Native wind
 nativewind-env.d.ts
+
+# build artifacts
+build/
+*.ipa
+*.aab
+*.apk
+*.dSYM.zip

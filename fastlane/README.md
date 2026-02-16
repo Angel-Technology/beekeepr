@@ -15,21 +15,13 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## iOS
 
-### ios doctor
+### ios sync_signing
 
 ```sh
-[bundle exec] fastlane ios doctor
+[bundle exec] fastlane ios sync_signing
 ```
 
-Check fastlane setup
-
-### ios validate_asc
-
-```sh
-[bundle exec] fastlane ios validate_asc
-```
-
-Validate App Store Connect API key
+Sync App Store signing (match)
 
 ### ios build
 
@@ -37,7 +29,7 @@ Validate App Store Connect API key
 [bundle exec] fastlane ios build
 ```
 
-Build iOS IPA
+Build signed IPA for TestFlight / App Store
 
 ### ios upload_testflight
 
@@ -45,7 +37,7 @@ Build iOS IPA
 [bundle exec] fastlane ios upload_testflight
 ```
 
-Upload IPA to TestFlight
+Upload to TestFlight
 
 ### ios submit_review
 
@@ -74,7 +66,7 @@ Build Android AAB
 [bundle exec] fastlane android play
 ```
 
-Upload AAB to Google Play
+Upload to Google Play
 
 ----
 
