@@ -28,7 +28,7 @@ def ensure_build_dir!
 end
 
 def expo_prebuild(platform)
-  # NOTE: --no-install avoids expo trying to install deps/pods itself in CI
+  # --no-install avoids expo trying to install deps/pods itself in CI
   sh("cd #{project_root} && npx expo prebuild --platform #{platform} --clean --no-install")
 end
 
@@ -89,7 +89,6 @@ platform :ios do
       git_url: ENV["MATCH_GIT_URL"],
       git_branch: "master",
       app_identifier: [ensure_ios_bundle_id!],
-      # ✅ important for CI where auth prompts can hang
       git_basic_authorization: ENV["MATCH_GIT_BASIC_AUTHORIZATION"]
     )
   end
@@ -106,7 +105,7 @@ platform :ios do
     # Generate ios folder
     expo_prebuild("ios")
 
-    # ✅ CI keychain + codesign setup (fixes many Embed Pods Frameworks stalls/cancels)
+    # CI keychain + codesign setup
     setup_ci
 
     # Set team
@@ -135,6 +134,14 @@ platform :ios do
       code_sign_identity: "Apple Distribution"
     )
 
+    # ✅ Auto-increment build number for TestFlight using GitHub Actions run number
+    build_num = (ENV["GITHUB_RUN_NUMBER"] || "1").to_i
+    increment_build_number(
+      xcodeproj: "ios/Beekeepr.xcodeproj",
+      build_number: build_num
+    )
+    UI.message("Using iOS build number: #{build_num}")
+
     gym(
       workspace: WORKSPACE,
       scheme: SCHEME,
@@ -143,8 +150,8 @@ platform :ios do
       export_method: "app-store",
       export_team_id: team_id,
 
-      # ✅ Better diagnostics when things die near the end
-      disable_xcpretty: true,
+      # raw xcodebuild output (no xcpretty). Old flag is deprecated.
+      xcodebuild_formatter: "",
       silent: false,
       buildlog_path: File.join(project_root, "fastlane", "buildlog"),
 
