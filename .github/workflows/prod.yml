@@ -27,6 +27,13 @@ jobs:
     runs-on: macos-latest
 
     env:
+      # ✅ CI stability + less noise
+      CI: 'true'
+      FASTLANE_SKIP_UPDATE_CHECK: 'true'
+      FASTLANE_DISABLE_COLORS: '1'
+      COCOAPODS_DISABLE_STATS: 'true'
+      EXPO_NO_TELEMETRY: '1'
+
       IOS_BUNDLE_ID: com.beekeepr.app
       IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
 
@@ -67,12 +74,27 @@ jobs:
           ruby-version: '3.3'
           bundler-cache: true
 
-      - run: bundle exec fastlane ios build
-      - run: bundle exec fastlane ios upload_testflight
+      # Optional: fail faster if build truly hangs
+      - name: Build iOS (Fastlane)
+        timeout-minutes: 60
+        run: bundle exec fastlane ios build --verbose
+
+      - name: Upload TestFlight
+        timeout-minutes: 30
+        run: bundle exec fastlane ios upload_testflight --verbose
 
       - name: Submit to App Store review (manual gate)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.submit_ios_for_review }}
-        run: bundle exec fastlane ios submit_review
+        timeout-minutes: 30
+        run: bundle exec fastlane ios submit_review --verbose
+
+      # ✅ Grab raw Xcode build logs (super helpful for “Embed Pods Frameworks” failures)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-build-logs
+          path: fastlane/buildlog
+          retention-days: 14
 
       - uses: actions/upload-artifact@v4
         with:
@@ -85,6 +107,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      CI: 'true'
+      FASTLANE_SKIP_UPDATE_CHECK: 'true'
       PLAY_JSON_KEY_DATA: ${{ secrets.PLAY_JSON_KEY_DATA }}
       PLAY_TRACK: ${{ github.event_name == 'workflow_dispatch' && inputs.play_track || 'internal' }}
 
@@ -118,8 +142,13 @@ jobs:
           ruby-version: '3.3'
           bundler-cache: true
 
-      - run: bundle exec fastlane android build
-      - run: bundle exec fastlane android play
+      - name: Build Android (Fastlane)
+        timeout-minutes: 60
+        run: bundle exec fastlane android build --verbose
+
+      - name: Upload Play
+        timeout-minutes: 30
+        run: bundle exec fastlane android play --verbose
 
       - uses: actions/upload-artifact@v4
         with:
