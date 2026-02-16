@@ -1,11 +1,10 @@
-import { Colors } from '@/styles/Colors';
 import { JSX } from 'react';
 import Svg, { Path, SvgProps } from 'react-native-svg';
 
 export default function ChevronRightIcon({
   width = 12,
   height = 16,
-  fill = Colors.textPrimary,
+  fill = '##7F53A2',
 }: SvgProps): JSX.Element {
   return (
     <Svg width={width} height={height} viewBox="0 0 7 12" fill={fill}>
