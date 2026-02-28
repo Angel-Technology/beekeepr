@@ -32,15 +32,19 @@ const APP: EnvironmentConfig = {
 
 const ciBuildNumber = Number.parseInt(
   process.env.IOS_BUILD_NUMBER || process.env.GITHUB_RUN_NUMBER || '',
-  10
+  10,
 );
-const iosBuildNumber = Number.isFinite(ciBuildNumber) && ciBuildNumber > 0 ? String(ciBuildNumber) : '1';
+const iosBuildNumber =
+  Number.isFinite(ciBuildNumber) && ciBuildNumber > 0
+    ? String(ciBuildNumber)
+    : '1';
 
 const ciVersionCode = Number.parseInt(
   process.env.ANDROID_VERSION_CODE || process.env.GITHUB_RUN_NUMBER || '',
-  10
+  10,
 );
-const androidVersionCode = Number.isFinite(ciVersionCode) && ciVersionCode > 0 ? ciVersionCode : 1;
+const androidVersionCode =
+  Number.isFinite(ciVersionCode) && ciVersionCode > 0 ? ciVersionCode : 1;
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
