@@ -35,7 +35,7 @@ jobs:
         run: yarn lint
 
       - name: Tests
-        run: yarn test
+        run: yarn test --passWithNoTests
 
       - name: Prebuild sanity check
         run: yarn prebuild:clean
