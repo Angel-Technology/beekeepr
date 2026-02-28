@@ -53,7 +53,19 @@ jobs:
 
       - name: Select Xcode 26
         run: |
-          XCODE_APP="$(find /Applications -maxdepth 1 -type d -name 'Xcode_26*.app' | sort -V | tail -n 1)"
+          XCODE_APP=""
+          if [ -d /Applications/Xcode.app ]; then
+            XCODE_VERSION="$(/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -version | head -n 1 | awk '{print $2}')"
+            if [[ "$XCODE_VERSION" == 26* ]]; then
+              XCODE_APP="/Applications/Xcode.app"
+            fi
+          fi
+          if [ -z "$XCODE_APP" ]; then
+            XCODE_APP="$(find /Applications -maxdepth 1 -type d -name 'Xcode_26*.app' ! -name '*beta*' | sort -V | tail -n 1)"
+          fi
+          if [ -z "$XCODE_APP" ]; then
+            XCODE_APP="$(find /Applications -maxdepth 1 -type d -name 'Xcode_26*.app' | sort -V | tail -n 1)"
+          fi
           if [ -z "$XCODE_APP" ]; then
             echo "Xcode 26 not found on runner"
             exit 1
@@ -105,6 +117,7 @@ jobs:
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      ANDROID_VERSION_CODE: ${{ github.run_number }}
       FIREBASE_APP_ID: 1:1065098379708:android:65a1522fa9d1bcc037abb9
       FIREBASE_CREDENTIALS_JSON: ${{ secrets.FIREBASE_CREDENTIALS_JSON }}
       FIREBASE_GROUPS: dev
@@ -136,6 +149,8 @@ jobs:
           cache: gradle
 
       - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
 
       - uses: ruby/setup-ruby@v1
         with:

@@ -30,6 +30,18 @@ const APP: EnvironmentConfig = {
   androidAdaptiveIconBackgroundColor: '#ffffff',
 };
 
+const ciBuildNumber = Number.parseInt(
+  process.env.IOS_BUILD_NUMBER || process.env.GITHUB_RUN_NUMBER || '',
+  10
+);
+const iosBuildNumber = Number.isFinite(ciBuildNumber) && ciBuildNumber > 0 ? String(ciBuildNumber) : '1';
+
+const ciVersionCode = Number.parseInt(
+  process.env.ANDROID_VERSION_CODE || process.env.GITHUB_RUN_NUMBER || '',
+  10
+);
+const androidVersionCode = Number.isFinite(ciVersionCode) && ciVersionCode > 0 ? ciVersionCode : 1;
+
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
@@ -49,7 +61,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ...config.ios,
       supportsTablet: true,
       bundleIdentifier: APP.bundleIdentifier,
-      buildNumber: config.ios?.buildNumber ?? '1',
+      buildNumber: config.ios?.buildNumber ?? iosBuildNumber,
 
       // iOS app icon (static). Pick the best looking one (usually light bg).
       icon: APP.icon,
@@ -73,7 +85,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     android: {
       ...config.android,
       package: APP.androidPackage,
-      versionCode: config.android?.versionCode ?? 1,
+      versionCode: config.android?.versionCode ?? androidVersionCode,
       googleServicesFile: './google-services.json',
 
       // Android app icon setup

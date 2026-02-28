@@ -157,10 +157,19 @@ def patch_android_release_signing!(package_name)
             keyPassword 'android'
         }
         release {
-            storeFile file(System.getenv("ANDROID_KEYSTORE_PATH"))
-            storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
-            keyAlias System.getenv("ANDROID_KEY_ALIAS")
-            keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+            def keystorePath = findProperty("ANDROID_KEYSTORE_PATH") ?: System.getenv("ANDROID_KEYSTORE_PATH")
+            def keystorePassword = findProperty("ANDROID_KEYSTORE_PASSWORD") ?: System.getenv("ANDROID_KEYSTORE_PASSWORD")
+            def keyAliasValue = findProperty("ANDROID_KEY_ALIAS") ?: System.getenv("ANDROID_KEY_ALIAS")
+            def keyPasswordValue = findProperty("ANDROID_KEY_PASSWORD") ?: System.getenv("ANDROID_KEY_PASSWORD")
+
+            if (!keystorePath) {
+                throw new GradleException("Missing ANDROID_KEYSTORE_PATH for Android release signing")
+            }
+
+            storeFile file(keystorePath)
+            storePassword keystorePassword
+            keyAlias keyAliasValue
+            keyPassword keyPasswordValue
         }
     }
   GRADLE
@@ -333,6 +342,9 @@ platform :android do
       task: "bundleRelease",
       properties: {
         "ANDROID_KEYSTORE_PATH" => keystore_path,
+        "ANDROID_KEYSTORE_PASSWORD" => ENV["ANDROID_KEYSTORE_PASSWORD"],
+        "ANDROID_KEY_ALIAS" => ENV["ANDROID_KEY_ALIAS"],
+        "ANDROID_KEY_PASSWORD" => ENV["ANDROID_KEY_PASSWORD"],
         "android.injected.signing.store.file" => keystore_path,
         "android.injected.signing.store.password" => ENV["ANDROID_KEYSTORE_PASSWORD"],
         "android.injected.signing.key.alias" => ENV["ANDROID_KEY_ALIAS"],
@@ -363,6 +375,9 @@ platform :android do
       task: "assembleRelease",
       properties: {
         "ANDROID_KEYSTORE_PATH" => keystore_path,
+        "ANDROID_KEYSTORE_PASSWORD" => ENV["ANDROID_KEYSTORE_PASSWORD"],
+        "ANDROID_KEY_ALIAS" => ENV["ANDROID_KEY_ALIAS"],
+        "ANDROID_KEY_PASSWORD" => ENV["ANDROID_KEY_PASSWORD"],
         "android.injected.signing.store.file" => keystore_path,
         "android.injected.signing.store.password" => ENV["ANDROID_KEYSTORE_PASSWORD"],
         "android.injected.signing.key.alias" => ENV["ANDROID_KEY_ALIAS"],
