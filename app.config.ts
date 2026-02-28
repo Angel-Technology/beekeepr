@@ -54,6 +54,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       // iOS app icon (static). Pick the best looking one (usually light bg).
       icon: APP.icon,
 
+      config: {
+        ...config.ios?.config,
+        usesNonExemptEncryption: false,
+      },
+
       infoPlist: {
         ...config.ios?.infoPlist,
         CFBundleDisplayName: APP.name,
@@ -69,6 +74,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ...config.android,
       package: APP.androidPackage,
       versionCode: config.android?.versionCode ?? 1,
+      googleServicesFile: './google-services.json',
 
       // Android app icon setup
       icon: APP.icon, // legacy (some launchers still use this)

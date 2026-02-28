@@ -1,7 +1,9 @@
 # fastlane/Fastfile
 # Beekeepr - Single app (App Store only)
 
+require "base64"
 require "fileutils"
+require "json"
 
 opt_out_usage
 default_platform(:ios)
@@ -14,6 +16,7 @@ WORKSPACE = ENV["IOS_WORKSPACE"] || "ios/#{SCHEME}.xcworkspace"
 BUILD_DIR   = File.expand_path("../build", __dir__) # <repo>/build
 IOS_IPA     = File.join(BUILD_DIR, "#{APP_NAME}.ipa")
 ANDROID_AAB = File.join(BUILD_DIR, "#{APP_NAME}.aab")
+ANDROID_APK = File.join(BUILD_DIR, "#{APP_NAME}.apk")
 
 # ---------------------------------------
 # Helpers
@@ -25,6 +28,13 @@ end
 
 def ensure_build_dir!
   FileUtils.mkdir_p(File.expand_path(BUILD_DIR, __dir__))
+end
+
+def copy_build_artifact!(glob_pattern, destination)
+  matches = Dir[File.join(project_root, glob_pattern)]
+  UI.user_error!("No build artifact found for #{glob_pattern}") if matches.empty?
+
+  FileUtils.cp(matches.first, destination)
 end
 
 def expo_prebuild(platform)
@@ -71,6 +81,105 @@ def resolve_play_json_key_path!
   path = File.join(tmp_dir, "play-service-account.json")
   File.write(path, json_data)
   path
+end
+
+def ensure_android_package_name!
+  package_name = ENV["ANDROID_PACKAGE_NAME"].to_s.strip
+  package_name = "com.beekeepr.app" if package_name.empty?
+  package_name
+end
+
+def resolve_google_services_path!
+  path = File.join(project_root, "google-services.json")
+  UI.user_error!("Missing #{path}") unless File.exist?(path)
+  path
+end
+
+def resolve_firebase_app_id!
+  app_id = ENV["FIREBASE_APP_ID"].to_s.strip
+  return app_id unless app_id.empty?
+
+  google_services = JSON.parse(File.read(resolve_google_services_path!))
+  clients = google_services.fetch("client", [])
+  client = clients.find do |entry|
+    entry.dig("client_info", "android_client_info", "package_name") == ensure_android_package_name!
+  end
+  UI.user_error!("Unable to find Firebase app id for package #{ensure_android_package_name!} in google-services.json") unless client
+
+  client.fetch("client_info").fetch("mobilesdk_app_id")
+end
+
+def resolve_firebase_credentials_path!
+  return ENV["FIREBASE_CREDENTIALS_PATH"] if ENV["FIREBASE_CREDENTIALS_PATH"].to_s.strip.length > 0
+
+  json_data = ENV["FIREBASE_CREDENTIALS_JSON"].to_s
+  UI.user_error!("Missing FIREBASE_CREDENTIALS_PATH or FIREBASE_CREDENTIALS_JSON") if json_data.strip.empty?
+
+  tmp_dir = File.join(__dir__, ".tmp")
+  FileUtils.mkdir_p(tmp_dir)
+
+  path = File.join(tmp_dir, "firebase-service-account.json")
+  File.write(path, json_data)
+  path
+end
+
+def resolve_android_keystore_path!
+  return ENV["ANDROID_KEYSTORE_PATH"] if ENV["ANDROID_KEYSTORE_PATH"].to_s.strip.length > 0
+
+  keystore_data = ENV["ANDROID_KEYSTORE_BASE64"].to_s.strip
+  UI.user_error!("Missing ANDROID_KEYSTORE_PATH or ANDROID_KEYSTORE_BASE64") if keystore_data.empty?
+
+  tmp_dir = File.join(__dir__, ".tmp")
+  FileUtils.mkdir_p(tmp_dir)
+
+  keystore_path = File.join(tmp_dir, "android-release.keystore")
+  File.binwrite(keystore_path, Base64.decode64(keystore_data))
+  keystore_path
+end
+
+def ensure_android_signing_env!
+  UI.user_error!("Missing ANDROID_KEY_ALIAS") if ENV["ANDROID_KEY_ALIAS"].to_s.strip.empty?
+  UI.user_error!("Missing ANDROID_KEY_PASSWORD") if ENV["ANDROID_KEY_PASSWORD"].to_s.strip.empty?
+  UI.user_error!("Missing ANDROID_KEYSTORE_PASSWORD") if ENV["ANDROID_KEYSTORE_PASSWORD"].to_s.strip.empty?
+end
+
+def patch_android_release_signing!(package_name)
+  gradle_path = File.join(project_root, "android", "app", "build.gradle")
+  UI.user_error!("Missing #{gradle_path}. Run Expo prebuild first.") unless File.exist?(gradle_path)
+
+  gradle = File.read(gradle_path)
+  signing_block = <<~GRADLE.chomp
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        release {
+            storeFile file(System.getenv("ANDROID_KEYSTORE_PATH"))
+            storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
+            keyAlias System.getenv("ANDROID_KEY_ALIAS")
+            keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+        }
+    }
+  GRADLE
+
+  updated = gradle.dup
+  updated.sub!(/namespace ['"][^'"]+['"]/, "namespace '#{package_name}'")
+  updated.sub!(/applicationId ['"][^'"]+['"]/, "applicationId '#{package_name}'")
+  updated.sub!(
+    /signingConfigs\s*\{\s*debug\s*\{.*?keyPassword 'android'\s*\}\s*\}/m,
+    signing_block
+  )
+  updated.sub!(
+    /(release\s*\{\s*(?:\/\/.*\s*)*signingConfig )signingConfigs\.debug/m,
+    "\\1signingConfigs.release"
+  )
+
+  UI.user_error!("Unable to patch Android signing in #{gradle_path}") if updated == gradle
+
+  File.write(gradle_path, updated)
 end
 
 # ==========================================
@@ -209,34 +318,107 @@ platform :android do
   desc "Build Android AAB"
   lane :build do
     ensure_build_dir!
+    ensure_android_signing_env!
+
+    package_name = ensure_android_package_name!
+    keystore_path = resolve_android_keystore_path!
 
     UI.message("Building Android (#{APP_NAME})")
 
     expo_prebuild("android")
+    patch_android_release_signing!(package_name)
 
     gradle(
-      project_dir: "../android",
-      task: "bundleRelease"
+      project_dir: "android",
+      task: "bundleRelease",
+      properties: {
+        "ANDROID_KEYSTORE_PATH" => keystore_path,
+        "android.injected.signing.store.file" => keystore_path,
+        "android.injected.signing.store.password" => ENV["ANDROID_KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["ANDROID_KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["ANDROID_KEY_PASSWORD"]
+      }
     )
 
-    sh("cp ../android/app/build/outputs/bundle/release/*.aab #{ANDROID_AAB}")
+    copy_build_artifact!("android/app/build/outputs/bundle/release/*.aab", ANDROID_AAB)
 
     UI.success("AAB built at #{ANDROID_AAB}")
+  end
+
+  desc "Build Android APK for Firebase App Distribution"
+  lane :build_apk do
+    ensure_build_dir!
+    ensure_android_signing_env!
+
+    package_name = ensure_android_package_name!
+    keystore_path = resolve_android_keystore_path!
+
+    UI.message("Building Android APK (#{APP_NAME})")
+
+    expo_prebuild("android")
+    patch_android_release_signing!(package_name)
+
+    gradle(
+      project_dir: "android",
+      task: "assembleRelease",
+      properties: {
+        "ANDROID_KEYSTORE_PATH" => keystore_path,
+        "android.injected.signing.store.file" => keystore_path,
+        "android.injected.signing.store.password" => ENV["ANDROID_KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["ANDROID_KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["ANDROID_KEY_PASSWORD"]
+      }
+    )
+
+    copy_build_artifact!("android/app/build/outputs/apk/release/*.apk", ANDROID_APK)
+
+    UI.success("APK built at #{ANDROID_APK}")
   end
 
   desc "Upload to Google Play"
   lane :play do
     UI.user_error!("AAB not found. Run android build first.") unless File.exist?(ANDROID_AAB)
 
+    package_name = ensure_android_package_name!
+    track = (ENV["PLAY_TRACK"] || "internal").strip
+    release_status = ENV["PLAY_RELEASE_STATUS"].to_s.strip
+    release_status = (track == "internal" ? "completed" : "draft") if release_status.empty?
+
     supply(
       aab: ANDROID_AAB,
-      track: (ENV["PLAY_TRACK"] || "internal"),
+      package_name: package_name,
+      track: track,
       json_key: resolve_play_json_key_path!,
-      release_status: "draft",
+      release_status: release_status,
       changelog: ENV["RELEASE_NOTES"],
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true
+    )
+  end
+
+  desc "Distribute Android AAB to Firebase App Distribution testers"
+  lane :firebase_distribution do
+    artifact_type = (ENV["FIREBASE_ANDROID_ARTIFACT_TYPE"] || "APK").strip.upcase
+    artifact_type = "APK" unless %w[APK AAB].include?(artifact_type)
+
+    artifact_path =
+      if artifact_type == "AAB"
+        UI.user_error!("AAB not found. Run android build first.") unless File.exist?(ANDROID_AAB)
+        ANDROID_AAB
+      else
+        UI.user_error!("APK not found. Run android build_apk first.") unless File.exist?(ANDROID_APK)
+        ANDROID_APK
+      end
+
+    firebase_app_distribution(
+      app: resolve_firebase_app_id!,
+      android_artifact_type: artifact_type,
+      android_artifact_path: artifact_path,
+      service_credentials_file: resolve_firebase_credentials_path!,
+      release_notes: ENV["RELEASE_NOTES"],
+      testers: ENV["FIREBASE_TESTERS"],
+      groups: ENV["FIREBASE_GROUPS"]
     )
   end
 end

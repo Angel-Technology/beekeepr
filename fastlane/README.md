@@ -60,6 +60,14 @@ Submit to App Store review
 
 Build Android AAB
 
+### android build_apk
+
+```sh
+[bundle exec] fastlane android build_apk
+```
+
+Build Android APK for Firebase App Distribution
+
 ### android play
 
 ```sh
@@ -67,6 +75,14 @@ Build Android AAB
 ```
 
 Upload to Google Play
+
+### android firebase_distribution
+
+```sh
+[bundle exec] fastlane android firebase_distribution
+```
+
+Distribute Android AAB to Firebase App Distribution testers
 
 ----
 

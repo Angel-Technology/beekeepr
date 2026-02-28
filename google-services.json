@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "1065098379708",
+    "project_id": "dating-angel",
+    "storage_bucket": "dating-angel.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1065098379708:android:65a1522fa9d1bcc037abb9",
+        "android_client_info": {
+          "package_name": "com.beekeepr.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1065098379708-tvobob9hu8rlbhrpds49e6ang432246g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcKlfOfMQN3SWRDe1FBpgTgw7LAfDTEfI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1065098379708-ceohetbqenunb7sq4l12jjk95j2cehag.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1065098379708-rffbl443sc6nv476ekflotir4t63mrg0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mydatingangel.googleauthexporeactnative"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1065098379708:android:eb99cd842a39f1b637abb9",
+        "android_client_info": {
+          "package_name": "com.mydatingangel.googleauthexporeactnative"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1065098379708-tvobob9hu8rlbhrpds49e6ang432246g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcKlfOfMQN3SWRDe1FBpgTgw7LAfDTEfI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1065098379708-ceohetbqenunb7sq4l12jjk95j2cehag.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1065098379708-rffbl443sc6nv476ekflotir4t63mrg0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mydatingangel.googleauthexporeactnative"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

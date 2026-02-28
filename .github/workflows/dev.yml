@@ -1,33 +1,20 @@
-name: Prod
+name: Dev
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
-    inputs:
-      submit_ios_for_review:
-        description: 'Submit iOS build for App Store review'
-        required: false
-        type: boolean
-        default: false
-      play_track:
-        description: 'Google Play track'
-        required: false
-        type: choice
-        options: [internal, closed, open, production]
-        default: internal
+    branches: [dev]
+  workflow_dispatch: {}
 
 concurrency:
-  group: prod-${{ github.ref }}
-  cancel-in-progress: false
+  group: android-dev-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ios:
-    name: iOS → TestFlight
+    name: iOS Dev -> TestFlight
     runs-on: macos-26
 
     env:
-      # CI stability + less noise
       CI: 'true'
       FASTLANE_SKIP_UPDATE_CHECK: 'true'
       FASTLANE_DISABLE_COLORS: '1'
@@ -37,24 +24,21 @@ jobs:
       IOS_BUNDLE_ID: com.beekeepr.app
       IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
 
-      # App Store Connect API key
       ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
       ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
       ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
       ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
 
-      # match (CI signing)
       MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
       MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
       MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
 
-      # auto increment build number
       IOS_BUILD_NUMBER: ${{ github.run_number }}
 
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # needed for release notes from commits
+          fetch-depth: 0
 
       - name: Release notes from commit
         run: |
@@ -95,39 +79,36 @@ jobs:
         timeout-minutes: 30
         run: bundle exec fastlane ios upload_testflight --verbose
 
-      - name: Submit to App Store review (manual gate)
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.submit_ios_for_review }}
-        timeout-minutes: 30
-        run: bundle exec fastlane ios submit_review --verbose
-
-      # Always upload raw build logs for debugging
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ios-build-logs
+          name: ios-dev-build-logs
           path: fastlane/buildlog
           retention-days: 14
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ios-build
+          name: ios-dev-build
           path: build/*.ipa
           retention-days: 14
 
   android:
-    name: Android → Play
+    name: Android Dev -> Firebase
     runs-on: ubuntu-latest
 
     env:
       CI: 'true'
       FASTLANE_SKIP_UPDATE_CHECK: 'true'
+      EXPO_NO_TELEMETRY: '1'
       ANDROID_PACKAGE_NAME: com.beekeepr.app
       ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-      PLAY_JSON_KEY_DATA: ${{ secrets.PLAY_JSON_KEY_DATA }}
-      PLAY_TRACK: ${{ github.event_name == 'workflow_dispatch' && inputs.play_track || 'internal' }}
+      FIREBASE_APP_ID: 1:1065098379708:android:65a1522fa9d1bcc037abb9
+      FIREBASE_CREDENTIALS_JSON: ${{ secrets.FIREBASE_CREDENTIALS_JSON }}
+      FIREBASE_GROUPS: dev
+      FIREBASE_ANDROID_ARTIFACT_TYPE: APK
 
     steps:
       - uses: actions/checkout@v4
@@ -161,16 +142,16 @@ jobs:
           ruby-version: '3.3'
           bundler-cache: true
 
-      - name: Build Android (Fastlane)
+      - name: Build Android APK (Fastlane)
         timeout-minutes: 60
-        run: bundle exec fastlane android build --verbose
+        run: bundle exec fastlane android build_apk --verbose
 
-      - name: Upload Play
+      - name: Distribute to Firebase App Distribution
         timeout-minutes: 30
-        run: bundle exec fastlane android play --verbose
+        run: bundle exec fastlane android firebase_distribution --verbose
 
       - uses: actions/upload-artifact@v4
         with:
-          name: android-build
-          path: build/*.aab
+          name: android-dev-build
+          path: build/*.apk
           retention-days: 14
