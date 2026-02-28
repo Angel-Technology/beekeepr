@@ -305,6 +305,7 @@ platform :ios do
     setup_asc_api_key!
 
     groups = resolve_testflight_groups(options)
+    distribute_external = options[:distribute_external] == true
 
     pilot(
       ipa: ipa_path,
@@ -312,7 +313,8 @@ platform :ios do
       skip_waiting_for_build_processing: groups.empty?,
       changelog: ENV["RELEASE_NOTES"],
       groups: groups.empty? ? nil : groups,
-      distribute_external: false
+      distribute_external: distribute_external,
+      submit_beta_review: distribute_external
     )
   end
 
