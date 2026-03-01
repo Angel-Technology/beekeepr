@@ -7,7 +7,6 @@ import type {
   ViewToken,
 } from 'react-native';
 import { Text, useWindowDimensions, View } from 'react-native';
-import { ArrowLeft, ArrowRight } from 'lucide-react-native';
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
@@ -15,8 +14,7 @@ import Animated, {
   type SharedValue,
 } from 'react-native-reanimated';
 
-import { Container, IconButton, VerticalSpacer } from '@components';
-import { colors } from '@common/colors';
+import { Container, VerticalSpacer } from '@components';
 import { OnboardingPagination } from './OnboardingPagination';
 
 type OnboardingFlowProps<TItem> = {
@@ -119,15 +117,18 @@ export const OnboardingFlow = <TItem,>({
   }, [currentIndex, data.length, onComplete, scrollToIndex]);
 
   const renderItem: ListRenderItem<TItem> = ({ item, index }) => (
-    <View style={{ width: pageWidth }}>
+    <View style={{ width: pageWidth }} className="px-lg">
       {renderSlide({ item, index, x, pageWidth })}
     </View>
   );
 
   return (
-    <Container safeArea className="items-center bg-bg-default">
-      <View className="flex-1 w-full max-w-[500px]" onLayout={handleLayout}>
-        <View className="gap-2 self-stretch">
+    <Container safeArea className="items-center bg-bg-default px-0">
+      <View
+        className="w-full max-w-[500px] flex-1 gap-7"
+        onLayout={handleLayout}
+      >
+        <View className="gap-2 self-stretch px-lg">
           <Text className="font-poppins-semiBold text-800 text-text-default">
             {title}
           </Text>
@@ -135,16 +136,15 @@ export const OnboardingFlow = <TItem,>({
             {subtitle}
           </Text>
         </View>
-
-        <VerticalSpacer size="lg" />
-
         <Animated.FlatList
           ref={(node) => {
             jsFlatListRef.current = node;
             flatListRef(node);
           }}
           className="flex-1 self-stretch"
-          contentContainerStyle={{ alignItems: 'stretch' }}
+          contentContainerStyle={{
+            alignItems: 'stretch',
+          }}
           data={data}
           renderItem={renderItem}
           keyExtractor={keyExtractor}
@@ -163,44 +163,23 @@ export const OnboardingFlow = <TItem,>({
           })}
         />
       </View>
-
       <VerticalSpacer size="xl" />
-
-      <View className="w-full max-w-[500px] flex-row items-center justify-between">
-        <IconButton
-          accessibilityLabel={
-            currentIndex === 0 ? 'Previous slide unavailable' : 'Previous slide'
-          }
-          disabled={currentIndex === 0}
-          icon={
-            <ArrowLeft
-              color={colors.text.secondary}
-              size={20}
-              strokeWidth={2.25}
-            />
-          }
-          onPress={handleBack}
-          variant="outline"
-        />
-
-        <OnboardingPagination itemCount={data.length} pageWidth={pageWidth} x={x} />
-
-        <IconButton
-          accessibilityLabel={
-            currentIndex === data.length - 1
-              ? 'Finish onboarding'
-              : 'Next slide'
-          }
-          icon={
-            <ArrowRight
-              color={colors.action.neutral.text.onAction}
-              size={20}
-              strokeWidth={2.25}
-            />
-          }
-          onPress={handleNext}
-        />
-      </View>
+      <OnboardingPagination
+        backAccessibilityLabel={
+          currentIndex === 0 ? 'Previous slide unavailable' : 'Previous slide'
+        }
+        backDisabled={currentIndex === 0}
+        className="px-lg"
+        itemCount={data.length}
+        nextAccessibilityLabel={
+          currentIndex === data.length - 1 ? 'Finish onboarding' : 'Next slide'
+        }
+        nextDisabled={currentIndex === data.length - 1 && !onComplete}
+        onBack={handleBack}
+        onNext={handleNext}
+        pageWidth={pageWidth}
+        x={x}
+      />
     </Container>
   );
 };
