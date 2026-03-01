@@ -11,15 +11,9 @@ module.exports = function (api) {
         'module-resolver',
         {
           alias: {
-            '@src': './src',
             '@assets': './src/assets',
-            '@screens': './src/screens',
             '@components': './src/components',
             '@features': './src/features',
-            '@hooks': './src/hooks',
-            '@actions': './src/actions',
-            '@data': './src/data',
-            '@domain': './src/domain',
           },
         },
       ],

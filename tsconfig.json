@@ -6,15 +6,11 @@
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "paths": {
-      "@src/*": ["src/*"],
       "@assets/*": ["src/assets/*"],
-      "@screens/*": ["src/screens/*"],
+      "@components": ["src/components/index.ts"],
       "@components/*": ["src/components/*"],
       "@features/*": ["src/features/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@actions/*": ["src/actions/*"],
-      "@data/*": ["src/data/*"],
-      "@domain/*": ["src/domain/*"]
+      "@features": ["src/features/index.ts"]
     }
   },
   "include": [

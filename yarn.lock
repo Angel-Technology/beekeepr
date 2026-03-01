@@ -3761,6 +3761,7 @@ __metadata:
     "@typescript-eslint/parser": ^8.53.0
     babel-plugin-module-resolver: ^5.0.2
     babel-preset-expo: ^54.0.10
+    clsx: ^2.1.1
     eslint: ^9.39.2
     eslint-config-prettier: ^10.1.8
     eslint-plugin-prettier: ^5.5.5
@@ -3768,6 +3769,7 @@ __metadata:
     eslint-plugin-react-hooks: ^7.0.1
     expo: ~54.0.31
     expo-constants: ^18.0.13
+    expo-image: ~3.0.7
     expo-linking: ^8.0.11
     expo-router: ^6.0.23
     expo-splash-screen: ^31.0.13
@@ -3777,6 +3779,7 @@ __metadata:
     jest-expo: ^54.0.16
     jest-junit: ^16.0.0
     js-yaml: ^4.1.1
+    lucide-react-native: ^0.542.0
     nativewind: ^4.2.1
     prettier: ^3.8.0
     prettier-plugin-tailwindcss: ^0.5.11
@@ -4179,6 +4182,13 @@ __metadata:
   version: 1.0.4
   resolution: "clone@npm:1.0.4"
   checksum: d06418b7335897209e77bdd430d04f882189582e67bd1f75a04565f3f07f5b3f119a9d670c943b6697d0afb100f03b866b3b8a1f91d4d02d72c4ecf2bb64b5dd
+  languageName: node
+  linkType: hard
+
+"clsx@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "clsx@npm:2.1.1"
+  checksum: acd3e1ab9d8a433ecb3cc2f6a05ab95fe50b4a3cfc5ba47abb6cbf3754585fcb87b84e90c822a1f256c4198e3b41c7f6c391577ffc8678ad587fc0976b24fd57
   languageName: node
   linkType: hard
 
@@ -5390,6 +5400,21 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 7947e01b79f55fd8ddc28de0ced25931b8299d095a3a832e6a22e16d2a761ad77282dbc631c459aa895f01b5c32f9cd7240ab96e92d0af4b12aa4589b2c1bd82
+  languageName: node
+  linkType: hard
+
+"expo-image@npm:~3.0.7":
+  version: 3.0.11
+  resolution: "expo-image@npm:3.0.11"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+    react-native-web: "*"
+  peerDependenciesMeta:
+    react-native-web:
+      optional: true
+  checksum: 3012bad604609187aa381eced26785fae65122016701a95b9cee91c4721ab3c20fd34dabbc8afed37c0f838740c3bf16827f89c0f2d53771d535e18fbfe279ec
   languageName: node
   linkType: hard
 
@@ -7877,6 +7902,17 @@ __metadata:
   dependencies:
     yallist: ^3.0.2
   checksum: c154ae1cbb0c2206d1501a0e94df349653c92c8cbb25236d7e85190bcaf4567a03ac6eb43166fabfa36fd35623694da7233e88d9601fbf411a9a481d85dbd2cb
+  languageName: node
+  linkType: hard
+
+"lucide-react-native@npm:^0.542.0":
+  version: 0.542.0
+  resolution: "lucide-react-native@npm:0.542.0"
+  peerDependencies:
+    react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-native: "*"
+    react-native-svg: ^12.0.0 || ^13.0.0 || ^14.0.0 || ^15.0.0
+  checksum: 2bba3ad713602486f9b4b1b2c4276478e88a6ad1e3a6d7b6780f558029f1b728a080a23af81851b78605b41da5de8da5c2711652b3911f11fe14fa3b13b5446a
   languageName: node
   linkType: hard
 
