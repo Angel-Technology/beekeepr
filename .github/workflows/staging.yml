@@ -44,9 +44,12 @@ jobs:
       - name: Release notes from commit
         run: |
           DELIM="RELEASE_NOTES_$(date +%s%N)"
-          echo "RELEASE_NOTES<<$DELIM" >> $GITHUB_ENV
-          git log -1 --pretty=format:'%s%n%n%b' >> $GITHUB_ENV
-          echo "$DELIM" >> $GITHUB_ENV
+          {
+            echo "RELEASE_NOTES<<$DELIM"
+            git log -1 --pretty=format:'%s%n%n%b'
+            echo
+            echo "$DELIM"
+          } >> "$GITHUB_ENV"
 
       - uses: actions/setup-node@v4
         with:
@@ -131,9 +134,12 @@ jobs:
       - name: Release notes from commit
         run: |
           DELIM="RELEASE_NOTES_$(date +%s%N)"
-          echo "RELEASE_NOTES<<$DELIM" >> $GITHUB_ENV
-          git log -1 --pretty=format:'%s%n%n%b' >> $GITHUB_ENV
-          echo "$DELIM" >> $GITHUB_ENV
+          {
+            echo "RELEASE_NOTES<<$DELIM"
+            git log -1 --pretty=format:'%s%n%n%b'
+            echo
+            echo "$DELIM"
+          } >> "$GITHUB_ENV"
 
       - uses: actions/setup-node@v4
         with:
