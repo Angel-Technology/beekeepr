@@ -54,14 +54,6 @@ def ensure_ios_team_id!
   team_id
 end
 
-def resolve_testflight_groups(options = {})
-  raw_groups = options[:groups] || ENV["TESTFLIGHT_GROUPS"]
-  raw_groups.to_s
-    .split(",")
-    .map(&:strip)
-    .reject(&:empty?)
-end
-
 def setup_asc_api_key!
   UI.user_error!("Missing ASC_KEY_ID") if ENV["ASC_KEY_ID"].to_s.strip.empty?
   UI.user_error!("Missing ASC_ISSUER_ID") if ENV["ASC_ISSUER_ID"].to_s.strip.empty?
@@ -260,8 +252,8 @@ platform :ios do
       code_sign_identity: "Apple Distribution"
     )
 
-    # ✅ Auto-increment build number for TestFlight using GitHub Actions run number
-    build_num = (ENV["GITHUB_RUN_NUMBER"] || "1").to_i
+    # Use the workflow-provided build number so CI controls monotonic versioning.
+    build_num = (ENV["IOS_BUILD_NUMBER"] || ENV["GITHUB_RUN_NUMBER"] || "1").to_i
     increment_build_number(
       xcodeproj: "ios/Beekeepr.xcodeproj",
       build_number: build_num
@@ -304,17 +296,12 @@ platform :ios do
 
     setup_asc_api_key!
 
-    groups = resolve_testflight_groups(options)
-    distribute_external = options[:distribute_external] == true
-
     pilot(
       ipa: ipa_path,
       app_identifier: ensure_ios_bundle_id!,
-      skip_waiting_for_build_processing: groups.empty?,
+      skip_waiting_for_build_processing: false,
       changelog: ENV["RELEASE_NOTES"],
-      groups: groups.empty? ? nil : groups,
-      distribute_external: distribute_external,
-      submit_beta_review: distribute_external
+      distribute_external: false
     )
   end
 

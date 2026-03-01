@@ -115,6 +115,7 @@ This keeps feature code cohesive and makes it easier to reason about, test, and 
 - Built from shared `src/components` pieces plus feature-specific presentation components
 - No direct API calls in components
 - Should stay focused on rendering and user interaction wiring
+- Prefer `const` declarations for React components and local helpers instead of `function` declarations
 
 ### hooks/ (Feature State Layer)
 

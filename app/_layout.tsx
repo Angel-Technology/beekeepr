@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import '../global.css';
@@ -13,16 +14,24 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <SafeAreaProvider>
-      <Stack>
-        <Stack.Screen
-          name="index"
-          options={{
-            headerShown: false,
-            title: 'Landing',
-          }}
-        />
-        {/* <Stack.Screen
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <Stack>
+          <Stack.Screen
+            name="index"
+            options={{
+              headerShown: false,
+              title: 'Landing',
+            }}
+          />
+          <Stack.Screen
+            name="onboarding/what-we-do"
+            options={{
+              headerShown: false,
+              title: 'What We Do',
+            }}
+          />
+          {/* <Stack.Screen
         name="+not-found"
         options={{
           title: 'Not Found',
@@ -36,7 +45,8 @@ export default function RootLayout() {
             title: 'Authentication',
             }}
             /> */}
-      </Stack>
-    </SafeAreaProvider>
+        </Stack>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

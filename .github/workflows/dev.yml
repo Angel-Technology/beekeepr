@@ -34,7 +34,6 @@ jobs:
       MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
 
       IOS_BUILD_NUMBER: ${{ github.run_number }}
-      TESTFLIGHT_GROUPS: Dev
 
     steps:
       - uses: actions/checkout@v4
