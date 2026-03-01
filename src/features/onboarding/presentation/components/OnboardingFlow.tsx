@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import type {
   FlatList,
   LayoutChangeEvent,
@@ -38,7 +38,6 @@ export const OnboardingFlow = <TItem,>({
   subtitle,
   keyExtractor,
   renderSlide,
-  onExit,
   onComplete,
 }: OnboardingFlowProps<TItem>) => {
   const { width: deviceWidth } = useWindowDimensions();
@@ -47,7 +46,6 @@ export const OnboardingFlow = <TItem,>({
   const flatListRef = useAnimatedRef<FlatList<TItem>>();
   const jsFlatListRef = useRef<FlatList<TItem> | null>(null);
   const x = useSharedValue(0);
-  const activeIndex = useSharedValue(0);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const onScroll = useAnimatedScrollHandler({
@@ -64,21 +62,12 @@ export const OnboardingFlow = <TItem,>({
         return;
       }
 
-      activeIndex.value = nextIndex;
       setCurrentIndex(nextIndex);
     },
-    [activeIndex],
-  );
-
-  const viewabilityConfig = useMemo(
-    () => ({
-      minimumViewTime: 200,
-      viewAreaCoveragePercentThreshold: 50,
-    }),
     [],
   );
 
-  const handleLayout = useCallback(
+  const handlePageWidthLayout = useCallback(
     (event: LayoutChangeEvent) => {
       const nextWidth = Math.min(event.nativeEvent.layout.width, 500);
 
@@ -100,12 +89,11 @@ export const OnboardingFlow = <TItem,>({
 
   const handleBack = useCallback(() => {
     if (currentIndex === 0) {
-      onExit();
       return;
     }
 
     scrollToIndex(currentIndex - 1);
-  }, [currentIndex, onExit, scrollToIndex]);
+  }, [currentIndex, scrollToIndex]);
 
   const handleNext = useCallback(() => {
     if (currentIndex === data.length - 1) {
@@ -126,7 +114,7 @@ export const OnboardingFlow = <TItem,>({
     <Container safeArea className="items-center bg-bg-default px-0">
       <View
         className="w-full max-w-[500px] flex-1 gap-7"
-        onLayout={handleLayout}
+        onLayout={handlePageWidthLayout}
       >
         <View className="gap-2 self-stretch px-lg">
           <Text className="font-poppins-semiBold text-800 text-text-default">
@@ -153,7 +141,10 @@ export const OnboardingFlow = <TItem,>({
           bounces={false}
           onScroll={onScroll}
           onViewableItemsChanged={onViewableItemsChanged}
-          viewabilityConfig={viewabilityConfig}
+          viewabilityConfig={{
+            minimumViewTime: 200,
+            viewAreaCoveragePercentThreshold: 50,
+          }}
           scrollEventThrottle={16}
           showsHorizontalScrollIndicator={false}
           getItemLayout={(_, index) => ({
