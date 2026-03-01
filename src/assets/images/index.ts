@@ -10,7 +10,7 @@ type AppImages = {
 export const appImages: AppImages = {
   adaptiveIcon: require('./adaptive-icon.png'),
   appIcon: require('./app-icon.png'),
-  awkwardBee: require('./awkward-bee.png'),
+  awkwardBee: require('./awkward-bee-4.png'),
   splashIcon: require('./splash-icon.png'),
 };
 

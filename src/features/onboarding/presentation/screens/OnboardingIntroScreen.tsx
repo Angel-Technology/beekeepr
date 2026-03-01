@@ -28,7 +28,8 @@ export function OnboardingIntroScreen() {
 
       <Image
         source={appImages.awkwardBee}
-        style={{ width: 207, height: 183 }}
+        contentFit="contain"
+        style={{ width: 260, height: 230 }}
       />
 
       <View className="mt-auto w-full">

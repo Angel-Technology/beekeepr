@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
-import { Pressable, Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 type ButtonProps = {
   label: string;
@@ -22,7 +22,7 @@ export function Button({
   textClassName,
 }: ButtonProps) {
   return (
-    <Pressable
+    <TouchableOpacity
       accessibilityRole="button"
       className={clsx(
         'min-h-8 flex-row items-center justify-center gap-3 self-stretch rounded-round bg-action-neutral-background-solid px-lg py-md',
@@ -42,6 +42,6 @@ export function Button({
         {label}
       </Text>
       {iconRight ? <View>{iconRight}</View> : null}
-    </Pressable>
+    </TouchableOpacity>
   );
 }
