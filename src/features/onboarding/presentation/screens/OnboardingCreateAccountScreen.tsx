@@ -5,7 +5,7 @@ import { useAuth } from '@features';
 import { Button, Container } from '@components';
 
 export const OnboardingCreateAccountScreen = () => {
-  const { error, isLoading, signInWithGoogle, startEmailSignUp } = useAuth();
+  const { error, isLoading, signInWithGoogle } = useAuth();
 
   return (
     <Container
@@ -37,9 +37,7 @@ export const OnboardingCreateAccountScreen = () => {
           label="Continue with Email"
           className="self-stretch"
           disabled={isLoading}
-          onPress={() => {
-            void startEmailSignUp();
-          }}
+          onPress={() => {}}
         />
         {error ? (
           <Text className="font-sourceSans-regular text-300 text-text-secondary">

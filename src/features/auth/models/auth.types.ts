@@ -13,8 +13,9 @@ export type AuthUser = {
 };
 
 export type AuthSession = {
+  id: string;
   user: AuthUser;
-  accessToken: string;
+  expiresAt?: string;
 };
 
 export type AuthResult =

@@ -1,17 +1,17 @@
+import { expoClient } from '@better-auth/expo/client';
+import { createAuthClient } from 'better-auth/react';
+import * as SecureStore from 'expo-secure-store';
 import { authConfig, isAuthBackendConfigured } from './config';
 
-export type AuthClient = {
-  baseURL: string;
-  scheme: string;
-  isConfigured: boolean;
-};
+export const authClient = createAuthClient({
+  baseURL: authConfig.baseURL,
+  plugins: [
+    expoClient({
+      scheme: authConfig.scheme,
+      storagePrefix: authConfig.scheme,
+      storage: SecureStore,
+    }),
+  ],
+});
 
-export const createAuthClient = (): AuthClient => {
-  return {
-    baseURL: authConfig.baseURL,
-    scheme: authConfig.scheme,
-    isConfigured: isAuthBackendConfigured,
-  };
-};
-
-export const authClient = createAuthClient();
+export const isAuthClientConfigured = isAuthBackendConfigured;

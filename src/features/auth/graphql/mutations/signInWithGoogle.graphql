@@ -1,0 +1,14 @@
+mutation SignInWithGoogle {
+  signInWithGoogle {
+    ok
+    error
+    session {
+      accessToken
+      user {
+        id
+        email
+        name
+      }
+    }
+  }
+}
