@@ -11,6 +11,7 @@ module.exports = function (api) {
         'module-resolver',
         {
           alias: {
+            '@src': './src',
             '@assets': './src/assets',
             '@common': './src/common',
             '@components': './src/components',
