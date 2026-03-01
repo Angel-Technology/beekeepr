@@ -111,11 +111,8 @@ export const OnboardingFlow = <TItem,>({
   );
 
   return (
-    <Container safeArea className="items-center bg-bg-default px-0">
-      <View
-        className="w-full max-w-[500px] flex-1 gap-7"
-        onLayout={handlePageWidthLayout}
-      >
+    <Container safeArea className="gap items-center bg-bg-default pl-0 pr-0">
+      <View className="flex-1 gap-7" onLayout={handlePageWidthLayout}>
         <View className="gap-2 self-stretch px-lg">
           <Text className="font-poppins-semiBold text-800 text-text-default">
             {title}
