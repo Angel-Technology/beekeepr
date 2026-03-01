@@ -11,13 +11,13 @@ export const DetailCard = ({ title, items }: DetailCardProps) => {
       <Text className="items-stretch font-sourceSans-semiBold text-400 leading-300 text-text-default">
         {title}
       </Text>
-      <View className="gap-1 pl-sm">
+      <View className="self-stretch gap-1 pl-sm">
         {items.map((item) => (
-          <View key={item} className="flex-row gap-2">
-            <Text className="font-sourceSans-regular text-400 leading-300 text-text-secondary">
+          <View key={item} className="flex-row items-start gap-2 self-stretch">
+            <Text className="shrink-0 font-sourceSans-regular text-400 leading-300 text-text-secondary">
               •
             </Text>
-            <Text className="font-sourceSans-regular text-400 text-text-secondary">
+            <Text className="flex-1 font-sourceSans-regular text-400 leading-300 text-text-secondary">
               {item}
             </Text>
           </View>
