@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import Animated, {
   Extrapolation,
   interpolate,
@@ -8,7 +8,7 @@ import Animated, {
   type SharedValue,
 } from 'react-native-reanimated';
 
-import { appImages } from '@assets/images';
+import { appImages, type AppImageSource } from '@assets/images';
 import { OnboardingPager } from '../components/OnboardingPager';
 import { OnboardingSlideCard } from '../components/OnboardingSlideCard';
 
@@ -19,7 +19,7 @@ type WhatYouWillFindSection = {
 
 type OnboardingSlide = {
   title: string;
-  badge?: string;
+  titleIcon?: AppImageSource;
   subtitle?: string;
   bullets?: string[];
   imageVariant: 'join' | 'search' | 'map';
@@ -29,7 +29,7 @@ type OnboardingSlide = {
 const slides: OnboardingSlide[] = [
   {
     title: 'Join TheBuzz',
-    badge: 'BETA',
+    titleIcon: appImages.betaLogo,
     subtitle:
       'Stand out in the crowd! It’s proven that people with visible trust signals receive more engagement.',
     imageVariant: 'join',
@@ -159,7 +159,7 @@ export function OnboardingWhatWeDoScreen() {
       renderSlide={({ item: slide, index, x, screenWidth }) => (
         <OnboardingSlideCard
           title={slide.title}
-          badge={slide.badge}
+          titleIcon={slide.titleIcon}
           subtitle={slide.subtitle}
           bullets={slide.bullets}
           image={

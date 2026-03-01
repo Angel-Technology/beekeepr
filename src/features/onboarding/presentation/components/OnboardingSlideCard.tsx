@@ -1,10 +1,12 @@
+import { Image } from 'expo-image';
 import type { ReactNode } from 'react';
 import { Text, View } from 'react-native';
-import { OnBoardingDetailCard } from './OnBoardingDetailCard';
+import type { AppImageSource } from '@assets/images';
+import { DetailCard } from '@components';
 
 type OnboardingSlideCardProps = {
   title: string;
-  badge?: string;
+  titleIcon?: AppImageSource;
   subtitle?: string;
   bullets?: string[];
   image: ReactNode;
@@ -14,7 +16,7 @@ type OnboardingSlideCardProps = {
 
 export function OnboardingSlideCard({
   title,
-  badge,
+  titleIcon,
   subtitle,
   bullets,
   image,
@@ -23,16 +25,16 @@ export function OnboardingSlideCard({
 }: OnboardingSlideCardProps) {
   return (
     <View className="flex flex-col items-center gap-6 self-stretch rounded-5 border border-border-weak p-5">
-      <Text className="font-poppins-semiBold text-[25px] leading-[30px] text-text-default">
-        {title}
-      </Text>
-      <View className="flex-row items-center justify-center gap-2">
-        {badge ? (
-          <View className="rounded-full bg-bg-primary px-2 py-1">
-            <Text className="font-sourceSans-semiBold text-[10px] leading-[10px] text-text-default">
-              {badge}
-            </Text>
-          </View>
+      <View className="flex-row  justify-center gap-2 self-stretch">
+        <Text className="font-poppins-semiBold text-[25px] leading-[30px] text-text-default">
+          {title}
+        </Text>
+        {titleIcon ? (
+          <Image
+            source={titleIcon}
+            contentFit="contain"
+            style={{ width: 33, height: 15 }}
+          />
         ) : null}
       </View>
 
@@ -60,7 +62,7 @@ export function OnboardingSlideCard({
 
       {image}
 
-      <OnBoardingDetailCard title={detailTitle} items={detailItems} />
+      <DetailCard title={detailTitle} items={detailItems} />
     </View>
   );
 }

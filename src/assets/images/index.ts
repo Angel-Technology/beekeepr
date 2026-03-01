@@ -1,6 +1,9 @@
 import type { ImageRequireSource } from 'react-native';
 
-type AppImages = {
+export type AppImageSource = ImageRequireSource;
+
+export type AppImages = {
+  readonly betaLogo: ImageRequireSource;
   readonly adaptiveIcon: ImageRequireSource;
   readonly appIcon: ImageRequireSource;
   readonly awkwardBee: ImageRequireSource;
@@ -8,6 +11,7 @@ type AppImages = {
 };
 
 export const appImages: AppImages = {
+  betaLogo: require('./Beta-Logo.png'),
   adaptiveIcon: require('./adaptive-icon.png'),
   appIcon: require('./app-icon.png'),
   awkwardBee: require('./awkward-bee-4.png'),
