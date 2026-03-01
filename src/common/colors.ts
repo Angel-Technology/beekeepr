@@ -1,101 +1,233 @@
-// colors.ts
-// No theming yet — just a structured, type-safe token system you can grow later.
+type HexColor = `#${string}`;
+type RgbaColor = `rgba(${string})`;
+export type ColorValue = HexColor | RgbaColor;
 
-type Hex = `#${string}`;
+type BrandColors = {
+  readonly primary: ColorValue;
+  readonly secondary: ColorValue;
+  readonly tertiary: ColorValue;
+  readonly accent: ColorValue;
+};
 
-/**
- * Primitive design tokens (foundation layer)
- * - Raw values only
- * - Reusable across future themes (light/dark)
- */
-export const primitives = {
+type TextColors = {
+  readonly inverse: ColorValue;
+  readonly inverseSubtle: ColorValue;
+  readonly weak: ColorValue;
+  readonly default: ColorValue;
+  readonly secondary: ColorValue;
+  readonly strong: ColorValue;
+  readonly primary: ColorValue;
+  readonly critical: ColorValue;
+  readonly warning: ColorValue;
+  readonly success: ColorValue;
+  readonly informational: ColorValue;
+  readonly actionEmphasis: ColorValue;
+  readonly disabled: ColorValue;
+};
+
+type BackgroundColors = {
+  readonly default: ColorValue;
+  readonly weak: ColorValue;
+  readonly medium: ColorValue;
+  readonly strong: ColorValue;
+  readonly primary: ColorValue;
+  readonly primarySubtle: ColorValue;
+  readonly critical: ColorValue;
+  readonly criticalSubtle: ColorValue;
+  readonly warning: ColorValue;
+  readonly warningSubtle: ColorValue;
+  readonly success: ColorValue;
+  readonly successSubtle: ColorValue;
+  readonly informational: ColorValue;
+  readonly informationalSubtle: ColorValue;
+  readonly disabled: ColorValue;
+  readonly disabledSubtle: ColorValue;
+  readonly mutedSubtle: ColorValue;
+  readonly mutedWeak: ColorValue;
+  readonly mutedMedium: ColorValue;
+  readonly mutedStrong: ColorValue;
+};
+
+type BorderColors = {
+  readonly inverse: ColorValue;
+  readonly subtle: ColorValue;
+  readonly weak: ColorValue;
+  readonly default: ColorValue;
+  readonly strong: ColorValue;
+  readonly primary: ColorValue;
+  readonly primarySubtle: ColorValue;
+  readonly critical: ColorValue;
+  readonly warning: ColorValue;
+  readonly success: ColorValue;
+  readonly informational: ColorValue;
+  readonly disabled: ColorValue;
+};
+
+type ActionTextColors = {
+  readonly default: ColorValue;
+  readonly hover: ColorValue;
+  readonly onAction: ColorValue;
+};
+
+type ActionBackgroundColors = {
+  readonly solid: ColorValue;
+  readonly solidHover: ColorValue;
+  readonly tinted: ColorValue;
+  readonly tintedHover: ColorValue;
+};
+
+type ActionBorderColors = {
+  readonly default: ColorValue;
+  readonly hover: ColorValue;
+};
+
+type ActionIntent = {
+  readonly text: ActionTextColors;
+  readonly background: ActionBackgroundColors;
+  readonly border: ActionBorderColors;
+};
+
+type DisabledActionColors = {
+  readonly text: ColorValue;
+  readonly background: ColorValue;
+  readonly border: ColorValue;
+};
+
+type ActionColors = {
+  readonly brand: ActionIntent;
+  readonly brandDynamic: ActionIntent;
+  readonly neutral: ActionIntent;
+  readonly disabled: DisabledActionColors;
+};
+
+export type Colors = {
+  readonly brand: BrandColors;
+  readonly text: TextColors;
+  readonly bg: BackgroundColors;
+  readonly border: BorderColors;
+  readonly action: ActionColors;
+};
+
+export const colors: Colors = {
   brand: {
-    primary: '#A96BCA',
-    darker: '#7F53A2',
-    lighter: '#DC9CF5',
-    accent: '#FFB04F',
+    primary: '#FFBF00',
+    secondary: '#FFF8CB',
+    tertiary: '#E5AC03',
+    accent: '#000000',
   },
-  neutral: {
-    0: '#FFFFFF',
-    50: '#EEEEEE',
-    100: '#DDDDDD',
-    200: '#B2B2B2',
-    300: '#808080',
-    400: '#4D4D4D',
-    900: '#000000',
+  text: {
+    inverse: '#FFFFFF',
+    inverseSubtle: 'rgba(0, 0, 0, 0.3)',
+    weak: 'rgba(0, 0, 0, 0.5)',
+    default: '#000000',
+    secondary: 'rgba(0, 0, 0, 0.7)',
+    strong: '#000000',
+    primary: '#E5AC03',
+    critical: '#FF0000',
+    warning: '#FFBF00',
+    success: '#00A93E',
+    informational: '#1489E6',
+    actionEmphasis: '#E5AC03',
+    disabled: 'rgba(0, 0, 0, 0.35)',
   },
-  alert: {
-    success: '#5AB66D',
-    warning: '#FDCB00',
-    danger: '#CE393B',
+  bg: {
+    default: '#FFFFFF',
+    weak: '#EEEEEE',
+    medium: '#DDDDDD',
+    strong: '#000000',
+    primary: '#FFBF00',
+    primarySubtle: '#FFF8CB',
+    critical: '#FF0000',
+    criticalSubtle: 'rgba(0, 0, 0, 0.08)',
+    warning: '#FFBF00',
+    warningSubtle: '#F7E6A7',
+    success: '#00A93E',
+    successSubtle: 'rgba(0, 0, 0, 0.08)',
+    informational: '#1489E6',
+    informationalSubtle: 'rgba(0, 0, 0, 0.08)',
+    disabled: 'rgba(0, 0, 0, 0.08)',
+    disabledSubtle: 'rgba(0, 0, 0, 0.08)',
+    mutedSubtle: 'rgba(0, 0, 0, 0.08)',
+    mutedWeak: '#EEEEEE',
+    mutedMedium: '#DDDDDD',
+    mutedStrong: '#000000',
   },
-} as const satisfies Record<string, Record<string | number, Hex>>;
+  border: {
+    inverse: '#FFFFFF',
+    subtle: 'rgba(0, 0, 0, 0.08)',
+    weak: 'rgba(0, 0, 0, 0.16)',
+    default: 'rgba(0, 0, 0, 0.32)',
+    strong: '#000000',
+    primary: '#FFBF00',
+    primarySubtle: '#FFF8CB',
+    critical: '#FF0000',
+    warning: '#FFBF00',
+    success: '#00A93E',
+    informational: '#1489E6',
+    disabled: 'rgba(0, 0, 0, 0.2)',
+  },
+  action: {
+    brand: {
+      text: {
+        default: '#000000',
+        hover: 'rgba(0, 0, 0, 0.5)',
+        onAction: '#FFFFFF',
+      },
+      background: {
+        solid: '#FFBF00',
+        solidHover: '#E5AC03',
+        tinted: '#FFF8CB',
+        tintedHover: '#F7E6A7',
+      },
+      border: {
+        default: '#FFF8CB',
+        hover: '#FFBF00',
+      },
+    },
+    brandDynamic: {
+      text: {
+        default: '#000000',
+        hover: 'rgba(0, 0, 0, 0.5)',
+        onAction: '#FFFFFF',
+      },
+      background: {
+        solid: '#FFBF00',
+        solidHover: '#E5AC03',
+        tinted: '#FFF8CB',
+        tintedHover: '#F7E6A7',
+      },
+      border: {
+        default: '#E5AC03',
+        hover: '#FFBF00',
+      },
+    },
+    neutral: {
+      text: {
+        default: 'rgba(0, 0, 0, 0.7)',
+        hover: '#000000',
+        onAction: '#FFFFFF',
+      },
+      background: {
+        solid: '#000000',
+        solidHover: 'rgba(0, 0, 0, 0.7)',
+        tinted: 'rgba(0, 0, 0, 0.08)',
+        tintedHover: 'rgba(0, 0, 0, 0.16)',
+      },
+      border: {
+        default: 'rgba(0, 0, 0, 0.3)',
+        hover: '#000000',
+      },
+    },
+    disabled: {
+      text: 'rgba(0, 0, 0, 0.35)',
+      background: 'rgba(0, 0, 0, 0.08)',
+      border: 'rgba(0, 0, 0, 0.2)',
+    },
+  },
+};
 
-/**
- * Semantic tokens (what components should consume)
- * - Avoid referencing primitives directly in UI components
- * - Keeps your app consistent and makes future theming trivial
- */
-export const colors = {
-  // Brand shortcuts (ok to expose if you want)
-  brandPrimary: primitives.brand.primary,
-  brandDarker: primitives.brand.darker,
-  brandLighter: primitives.brand.lighter,
-  brandAccent: primitives.brand.accent,
-
-  // Text
-  textPrimary: primitives.neutral[900],
-  textSecondary: primitives.neutral[400],
-  textTertiary: primitives.neutral[300],
-  textQuaternary: primitives.neutral[200],
-  textPrimaryReversed: primitives.neutral[0],
-
-  textBrandAction: primitives.brand.darker,
-  textBrandActionEmphasis: primitives.brand.darker,
-  textBrandDefault: primitives.brand.darker,
-  textBrandHover: primitives.brand.primary,
-  textBrandOnAction: primitives.neutral[0],
-
-  textNeutralDefault: primitives.neutral[400],
-  textNeutralHover: primitives.neutral[900],
-  textNeutralOnAction: primitives.neutral[0],
-  textDisabled: '#A6A6A6' as Hex, // custom value not in neutrals
-
-  // Background
-  backgroundNeutralPrimary: primitives.neutral[0],
-  backgroundNeutralSecondary: primitives.neutral[50],
-  backgroundNeutralTertiary: primitives.neutral[100],
-  backgroundNeutralHover: primitives.neutral[900],
-  backgroundNeutralDefault: primitives.neutral[400],
-  backgroundNeutralTinted: '#EBEBEB' as Hex,
-  backgroundNeutralTintedHover: '#D6D6D6' as Hex,
-
-  backgroundBrandPrimary: primitives.neutral[0],
-  backgroundBrandSecondary: '#F8EBFD' as Hex,
-  backgroundBrandTertiary: '#F1D9FB' as Hex,
-  backgroundBrandSolid: primitives.brand.primary,
-  backgroundBrandSolidHover: primitives.brand.darker,
-  backgroundBrandTinted: '#F8EBFD' as Hex, // fixed invalid hex from original
-  backgroundBrandTintedHover: '#F1D9FB' as Hex,
-
-  backgroundDisabled: '#CCCCCC' as Hex,
-  backgroundSpecialContrast: '#D977C0' as Hex,
-
-  // Border
-  borderNeutralPrimary: '#D6D6D6' as Hex,
-  borderNeutralSecondary: '#E0E0E0' as Hex,
-  borderNeutralTertiary: '#EBEBEB' as Hex,
-  borderNeutralBorder: primitives.neutral[200],
-  borderNeutralBorderHover: primitives.neutral[900],
-
-  borderBrandBorder: '#EDCDFA' as Hex,
-  borderBrandBorderHover: primitives.brand.primary,
-  borderDisabled: '#CCCCCC' as Hex,
-
-  // Alerts
-  alertSuccess: primitives.alert.success,
-  alertWarning: primitives.alert.warning,
-  alertDanger: primitives.alert.danger,
-} as const satisfies Record<string, Hex>;
-
-export type Colors = typeof colors;
+export type BrandColorKey = keyof Colors['brand'];
+export type TextColorKey = keyof Colors['text'];
+export type BackgroundColorKey = keyof Colors['bg'];
+export type BorderColorKey = keyof Colors['border'];
+export type ActionIntentKey = Exclude<keyof Colors['action'], 'disabled'>;

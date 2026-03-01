@@ -1,13 +1,15 @@
 import { Image } from 'expo-image';
+import { ArrowRight } from 'lucide-react-native';
 import { Text, View } from 'react-native';
 
 import { appImages } from '@assets/images';
 import Logo from '@assets/svg/Logo';
-import { Container } from '@components';
+import { Button, Container } from '@components';
+import { colors } from '@common/colors';
 
 export function OnboardingIntroScreen() {
   return (
-    <Container className="items-center gap-8 bg-bg-default pb-7 pt-[127px]">
+    <Container className="flex-1 items-center gap-8 bg-bg-default pb-7 pt-[127px]">
       <Logo width={276.942} height={59} />
       <View className="w-full items-start gap-lg self-stretch">
         <Text className="font-poppins-semiBold text-600 leading-[25px] text-text-default">
@@ -28,6 +30,20 @@ export function OnboardingIntroScreen() {
         source={appImages.awkwardBee}
         style={{ width: 207, height: 183 }}
       />
+
+      <View className="mt-auto w-full">
+        <Button
+          label="So, whatz the buzz?"
+          className="w-full"
+          iconRight={
+            <ArrowRight
+              color={colors.action.neutral.text.onAction}
+              size={20}
+              strokeWidth={2.25}
+            />
+          }
+        />
+      </View>
     </Container>
   );
 }
