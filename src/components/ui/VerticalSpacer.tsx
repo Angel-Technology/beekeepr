@@ -18,9 +18,9 @@ const spacerHeights = {
 
 export type VerticalSpacerSize = keyof typeof spacerHeights;
 
-export function VerticalSpacer({
+export const VerticalSpacer = ({
   size = 'lg',
   className,
-}: VerticalSpacerProps) {
+}: VerticalSpacerProps) => {
   return <View className={clsx('w-full', spacerHeights[size], className)} />;
-}
+};

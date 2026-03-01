@@ -1,16 +1,14 @@
+import clsx from 'clsx';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { View } from 'react-native';
-import Animated, {
-  Extrapolation,
-  interpolate,
-  useAnimatedStyle,
-  type SharedValue,
-} from 'react-native-reanimated';
+import { View, type ImageStyle } from 'react-native';
 
 import { appImages, type AppImageSource } from '@assets/images';
-import { OnboardingPager } from '../components/OnboardingPager';
-import { OnboardingSlideCard } from '../components/OnboardingSlideCard';
+import { OnboardingFlow } from '../components/OnboardingFlow';
+import {
+  OnboardingSlideCard,
+  type OnboardingSlideSubtitle,
+} from '../components/OnboardingSlideCard';
 
 type WhatYouWillFindSection = {
   title: string;
@@ -20,9 +18,12 @@ type WhatYouWillFindSection = {
 type OnboardingSlide = {
   title: string;
   titleIcon?: AppImageSource;
-  subtitle?: string;
-  bullets?: string[];
-  imageVariant: 'join' | 'search' | 'map';
+  subtitle?: OnboardingSlideSubtitle;
+  image: {
+    source: AppImageSource;
+    className?: string;
+    style: ImageStyle;
+  };
   footer: WhatYouWillFindSection;
 };
 
@@ -30,9 +31,14 @@ const slides: OnboardingSlide[] = [
   {
     title: 'Join TheBuzz',
     titleIcon: appImages.betaLogo,
-    subtitle:
-      'Stand out in the crowd! It’s proven that people with visible trust signals receive more engagement.',
-    imageVariant: 'join',
+    subtitle: {
+      body: 'Stand out in the crowd! It’s proven that people with visible trust signals receive more engagement.',
+    },
+    image: {
+      source: appImages.theBuzz,
+      className: 'items-center justify-center',
+      style: { width: 313, height: 190 },
+    },
     footer: {
       title: 'What you’ll show others',
       items: [
@@ -45,9 +51,15 @@ const slides: OnboardingSlide[] = [
   },
   {
     title: 'Identity & Criminal Searches',
-    subtitle: 'What you need to find someone',
-    bullets: ['Phone number or email address', 'First & last name and city'],
-    imageVariant: 'search',
+    subtitle: {
+      header: 'What you need to find someone',
+      list: ['Phone number or email address', 'First & last name and city'],
+    },
+    image: {
+      source: appImages.search,
+      className: 'items-end justify-center',
+      style: { width: 161, height: 172 },
+    },
     footer: {
       title: 'What you’ll find',
       items: [
@@ -61,7 +73,11 @@ const slides: OnboardingSlide[] = [
   },
   {
     title: 'Find STI Screening Locations',
-    imageVariant: 'map',
+    image: {
+      source: appImages.locations,
+      className: 'items-center justify-center',
+      style: { width: 313, height: 237 },
+    },
     footer: {
       title: 'What you’ll find',
       items: [
@@ -73,102 +89,34 @@ const slides: OnboardingSlide[] = [
   },
 ];
 
-function SlideIllustration({
-  variant,
-  index,
-  x,
-  screenWidth,
-}: {
-  variant: OnboardingSlide['imageVariant'];
-  index: number;
-  x: SharedValue<number>;
-  screenWidth: number;
-}) {
-  const imageAnimation = useAnimatedStyle(() => {
-    const translateY = interpolate(
-      x.value,
-      [
-        (index - 1) * screenWidth,
-        index * screenWidth,
-        (index + 1) * screenWidth,
-      ],
-      [40, 0, -40],
-      Extrapolation.CLAMP,
-    );
-
-    const scale = interpolate(
-      x.value,
-      [
-        (index - 1) * screenWidth,
-        index * screenWidth,
-        (index + 1) * screenWidth,
-      ],
-      [0.9, 1, 0.9],
-      Extrapolation.CLAMP,
-    );
-
-    return {
-      transform: [{ translateY }, { scale }],
-    };
-  });
-
-  if (variant === 'join') {
-    return (
-      <Animated.View
-        className="mb-3 mt-2 h-[132px] flex-row items-end justify-center gap-1"
-        style={imageAnimation}
-      >
-        <Image
-          source={appImages.awkwardBee}
-          contentFit="contain"
-          style={{ width: 104, height: 104, transform: [{ scaleX: -1 }] }}
-        />
-        <Image
-          source={appImages.awkwardBee}
-          contentFit="contain"
-          style={{ width: 104, height: 104 }}
-        />
-      </Animated.View>
-    );
-  }
-
-  return (
-    <Animated.View className="my-3 items-center" style={imageAnimation}>
-      <Image
-        source={appImages.awkwardBee}
-        contentFit="contain"
-        style={{ width: variant === 'search' ? 120 : 132, height: 120 }}
-      />
-      {variant === 'map' ? (
-        <View className="mt-2 h-10 w-[150px] rounded-[18px] border border-border-subtle bg-bg-primarySubtle" />
-      ) : null}
-    </Animated.View>
-  );
-}
-
-export function OnboardingWhatWeDoScreen() {
+export const OnboardingWhatWeDoScreen = () => {
   const router = useRouter();
 
   return (
-    <OnboardingPager
+    <OnboardingFlow
       data={slides}
       keyExtractor={(slide) => slide.title}
       onExit={() => router.replace('/')}
       title="What we do"
       subtitle="We help you feel safer meeting new people."
-      renderSlide={({ item: slide, index, x, screenWidth }) => (
+      renderSlide={({ item: slide }) => (
         <OnboardingSlideCard
           title={slide.title}
           titleIcon={slide.titleIcon}
           subtitle={slide.subtitle}
-          bullets={slide.bullets}
           image={
-            <SlideIllustration
-              variant={slide.imageVariant}
-              index={index}
-              x={x}
-              screenWidth={screenWidth}
-            />
+            <View
+              className={clsx(
+                'w-full flex-1 self-stretch',
+                slide.image.className ?? 'items-center justify-center',
+              )}
+            >
+              <Image
+                source={slide.image.source}
+                contentFit="contain"
+                style={slide.image.style}
+              />
+            </View>
           }
           detailTitle={slide.footer.title}
           detailItems={slide.footer.items}
@@ -176,4 +124,4 @@ export function OnboardingWhatWeDoScreen() {
       )}
     />
   );
-}
+};

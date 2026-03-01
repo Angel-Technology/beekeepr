@@ -3,66 +3,50 @@ import type { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import type { AppImageSource } from '@assets/images';
 import { DetailCard } from '@components';
+import { OnboardingSlideSubtitleSection } from './OnboardingSlideSubtitleSection';
+
+export type OnboardingSlideSubtitle = {
+  header?: string;
+  body?: string;
+  list?: string[];
+};
 
 type OnboardingSlideCardProps = {
   title: string;
   titleIcon?: AppImageSource;
-  subtitle?: string;
-  bullets?: string[];
+  subtitle?: OnboardingSlideSubtitle;
   image: ReactNode;
   detailTitle: string;
   detailItems: string[];
 };
-
-export function OnboardingSlideCard({
+export const OnboardingSlideCard = ({
   title,
   titleIcon,
   subtitle,
-  bullets,
   image,
   detailTitle,
   detailItems,
-}: OnboardingSlideCardProps) {
+}: OnboardingSlideCardProps) => {
   return (
-    <View className="flex flex-col items-center gap-6 self-stretch rounded-5 border border-border-weak p-5">
-      <View className="flex-row  justify-center gap-2 self-stretch">
-        <Text className="font-poppins-semiBold text-[25px] leading-[30px] text-text-default">
+    <View className="flex-1 flex-col items-center gap-6 self-stretch rounded-5 border border-border-weak p-5">
+      <View className="flex flex-row items-start justify-center gap-1 self-stretch">
+        <Text className="text-center font-poppins-semiBold text-500 leading-400 text-text-default">
           {title}
         </Text>
         {titleIcon ? (
           <Image
             source={titleIcon}
             contentFit="contain"
-            style={{ width: 33, height: 15 }}
+            style={{ width: 32, height: 14 }}
           />
         ) : null}
       </View>
 
-      {subtitle ? (
-        <View className="mt-4">
-          <Text className="font-sourceSans-semiBold text-[15px] leading-[19px] text-text-default">
-            {subtitle}
-          </Text>
-          {bullets ? (
-            <View className="mt-2 gap-1">
-              {bullets.map((bullet) => (
-                <View key={bullet} className="flex-row gap-2">
-                  <Text className="font-sourceSans-regular text-[14px] leading-[18px] text-text-secondary">
-                    •
-                  </Text>
-                  <Text className="flex-1 font-sourceSans-regular text-[14px] leading-[18px] text-text-secondary">
-                    {bullet}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          ) : null}
-        </View>
-      ) : null}
-
-      {image}
-
-      <DetailCard title={detailTitle} items={detailItems} />
+      <View className="flex-1 flex-col items-start gap-5 self-stretch">
+        <OnboardingSlideSubtitleSection subtitle={subtitle} />
+        {image}
+        <DetailCard title={detailTitle} items={detailItems} />
+      </View>
     </View>
   );
-}
+};

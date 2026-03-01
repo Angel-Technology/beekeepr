@@ -12,7 +12,7 @@ type ButtonProps = {
   textClassName?: string;
 };
 
-export function Button({
+export const Button = ({
   label,
   onPress,
   disabled = false,
@@ -20,7 +20,7 @@ export function Button({
   iconRight,
   className,
   textClassName,
-}: ButtonProps) {
+}: ButtonProps) => {
   return (
     <TouchableOpacity
       accessibilityRole="button"
@@ -45,4 +45,4 @@ export function Button({
       {iconRight ? <View>{iconRight}</View> : null}
     </TouchableOpacity>
   );
-}
+};

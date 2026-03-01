@@ -13,14 +13,14 @@ interface ContainerProps extends ViewProps {
   safeAreaEdges?: Edge[];
 }
 
-export default function Container({
+const Container = ({
   children,
   className,
   style,
   safeArea = false,
   safeAreaEdges,
   ...props
-}: ContainerProps): JSX.Element {
+}: ContainerProps): JSX.Element => {
   if (safeArea) {
     return (
       <SafeAreaView
@@ -48,4 +48,6 @@ export default function Container({
       {children}
     </View>
   );
-}
+};
+
+export default Container;

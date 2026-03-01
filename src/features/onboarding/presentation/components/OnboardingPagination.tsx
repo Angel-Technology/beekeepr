@@ -10,23 +10,24 @@ import { colors } from '@common/colors';
 
 type OnboardingPaginationProps = {
   itemCount: number;
+  pageWidth: number;
   x: SharedValue<number>;
 };
 
 type DotProps = {
   index: number;
   x: SharedValue<number>;
-  screenWidth: number;
+  pageWidth: number;
 };
 
-function Dot({ index, x, screenWidth }: DotProps) {
+const Dot = ({ index, x, pageWidth }: DotProps) => {
   const animatedDotStyle = useAnimatedStyle(() => {
     const opacity = interpolate(
       x.value,
       [
-        (index - 1) * screenWidth,
-        index * screenWidth,
-        (index + 1) * screenWidth,
+        (index - 1) * pageWidth,
+        index * pageWidth,
+        (index + 1) * pageWidth,
       ],
       [0.3, 1, 0.3],
       Extrapolation.CLAMP,
@@ -44,27 +45,20 @@ function Dot({ index, x, screenWidth }: DotProps) {
       style={animatedDotStyle}
     />
   );
-}
+};
 
-export function OnboardingPagination({
+export const OnboardingPagination = ({
   itemCount,
+  pageWidth,
   x,
-}: OnboardingPaginationProps) {
-  const { width: deviceWidth } = useWindowDimensions();
-  const screenWidth = Math.min(deviceWidth, 500);
-
+}: OnboardingPaginationProps) => {
   return (
-    <View className="h-[44px]  flex-1 items-center justify-center py-[10px]">
-      <View className="flex flex-row items-center justify-center  gap-sm rounded-full bg-bg-medium px-4 py-sm">
+    <View className="h-[44px] items-center justify-center py-[10px]">
+      <View className="flex-row items-center justify-center gap-sm rounded-full bg-bg-medium px-4 py-sm">
         {Array.from({ length: itemCount }, (_, index) => (
-          <Dot
-            key={`dot-${index}`}
-            index={index}
-            x={x}
-            screenWidth={screenWidth}
-          />
+          <Dot key={`dot-${index}`} index={index} x={x} pageWidth={pageWidth} />
         ))}
       </View>
     </View>
   );
-}
+};
