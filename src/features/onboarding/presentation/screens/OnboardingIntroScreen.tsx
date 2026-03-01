@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import { ArrowRight } from 'lucide-react-native';
 import { Text, View } from 'react-native';
 
@@ -8,6 +9,8 @@ import { Button, Container } from '@components';
 import { colors } from '@common/colors';
 
 export function OnboardingIntroScreen() {
+  const router = useRouter();
+
   return (
     <Container className="flex-1 items-center gap-8 bg-bg-default pb-7 pt-[127px]">
       <Logo width={276.942} height={59} />
@@ -36,6 +39,7 @@ export function OnboardingIntroScreen() {
         <Button
           label="So, whatz the buzz?"
           className="w-full"
+          onPress={() => router.replace('/onboarding/what-we-do')}
           iconRight={
             <ArrowRight
               color={colors.action.neutral.text.onAction}

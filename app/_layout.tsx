@@ -22,6 +22,13 @@ export default function RootLayout() {
             title: 'Landing',
           }}
         />
+        <Stack.Screen
+          name="onboarding/what-we-do"
+          options={{
+            headerShown: false,
+            title: 'What We Do',
+          }}
+        />
         {/* <Stack.Screen
         name="+not-found"
         options={{
