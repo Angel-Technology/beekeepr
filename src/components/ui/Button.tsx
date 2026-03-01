@@ -26,7 +26,7 @@ export function Button({
       accessibilityRole="button"
       className={clsx(
         'min-h-8 flex-row items-center justify-center gap-3 self-stretch rounded-round bg-action-neutral-background-solid px-lg py-md',
-        disabled && 'opacity-400',
+        disabled && 'bg-brand-tertiary',
         className,
       )}
       disabled={disabled}
@@ -36,6 +36,7 @@ export function Button({
       <Text
         className={clsx(
           'flex-1 text-center font-sourceSans-semiBold text-500 text-action-neutral-text-onAction',
+          disabled && 'text-text-inverse',
           textClassName,
         )}
       >

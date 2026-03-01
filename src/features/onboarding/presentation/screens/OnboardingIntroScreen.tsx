@@ -12,7 +12,11 @@ export function OnboardingIntroScreen() {
   const router = useRouter();
 
   return (
-    <Container className="flex-1 items-center gap-8 bg-bg-default pb-7 pt-[127px]">
+    <Container
+      safeArea
+      safeAreaEdges={['bottom']}
+      className="flex-1 items-center gap-8 bg-bg-default pt-[127px]"
+    >
       <Logo width={276.942} height={59} />
       <View className="w-full items-start gap-lg self-stretch">
         <Text className="font-poppins-semiBold text-600 leading-[25px] text-text-default">
