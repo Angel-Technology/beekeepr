@@ -31,6 +31,13 @@ export default function RootLayout() {
               title: 'What We Do',
             }}
           />
+          <Stack.Screen
+            name="onboarding/create-account"
+            options={{
+              headerShown: false,
+              title: 'Create Account',
+            }}
+          />
           {/* <Stack.Screen
         name="+not-found"
         options={{

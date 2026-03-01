@@ -97,6 +97,7 @@ export const OnboardingWhatWeDoScreen = () => {
       data={slides}
       keyExtractor={(slide) => slide.title}
       onExit={() => router.replace('/')}
+      onComplete={() => router.replace('/onboarding/create-account')}
       title="What we do"
       subtitle="We help you feel safer meeting new people."
       renderSlide={({ item: slide }) => (
