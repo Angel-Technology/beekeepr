@@ -1,0 +1,7 @@
+fragment AuthUserFields on UserGraph {
+  id
+  email
+  displayName
+  emailVerified
+  createdAtUtc
+}

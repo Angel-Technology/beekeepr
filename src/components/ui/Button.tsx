@@ -1,11 +1,14 @@
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import { Text, TouchableOpacity, View } from 'react-native';
+import { colors } from '@src/common/colors';
+import { BounceLoader } from './BounceLoader';
 
 type ButtonProps = {
   label: string;
   onPress?: () => void;
   disabled?: boolean;
+  loading?: boolean;
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
   variant?: 'solid' | 'outline';
@@ -17,6 +20,7 @@ export const Button = ({
   label,
   onPress,
   disabled = false,
+  loading = false,
   iconLeft,
   iconRight,
   variant = 'solid',
@@ -24,40 +28,50 @@ export const Button = ({
   textClassName,
 }: ButtonProps) => {
   const isOutline = variant === 'outline';
+  const isDisabled = disabled || loading;
+  const loaderColor = isOutline ? colors.text.default : colors.text.inverse;
 
   return (
     <TouchableOpacity
-      accessibilityState={{ disabled }}
+      accessibilityState={{ disabled: isDisabled, busy: loading }}
       accessibilityRole="button"
       className={clsx(
         'min-h-8 flex-row items-center justify-between self-stretch rounded-round px-lg py-md',
         isOutline
           ? 'border border-action-neutral-border-default bg-bg-default'
           : 'bg-action-neutral-background-solid',
-        disabled &&
+        isDisabled &&
           (isOutline
             ? 'border-none border-border-disabled bg-bg-disabled opacity-60'
             : 'bg-bg-disabled opacity-60'),
         className,
       )}
-      disabled={disabled}
+      disabled={isDisabled}
       onPress={onPress}
     >
       <View className="h-[32px] w-[32px] items-center justify-center">
-        {iconLeft ? iconLeft : null}
+        {!loading && iconLeft ? iconLeft : null}
       </View>
-      <Text
-        className={clsx(
-          'flex-1 text-center font-sourceSans-semiBold text-500',
-          isOutline ? 'text-text-default' : 'text-action-neutral-text-onAction',
-          disabled && 'text-text-disabled',
-          textClassName,
-        )}
-      >
-        {label}
-      </Text>
+      {loading ? (
+        <View className="flex-1 items-center justify-center">
+          <BounceLoader color={loaderColor} />
+        </View>
+      ) : (
+        <Text
+          className={clsx(
+            'flex-1 text-center font-sourceSans-semiBold text-500',
+            isOutline
+              ? 'text-text-default'
+              : 'text-action-neutral-text-onAction',
+            isDisabled && 'text-text-disabled',
+            textClassName,
+          )}
+        >
+          {label}
+        </Text>
+      )}
       <View className="h-[32px] w-[32px] items-center justify-center">
-        {iconRight ? iconRight : null}
+        {!loading && iconRight ? iconRight : null}
       </View>
     </TouchableOpacity>
   );

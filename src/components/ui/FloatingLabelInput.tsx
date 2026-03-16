@@ -101,7 +101,7 @@ export const FloatingLabelInput = ({
 
   useEffect(() => {
     labelPosition.value = withTiming(value ? 1 : 0, { duration: 200 });
-  }, [value]);
+  }, [labelPosition, value]);
 
   const animatedLabelStyle = useAnimatedStyle(() => {
     return {

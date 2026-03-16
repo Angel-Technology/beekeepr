@@ -23,5 +23,9 @@
     "metro.config.js",
     "nativewind-env.d.ts"
   ],
-  "exclude": ["node_modules", ".expo"]
+  "exclude": [
+    "node_modules",
+    ".expo",
+    "src/features/**/graphql/generated/**/*"
+  ]
 }

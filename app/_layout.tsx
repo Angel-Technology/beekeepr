@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import '../global.css';
 import { useEffect } from 'react';
+import { QueryProvider } from '@src/lib/tanstack/QueryProvider';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -15,44 +16,45 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <Stack>
-          <Stack.Screen
-            name="index"
-            options={{
-              headerShown: false,
-              title: 'Landing',
-            }}
-          />
-          <Stack.Screen
-            name="onboarding/what-we-do"
-            options={{
-              headerShown: false,
-              title: 'What We Do',
-            }}
-          />
-          <Stack.Screen
-            name="onboarding/create-account"
-            options={{
-              headerShown: false,
-              title: 'Create Account',
-            }}
-          />
-          <Stack.Screen
-            name="auth/create-account-email"
-            options={{
-              headerShown: false,
-              title: 'Create Account Email',
-            }}
-          />
-          <Stack.Screen
-            name="auth/create-account-code"
-            options={{
-              headerShown: false,
-              title: 'Create Account Code',
-            }}
-          />
-          {/* <Stack.Screen
+      <QueryProvider>
+        <SafeAreaProvider>
+          <Stack>
+            <Stack.Screen
+              name="index"
+              options={{
+                headerShown: false,
+                title: 'Landing',
+              }}
+            />
+            <Stack.Screen
+              name="onboarding/what-we-do"
+              options={{
+                headerShown: false,
+                title: 'What We Do',
+              }}
+            />
+            <Stack.Screen
+              name="onboarding/create-account"
+              options={{
+                headerShown: false,
+                title: 'Create Account',
+              }}
+            />
+            <Stack.Screen
+              name="auth/create-account-email"
+              options={{
+                headerShown: false,
+                title: 'Create Account Email',
+              }}
+            />
+            <Stack.Screen
+              name="auth/create-account-code"
+              options={{
+                headerShown: false,
+                title: 'Create Account Code',
+              }}
+            />
+            {/* <Stack.Screen
         name="+not-found"
         options={{
           title: 'Not Found',
@@ -66,8 +68,9 @@ export default function RootLayout() {
             title: 'Authentication',
             }}
             /> */}
-        </Stack>
-      </SafeAreaProvider>
+          </Stack>
+        </SafeAreaProvider>
+      </QueryProvider>
     </GestureHandlerRootView>
   );
 }

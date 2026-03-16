@@ -247,6 +247,7 @@ export default [
       '*.config.mjs',
       'babel.config.js',
       'metro.config.js',
+      'src/features/**/graphql/generated/**/*',
     ],
   },
 ];

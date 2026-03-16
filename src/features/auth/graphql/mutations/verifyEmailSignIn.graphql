@@ -1,0 +1,8 @@
+mutation VerifyEmailSignIn($input: VerifyEmailSignInInput!) {
+  verifyEmailSignIn(input: $input) {
+    user {
+      ...AuthUserFields
+    }
+    error
+  }
+}

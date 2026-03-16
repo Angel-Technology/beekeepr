@@ -1,18 +1,21 @@
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { Button, Container, FloatingLabelInput } from '@components';
+import { useCreateAccountEmailForm } from '@features/auth';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
 
 export const CreateAccountEmailScreen = () => {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [shouldValidate, setShouldValidate] = useState(false);
-
-  const trimmedEmail = email.trim();
-  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail);
-  const canSubmit = trimmedEmail.length > 0 && isValidEmail;
+  const {
+    email,
+    setEmail,
+    canSubmit,
+    isPending,
+    shouldShowEmailError,
+    serverError,
+    validate,
+    handleSend,
+    handleGoBack,
+  } = useCreateAccountEmailForm();
 
   return (
     <Container
@@ -43,12 +46,18 @@ export const CreateAccountEmailScreen = () => {
             placeholder="Email"
             value={email}
             onChange={setEmail}
-            isValid={!shouldValidate || email.length === 0 || isValidEmail}
+            isValid={!shouldShowEmailError}
             errorText="Please enter a valid email address."
-            onBlur={() => setShouldValidate(true)}
-            onSubmitEditing={() => setShouldValidate(true)}
+            onBlur={validate}
+            onSubmitEditing={validate}
           />
         </View>
+
+        {serverError ? (
+          <Text className="font-sourceSans-regular text-200 text-text-critical">
+            {serverError}
+          </Text>
+        ) : null}
       </View>
 
       <View className="mt-auto w-full flex-row gap-3 pb-4">
@@ -58,7 +67,7 @@ export const CreateAccountEmailScreen = () => {
             variant="outline"
             className="self-stretch"
             textClassName="text-text-secondary"
-            onPress={() => router.back()}
+            onPress={handleGoBack}
           />
         </View>
         <View className="flex-1">
@@ -66,18 +75,8 @@ export const CreateAccountEmailScreen = () => {
             label="Send"
             className="self-stretch"
             disabled={!canSubmit}
-            onPress={() => {
-              setShouldValidate(true);
-
-              if (!canSubmit) {
-                return;
-              }
-
-              router.push({
-                pathname: '/auth/create-account-code',
-                params: { email: trimmedEmail },
-              });
-            }}
+            loading={isPending}
+            onPress={handleSend}
           />
         </View>
       </View>

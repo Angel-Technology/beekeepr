@@ -1,45 +1,26 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 
 import { Button, Container } from '@components';
+import { useCreateAccountCodeForm } from '@features/auth';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
 
-const CODE_LENGTH = 5;
-
 export const CreateAccountCodeScreen = () => {
-  const router = useRouter();
-  const { email } = useLocalSearchParams<{ email?: string }>();
-  const [digits, setDigits] = useState(
-    Array.from({ length: CODE_LENGTH }, () => ''),
-  );
-  const inputRefs = useRef<Array<TextInput | null>>([]);
+  const {
+    email,
+    digits,
+    inputRefs,
+    isComplete,
+    isPending,
+    serverError,
+    handleDigitChange,
+    handleKeyPress,
+    handleSubmit,
+    handleGoBack,
+  } = useCreateAccountCodeForm();
 
-  const handleDigitChange = (value: string, index: number) => {
-    const nextValue = value.replace(/\D/g, '').slice(-1);
-
-    setDigits((currentDigits) => {
-      const nextDigits = [...currentDigits];
-      nextDigits[index] = nextValue;
-      return nextDigits;
-    });
-
-    if (nextValue && index < CODE_LENGTH - 1) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  };
-
-  const handleKeyPress = (key: string, index: number) => {
-    if (key === 'Backspace' && !digits[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    }
-  };
-
-  const isComplete = digits.every((digit) => digit.length === 1);
-  const formattedEmail =
-    typeof email === 'string' && email.length > 0
-      ? email
-      : 'trashboat@gmail.com';
+  if (!email) {
+    return null;
+  }
 
   return (
     <Container
@@ -58,7 +39,7 @@ export const CreateAccountCodeScreen = () => {
           <Text className="font-sourceSans-regular text-base text-text-secondary">
             We sent a verification code to your email{' '}
             <Text className="font-sourceSans-semiBold text-text-default">
-              {formattedEmail}
+              {email}
             </Text>
             .
           </Text>
@@ -84,6 +65,12 @@ export const CreateAccountCodeScreen = () => {
             />
           ))}
         </View>
+
+        {serverError ? (
+          <Text className="font-sourceSans-regular text-200 text-text-critical">
+            {serverError}
+          </Text>
+        ) : null}
       </View>
 
       <View className="mt-auto w-full flex-row gap-3">
@@ -93,7 +80,7 @@ export const CreateAccountCodeScreen = () => {
             variant="outline"
             className="self-stretch"
             textClassName="text-text-secondary"
-            onPress={() => router.back()}
+            onPress={handleGoBack}
           />
         </View>
         <View className="flex-1">
@@ -101,7 +88,8 @@ export const CreateAccountCodeScreen = () => {
             label="Submit"
             className="self-stretch"
             disabled={!isComplete}
-            onPress={() => {}}
+            loading={isPending}
+            onPress={handleSubmit}
           />
         </View>
       </View>
