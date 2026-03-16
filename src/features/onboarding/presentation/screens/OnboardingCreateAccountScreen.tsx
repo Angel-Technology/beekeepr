@@ -1,11 +1,11 @@
+import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import GoogleIcon from '@assets/svg/GoogleIcon';
-import { useAuth } from '@features';
 import { Button, Container } from '@components';
 
 export const OnboardingCreateAccountScreen = () => {
-  const { error, isLoading, signInWithGoogle } = useAuth();
+  const router = useRouter();
 
   return (
     <Container
@@ -28,22 +28,16 @@ export const OnboardingCreateAccountScreen = () => {
           variant="outline"
           className="self-stretch"
           iconLeft={<GoogleIcon />}
-          disabled={isLoading}
-          onPress={() => {
-            void signInWithGoogle();
-          }}
+          // disabled={isLoading}
+          // onPress={() => {
+          //   void signInWithGoogle();
+          // }}
         />
         <Button
           label="Continue with Email"
           className="self-stretch"
-          disabled={isLoading}
-          onPress={() => {}}
+          onPress={() => router.push('/auth/create-account-email')}
         />
-        {error ? (
-          <Text className="font-sourceSans-regular text-300 text-text-secondary">
-            {error}
-          </Text>
-        ) : null}
       </View>
     </Container>
   );

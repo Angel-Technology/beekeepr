@@ -350,7 +350,14 @@ module.exports = {
            * @description Destructive border color for error and danger states
            * @example border-border-critical
            */
+
           critical: '#FF0000',
+          /**
+           * Secondary border color
+           * @description Muted border used for Secondary form controls and bland
+           * @example border-border-secondary
+           */
+          secondary: 'rgba(0, 0, 0, 0.16)',
           /**
            * Warning border color
            * @description Warning border color for cautionary messaging and controls

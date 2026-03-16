@@ -38,6 +38,20 @@ export default function RootLayout() {
               title: 'Create Account',
             }}
           />
+          <Stack.Screen
+            name="auth/create-account-email"
+            options={{
+              headerShown: false,
+              title: 'Create Account Email',
+            }}
+          />
+          <Stack.Screen
+            name="auth/create-account-code"
+            options={{
+              headerShown: false,
+              title: 'Create Account Code',
+            }}
+          />
           {/* <Stack.Screen
         name="+not-found"
         options={{
