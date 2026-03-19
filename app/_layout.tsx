@@ -2,51 +2,59 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useAuthSession } from '@features/auth';
 
 import '../global.css';
 import { useEffect } from 'react';
+import { QueryProvider } from '@src/lib/tanstack/QueryProvider';
 
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+function RootNavigator() {
+  const { data: user, isPending } = useAuthSession();
+
   useEffect(() => {
     SplashScreen.hideAsync();
   }, []);
 
+  if (isPending) {
+    return null;
+  }
+
+  const isAuthenticated = Boolean(user);
+
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <Stack>
-          <Stack.Screen
-            name="index"
-            options={{
-              headerShown: false,
-              title: 'Landing',
-            }}
-          />
-          <Stack.Screen
-            name="onboarding/what-we-do"
-            options={{
-              headerShown: false,
-              title: 'What We Do',
-            }}
-          />
-          {/* <Stack.Screen
-        name="+not-found"
-        options={{
-          title: 'Not Found',
-          headerShown: false,
-          }}
-          />
-          <Stack.Screen
-          name="callback"
+    <Stack>
+      <Stack.Protected guard={!isAuthenticated}>
+        <Stack.Screen
+          name="(public)"
           options={{
             headerShown: false,
-            title: 'Authentication',
-            }}
-            /> */}
-        </Stack>
-      </SafeAreaProvider>
+            title: 'Public',
+          }}
+        />
+      </Stack.Protected>
+      <Stack.Protected guard={isAuthenticated}>
+        <Stack.Screen
+          name="(private)"
+          options={{
+            headerShown: false,
+            title: 'Private',
+          }}
+        />
+      </Stack.Protected>
+    </Stack>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryProvider>
+        <SafeAreaProvider>
+          <RootNavigator />
+        </SafeAreaProvider>
+      </QueryProvider>
     </GestureHandlerRootView>
   );
 }

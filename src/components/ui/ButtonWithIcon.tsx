@@ -1,0 +1,85 @@
+import type { ReactNode } from 'react';
+
+import clsx from 'clsx';
+import { Text, TouchableOpacity, View } from 'react-native';
+
+import { BounceLoader } from './BounceLoader';
+
+type ButtonWithIconProps = {
+  label: string;
+  onPress?: () => void;
+  disabled?: boolean;
+  loading?: boolean;
+  iconLeft?: ReactNode;
+  iconRight?: ReactNode;
+  variant?: 'solid' | 'outline';
+  className?: string;
+  textClassName?: string;
+};
+
+export const ButtonWithIcon = ({
+  label,
+  onPress,
+  disabled = false,
+  loading = false,
+  iconLeft,
+  iconRight,
+  variant = 'solid',
+  className,
+  textClassName,
+}: ButtonWithIconProps) => {
+  const isOutline = variant === 'outline';
+  const isDisabled = disabled || loading;
+  const loaderColorClassName = isOutline
+    ? 'bg-text-default'
+    : 'bg-text-inverse';
+
+  return (
+    <TouchableOpacity
+      accessibilityState={{ disabled: isDisabled, busy: loading }}
+      accessibilityRole="button"
+      className={clsx(
+        'min-h-8 flex-row items-center self-stretch rounded-round px-lg py-md',
+        isOutline
+          ? 'border border-action-neutral-border-default bg-bg-default'
+          : 'bg-action-neutral-background-solid',
+        isDisabled &&
+          (isOutline
+            ? 'border-none border-border-disabled bg-bg-disabled opacity-60'
+            : 'bg-bg-disabled opacity-60'),
+        className,
+      )}
+      disabled={isDisabled}
+      onPress={onPress}
+    >
+      <View className="h-[32px] w-[32px] items-center justify-center">
+        {!loading && iconLeft ? iconLeft : null}
+      </View>
+
+      <View className="flex-1 items-center justify-center">
+        {loading ? (
+          <BounceLoader colorClassName={loaderColorClassName} />
+        ) : (
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            className={clsx(
+              'text-center font-sourceSans-semiBold text-600',
+              isOutline
+                ? 'text-text-default'
+                : 'text-action-neutral-text-onAction',
+              isDisabled && 'text-text-disabled',
+              textClassName,
+            )}
+          >
+            {label}
+          </Text>
+        )}
+      </View>
+
+      <View className="h-[32px] w-[32px] items-center justify-center">
+        {!loading && iconRight ? iconRight : null}
+      </View>
+    </TouchableOpacity>
+  );
+};

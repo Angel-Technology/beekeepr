@@ -84,6 +84,12 @@ module.exports = {
            * @example text-brand-accent, bg-brand-accent
            */
           accent: '#000000',
+          /**
+           * Highlight accent
+           * @description Bright supporting brand surface used for trust and verification moments
+           * @example bg-brand-highlight, text-brand-highlight
+           */
+          highlight: '#FDD301',
         },
 
         /**
@@ -350,7 +356,14 @@ module.exports = {
            * @description Destructive border color for error and danger states
            * @example border-border-critical
            */
+
           critical: '#FF0000',
+          /**
+           * Secondary border color
+           * @description Muted border used for Secondary form controls and bland
+           * @example border-border-secondary
+           */
+          secondary: 'rgba(0, 0, 0, 0.16)',
           /**
            * Warning border color
            * @description Warning border color for cautionary messaging and controls

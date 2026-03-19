@@ -1,13 +1,14 @@
-import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import { Text, TouchableOpacity, View } from 'react-native';
+
+import { BounceLoader } from './BounceLoader';
 
 type ButtonProps = {
   label: string;
   onPress?: () => void;
   disabled?: boolean;
-  iconLeft?: ReactNode;
-  iconRight?: ReactNode;
+  loading?: boolean;
+  variant?: 'solid' | 'outline';
   className?: string;
   textClassName?: string;
 };
@@ -16,33 +17,55 @@ export const Button = ({
   label,
   onPress,
   disabled = false,
-  iconLeft,
-  iconRight,
+  loading = false,
+  variant = 'solid',
   className,
   textClassName,
 }: ButtonProps) => {
+  const isOutline = variant === 'outline';
+  const isDisabled = disabled || loading;
+  const loaderColorClassName = isOutline
+    ? 'bg-text-default'
+    : 'bg-text-inverse';
+
   return (
     <TouchableOpacity
+      accessibilityState={{ disabled: isDisabled, busy: loading }}
       accessibilityRole="button"
       className={clsx(
-        'min-h-8 flex-row items-center justify-center gap-3 self-stretch rounded-round bg-action-neutral-background-solid px-lg py-md',
-        disabled && 'bg-brand-tertiary',
+        'min-h-8 items-center justify-center self-stretch rounded-round px-lg py-md',
+        isOutline
+          ? 'border border-action-neutral-border-default bg-bg-default'
+          : 'bg-action-neutral-background-solid',
+        isDisabled &&
+          (isOutline
+            ? 'border-none border-border-disabled bg-bg-disabled opacity-60'
+            : 'bg-bg-disabled opacity-60'),
         className,
       )}
-      disabled={disabled}
+      disabled={isDisabled}
       onPress={onPress}
     >
-      {iconLeft ? <View>{iconLeft}</View> : null}
-      <Text
-        className={clsx(
-          'flex-1 text-center font-sourceSans-semiBold text-500 text-action-neutral-text-onAction',
-          disabled && 'text-text-inverse',
-          textClassName,
+      <View className="items-center justify-center">
+        {loading ? (
+          <BounceLoader colorClassName={loaderColorClassName} />
+        ) : (
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            className={clsx(
+              'text-center font-sourceSans-semiBold text-600',
+              isOutline
+                ? 'text-text-default'
+                : 'text-action-neutral-text-onAction',
+              isDisabled && 'text-text-disabled',
+              textClassName,
+            )}
+          >
+            {label}
+          </Text>
         )}
-      >
-        {label}
-      </Text>
-      {iconRight ? <View>{iconRight}</View> : null}
+      </View>
     </TouchableOpacity>
   );
 };

@@ -1,0 +1,4 @@
+fragment AuthSessionFields on AuthSessionGraph {
+  token
+  expiresAtUtc
+}
