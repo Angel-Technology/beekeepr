@@ -1,12 +1,9 @@
 export { CreateAccountCodeScreen } from './presentation/screens/CreateAccountCodeScreen';
 export { CreateAccountEmailScreen } from './presentation/screens/CreateAccountEmailScreen';
+export { useAuthActions } from './hooks/useAuthActions';
+export { useAuthSession } from './hooks/useAuthSession';
 export { useCreateAccountCodeForm } from './hooks/useCreateAccountCodeForm';
 export { useCreateAccountEmailForm } from './hooks/useCreateAccountEmailForm';
-export { useCurrentUser } from './hooks/useCurrentUser';
-export { useRequestEmailSignIn } from './hooks/useRequestEmailSignIn';
-export { useSignInWithGoogle } from './hooks/useSignInWithGoogle';
-export { useSignOut } from './hooks/useSignOut';
-export { useVerifyEmailSignIn } from './hooks/useVerifyEmailSignIn';
 export { authQueryKeys } from './models/authQueryKeys';
 export type * from './models/auth.types';
 export { authService } from './services/authService';

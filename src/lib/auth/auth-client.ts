@@ -5,6 +5,7 @@ import { authConfig, isAuthBackendConfigured } from './config';
 
 export const authClient = createAuthClient({
   baseURL: authConfig.baseURL,
+
   plugins: [
     expoClient({
       scheme: authConfig.scheme,

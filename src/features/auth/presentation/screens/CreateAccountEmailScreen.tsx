@@ -39,7 +39,7 @@ export const CreateAccountEmailScreen = () => {
           </Text>
         </View>
 
-        <View className="border-border-secondary flex flex-col items-start gap-6 self-stretch rounded-5 border p-lg">
+        <View className="flex flex-col items-start gap-6 self-stretch rounded-5 border border-border-secondary p-lg">
           <FloatingLabelInput
             id="create-account-email"
             type="text"

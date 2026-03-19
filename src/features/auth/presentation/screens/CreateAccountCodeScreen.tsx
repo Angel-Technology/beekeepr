@@ -1,4 +1,4 @@
-import { Text, TextInput, View } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { Button, Container } from '@components';
 import { useCreateAccountCodeForm } from '@features/auth';
@@ -11,10 +11,11 @@ export const CreateAccountCodeScreen = () => {
     inputRefs,
     isComplete,
     isPending,
-    serverError,
+    isResending,
     handleDigitChange,
     handleKeyPress,
     handleSubmit,
+    handleResend,
     handleGoBack,
   } = useCreateAccountCodeForm();
 
@@ -53,7 +54,7 @@ export const CreateAccountCodeScreen = () => {
                 inputRefs.current[index] = input;
               }}
               autoFocus={index === 0}
-              className="border-border-secondary h-[50px] w-[50px] rounded-3 border text-center font-sourceSans-regular text-base text-text-default"
+              className="h-[50px] w-[50px] rounded-3 border border-border-secondary text-center font-sourceSans-regular text-base text-text-default"
               keyboardType="number-pad"
               maxLength={1}
               onChangeText={(value) => handleDigitChange(value, index)}
@@ -66,11 +67,17 @@ export const CreateAccountCodeScreen = () => {
           ))}
         </View>
 
-        {serverError ? (
-          <Text className="font-sourceSans-regular text-200 text-text-critical">
-            {serverError}
+        <TouchableOpacity
+          accessibilityRole="button"
+          disabled={isResending}
+          onPress={() => {
+            void handleResend();
+          }}
+        >
+          <Text className="font-sourceSans-medium text-base text-text-default underline">
+            {isResending ? 'Sending...' : 'Resend code'}
           </Text>
-        ) : null}
+        </TouchableOpacity>
       </View>
 
       <View className="mt-auto w-full flex-row gap-3">

@@ -1,13 +1,13 @@
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { authValidationService } from '../services/authValidationService';
-import { useRequestEmailSignIn } from './useRequestEmailSignIn';
+import { useAuthActions } from './useAuthActions';
 
 export const useCreateAccountEmailForm = () => {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [shouldValidate, setShouldValidate] = useState(false);
-  const requestEmailSignIn = useRequestEmailSignIn();
+  const { requestEmailSignIn } = useAuthActions();
 
   const trimmedEmail = useMemo(() => {
     return authValidationService.normalizeEmail(email);
@@ -36,14 +36,18 @@ export const useCreateAccountEmailForm = () => {
       return;
     }
 
-    await requestEmailSignIn.mutateAsync({
-      email: trimmedEmail,
-    });
+    try {
+      await requestEmailSignIn.mutateAsync({
+        email: trimmedEmail,
+      });
 
-    router.push({
-      pathname: '/auth/create-account-code',
-      params: { email: trimmedEmail },
-    });
+      router.push({
+        pathname: '/auth/create-account-code',
+        params: { email: trimmedEmail },
+      });
+    } catch {
+      return;
+    }
   };
 
   return {

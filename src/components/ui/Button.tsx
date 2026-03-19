@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { colors } from '@src/common/colors';
 import { BounceLoader } from './BounceLoader';
 
 type ButtonProps = {
@@ -29,7 +28,9 @@ export const Button = ({
 }: ButtonProps) => {
   const isOutline = variant === 'outline';
   const isDisabled = disabled || loading;
-  const loaderColor = isOutline ? colors.text.default : colors.text.inverse;
+  const loaderColorClassName = isOutline
+    ? 'bg-text-default'
+    : 'bg-text-inverse';
 
   return (
     <TouchableOpacity
@@ -54,7 +55,7 @@ export const Button = ({
       </View>
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <BounceLoader color={loaderColor} />
+          <BounceLoader colorClassName={loaderColorClassName} />
         </View>
       ) : (
         <Text

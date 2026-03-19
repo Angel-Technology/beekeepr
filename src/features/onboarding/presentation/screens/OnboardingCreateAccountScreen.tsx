@@ -3,9 +3,11 @@ import { Text, View } from 'react-native';
 
 import GoogleIcon from '@assets/svg/GoogleIcon';
 import { Button, Container } from '@components';
+import { useAuthActions } from '@features/auth';
 
 export const OnboardingCreateAccountScreen = () => {
   const router = useRouter();
+  const { signInWithGoogle } = useAuthActions();
 
   return (
     <Container
@@ -28,10 +30,10 @@ export const OnboardingCreateAccountScreen = () => {
           variant="outline"
           className="self-stretch"
           iconLeft={<GoogleIcon />}
-          // disabled={isLoading}
-          // onPress={() => {
-          //   void signInWithGoogle();
-          // }}
+          loading={signInWithGoogle.isPending}
+          onPress={() => {
+            signInWithGoogle.mutate();
+          }}
         />
         <Button
           label="Continue with Email"

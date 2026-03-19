@@ -1,5 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 import type { RequestOptions, Variables } from 'graphql-request';
+import { tokenStorage } from '../auth/tokenStorage';
 import { graphQLConfig, isGraphQLConfigured } from './config';
 
 export type ExecuteGraphQLOptions<
@@ -26,8 +27,13 @@ export const executeGraphQL = async <
   }
 
   const client = createGraphQLClient();
+  const token = await tokenStorage.getToken();
   const requestOptions = {
     document,
+    requestHeaders: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.requestHeaders,
+    },
     ...options,
   } as RequestOptions<TVariables, TData>;
 

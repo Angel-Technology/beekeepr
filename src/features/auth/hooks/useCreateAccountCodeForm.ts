@@ -1,8 +1,9 @@
+import { Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import type { TextInput } from 'react-native';
 import { authValidationService } from '../services/authValidationService';
-import { useVerifyEmailSignIn } from './useVerifyEmailSignIn';
+import { useAuthActions } from './useAuthActions';
 
 const CODE_LENGTH = 5;
 
@@ -13,7 +14,7 @@ export const useCreateAccountCodeForm = () => {
     authValidationService.createEmptyCodeDigits(CODE_LENGTH),
   );
   const inputRefs = useRef<Array<TextInput | null>>([]);
-  const verifyEmailSignIn = useVerifyEmailSignIn();
+  const { requestEmailSignIn, verifyEmailSignIn } = useAuthActions();
 
   const normalizedEmail = typeof email === 'string' ? email.trim() : '';
 
@@ -44,20 +45,45 @@ export const useCreateAccountCodeForm = () => {
   };
 
   const isComplete = authValidationService.isVerificationCodeComplete(digits);
-  const serverError =
-    verifyEmailSignIn.error instanceof Error
-      ? verifyEmailSignIn.error.message
-      : null;
-
   const handleSubmit = async () => {
     if (!normalizedEmail || !isComplete) {
       return;
     }
 
-    await verifyEmailSignIn.mutateAsync({
-      email: normalizedEmail,
-      code: authValidationService.joinVerificationCode(digits),
-    });
+    try {
+      await verifyEmailSignIn.mutateAsync({
+        email: normalizedEmail,
+        code: authValidationService.joinVerificationCode(digits),
+      });
+    } catch {
+      return;
+    }
+  };
+
+  const handleResend = async () => {
+    if (!normalizedEmail || requestEmailSignIn.isPending) {
+      return;
+    }
+
+    try {
+      await requestEmailSignIn.mutateAsync({
+        email: normalizedEmail,
+      });
+
+      setDigits(authValidationService.createEmptyCodeDigits(CODE_LENGTH));
+      inputRefs.current[0]?.focus();
+      Alert.alert(
+        'Verification Code Sent',
+        `We sent a new code to ${normalizedEmail}.`,
+      );
+    } catch (error) {
+      Alert.alert(
+        'Unable to Resend Code',
+        error instanceof Error
+          ? error.message
+          : 'Please try requesting a new code again.',
+      );
+    }
   };
 
   return {
@@ -66,10 +92,11 @@ export const useCreateAccountCodeForm = () => {
     inputRefs,
     isComplete,
     isPending: verifyEmailSignIn.isPending,
-    serverError,
+    isResending: requestEmailSignIn.isPending,
     handleDigitChange,
     handleKeyPress,
     handleSubmit,
+    handleResend,
     handleGoBack: () => router.back(),
   };
 };

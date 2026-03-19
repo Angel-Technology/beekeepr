@@ -1,96 +1,88 @@
 import { useEffect } from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
-import { View } from 'react-native';
 import clsx from 'clsx';
+import { View } from 'react-native';
 import Animated, {
-  Easing,
-  useAnimatedStyle,
   useSharedValue,
-  withDelay,
+  useAnimatedStyle,
   withRepeat,
-  withSequence,
   withTiming,
+  withDelay,
+  Easing,
 } from 'react-native-reanimated';
-import { colors } from '@src/common/colors';
 
-type BounceLoaderProps = {
-  color?: string;
-  size?: number;
-  style?: StyleProp<ViewStyle>;
+export interface BounceLoaderProps {
+  colorClassName?: string;
   className?: string;
-};
+  testID?: string;
+}
 
-const DURATION = 300;
-const BOUNCE_HEIGHT = -8;
-const DELAY_GAP = 120;
+const BOUNCE_HEIGHT = -4;
+const DURATION = 800;
+const STAGGER_DELAY = 150;
 
-export function BounceLoader({
-  color = colors.bg.disabled,
-  size = 8,
-  style,
+/**
+ * BounceLoader - A bouncing dots loader animation.
+ * Three dots that bounce in sequence to indicate loading state.
+ * Uses Reanimated for smooth UI-thread animations.
+ */
+export const BounceLoader = ({
+  colorClassName = 'bg-text-inverse',
   className,
-}: BounceLoaderProps) {
-  const dotOne = useSharedValue(0);
-  const dotTwo = useSharedValue(0);
-  const dotThree = useSharedValue(0);
+  testID,
+}: BounceLoaderProps) => {
+  const bounce1 = useSharedValue(0);
+  const bounce2 = useSharedValue(0);
+  const bounce3 = useSharedValue(0);
 
   useEffect(() => {
-    const createAnimation = (delay: number) =>
+    // Using reverse: true for smooth oscillation (0→1→0→1...)
+    const createBounceAnimation = (delay: number) =>
       withDelay(
         delay,
         withRepeat(
-          withSequence(
-            withTiming(BOUNCE_HEIGHT, {
-              duration: DURATION,
-              easing: Easing.inOut(Easing.ease),
-            }),
-            withTiming(0, {
-              duration: DURATION,
-              easing: Easing.inOut(Easing.ease),
-            }),
-          ),
+          withTiming(1, {
+            duration: DURATION,
+            easing: Easing.inOut(Easing.ease),
+          }),
           -1,
-          false,
+          true,
         ),
       );
 
-    dotOne.value = createAnimation(0);
-    dotTwo.value = createAnimation(DELAY_GAP);
-    dotThree.value = createAnimation(DELAY_GAP * 2);
-  }, [dotOne, dotTwo, dotThree]);
+    bounce1.value = createBounceAnimation(0);
+    bounce2.value = createBounceAnimation(STAGGER_DELAY);
+    bounce3.value = createBounceAnimation(STAGGER_DELAY * 2);
+  }, [bounce1, bounce2, bounce3]);
 
-  const dotOneStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: dotOne.value }],
+  const animatedStyle1 = useAnimatedStyle(() => ({
+    transform: [{ translateY: bounce1.value * BOUNCE_HEIGHT }],
   }));
 
-  const dotTwoStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: dotTwo.value }],
+  const animatedStyle2 = useAnimatedStyle(() => ({
+    transform: [{ translateY: bounce2.value * BOUNCE_HEIGHT }],
   }));
 
-  const dotThreeStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: dotThree.value }],
+  const animatedStyle3 = useAnimatedStyle(() => ({
+    transform: [{ translateY: bounce3.value * BOUNCE_HEIGHT }],
   }));
-
-  const dotStyle = {
-    backgroundColor: color,
-    width: size,
-    height: size,
-  };
 
   return (
     <View
-      className={clsx(
-        'h-6 flex-row items-center justify-center gap-2',
-        className,
-      )}
-      style={style}
+      testID={testID}
+      className={clsx('flex-row items-center justify-center gap-sm', className)}
     >
-      <Animated.View className="rounded-full" style={[dotStyle, dotOneStyle]} />
-      <Animated.View className="rounded-full" style={[dotStyle, dotTwoStyle]} />
       <Animated.View
-        className="rounded-full"
-        style={[dotStyle, dotThreeStyle]}
+        className={clsx('size-2 rounded-full', colorClassName)}
+        style={animatedStyle1}
+      />
+      <Animated.View
+        className={clsx('size-2 rounded-full', colorClassName)}
+        style={animatedStyle2}
+      />
+      <Animated.View
+        className={clsx('size-2 rounded-full', colorClassName)}
+        style={animatedStyle3}
       />
     </View>
   );
-}
+};

@@ -7,6 +7,7 @@ type EnvironmentConfig = {
 
   // icon assets
   icon: string;
+
   // platform identifiers
   bundleIdentifier: string;
   androidPackage: string;
@@ -115,6 +116,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           },
           backgroundColor: '#ECEDEE',
           resizeMode: 'cover',
+        },
+      ],
+      [
+        '@react-native-google-signin/google-signin',
+        {
+          iosUrlScheme:
+            'com.googleusercontent.apps.1065098379708-jkbfs6ro7rlopgeqo94al7dm8jl1815b',
         },
       ],
       [
