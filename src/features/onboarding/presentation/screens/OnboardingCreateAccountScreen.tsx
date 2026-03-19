@@ -1,7 +1,10 @@
 import { useRouter } from 'expo-router';
+import { Image } from 'expo-image';
 import { Text, View } from 'react-native';
 
+import { appImages } from '@assets/images';
 import GoogleIcon from '@assets/svg/GoogleIcon';
+import JoinBeeIllustration from '@assets/svg/JoinBeeIllustration';
 import { Button, Container } from '@components';
 import { useAuthActions } from '@features/auth';
 
@@ -13,18 +16,34 @@ export const OnboardingCreateAccountScreen = () => {
     <Container
       safeArea
       safeAreaEdges={['top', 'bottom']}
-      className={'bg-bg-default pt-lg'}
+      className="flex-1 bg-bg-default"
     >
-      <View className="gap-3 self-stretch">
-        <Text className="font-poppins-semiBold text-800 text-text-default">
-          Create an account to get started
-        </Text>
+      <View className="flex-1 items-center justify-center gap-7 self-stretch py-sm">
+        <View className="flex flex-col items-center gap-7 self-stretch p-5">
+          <View className="flex flex-row items-start justify-center gap-1 self-stretch">
+            <Text className="text-center font-poppins-semiBold text-800 text-text-default">
+              Join TheBuzz
+            </Text>
+            <Image
+              source={appImages.betaLogo}
+              contentFit="contain"
+              style={{ width: 32, height: 14 }}
+            />
+          </View>
+
+          <View className="items-center justify-center self-stretch">
+            <JoinBeeIllustration width={345} height={366} />
+          </View>
+
+          <View className="items-center gap-2 self-stretch">
+            <Text className="text-center font-poppins-semiBold text-800 text-text-default">
+              Create an account to get started.
+            </Text>
+          </View>
+        </View>
       </View>
 
-      {/* content for login if Jen changes it */}
-      <View className="flex-1 self-stretch" />
-
-      <View className="flex w-full flex-col items-start gap-5 self-stretch">
+      <View className="mt-auto w-full gap-5 pb-4">
         <Button
           label="Continue with Google"
           variant="outline"

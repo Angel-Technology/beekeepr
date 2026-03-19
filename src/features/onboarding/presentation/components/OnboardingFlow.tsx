@@ -6,7 +6,7 @@ import type {
   ListRenderItem,
   ViewToken,
 } from 'react-native';
-import { Text, useWindowDimensions, View } from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
@@ -19,8 +19,8 @@ import { OnboardingPagination } from './OnboardingPagination';
 
 type OnboardingFlowProps<TItem> = {
   data: TItem[];
-  title: string;
-  subtitle: string;
+  title?: string;
+  subtitle?: string;
   keyExtractor: (item: TItem, index: number) => string;
   renderSlide: (args: {
     item: TItem;
@@ -28,14 +28,11 @@ type OnboardingFlowProps<TItem> = {
     x: SharedValue<number>;
     pageWidth: number;
   }) => ReactNode;
-  onExit: () => void;
   onComplete?: () => void;
 };
 
 export const OnboardingFlow = <TItem,>({
   data,
-  title,
-  subtitle,
   keyExtractor,
   renderSlide,
   onComplete,
@@ -111,16 +108,11 @@ export const OnboardingFlow = <TItem,>({
   );
 
   return (
-    <Container safeArea className="gap items-center bg-bg-default pl-0 pr-0">
-      <View className="flex-1 gap-7" onLayout={handlePageWidthLayout}>
-        <View className="gap-2 self-stretch px-lg">
-          <Text className="font-poppins-semiBold text-800 text-text-default">
-            {title}
-          </Text>
-          <Text className="font-sourceSans-regular text-400 text-text-secondary">
-            {subtitle}
-          </Text>
-        </View>
+    <Container safeArea className="flex-1 items-center bg-bg-default pl-0 pr-0">
+      <View
+        className="flex-1 gap-7 self-stretch"
+        onLayout={handlePageWidthLayout}
+      >
         <Animated.FlatList
           ref={(node) => {
             jsFlatListRef.current = node;

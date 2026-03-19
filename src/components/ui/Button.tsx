@@ -60,7 +60,7 @@ export const Button = ({
       ) : (
         <Text
           className={clsx(
-            'flex-1 text-center font-sourceSans-semiBold text-500',
+            'flex-1 text-center font-sourceSans-semiBold text-600',
             isOutline
               ? 'text-text-default'
               : 'text-action-neutral-text-onAction',

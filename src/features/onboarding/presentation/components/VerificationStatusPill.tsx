@@ -9,7 +9,7 @@ export const VerificationStatusPill = ({
   label,
 }: VerificationStatusPillProps) => {
   return (
-    <View className="bg-brand-highlight flex flex-row items-center justify-center gap-2 rounded-full px-4 py-3">
+    <View className="flex flex-row items-center justify-center gap-2 rounded-full bg-brand-highlight px-4 py-3">
       <IntroBeeIcon width={15.75} height={13.986} />
       <Text className="font-sourceSans-semiBold text-300 text-text-default">
         {label}

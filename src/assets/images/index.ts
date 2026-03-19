@@ -4,9 +4,9 @@ export type AppImageSource = ImageRequireSource;
 
 export type AppImages = {
   readonly betaLogo: ImageRequireSource;
-  readonly locations: ImageRequireSource;
-  readonly search: ImageRequireSource;
-  readonly theBuzz: ImageRequireSource;
+  readonly beeBadge: ImageRequireSource;
+  readonly investigateBee: ImageRequireSource;
+  readonly verifyBee: ImageRequireSource;
   readonly adaptiveIcon: ImageRequireSource;
   readonly appIcon: ImageRequireSource;
   readonly awkwardBee: ImageRequireSource;
@@ -15,9 +15,9 @@ export type AppImages = {
 
 export const appImages: AppImages = {
   betaLogo: require('./Beta-Logo.png'),
-  locations: require('./Locations-1.png'),
-  search: require('./Search-3.png'),
-  theBuzz: require('./TheBuzz-3.png'),
+  beeBadge: require('./Bee-Badge.png'),
+  investigateBee: require('./Investigate-Bee.png'),
+  verifyBee: require('./Verify-Bee.png'),
   adaptiveIcon: require('./adaptive-icon.png'),
   appIcon: require('./app-icon.png'),
   awkwardBee: require('./awkward-bee-4.png'),

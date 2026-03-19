@@ -39,7 +39,7 @@ export const OnboardingIntroScreen = () => {
       <SafeAreaView edges={['bottom']} className="mt-auto w-full">
         <View className="w-full pb-4">
           <Button
-            label="So, whatz the buzz?"
+            label="Get Started"
             className="w-full"
             onPress={() => router.replace('/onboarding/what-we-do')}
             iconRight={
