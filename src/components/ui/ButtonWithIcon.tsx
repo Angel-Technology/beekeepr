@@ -1,27 +1,33 @@
+import type { ReactNode } from 'react';
+
 import clsx from 'clsx';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import { BounceLoader } from './BounceLoader';
 
-type ButtonProps = {
+type ButtonWithIconProps = {
   label: string;
   onPress?: () => void;
   disabled?: boolean;
   loading?: boolean;
+  iconLeft?: ReactNode;
+  iconRight?: ReactNode;
   variant?: 'solid' | 'outline';
   className?: string;
   textClassName?: string;
 };
 
-export const Button = ({
+export const ButtonWithIcon = ({
   label,
   onPress,
   disabled = false,
   loading = false,
+  iconLeft,
+  iconRight,
   variant = 'solid',
   className,
   textClassName,
-}: ButtonProps) => {
+}: ButtonWithIconProps) => {
   const isOutline = variant === 'outline';
   const isDisabled = disabled || loading;
   const loaderColorClassName = isOutline
@@ -33,7 +39,7 @@ export const Button = ({
       accessibilityState={{ disabled: isDisabled, busy: loading }}
       accessibilityRole="button"
       className={clsx(
-        'min-h-8 items-center justify-center self-stretch rounded-round px-lg py-md',
+        'min-h-8 flex-row items-center self-stretch rounded-round px-lg py-md',
         isOutline
           ? 'border border-action-neutral-border-default bg-bg-default'
           : 'bg-action-neutral-background-solid',
@@ -46,7 +52,11 @@ export const Button = ({
       disabled={isDisabled}
       onPress={onPress}
     >
-      <View className="items-center justify-center">
+      <View className="h-[32px] w-[32px] items-center justify-center">
+        {!loading && iconLeft ? iconLeft : null}
+      </View>
+
+      <View className="flex-1 items-center justify-center">
         {loading ? (
           <BounceLoader colorClassName={loaderColorClassName} />
         ) : (
@@ -65,6 +75,10 @@ export const Button = ({
             {label}
           </Text>
         )}
+      </View>
+
+      <View className="h-[32px] w-[32px] items-center justify-center">
+        {!loading && iconRight ? iconRight : null}
       </View>
     </TouchableOpacity>
   );

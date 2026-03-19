@@ -21,10 +21,10 @@ export const CreateAccountEmailScreen = () => {
     <Container
       safeArea
       safeAreaEdges={['top', 'bottom']}
+      keyboardAvoiding
       className="gap-8 self-stretch bg-bg-default p-0"
     >
       <AuthBrandHeader />
-
       <View className="flex flex-col items-start gap-7 self-stretch">
         <View className=" w-full gap-2">
           <Text className="font-poppins-semiBold text-700 text-text-default">
@@ -59,7 +59,6 @@ export const CreateAccountEmailScreen = () => {
           </Text>
         ) : null}
       </View>
-
       <View className="mt-auto w-full flex-row gap-3 pb-4">
         <View className="flex-1">
           <Button

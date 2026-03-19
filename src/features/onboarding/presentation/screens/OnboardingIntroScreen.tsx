@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import IntroBrandLockup from '@assets/svg/IntroBrandLockup';
-import { Button, Container } from '@components';
+import { ButtonWithIcon, Container } from '@components';
 import { colors } from '@common/colors';
 import { VerificationStatusPill } from '../components/VerificationStatusPill';
 
@@ -38,7 +38,7 @@ export const OnboardingIntroScreen = () => {
 
       <SafeAreaView edges={['bottom']} className="mt-auto w-full">
         <View className="w-full pb-4">
-          <Button
+          <ButtonWithIcon
             label="Get Started"
             className="w-full"
             onPress={() => router.replace('/onboarding/what-we-do')}

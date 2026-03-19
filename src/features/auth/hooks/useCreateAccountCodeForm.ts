@@ -1,6 +1,6 @@
 import { Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { TextInput } from 'react-native';
 import { authValidationService } from '../services/authValidationService';
 import { useAuthActions } from './useAuthActions';
@@ -14,6 +14,7 @@ export const useCreateAccountCodeForm = () => {
     authValidationService.createEmptyCodeDigits(CODE_LENGTH),
   );
   const inputRefs = useRef<Array<TextInput | null>>([]);
+  const lastSubmittedCodeRef = useRef<string | null>(null);
   const { requestEmailSignIn, verifyEmailSignIn } = useAuthActions();
 
   const normalizedEmail = typeof email === 'string' ? email.trim() : '';
@@ -45,20 +46,45 @@ export const useCreateAccountCodeForm = () => {
   };
 
   const isComplete = authValidationService.isVerificationCodeComplete(digits);
-  const handleSubmit = async () => {
+  const verificationCode = authValidationService.joinVerificationCode(digits);
+
+  const handleSubmit = useCallback(async () => {
     if (!normalizedEmail || !isComplete) {
       return;
     }
 
+    if (verifyEmailSignIn.isPending) {
+      return;
+    }
+
     try {
+      lastSubmittedCodeRef.current = verificationCode;
       await verifyEmailSignIn.mutateAsync({
         email: normalizedEmail,
-        code: authValidationService.joinVerificationCode(digits),
+        code: verificationCode,
       });
     } catch {
       return;
     }
-  };
+  }, [isComplete, normalizedEmail, verificationCode, verifyEmailSignIn]);
+
+  useEffect(() => {
+    if (!isComplete || !normalizedEmail || verifyEmailSignIn.isPending) {
+      return;
+    }
+
+    if (lastSubmittedCodeRef.current === verificationCode) {
+      return;
+    }
+
+    void handleSubmit();
+  }, [
+    handleSubmit,
+    isComplete,
+    normalizedEmail,
+    verificationCode,
+    verifyEmailSignIn.isPending,
+  ]);
 
   const handleResend = async () => {
     if (!normalizedEmail || requestEmailSignIn.isPending) {
@@ -71,6 +97,7 @@ export const useCreateAccountCodeForm = () => {
       });
 
       setDigits(authValidationService.createEmptyCodeDigits(CODE_LENGTH));
+      lastSubmittedCodeRef.current = null;
       inputRefs.current[0]?.focus();
       Alert.alert(
         'Verification Code Sent',

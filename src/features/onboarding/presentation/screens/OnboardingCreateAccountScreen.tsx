@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 import { appImages } from '@assets/images';
 import GoogleIcon from '@assets/svg/GoogleIcon';
 import JoinBeeIllustration from '@assets/svg/JoinBeeIllustration';
-import { Button, Container } from '@components';
+import { Button, ButtonWithIcon, Container } from '@components';
 import { useAuthActions } from '@features/auth';
 
 export const OnboardingCreateAccountScreen = () => {
@@ -44,7 +44,7 @@ export const OnboardingCreateAccountScreen = () => {
       </View>
 
       <View className="mt-auto w-full gap-5 pb-4">
-        <Button
+        <ButtonWithIcon
           label="Continue with Google"
           variant="outline"
           className="self-stretch"

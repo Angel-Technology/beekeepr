@@ -31,7 +31,6 @@ export const CreateAccountCodeScreen = () => {
       className="gap-8 self-stretch bg-bg-default p-0"
     >
       <AuthBrandHeader />
-
       <View className="flex flex-col items-start gap-7 self-stretch">
         <View className="w-full gap-2">
           <Text className="font-poppins-semiBold text-700 text-text-default">
@@ -42,7 +41,6 @@ export const CreateAccountCodeScreen = () => {
             <Text className="font-sourceSans-semiBold text-text-default">
               {email}
             </Text>
-            .
           </Text>
         </View>
 
@@ -79,7 +77,6 @@ export const CreateAccountCodeScreen = () => {
           </Text>
         </TouchableOpacity>
       </View>
-
       <View className="mt-auto w-full flex-row gap-3">
         <View className="flex-1">
           <Button
