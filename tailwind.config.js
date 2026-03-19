@@ -84,6 +84,12 @@ module.exports = {
            * @example text-brand-accent, bg-brand-accent
            */
           accent: '#000000',
+          /**
+           * Highlight accent
+           * @description Bright supporting brand surface used for trust and verification moments
+           * @example bg-brand-highlight, text-brand-highlight
+           */
+          highlight: '#FDD301',
         },
 
         /**
