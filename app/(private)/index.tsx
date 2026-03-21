@@ -1,9 +1,26 @@
+import { useEffect } from 'react';
+import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 import { Button, Container } from '@components';
-import { useAuthActions } from '@features/auth';
+import {
+  IdentityVerificationStatus,
+  useAuthActions,
+  useAuthSession,
+} from '@features/auth';
 
 export default function PrivateHomePage() {
+  const router = useRouter();
+  const { data: user } = useAuthSession();
   const { signOut } = useAuthActions();
+
+  useEffect(() => {
+    if (
+      user &&
+      user.identityVerificationStatus !== IdentityVerificationStatus.Approved
+    ) {
+      router.replace('/verify-identity');
+    }
+  }, [router, user]);
 
   return (
     <Container
@@ -15,6 +32,14 @@ export default function PrivateHomePage() {
         <Text className="font-poppins-semiBold text-700 text-text-default">
           Private
         </Text>
+        <Button
+          label="Verify Identity"
+          variant="outline"
+          className="w-full"
+          onPress={() => {
+            router.push('/verify-identity');
+          }}
+        />
         <Button
           label="Log Out"
           className="w-full"

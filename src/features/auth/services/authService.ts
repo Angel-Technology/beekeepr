@@ -4,6 +4,7 @@ import { authRepository } from '../repository/authRepository';
 import type {
   AuthCredentials,
   EmailVerificationRequestInput,
+  PersonaInquiryStartResult,
   VerifyEmailCodeInput,
 } from '../models/auth.types';
 
@@ -82,6 +83,25 @@ export const authService = {
     await googleAuth.signOut();
 
     return payload.signOut.success;
+  },
+
+  async startPersonaInquiry(): Promise<PersonaInquiryStartResult> {
+    const payload = await authRepository.startPersonaInquiry();
+
+    if (!payload.startPersonaInquiry.success) {
+      throw new Error(
+        payload.startPersonaInquiry.error ??
+          'Unable to start identity verification.',
+      );
+    }
+
+    if (!payload.startPersonaInquiry.inquiryId) {
+      throw new Error(
+        'Verification started but no Persona inquiry ID was returned.',
+      );
+    }
+
+    return payload.startPersonaInquiry;
   },
 
   async getCurrentUser() {
