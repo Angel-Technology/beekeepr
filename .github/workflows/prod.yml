@@ -25,6 +25,7 @@ jobs:
   ios:
     name: iOS → TestFlight
     runs-on: macos-26
+    environment: production
 
     env:
       # CI stability + less noise
@@ -33,6 +34,12 @@ jobs:
       FASTLANE_DISABLE_COLORS: '1'
       COCOAPODS_DISABLE_STATS: 'true'
       EXPO_NO_TELEMETRY: '1'
+      EXPO_PUBLIC_APP_ENV: production
+      EXPO_PUBLIC_GRAPHQL_URL: ${{ vars.EXPO_PUBLIC_GRAPHQL_URL_PRODUCTION }}
+      EXPO_PUBLIC_AUTH_BASE_URL: ${{ vars.EXPO_PUBLIC_AUTH_BASE_URL_PRODUCTION }}
+      EXPO_PUBLIC_AUTH_SCHEME: beekeepr
+      EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: ${{ vars.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID }}
+      EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: ${{ vars.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID }}
 
       IOS_BUNDLE_ID: com.beekeepr.app
       IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
@@ -131,10 +138,17 @@ jobs:
   android:
     name: Android → Play
     runs-on: ubuntu-latest
+    environment: production
 
     env:
       CI: 'true'
       FASTLANE_SKIP_UPDATE_CHECK: 'true'
+      EXPO_PUBLIC_APP_ENV: production
+      EXPO_PUBLIC_GRAPHQL_URL: ${{ vars.EXPO_PUBLIC_GRAPHQL_URL_PRODUCTION }}
+      EXPO_PUBLIC_AUTH_BASE_URL: ${{ vars.EXPO_PUBLIC_AUTH_BASE_URL_PRODUCTION }}
+      EXPO_PUBLIC_AUTH_SCHEME: beekeepr
+      EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: ${{ vars.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID }}
+      EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: ${{ vars.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID }}
       ANDROID_PACKAGE_NAME: com.beekeepr.app
       ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}

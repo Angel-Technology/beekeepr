@@ -1,7 +1,9 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
-const googleWebClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? '';
-const googleIosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID ?? '';
+import { environmentConfig } from '../config/environment';
+
+const googleWebClientId = environmentConfig.googleWebClientId;
+const googleIosClientId = environmentConfig.googleIosClientId;
 
 let isConfigured = false;
 

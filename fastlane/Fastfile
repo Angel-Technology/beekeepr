@@ -341,6 +341,7 @@ platform :android do
     gradle(
       project_dir: "android",
       task: "bundleRelease",
+      flags: "--stacktrace --warning-mode all",
       properties: {
         "ANDROID_KEYSTORE_PATH" => keystore_path,
         "ANDROID_KEYSTORE_PASSWORD" => ENV["ANDROID_KEYSTORE_PASSWORD"],
@@ -374,6 +375,7 @@ platform :android do
     gradle(
       project_dir: "android",
       task: "assembleRelease",
+      flags: "--stacktrace --warning-mode all",
       properties: {
         "ANDROID_KEYSTORE_PATH" => keystore_path,
         "ANDROID_KEYSTORE_PASSWORD" => ENV["ANDROID_KEYSTORE_PASSWORD"],
