@@ -1,6 +1,6 @@
 import { Image, Text, View } from 'react-native';
 import { appImages } from '@assets/images';
-import { Button, Container } from '@components';
+import { Button, Card, Container } from '@components';
 import { IdentityVerificationStatus } from '@features/auth';
 import { useVerifyIdentityScreen } from '../../hooks/useVerifyIdentityScreen';
 
@@ -24,7 +24,7 @@ export const VerifyIdentityScreen = () => {
     <Container
       safeArea
       safeAreaEdges={['top', 'bottom']}
-      className="gap-8 bg-bg-default py-4"
+      className="gap-4 bg-bg-default py-4"
     >
       <View className="w-full gap-3">
         <Text className="font-poppins-semiBold text-800 text-text-default">
@@ -37,7 +37,7 @@ export const VerifyIdentityScreen = () => {
         </Text>
       </View>
 
-      <View className="w-full items-center rounded-5 border border-border-secondary bg-white px-lg py-xl">
+      <Card className="w-full items-center border-border-secondary px-lg py-xl">
         <Image
           source={appImages.verifyBee}
           className="mb-6"
@@ -54,9 +54,9 @@ export const VerifyIdentityScreen = () => {
             </Text>
           ))}
         </View>
-      </View>
+      </Card>
 
-      <View className="w-full rounded-5 border border-border-secondary p-lg">
+      <Card className="w-full rounded-5 border-border-secondary">
         <Text className="font-sourceSans-semiBold text-base text-text-default">
           {verificationStatusDetails.title}
         </Text>
@@ -76,10 +76,10 @@ export const VerifyIdentityScreen = () => {
             Persona inquiry ID: {personaInquiryId}
           </Text>
         ) : null}
-      </View>
+      </Card>
 
       {verificationStatus === IdentityVerificationStatus.Approved ? (
-        <View className="w-full rounded-5 border border-border-secondary bg-white p-lg">
+        <Card className="w-full rounded-5 border-border-secondary">
           <Text className="font-sourceSans-semiBold text-base text-text-default">
             Verification complete
           </Text>
@@ -87,7 +87,7 @@ export const VerifyIdentityScreen = () => {
             You can go back to the app. This screen will remain available if you
             ever need to inspect the current verification state.
           </Text>
-        </View>
+        </Card>
       ) : null}
 
       <View className="mt-auto w-full flex-row gap-3">

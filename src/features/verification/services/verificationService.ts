@@ -60,33 +60,36 @@ export const verificationService = {
   ): Promise<VerificationLaunchResult> {
     const personaModule = getPersonaModule();
     const personaEnvironment = getPersonaEnvironment(personaModule);
-    const bindCallbacks = (
-      builder: PersonaInquiryBuilder | PersonaTemplateBuilder,
-    ) => {
-      if (input.sessionToken) {
-        builder.sessionToken(input.sessionToken);
-      }
-
-      return builder
-        .onComplete((inquiryId, status, fields) => {
-          resolve({
-            inquiryId,
-            status,
-            fields,
-          });
-        })
-        .onCanceled(() => {
-          reject(new Error('Verification was canceled before completion.'));
-        })
-        .onError((error) => {
-          reject(error);
-        })
-        .build();
-    };
 
     return await new Promise<VerificationLaunchResult>((resolve, reject) => {
+      const bindCallbacks = (
+        builder: PersonaInquiryBuilder | PersonaTemplateBuilder,
+      ) => {
+        if (input.sessionToken) {
+          builder.sessionToken(input.sessionToken);
+        }
+
+        return builder
+          .onComplete((inquiryId, status, fields) => {
+            resolve({
+              inquiryId,
+              status,
+              fields,
+            });
+          })
+          .onCanceled(() => {
+            reject(new Error('Verification was canceled before completion.'));
+          })
+          .onError((error) => {
+            reject(error);
+          })
+          .build();
+      };
+
       if (input.inquiryId) {
-        bindCallbacks(personaModule.Inquiry.fromInquiry(input.inquiryId)).start();
+        bindCallbacks(
+          personaModule.Inquiry.fromInquiry(input.inquiryId),
+        ).start();
         return;
       }
 

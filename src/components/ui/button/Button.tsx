@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { Text, TouchableOpacity, View } from 'react-native';
 
-import { BounceLoader } from './BounceLoader';
+import { BounceLoader } from '../loader/BounceLoader';
 
 type ButtonProps = {
   label: string;

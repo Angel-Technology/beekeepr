@@ -5,9 +5,8 @@ import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import IntroBrandLockup from '@assets/svg/IntroBrandLockup';
-import { ButtonWithIcon, Container } from '@components';
+import { ButtonWithIcon, Container, VerificationStatusPill } from '@components';
 import { colors } from '@common/colors';
-import { VerificationStatusPill } from '../components/VerificationStatusPill';
 
 export const OnboardingIntroScreen = () => {
   const router = useRouter();
