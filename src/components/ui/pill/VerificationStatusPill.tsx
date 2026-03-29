@@ -5,11 +5,13 @@ import IntroBeeIcon from '@assets/svg/IntroBeeIcon';
 type VerificationStatusPillProps = {
   label: string;
   className?: string;
+  textClassName?: string;
 };
 
 export const VerificationStatusPill = ({
   label,
   className,
+  textClassName,
 }: VerificationStatusPillProps) => {
   return (
     <View
@@ -19,7 +21,12 @@ export const VerificationStatusPill = ({
       )}
     >
       <IntroBeeIcon width={15.75} height={13.986} />
-      <Text className="font-sourceSans-semiBold text-300 text-text-default">
+      <Text
+        className={clsx(
+          'font-sourceSans-semiBold text-300 text-text-default',
+          textClassName,
+        )}
+      >
         {label}
       </Text>
     </View>

@@ -2,6 +2,7 @@ const {
   withInfoPlist,
   withPodfileProperties,
   withProjectBuildGradle,
+  // eslint-disable-next-line no-undef
 } = require('@expo/config-plugins');
 
 const PERSONA_ANDROID_MAVEN_REPO =
@@ -70,4 +71,5 @@ const withPersonaNative = (config) => {
   return config;
 };
 
+// eslint-disable-next-line no-undef
 module.exports = withPersonaNative;

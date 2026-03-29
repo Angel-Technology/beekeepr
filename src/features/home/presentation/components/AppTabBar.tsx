@@ -1,65 +1,156 @@
+import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
-import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import type {
+  BottomTabBarButtonProps,
+  BottomTabBarProps,
+} from '@react-navigation/bottom-tabs';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, {
   Easing,
   useAnimatedStyle,
-  useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
 
-const TAB_BAR_HEIGHT = 84;
-const TAB_BAR_PADDING = 10;
+const BASE_TAB_BAR_HEIGHT = 70;
+const HORIZONTAL_PADDING = 10;
+const TOP_PADDING = 10;
+const MIN_BOTTOM_PADDING = 12;
 const ACTIVE_PILL_INSET = 4;
 const ACTIVE_PILL_RADIUS = 18;
 const ACTIVE_PILL_COLOR = '#FFF4BE';
+const ACTIVE_PILL_BORDER_COLOR = '#F1D972';
 const ACTIVE_TEXT_COLOR = '#000000';
 const INACTIVE_TEXT_COLOR = 'rgba(0, 0, 0, 0.45)';
+const TAB_ICON_SIZE = 22;
+const TAB_ANIMATION_DURATION = 220;
+
+const getTabLabel = (
+  options: BottomTabBarProps['descriptors'][string]['options'],
+  routeName: string,
+) => {
+  if (typeof options.tabBarLabel === 'string') {
+    return options.tabBarLabel;
+  }
+
+  if (typeof options.title === 'string') {
+    return options.title;
+  }
+
+  return routeName;
+};
+
+const getTabTextColor = (isFocused: boolean) => {
+  return isFocused ? ACTIVE_TEXT_COLOR : INACTIVE_TEXT_COLOR;
+};
+
+type TabButtonProps = {
+  isFocused: boolean;
+  label: string;
+  onPress: BottomTabBarButtonProps['onPress'];
+  onLongPress: BottomTabBarButtonProps['onLongPress'];
+  accessibilityLabel?: string;
+  testID?: string;
+  icon?: ReturnType<
+    NonNullable<
+      BottomTabBarProps['descriptors'][string]['options']['tabBarIcon']
+    >
+  >;
+};
+
+const TabButton = ({
+  isFocused,
+  label,
+  onPress,
+  onLongPress,
+  accessibilityLabel,
+  testID,
+  icon,
+}: TabButtonProps) => {
+  const color = getTabTextColor(isFocused);
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityState={isFocused ? { selected: true } : {}}
+      accessibilityLabel={accessibilityLabel}
+      testID={testID}
+      onPress={onPress}
+      onLongPress={onLongPress}
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <View className="items-center justify-center gap-1">
+        {icon}
+        <Text className="font-sourceSans-semiBold text-xs" style={{ color }}>
+          {label}
+        </Text>
+      </View>
+    </Pressable>
+  );
+};
 
 export const AppTabBar = ({
   state,
   descriptors,
   navigation,
 }: BottomTabBarProps) => {
-  const translateX = useSharedValue(0);
-  const tabBarWidth = useSharedValue(0);
+  const insets = useSafeAreaInsets();
+  const [tabBarWidth, setTabBarWidth] = useState(0);
 
+  const bottomPadding = Math.max(insets.bottom, MIN_BOTTOM_PADDING);
+  const containerHeight = BASE_TAB_BAR_HEIGHT + bottomPadding;
   const tabCount = state.routes.length;
-  const slotWidth =
-    tabCount > 0 ? Math.max(tabBarWidth.value / tabCount, 0) : 0;
-
-  translateX.value = withTiming(state.index * slotWidth + ACTIVE_PILL_INSET, {
-    duration: 220,
-    easing: Easing.out(Easing.cubic),
-  });
+  const slotWidth = tabCount > 0 ? tabBarWidth / tabCount : 0;
 
   const animatedPillStyle = useAnimatedStyle(() => {
-    const currentSlotWidth =
-      state.routes.length > 0 ? tabBarWidth.value / state.routes.length : 0;
-
     return {
-      width: Math.max(currentSlotWidth - ACTIVE_PILL_INSET * 2, 0),
+      width: Math.max(slotWidth - ACTIVE_PILL_INSET * 2, 0),
       transform: [
         {
-          translateX: translateX.value,
+          translateX: withTiming(state.index * slotWidth + ACTIVE_PILL_INSET, {
+            duration: TAB_ANIMATION_DURATION,
+            easing: Easing.out(Easing.cubic),
+          }),
         },
       ],
     };
-  }, [state.routes.length]);
+  }, [slotWidth, state.index]);
 
   return (
     <View
-      className="border-t border-border-subtle bg-white"
       onLayout={(event) => {
-        const nextWidth = event.nativeEvent.layout.width - TAB_BAR_PADDING * 2;
-        tabBarWidth.value = Math.max(nextWidth, 0);
+        const nextWidth =
+          event.nativeEvent.layout.width - HORIZONTAL_PADDING * 2;
+        setTabBarWidth(Math.max(nextWidth, 0));
       }}
       style={{
-        height: TAB_BAR_HEIGHT,
-        paddingTop: TAB_BAR_PADDING,
-        paddingBottom: 14,
-        paddingHorizontal: TAB_BAR_PADDING,
+        height: containerHeight,
+        paddingTop: TOP_PADDING,
+        paddingBottom: bottomPadding,
+        paddingHorizontal: HORIZONTAL_PADDING,
+        backgroundColor: '#FFFFFF',
+        shadowColor: '#000000',
+        shadowOpacity: 0.06,
+        shadowRadius: 14,
+        shadowOffset: { width: 0, height: -4 },
+        elevation: 10,
       }}
     >
+      <View
+        pointerEvents="none"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 18,
+          backgroundColor: 'rgba(255, 255, 255, 0.88)',
+        }}
+      />
+
       <View className="relative flex-1 flex-row">
         <Animated.View
           className="absolute bottom-0 top-0"
@@ -67,6 +158,7 @@ export const AppTabBar = ({
             {
               left: 0,
               backgroundColor: ACTIVE_PILL_COLOR,
+              borderColor: ACTIVE_PILL_BORDER_COLOR,
               borderRadius: ACTIVE_PILL_RADIUS,
             },
             animatedPillStyle,
@@ -76,13 +168,16 @@ export const AppTabBar = ({
         {state.routes.map((route, index) => {
           const isFocused = state.index === index;
           const { options } = descriptors[route.key];
-          const label =
-            typeof options.tabBarLabel === 'string'
-              ? options.tabBarLabel
-              : typeof options.title === 'string'
-                ? options.title
-                : route.name;
-          const color = isFocused ? ACTIVE_TEXT_COLOR : INACTIVE_TEXT_COLOR;
+          const label = getTabLabel(options, route.name);
+          const color = getTabTextColor(isFocused);
+          const icon = options.tabBarIcon
+            ? options.tabBarIcon({
+                focused: isFocused,
+                color,
+                size: TAB_ICON_SIZE,
+              })
+            : null;
+
           const onPress = () => {
             const event = navigation.emit({
               type: 'tabPress',
@@ -103,36 +198,16 @@ export const AppTabBar = ({
           };
 
           return (
-            <Pressable
+            <TabButton
               key={route.key}
-              accessibilityRole="button"
-              accessibilityState={isFocused ? { selected: true } : {}}
+              isFocused={isFocused}
+              label={label}
+              icon={icon}
               accessibilityLabel={options.tabBarAccessibilityLabel}
               testID={options.tabBarButtonTestID}
               onPress={onPress}
               onLongPress={onLongPress}
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <View className="items-center justify-center gap-1">
-                {options.tabBarIcon
-                  ? options.tabBarIcon({
-                      focused: isFocused,
-                      color,
-                      size: 22,
-                    })
-                  : null}
-                <Text
-                  className="font-sourceSans-semiBold text-xs"
-                  style={{ color }}
-                >
-                  {label}
-                </Text>
-              </View>
-            </Pressable>
+            />
           );
         })}
       </View>

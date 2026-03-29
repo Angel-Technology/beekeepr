@@ -7,6 +7,23 @@ import type {
   VerificationStatusDetails,
 } from '../models/verification.types';
 
+const TRIAL_LENGTH_DAYS = 30;
+const REMINDER_LEAD_DAYS = 5;
+
+const addDays = (value: Date, days: number) => {
+  const nextValue = new Date(value);
+  nextValue.setDate(nextValue.getDate() + days);
+  return nextValue;
+};
+
+const formatLongDate = (value: Date) => {
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(value);
+};
+
 const getVerificationStatusDetails = ({
   identityVerificationStatus,
   personaInquiryId,
@@ -28,7 +45,7 @@ const getVerificationStatusDetails = ({
         description: personaInquiryId
           ? `Inquiry ${personaInquiryId} is ${personaInquiryStatus?.toLowerCase() ?? 'in progress'}. You can reopen Persona to continue.`
           : 'Your Persona inquiry has been created. Continue the flow to finish verification.',
-        ctaLabel: 'Continue Verification',
+        ctaLabel: 'Continue',
         canStart: true,
       };
     case IdentityVerificationStatus.Completed:
@@ -67,6 +84,8 @@ export const useVerifyIdentityScreen = () => {
   const { data: user } = useAuthSession();
   const { startVerification, refreshVerificationStatus } =
     useVerificationActions();
+  const today = new Date();
+  const trialEndDate = addDays(today, TRIAL_LENGTH_DAYS);
 
   const verificationStatus =
     user?.identityVerificationStatus ?? IdentityVerificationStatus.NotStarted;
@@ -113,6 +132,8 @@ export const useVerifyIdentityScreen = () => {
     verificationStatusDetails,
     personaInquiryId: user?.personaInquiryId ?? null,
     personaInquiryStatus: user?.personaInquiryStatus ?? null,
+    reminderLabel: `In ${TRIAL_LENGTH_DAYS - REMINDER_LEAD_DAYS} days`,
+    trialEndLabel: formatLongDate(trialEndDate),
     isPending:
       startVerification.isPending || refreshVerificationStatus.isPending,
     handlePrimaryAction,
