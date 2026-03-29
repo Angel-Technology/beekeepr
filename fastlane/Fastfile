@@ -273,7 +273,6 @@ platform :ios do
       silent: false,
       buildlog_path: File.join(project_root, "fastlane", "buildlog"),
 
-      xcargs: "CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=#{team_id} CODE_SIGN_IDENTITY='Apple Distribution' PROVISIONING_PROFILE_SPECIFIER='match AppStore #{bundle_id}'",
       export_options: {
         method: "app-store",
         signingStyle: "manual",
