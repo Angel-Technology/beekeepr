@@ -84,6 +84,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             CFBundleURLSchemes: [APP.scheme],
           },
         ],
+        NSCameraUsageDescription:
+          "Beekeepr uses the camera to capture your driver's license and selfie for identity verification.",
+        NSLocationWhenInUseUsageDescription:
+          'Beekeepr uses location during identity verification for fraud prevention and security checks.',
+        NSPhotoLibraryUsageDescription:
+          'Beekeepr can access your photo library if identity verification allows uploading ID images instead of capturing them live.',
       },
     },
 
@@ -125,6 +131,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             'com.googleusercontent.apps.1065098379708-jkbfs6ro7rlopgeqo94al7dm8jl1815b',
         },
       ],
+      './plugins/withPersonaNative',
       [
         'expo-font',
         {

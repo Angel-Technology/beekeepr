@@ -10,6 +10,8 @@ import {
   type SignInWithGoogleMutationVariables,
   SignOutDocument,
   type SignOutMutation,
+  StartPersonaInquiryDocument,
+  type StartPersonaInquiryMutation,
   VerifyEmailSignInDocument,
   type VerifyEmailSignInMutation,
   type VerifyEmailSignInMutationVariables,
@@ -54,6 +56,12 @@ export const authRepository = {
   signOut() {
     return executeGraphQL<SignOutMutation>({
       document: SignOutDocument,
+    });
+  },
+
+  startPersonaInquiry() {
+    return executeGraphQL<StartPersonaInquiryMutation>({
+      document: StartPersonaInquiryDocument,
     });
   },
 

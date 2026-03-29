@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { Text, View } from 'react-native';
 import type { AppImageSource } from '@assets/images';
-import { VerificationStatusPill } from './VerificationStatusPill';
+import { VerificationStatusPill } from '@components';
 
 type WhatWeDoStepCardProps = {
   image: AppImageSource;

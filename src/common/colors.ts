@@ -7,6 +7,7 @@ type BrandColors = {
   readonly secondary: ColorValue;
   readonly tertiary: ColorValue;
   readonly accent: ColorValue;
+  readonly trial: ColorValue;
 };
 
 type TextColors = {
@@ -114,6 +115,7 @@ export const colors: Colors = {
     secondary: '#FFF8CB',
     tertiary: '#E5AC03',
     accent: '#000000',
+    trial: '#FFC30D',
   },
   text: {
     inverse: '#FFFFFF',

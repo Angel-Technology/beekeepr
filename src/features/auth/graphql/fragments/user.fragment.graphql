@@ -4,4 +4,7 @@ fragment AuthUserFields on UserGraph {
   displayName
   emailVerified
   createdAtUtc
+  identityVerificationStatus
+  personaInquiryId
+  personaInquiryStatus
 }

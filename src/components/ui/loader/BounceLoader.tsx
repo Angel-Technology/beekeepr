@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import clsx from 'clsx';
 import { View } from 'react-native';
 import Animated, {
-  useSharedValue,
+  Easing,
   useAnimatedStyle,
+  useSharedValue,
+  withDelay,
   withRepeat,
   withTiming,
-  withDelay,
-  Easing,
 } from 'react-native-reanimated';
 
 export interface BounceLoaderProps {
@@ -20,11 +20,6 @@ const BOUNCE_HEIGHT = -4;
 const DURATION = 800;
 const STAGGER_DELAY = 150;
 
-/**
- * BounceLoader - A bouncing dots loader animation.
- * Three dots that bounce in sequence to indicate loading state.
- * Uses Reanimated for smooth UI-thread animations.
- */
 export const BounceLoader = ({
   colorClassName = 'bg-text-inverse',
   className,
@@ -35,7 +30,6 @@ export const BounceLoader = ({
   const bounce3 = useSharedValue(0);
 
   useEffect(() => {
-    // Using reverse: true for smooth oscillation (0→1→0→1...)
     const createBounceAnimation = (delay: number) =>
       withDelay(
         delay,
