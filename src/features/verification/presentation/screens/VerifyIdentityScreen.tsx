@@ -55,7 +55,7 @@ export const VerifyIdentityScreen = () => {
 
           <IconButton
             accessibilityLabel="Close verification"
-            className="border-none bg-transparent"
+            className="absolute -right-[20px] border-none bg-transparent"
             icon={<X size={24} strokeWidth={2.4} />}
             onPress={handleGoBack}
           />
@@ -84,7 +84,7 @@ export const VerifyIdentityScreen = () => {
       </View>
       <VerticalSpacer size="md" />
 
-      <View className="w-full flex-1 gap-6">
+      <View className="w-full flex-1 gap-6 p-5">
         <View className="gap-6">
           <Text className="font-poppins-semiBold text-700 text-text-default">
             How your trial works
@@ -95,28 +95,25 @@ export const VerifyIdentityScreen = () => {
             trialEndLabel={trialEndLabel}
           />
         </View>
+      </View>
+      <View className="mt-auto w-full gap-5">
+        <ButtonWithIcon
+          label={verificationStatusDetails.ctaLabel}
+          className="self-stretch"
+          disabled={!verificationStatusDetails.canStart}
+          iconRight={<ArrowRight size={22} strokeWidth={2.3} color="#FFFFFF" />}
+          loading={isPending}
+          onPress={() => {
+            void handlePrimaryAction();
+          }}
+        />
 
-        <View className="mt-auto w-full gap-5">
-          <ButtonWithIcon
-            label={verificationStatusDetails.ctaLabel}
-            className="self-stretch"
-            disabled={!verificationStatusDetails.canStart}
-            iconRight={
-              <ArrowRight size={22} strokeWidth={2.3} color="#FFFFFF" />
-            }
-            loading={isPending}
-            onPress={() => {
-              void handlePrimaryAction();
-            }}
-          />
-
-          <Button
-            className="self-stretch"
-            label="Enter promo code"
-            textClassName="font-sourceSans-semiBold text-600"
-            variant="outline"
-          />
-        </View>
+        <Button
+          className="self-stretch"
+          label="Enter promo code"
+          textClassName="font-sourceSans-semiBold text-600"
+          variant="outline"
+        />
       </View>
     </Container>
   );
