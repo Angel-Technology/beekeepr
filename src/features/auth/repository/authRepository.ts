@@ -1,5 +1,8 @@
 import { executeGraphQL } from '@src/lib/graphql/client';
 import {
+  AcceptTermsDocument,
+  type AcceptTermsMutation,
+  type AcceptTermsMutationVariables,
   CurrentUserDocument,
   type CurrentUserQuery,
   RequestEmailSignInDocument,
@@ -56,6 +59,12 @@ export const authRepository = {
   signOut() {
     return executeGraphQL<SignOutMutation>({
       document: SignOutDocument,
+    });
+  },
+
+  acceptTerms() {
+    return executeGraphQL<AcceptTermsMutation, AcceptTermsMutationVariables>({
+      document: AcceptTermsDocument,
     });
   },
 

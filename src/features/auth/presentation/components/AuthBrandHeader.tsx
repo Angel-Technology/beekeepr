@@ -5,7 +5,7 @@ import LogoBuzzkeepr from '@src/assets/svg/LogoBuzzkeepr';
 
 export const AuthBrandHeader = () => {
   return (
-    <View className="-mx-lg flex items-center self-stretch">
+    <View className="relative -mx-lg flex min-h-[132px] items-center self-stretch">
       <LogoBuzzkeepr width={300} height={65.782} />
 
       <View className="absolute -right-[0.242px] top-[38px] self-stretch">

@@ -40,10 +40,21 @@ export const useAuthActions = () => {
     },
   });
 
+  const acceptTerms = useMutation({
+    mutationFn: authService.acceptTerms,
+    onSuccess: (user) => {
+      queryClient.setQueryData(authQueryKeys.session(), user);
+    },
+    onError: (error) => {
+      Alert.alert('Terms Acceptance Failed', error.message);
+    },
+  });
+
   return {
     requestEmailSignIn,
     verifyEmailSignIn,
     signInWithGoogle,
     signOut,
+    acceptTerms,
   };
 };

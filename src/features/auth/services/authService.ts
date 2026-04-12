@@ -85,6 +85,20 @@ export const authService = {
     return payload.signOut.success;
   },
 
+  async acceptTerms() {
+    const payload = await authRepository.acceptTerms();
+
+    if (payload.acceptTerms.error) {
+      throw new Error(payload.acceptTerms.error);
+    }
+
+    if (!payload.acceptTerms.user) {
+      throw new Error('Terms acceptance succeeded but no user was returned.');
+    }
+
+    return payload.acceptTerms.user;
+  },
+
   async startPersonaInquiry(): Promise<PersonaInquiryStartResult> {
     const payload = await authRepository.startPersonaInquiry();
 

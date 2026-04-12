@@ -17,7 +17,7 @@ export const PlaceholderTabScreen = ({
       className="bg-bg-default"
     >
       <View className="flex-1 items-center justify-center self-stretch px-lg">
-        <Card className="w-full p-xl">
+        <Card className="w-full rounded-6 p-xl">
           <Text className="font-poppins-semiBold text-800 text-text-default">
             {title}
           </Text>

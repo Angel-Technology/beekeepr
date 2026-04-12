@@ -9,8 +9,10 @@ export type EnvironmentConfig = {
   graphQLBaseURL: string;
   googleIosClientId: string;
   googleWebClientId: string;
+  privacyPolicyURL: string;
   personaEnvironment: 'sandbox' | 'production';
   personaTemplateId: string;
+  termsOfUseURL: string;
 };
 
 const rawAppEnv = process.env.EXPO_PUBLIC_APP_ENV;
@@ -25,9 +27,11 @@ export const environmentConfig: EnvironmentConfig = {
   graphQLBaseURL: process.env.EXPO_PUBLIC_GRAPHQL_URL ?? '',
   googleIosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID ?? '',
   googleWebClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? '',
+  privacyPolicyURL: process.env.EXPO_PUBLIC_PRIVACY_POLICY_URL ?? '',
   personaEnvironment:
     process.env.EXPO_PUBLIC_PERSONA_ENVIRONMENT === 'production'
       ? 'production'
       : 'sandbox',
   personaTemplateId: process.env.EXPO_PUBLIC_PERSONA_TEMPLATE_ID ?? '',
+  termsOfUseURL: process.env.EXPO_PUBLIC_TERMS_OF_USE_URL ?? '',
 };

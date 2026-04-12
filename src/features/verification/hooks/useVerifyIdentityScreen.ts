@@ -7,8 +7,8 @@ import type {
   VerificationStatusDetails,
 } from '../models/verification.types';
 
-const TRIAL_LENGTH_DAYS = 30;
-const REMINDER_LEAD_DAYS = 5;
+const TRIAL_LENGTH_DAYS = 7;
+const REMINDER_LEAD_DAYS = 1;
 
 const addDays = (value: Date, days: number) => {
   const nextValue = new Date(value);

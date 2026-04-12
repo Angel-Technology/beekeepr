@@ -82,6 +82,7 @@ export const CreateAccountCodeScreen = () => {
           <Button
             label="Go Back"
             variant="outline"
+            size="md"
             className="self-stretch"
             textClassName="text-text-secondary"
             onPress={handleGoBack}
@@ -90,6 +91,7 @@ export const CreateAccountCodeScreen = () => {
         <View className="flex-1">
           <Button
             label="Submit"
+            size="md"
             className="self-stretch"
             disabled={!isComplete}
             loading={isPending}

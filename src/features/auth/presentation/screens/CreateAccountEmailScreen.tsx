@@ -64,6 +64,7 @@ export const CreateAccountEmailScreen = () => {
           <Button
             label="Go Back"
             variant="outline"
+            size="md"
             className="self-stretch"
             textClassName="text-text-secondary"
             onPress={handleGoBack}
@@ -73,6 +74,7 @@ export const CreateAccountEmailScreen = () => {
           <Button
             label="Send"
             className="self-stretch"
+            size="md"
             disabled={!canSubmit}
             loading={isPending}
             onPress={handleSend}

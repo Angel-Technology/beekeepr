@@ -30,7 +30,7 @@ export const VerifyIdentityScreen = () => {
     <Container
       safeArea
       safeAreaEdges={['top', 'bottom']}
-      className="gap-6 bg-bg-default py-4"
+      className="gap-5 bg-bg-default py-4"
     >
       <View className="w-full">
         <View className="w-full flex-row items-start gap-3">
@@ -43,13 +43,13 @@ export const VerifyIdentityScreen = () => {
           <View className="flex-1 items-center gap-2 pt-4">
             <VerticalSpacer size="xs" />
             <Text className="text-center font-poppins-semiBold text-600 text-text-default">
-              30-day Free trial
+              7-day Free trial
             </Text>
             <Text className="text-center font-poppins-regular text-300 text-text-weak">
-              Pay $3.95 + 30-day free trial,
+              Try 7 days for free,
             </Text>
             <Text className="text-center font-poppins-regular text-300 text-text-weak">
-              Then $9.95/month.
+              then $9.95/month.
             </Text>
           </View>
 
@@ -82,11 +82,11 @@ export const VerifyIdentityScreen = () => {
           </View>
         </View>
       </View>
-      <VerticalSpacer size="md" />
+      <VerticalSpacer size="xs" />
 
       <View className="w-full flex-1 gap-6 p-5">
         <View className="gap-6">
-          <Text className="font-poppins-semiBold text-700 text-text-default">
+          <Text className="font-poppins-semiBold text-xl text-text-default">
             How your trial works
           </Text>
 
@@ -100,6 +100,7 @@ export const VerifyIdentityScreen = () => {
         <ButtonWithIcon
           label={verificationStatusDetails.ctaLabel}
           className="self-stretch"
+          size="lg"
           disabled={!verificationStatusDetails.canStart}
           iconRight={<ArrowRight size={22} strokeWidth={2.3} color="#FFFFFF" />}
           loading={isPending}
@@ -111,6 +112,7 @@ export const VerifyIdentityScreen = () => {
         <Button
           className="self-stretch"
           label="Enter promo code"
+          size="lg"
           textClassName="font-sourceSans-semiBold text-600"
           variant="outline"
         />

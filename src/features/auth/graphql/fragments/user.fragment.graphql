@@ -7,4 +7,5 @@ fragment AuthUserFields on UserGraph {
   identityVerificationStatus
   personaInquiryId
   personaInquiryStatus
+  termsAcceptedAtUtc
 }
