@@ -55,41 +55,47 @@ export const TabButton = ({ tabs, style, childrenStyle }: TabButtonProps) => {
               isDisabled && 'opacity-50',
             )}
           >
-            <View className="flex-1 flex-row items-center gap-2.5">
-              {tab.leftIcon ? (
-                <View className="h-6 w-6 items-center justify-center">
-                  {tab.leftIcon}
-                </View>
-              ) : null}
-              <Text className="flex-1 font-sourceSans-semiBold text-base leading-[20.8px] text-text-default">
-                {tab.text}
-              </Text>
-            </View>
-
-            <View
-              className="flex-row items-center justify-center gap-1"
-              style={childrenStyle}
-            >
-              {typeof tab.children === 'string' ? (
-                <Text
-                  className="font-sourceSans-regular text-base text-text-weak"
-                  style={tab.childrenTextStyle}
-                >
-                  {tab.children}
-                </Text>
-              ) : (
-                tab.children
-              )}
-              {tab.loading ? (
+            {tab.loading ? (
+              <View className="w-full items-center justify-center">
                 <View className="h-6 w-6 items-center justify-center">
                   <BounceLoader colorClassName="bg-text-default" />
                 </View>
-              ) : rightIconToShow !== null ? (
-                <View className="h-6 w-6 items-center justify-center">
-                  {rightIconToShow}
+              </View>
+            ) : (
+              <>
+                <View className="flex-1 flex-row items-center gap-2.5">
+                  {tab.leftIcon ? (
+                    <View className="h-6 w-6 items-center justify-center">
+                      {tab.leftIcon}
+                    </View>
+                  ) : null}
+                  <Text className="flex-1 font-sourceSans-semiBold text-base leading-[20.8px] text-text-default">
+                    {tab.text}
+                  </Text>
                 </View>
-              ) : null}
-            </View>
+
+                <View
+                  className="flex-row items-center justify-center gap-1"
+                  style={childrenStyle}
+                >
+                  {typeof tab.children === 'string' ? (
+                    <Text
+                      className="font-sourceSans-regular text-base text-text-weak"
+                      style={tab.childrenTextStyle}
+                    >
+                      {tab.children}
+                    </Text>
+                  ) : (
+                    tab.children
+                  )}
+                  {rightIconToShow !== null ? (
+                    <View className="h-6 w-6 items-center justify-center">
+                      {rightIconToShow}
+                    </View>
+                  ) : null}
+                </View>
+              </>
+            )}
           </Pressable>
         );
       })}

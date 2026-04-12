@@ -1,7 +1,7 @@
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { Button, Container } from '@components';
-import { useCreateAccountCodeForm } from '@features/auth';
+import { useCreateAccountCodeForm } from '../../hooks/useCreateAccountCodeForm';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
 
 export const CreateAccountCodeScreen = () => {

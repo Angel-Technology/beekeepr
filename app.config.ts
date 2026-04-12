@@ -57,7 +57,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     orientation: 'portrait',
     scheme: APP.scheme,
     userInterfaceStyle: 'light',
-    newArchEnabled: true,
 
     // Fallback icon (Expo requires this; use your preferred default)
     icon: APP.icon,
@@ -106,12 +105,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         foregroundImage: APP.androidAdaptiveIconForeground,
         backgroundColor: APP.androidAdaptiveIconBackgroundColor,
       },
-
-      edgeToEdgeEnabled: true,
     },
 
     plugins: [
       'expo-router',
+      'expo-secure-store',
+      'expo-image',
+      'expo-web-browser',
       [
         'expo-splash-screen',
         {

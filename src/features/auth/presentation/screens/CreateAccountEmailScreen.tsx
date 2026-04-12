@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 
 import { Button, Container, FloatingLabelInput } from '@components';
-import { useCreateAccountEmailForm } from '@features/auth';
+import { useCreateAccountEmailForm } from '../../hooks/useCreateAccountEmailForm';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
 
 export const CreateAccountEmailScreen = () => {
