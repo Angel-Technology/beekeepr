@@ -69,7 +69,7 @@ export const VerificationStatusPill = ({
   return (
     <View
       className={clsx(
-        'flex flex-row items-center justify-center rounded-full bg-brand-highlight',
+        'flex flex-row items-center justify-center self-center rounded-full bg-brand-highlight',
         sizeStyles.container,
         className,
       )}

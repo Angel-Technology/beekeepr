@@ -1,5 +1,5 @@
-import { HomeScreen } from '@features/home';
+import { BuzzScreen } from '@features/home';
 
 export default function HomePage() {
-  return <HomeScreen />;
+  return <BuzzScreen />;
 }

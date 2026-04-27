@@ -1,11 +1,13 @@
-import { LogOut } from 'lucide-react-native';
+import { Crown, FileSearch, LogOut } from 'lucide-react-native';
 import { Text, View } from 'react-native';
 import { Drawer } from 'expo-router/drawer';
+import { useRouter } from 'expo-router';
 import { TabButton } from '@components';
 import { useAuthActions } from '@features/auth';
 
 function PlaceholderDrawerContent() {
   const { signOut } = useAuthActions();
+  const router = useRouter();
 
   return (
     <View className="flex-1 gap-6 bg-bg-default p-md pt-10">
@@ -20,6 +22,22 @@ function PlaceholderDrawerContent() {
 
       <TabButton
         tabs={[
+          {
+            text: 'Buzzkeepr Test Pro',
+            leftIcon: <Crown color="#000000" size={20} strokeWidth={2} />,
+            rightIcon: null,
+            onPress: () => {
+              router.push('/buy-pro');
+            },
+          },
+          {
+            text: 'Buzz records',
+            leftIcon: <FileSearch color="#000000" size={20} strokeWidth={2} />,
+            rightIcon: null,
+            onPress: () => {
+              router.push('/buzz-records');
+            },
+          },
           {
             text: 'Log out',
             loading: signOut.isPending,
@@ -57,6 +75,13 @@ export default function PrivateDrawerLayout() {
         options={{
           drawerLabel: 'Home',
           title: 'Home',
+        }}
+      />
+      <Drawer.Screen
+        name="buy-pro"
+        options={{
+          drawerLabel: 'Buzzkeepr Test Pro',
+          title: 'Buzzkeepr Test Pro',
         }}
       />
     </Drawer>

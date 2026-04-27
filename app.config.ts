@@ -112,6 +112,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       'expo-secure-store',
       'expo-image',
       'expo-web-browser',
+      '@react-native-community/datetimepicker',
       [
         'expo-splash-screen',
         {

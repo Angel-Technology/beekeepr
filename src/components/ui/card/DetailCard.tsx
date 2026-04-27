@@ -6,8 +6,8 @@ type DetailCardItem =
   | string
   | {
       id?: string;
-      label: string;
-      icon: ReactNode;
+      label: ReactNode;
+      icon?: ReactNode;
     };
 
 type DetailCardProps = {
@@ -50,9 +50,9 @@ export const DetailCard = ({
           itemsClassName,
         )}
       >
-        {items.map((item) => (
+        {items.map((item, index) => (
           <View
-            key={typeof item === 'string' ? item : (item.id ?? item.label)}
+            key={typeof item === 'string' ? item : (item.id ?? `item-${index}`)}
             className={clsx(
               'flex-row gap-2 self-stretch',
               typeof item === 'string' ? 'items-start' : 'items-center',
@@ -62,20 +62,34 @@ export const DetailCard = ({
               <Text className="shrink-0 font-sourceSans-regular text-base text-text-secondary">
                 •
               </Text>
-            ) : (
+            ) : item.icon ? (
               <View className="mr-1 h-5 w-5 items-center justify-center">
                 {item.icon}
               </View>
+            ) : null}
+            {typeof item === 'string' ? (
+              <Text
+                className={clsx(
+                  'flex-1 text-base text-text-secondary',
+                  itemTextClassName ? null : 'font-sourceSans-regular',
+                  itemTextClassName,
+                )}
+              >
+                {item}
+              </Text>
+            ) : typeof item.label === 'string' ? (
+              <Text
+                className={clsx(
+                  'flex-1 text-base text-text-secondary',
+                  itemTextClassName ? null : 'font-sourceSans-regular',
+                  itemTextClassName,
+                )}
+              >
+                {item.label}
+              </Text>
+            ) : (
+              <View className="flex-1">{item.label}</View>
             )}
-            <Text
-              className={clsx(
-                'flex-1 text-base text-text-secondary',
-                itemTextClassName ? null : 'font-sourceSans-regular',
-                itemTextClassName,
-              )}
-            >
-              {typeof item === 'string' ? item : item.label}
-            </Text>
           </View>
         ))}
       </View>

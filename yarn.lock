@@ -3606,6 +3606,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-community/datetimepicker@npm:8.6.0":
+  version: 8.6.0
+  resolution: "@react-native-community/datetimepicker@npm:8.6.0"
+  dependencies:
+    invariant: ^2.2.4
+  peerDependencies:
+    expo: ">=52.0.0"
+    react: "*"
+    react-native: "*"
+    react-native-windows: "*"
+  peerDependenciesMeta:
+    expo:
+      optional: true
+    react-native-windows:
+      optional: true
+  checksum: e4f0312225b9738d28b075fbfadb0be258ce91610abfd7d5728b06c92113d83de414e9708ae980d605594f037c1e4f68e1078923c34adc42b5c6b712520d65fc
+  languageName: node
+  linkType: hard
+
 "@react-native-google-signin/google-signin@npm:^16.1.2":
   version: 16.1.2
   resolution: "@react-native-google-signin/google-signin@npm:16.1.2"
@@ -5032,6 +5051,7 @@ __metadata:
     "@graphql-codegen/typed-document-node": ^6.0.1
     "@graphql-codegen/typescript": ^5.0.5
     "@graphql-codegen/typescript-operations": ^5.0.5
+    "@react-native-community/datetimepicker": 8.6.0
     "@react-native-google-signin/google-signin": ^16.1.2
     "@react-navigation/drawer": ^7.9.4
     "@tanstack/react-query": ^5.90.2

@@ -18,6 +18,7 @@ type FloatingLabelInputProps = {
   id: string;
   type: 'text' | 'phone' | 'date';
   placeholder: string;
+  required?: boolean;
   value: string;
   onChange: (text: string) => void;
   isValid?: boolean;
@@ -62,6 +63,7 @@ export const FloatingLabelInput = ({
   id,
   type,
   placeholder,
+  required = false,
   value,
   onChange,
   isValid = true,
@@ -103,13 +105,29 @@ export const FloatingLabelInput = ({
     labelPosition.value = withTiming(value ? 1 : 0, { duration: 200 });
   }, [labelPosition, value]);
 
-  const animatedLabelStyle = useAnimatedStyle(() => {
+  const animatedLabelContainerStyle = useAnimatedStyle(() => {
     return {
+      left: required
+        ? interpolate(labelPosition.value, [0, 1], [12, 0])
+        : 0,
       transform: [
         {
           translateY: interpolate(labelPosition.value, [0, 1], [0, -18]),
         },
       ],
+    };
+  });
+
+  const animatedLabelStyle = useAnimatedStyle(() => {
+    return {
+      fontSize: interpolate(labelPosition.value, [0, 1], [16, 12]),
+      lineHeight: interpolate(labelPosition.value, [0, 1], [20, 16]),
+    };
+  });
+
+  const animatedRequiredStarStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(labelPosition.value, [0, 1], [1, 0]),
       fontSize: interpolate(labelPosition.value, [0, 1], [16, 12]),
       lineHeight: interpolate(labelPosition.value, [0, 1], [20, 16]),
     };
@@ -154,15 +172,29 @@ export const FloatingLabelInput = ({
         </Text>
       )}
 
-      <Animated.Text
-        className={clsx(
-          'absolute left-0 top-5 font-sourceSans-regular text-300',
-          isValid ? 'text-text-weak' : 'text-text-critical',
-        )}
-        style={animatedLabelStyle}
+      <Animated.View
+        className="absolute top-5 flex-row items-center"
+        style={animatedLabelContainerStyle}
       >
-        {placeholder}
-      </Animated.Text>
+      {required ? (
+        <Animated.Text
+            className="mr-1 font-sourceSans-regular text-text-critical"
+            style={animatedRequiredStarStyle}
+          >
+            *
+          </Animated.Text>
+        ) : null}
+
+        <Animated.Text
+          className={clsx(
+            'font-sourceSans-regular text-300',
+            isValid ? 'text-text-weak' : 'text-text-critical',
+          )}
+          style={animatedLabelStyle}
+        >
+          {placeholder}
+        </Animated.Text>
+      </Animated.View>
 
       {!isValid && errorText ? (
         <View className="flex flex-row items-center gap-3">

@@ -79,6 +79,10 @@ const getVerificationStatusDetails = ({
   }
 };
 
+const shouldOpenBuzzRecords = (status?: string | null) => {
+  return status === 'APPROVED' || status === 'COMPLETED';
+};
+
 export const useVerifyIdentityScreen = () => {
   const router = useRouter();
   const { data: user } = useAuthSession();
@@ -100,6 +104,11 @@ export const useVerifyIdentityScreen = () => {
       const result = await startVerification.mutateAsync();
       console.log('[verification] mutation resolved', result);
 
+      if (shouldOpenBuzzRecords(result.launch.status)) {
+        router.replace('/buzz-records');
+        return;
+      }
+
       Alert.alert(
         'Verification Submitted',
         `Inquiry ${result.launch.inquiryId} finished with status "${result.launch.status}".`,
@@ -112,7 +121,7 @@ export const useVerifyIdentityScreen = () => {
 
   const handlePrimaryAction = async () => {
     if (verificationStatus === IdentityVerificationStatus.Approved) {
-      router.replace('/');
+      router.replace('/buzz-records');
       return;
     }
 

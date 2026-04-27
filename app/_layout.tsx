@@ -7,6 +7,7 @@ import { useAuthSession } from '@features/auth';
 import '../global.css';
 import { useEffect } from 'react';
 import { QueryProvider } from '@src/lib/tanstack/QueryProvider';
+import { RevenueCatProvider } from '@src/lib/revenuecat';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -52,7 +53,9 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryProvider>
         <SafeAreaProvider>
-          <RootNavigator />
+          <RevenueCatProvider>
+            <RootNavigator />
+          </RevenueCatProvider>
         </SafeAreaProvider>
       </QueryProvider>
     </GestureHandlerRootView>
