@@ -6,12 +6,8 @@ import {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import {
-  Dimensions,
-  Insets,
-  LayoutChangeEvent,
-  I18nManager,
-} from 'react-native';
+import type { Insets, LayoutChangeEvent } from 'react-native';
+import { Dimensions, I18nManager } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -42,10 +38,8 @@ import type {
   PaperOnboardingScreenDimensions,
 } from './types';
 
-type PaperOnboarding = PaperOnboardingMethods;
-
 const PaperOnboardingComponent = forwardRef<
-  PaperOnboarding,
+  PaperOnboardingMethods,
   PaperOnboardingProps
 >(
   (
@@ -64,7 +58,7 @@ const PaperOnboardingComponent = forwardRef<
       onCloseButtonPress = DEFAULT_CLOSE_BUTTON_CALLBACK,
       onIndexChange,
     },
-    ref
+    ref,
   ) => {
     const [dimensions, setDimensions] =
       useState<PaperOnboardingScreenDimensions>({
@@ -112,7 +106,7 @@ const PaperOnboardingComponent = forwardRef<
           animatedIndex.value,
           inputRange,
           I18nManager.isRTL ? [...outputRange].reverse() : outputRange,
-          Extrapolation.CLAMP
+          Extrapolation.CLAMP,
         ) + indicatorsContainerLeftPadding
       );
     });
@@ -123,7 +117,7 @@ const PaperOnboardingComponent = forwardRef<
         'worklet';
         gestureActive.value = true;
       })
-      .onUpdate(event => {
+      .onUpdate((event) => {
         'worklet';
         translationValue.value =
           direction === 'horizontal' ? event.translationX : event.translationY;
@@ -142,7 +136,9 @@ const PaperOnboardingComponent = forwardRef<
     // Public methods
     const handleNavigateToNextPage = useCallback(() => {
       const idx = currentIndex.value;
-      if (idx >= data.length - 1) return;
+      if (idx >= data.length - 1) {
+        return;
+      }
       const target = idx + 1;
       currentIndex.value = target;
       translationValue.value = 0;
@@ -158,7 +154,9 @@ const PaperOnboardingComponent = forwardRef<
 
     const handleNavigateToPreviousPage = useCallback(() => {
       const idx = currentIndex.value;
-      if (idx <= 0) return;
+      if (idx <= 0) {
+        return;
+      }
       const target = idx - 1;
       currentIndex.value = target;
       translationValue.value = 0;
@@ -172,7 +170,7 @@ const PaperOnboardingComponent = forwardRef<
         next: handleNavigateToNextPage,
         previous: handleNavigateToPreviousPage,
       }),
-      [handleNavigateToNextPage, handleNavigateToPreviousPage]
+      [handleNavigateToNextPage, handleNavigateToPreviousPage],
     );
 
     // Index change callback
@@ -186,7 +184,7 @@ const PaperOnboardingComponent = forwardRef<
         ) {
           runOnJS(onIndexChange)(roundedIndex);
         }
-      }
+      },
     );
 
     const handleOnLayout = useCallback(
@@ -197,7 +195,7 @@ const PaperOnboardingComponent = forwardRef<
       }: LayoutChangeEvent) => {
         setDimensions({ width, height });
       },
-      []
+      [],
     );
 
     return (
@@ -240,20 +238,24 @@ const PaperOnboardingComponent = forwardRef<
             safeInsets={safeInsets}
           />
 
-          <CloseButton
-            data={data}
-            animatedIndex={animatedIndex}
-            safeInsets={safeInsets}
-            closeButtonText={closeButtonText}
-            closeButtonTextStyle={closeButtonTextStyle}
-            closeButton={closeButton}
-            onCloseButtonPress={onCloseButtonPress}
-          />
+          {closeButton !== null ? (
+            <CloseButton
+              data={data}
+              animatedIndex={animatedIndex}
+              safeInsets={safeInsets}
+              closeButtonText={closeButtonText}
+              closeButtonTextStyle={closeButtonTextStyle}
+              closeButton={closeButton}
+              onCloseButtonPress={onCloseButtonPress}
+            />
+          ) : null}
         </Animated.View>
       </GestureDetector>
     );
-  }
+  },
 );
+
+PaperOnboardingComponent.displayName = 'PaperOnboarding';
 
 const PaperOnboarding = memo(PaperOnboardingComponent);
 

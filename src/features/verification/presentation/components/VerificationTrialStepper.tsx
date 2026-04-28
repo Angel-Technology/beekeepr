@@ -8,6 +8,14 @@ type VerificationTrialStepperProps = {
   trialEndLabel: string;
 };
 
+const titleClassName = 'font-poppins-semiBold text-base text-text-default';
+const descriptionClassName =
+  'font-poppins-regular text-sm leading-[20px] text-text-default';
+const outlineIconWrapperClassName =
+  'p-[10px] bg-transparent border border-brand-highlight';
+const filledIconWrapperClassName = 'p-[10px] bg-brand-highlight';
+const connectorClassName = 'my-0 bg-brand-highlight';
+
 export const VerificationTrialStepper = ({
   reminderLabel,
   trialEndLabel,
@@ -20,28 +28,27 @@ export const VerificationTrialStepper = ({
         {
           key: 'today',
           title: 'Today',
-          icon: <LockKeyholeOpen size={15} strokeWidth={2.8} />,
-          titleClassName: 'font-poppins-semiBold text-base text-text-default',
-          descriptionClassName:
-            'font-poppins-regular text-sm leading-[20px] text-text-weak',
-          iconWrapperClassName: 'p-[10px]',
-          connectorClassName: 'my-0 bg-brand-primary',
-          description: 'You pay nothing to start.',
+          icon: <LockKeyholeOpen size={15} strokeWidth={2.8} color="#000000" />,
+          titleClassName,
+          descriptionClassName,
+          iconWrapperClassName: filledIconWrapperClassName,
+          connectorClassName,
+          description: 'Today you pay $3.95 application fee.',
           content: (
-            <Text className="font-poppins-regular text-sm leading-[20px] text-text-weak">
-              Your 7-day free trial will begin, after you pass our screening.
+            <Text className="font-poppins-regular text-xs leading-[1.3] text-text-weak">
+              After you pass our screening, your 7-day free trial begins.
             </Text>
           ),
         },
         {
           key: 'reminder',
           title: reminderLabel,
-          icon: <Bell size={15} strokeWidth={2.8} />,
-          titleClassName: 'font-poppins-semiBold text-base text-text-default',
+          icon: <Bell size={15} strokeWidth={2.8} color="#000000" />,
+          titleClassName,
           descriptionClassName:
-            'font-poppins-regular text-sm leading-[20px] text-text-weak',
-          iconWrapperClassName: 'p-[10px]',
-          connectorClassName: 'my-0 bg-brand-primary',
+            'font-poppins-medium text-sm leading-[20px] text-text-weak',
+          iconWrapperClassName: outlineIconWrapperClassName,
+          connectorClassName,
           description:
             "We'll send you a reminder that your trial is ending soon.",
         },
@@ -49,10 +56,10 @@ export const VerificationTrialStepper = ({
           key: 'trial-end',
           title: trialEndLabel,
           icon: <IntroBeeIcon width={15} height={15} />,
-          titleClassName: 'font-poppins-semiBold text-base text-text-default',
+          titleClassName,
           descriptionClassName:
-            'font-poppins-regular text-sm leading-[20px] text-text-weak',
-          iconWrapperClassName: 'p-[10px]',
+            'font-poppins-medium text-sm leading-[20px] text-text-weak',
+          iconWrapperClassName: outlineIconWrapperClassName,
           description:
             'Trial ends. You will be charged $9.95 unless you cancel before this date.',
         },

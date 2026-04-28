@@ -1,6 +1,12 @@
-import { Text, View } from 'react-native';
+import { Keyboard, Text, TouchableWithoutFeedback, View } from 'react-native';
 
-import { Button, Container, FloatingLabelInput } from '@components';
+import {
+  Button,
+  Container,
+  FormCard,
+  Input,
+  VerticalSpacer,
+} from '@components';
 import { useCreateAccountEmailForm } from '../../hooks/useCreateAccountEmailForm';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
 
@@ -21,66 +27,73 @@ export const CreateAccountEmailScreen = () => {
     <Container
       safeArea
       safeAreaEdges={['top', 'bottom']}
-      keyboardAvoiding
-      className="gap-8 self-stretch bg-bg-default p-0"
+      className="flex-1 bg-bg-default"
     >
-      <AuthBrandHeader />
-      <View className="flex flex-col items-start gap-7 self-stretch">
-        <View className=" w-full gap-2">
-          <Text className="font-poppins-semiBold text-700 text-text-default">
-            Enter your Email Address
-          </Text>
-          <Text className="font-sourceSans-regular text-base text-text-secondary">
-            We will send you a{' '}
-            <Text className="font-sourceSans-semiBold text-text-default">
-              One Time Verification Code
-            </Text>{' '}
-            via this email address.
-          </Text>
-        </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View className="flex-1 self-stretch">
+          <AuthBrandHeader />
+          <VerticalSpacer size="2xl" />
 
-        <View className="flex flex-col items-start gap-6 self-stretch rounded-5 border border-border-secondary p-lg">
-          <FloatingLabelInput
-            id="create-account-email"
-            type="text"
-            placeholder="Email"
-            value={email}
-            onChange={setEmail}
-            isValid={!shouldShowEmailError}
-            errorText="Please enter a valid email address."
-            onBlur={validate}
-            onSubmitEditing={validate}
-          />
-        </View>
+          <View className="flex-1 justify-start gap-7 self-stretch ">
+            <View className="gap-4 self-stretch">
+              <Text className="text-center font-poppins-semiBold text-2xl leading-tight text-text-default">
+                Enter email
+              </Text>
+              <Text
+                className="text-center font-lexend-regular text-base leading-6 text-text-default"
+                style={{ letterSpacing: -0.3 }}
+              >
+                We’ll send you a{' '}
+                <Text className="font-lexend-semiBold">
+                  One Time Verification Code
+                </Text>{' '}
+                via this email address.
+              </Text>
+            </View>
 
-        {serverError ? (
-          <Text className="font-sourceSans-regular text-200 text-text-critical">
-            {serverError}
-          </Text>
-        ) : null}
-      </View>
-      <View className="mt-auto w-full flex-row gap-3 pb-4">
-        <View className="flex-1">
-          <Button
-            label="Go Back"
-            variant="outline"
-            size="md"
-            className="self-stretch"
-            textClassName="text-text-secondary"
-            onPress={handleGoBack}
-          />
+            <FormCard>
+              <Input
+                label="Email Address"
+                type="email"
+                placeholder="name@website.com"
+                value={email}
+                onChangeText={setEmail}
+                error={
+                  shouldShowEmailError
+                    ? 'Please enter a valid email address.'
+                    : undefined
+                }
+                onBlur={validate}
+                onSubmitEditing={validate}
+              />
+            </FormCard>
+
+            {serverError ? (
+              <Text className="font-lexend-regular text-sm text-text-critical">
+                {serverError}
+              </Text>
+            ) : null}
+          </View>
+
+          <View className="w-full flex-row gap-2 pb-4">
+            <View className="flex-1">
+              <Button
+                label="Go Back"
+                variant="outline"
+                onPress={handleGoBack}
+              />
+            </View>
+            <View className="flex-1">
+              <Button
+                label="Send"
+                disabled={!canSubmit}
+                loading={isPending}
+                onPress={handleSend}
+              />
+            </View>
+          </View>
         </View>
-        <View className="flex-1">
-          <Button
-            label="Send"
-            className="self-stretch"
-            size="md"
-            disabled={!canSubmit}
-            loading={isPending}
-            onPress={handleSend}
-          />
-        </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Container>
   );
 };

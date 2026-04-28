@@ -3,13 +3,7 @@ import { ArrowRight, X } from 'lucide-react-native';
 import { appImages } from '@assets/images';
 import IntroBeeIcon from '@src/assets/svg/IntroBeeIcon';
 import LineBuzz from '@src/assets/svg/LineBuzz';
-import {
-  Button,
-  ButtonWithIcon,
-  Container,
-  IconButton,
-  VerticalSpacer,
-} from '@components';
+import { Button, Container, IconButton, VerticalSpacer } from '@components';
 import { useVerifyIdentityScreen } from '../../hooks/useVerifyIdentityScreen';
 import { VerificationTrialStepper } from '../components/VerificationTrialStepper';
 
@@ -23,7 +17,7 @@ export const VerifyIdentityScreen = () => {
     handlePrimaryAction,
     handleGoBack,
   } = useVerifyIdentityScreen();
-  const buzzWidth = Math.max(windowWidth - 100, 240);
+  const buzzWidth = Math.max(windowWidth - 130, 200);
   const buzzHeight = (buzzWidth * 63) / 282;
 
   return (
@@ -35,34 +29,42 @@ export const VerifyIdentityScreen = () => {
       <View className="w-full">
         <View className="w-full flex-row items-start gap-3">
           <Image
-            source={appImages.beeBadge}
+            source={appImages.illustrationTrial}
             resizeMode="contain"
-            style={{ width: 83, height: 122, transform: [{ scaleX: -1 }] }}
+            style={{ width: 123, height: 180.795 }}
           />
 
-          <View className="flex-1 items-center gap-2 pt-4">
-            <VerticalSpacer size="xs" />
-            <Text className="text-center font-poppins-semiBold text-600 text-text-default">
-              7-day Free trial
-            </Text>
-            <Text className="text-center font-poppins-regular text-300 text-text-weak">
-              Try 7 days for free,
-            </Text>
-            <Text className="text-center font-poppins-regular text-300 text-text-weak">
-              then $9.95/month.
-            </Text>
+          <View className="flex-1 flex-col items-center justify-center gap-2">
+            <IconButton
+              accessibilityLabel="Close verification"
+              className="-mr-3 -mt-3 self-end border-none bg-transparent"
+              icon={<X size={24} strokeWidth={2.4} />}
+              onPress={handleGoBack}
+            />
+
+            <View className="flex-1 flex-col items-center gap-3">
+              <View>
+                <Text className="text-center font-poppins-semiBold text-800 text-text-default">
+                  7-day
+                </Text>
+                <Text className="text-center font-poppins-semiBold text-800 text-text-default">
+                  Free trial
+                </Text>
+              </View>
+              <View>
+                <Text className="text-center font-poppins-regular text-300 text-text-weak">
+                  Try 7 days for free,
+                </Text>
+                <Text className="text-center font-poppins-regular text-300 text-text-weak">
+                  then $9.95/month.
+                </Text>
+              </View>
+            </View>
           </View>
-
-          <IconButton
-            accessibilityLabel="Close verification"
-            className="absolute -right-[20px] border-none bg-transparent"
-            icon={<X size={24} strokeWidth={2.4} />}
-            onPress={handleGoBack}
-          />
         </View>
 
         <View
-          className="absolute right-4 top-[100.891px]"
+          className="absolute right-1 top-[150.891px]"
           style={{ width: buzzWidth, height: buzzHeight }}
         >
           <View
@@ -82,7 +84,7 @@ export const VerifyIdentityScreen = () => {
           </View>
         </View>
       </View>
-      <VerticalSpacer size="xs" />
+      <VerticalSpacer />
 
       <View className="w-full flex-1 gap-6 p-5">
         <View className="gap-6">
@@ -97,10 +99,9 @@ export const VerifyIdentityScreen = () => {
         </View>
       </View>
       <View className="mt-auto w-full gap-5">
-        <ButtonWithIcon
+        <Button
           label={verificationStatusDetails.ctaLabel}
           className="self-stretch"
-          size="lg"
           disabled={!verificationStatusDetails.canStart}
           iconRight={<ArrowRight size={22} strokeWidth={2.3} color="#FFFFFF" />}
           loading={isPending}
@@ -112,7 +113,6 @@ export const VerifyIdentityScreen = () => {
         <Button
           className="self-stretch"
           label="Enter promo code"
-          size="lg"
           textClassName="font-sourceSans-semiBold text-600"
           variant="outline"
         />

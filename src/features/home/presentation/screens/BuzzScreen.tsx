@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useNavigation } from 'expo-router';
 import { DrawerActions } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -71,26 +71,20 @@ export const BuzzScreen = () => {
         }
       />
 
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{
-          paddingHorizontal: 20,
-          paddingBottom: Math.max(insets.bottom + 32, 48),
-        }}
-        showsVerticalScrollIndicator={false}
+      <View
+        className="flex-1 gap-6 px-5"
+        style={{ paddingBottom: Math.max(insets.bottom + 32, 48) }}
       >
-        <View className="gap-6">
-          <VerticalSpacer size="xs" />
-          {flow === 'verify' ? <BuzzVerifyFlow /> : null}
-          {flow === 'active' ? (
-            <BuzzActiveFlow
-              onReviewSubmittedInfo={() => {
-                resetSubmittedBackgroundCheck();
-              }}
-            />
-          ) : null}
-        </View>
-      </ScrollView>
+        <VerticalSpacer size="xs" />
+        {flow === 'verify' ? <BuzzVerifyFlow /> : null}
+        {flow === 'active' ? (
+          <BuzzActiveFlow
+            onReviewSubmittedInfo={() => {
+              resetSubmittedBackgroundCheck();
+            }}
+          />
+        ) : null}
+      </View>
     </View>
   );
 };

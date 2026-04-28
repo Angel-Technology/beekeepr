@@ -1,19 +1,24 @@
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Keyboard,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 
-import { Button, Container } from '@components';
+import { Button, Container, FormCard, OtpInput } from '@components';
 import { useCreateAccountCodeForm } from '../../hooks/useCreateAccountCodeForm';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
 
 export const CreateAccountCodeScreen = () => {
   const {
     email,
-    digits,
-    inputRefs,
+    code,
+    setCode,
+    codeLength,
     isComplete,
     isPending,
     isResending,
-    handleDigitChange,
-    handleKeyPress,
     handleSubmit,
     handleResend,
     handleGoBack,
@@ -27,78 +32,70 @@ export const CreateAccountCodeScreen = () => {
     <Container
       safeArea
       safeAreaEdges={['top', 'bottom']}
-      keyboardAvoiding
-      className="gap-8 self-stretch bg-bg-default p-0"
+      className="flex-1 bg-bg-default"
     >
-      <AuthBrandHeader />
-      <View className="flex flex-col items-start gap-7 self-stretch">
-        <View className="w-full gap-2">
-          <Text className="font-poppins-semiBold text-700 text-text-default">
-            Enter your Verification Code
-          </Text>
-          <Text className="font-sourceSans-regular text-base text-text-secondary">
-            We sent a verification code to your email{' '}
-            <Text className="font-sourceSans-semiBold text-text-default">
-              {email}
-            </Text>
-          </Text>
-        </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View className="flex-1 self-stretch">
+          <AuthBrandHeader />
 
-        <View className="flex w-full flex-row justify-center gap-4 self-stretch">
-          {digits.map((digit, index) => (
-            <TextInput
-              key={`code-digit-${index}`}
-              ref={(input) => {
-                inputRefs.current[index] = input;
+          <View className="flex-1 gap-6 self-stretch pt-7">
+            <View className="gap-4 self-stretch">
+              <Text className="text-center font-poppins-semiBold text-2xl leading-tight text-text-default">
+                Enter verification code
+              </Text>
+              <Text
+                className="text-center font-lexend-regular text-base leading-6 text-text-default"
+                // style={{ letterSpacing: -0.3 }}
+              >
+                We sent a verification code to your email{' '}
+                <Text className="font-lexend-regular">{email}</Text>.
+              </Text>
+            </View>
+
+            <FormCard className="py-6">
+              <OtpInput
+                value={code}
+                onChange={setCode}
+                length={codeLength}
+                autoFocus
+              />
+            </FormCard>
+
+            <TouchableOpacity
+              accessibilityRole="button"
+              disabled={isResending}
+              onPress={() => {
+                void handleResend();
               }}
-              autoFocus={index === 0}
-              className="h-[50px] w-[50px] rounded-3 border border-border-secondary text-center font-sourceSans-regular text-base text-text-default"
-              keyboardType="number-pad"
-              maxLength={1}
-              onChangeText={(value) => handleDigitChange(value, index)}
-              onKeyPress={({ nativeEvent }) =>
-                handleKeyPress(nativeEvent.key, index)
-              }
-              selectTextOnFocus
-              value={digit}
-            />
-          ))}
-        </View>
+              className="self-center"
+            >
+              <Text className="font-lexend-semiBold text-base text-text-default underline">
+                {isResending ? 'Sending…' : 'Resend code'}
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        <TouchableOpacity
-          accessibilityRole="button"
-          disabled={isResending}
-          onPress={() => {
-            void handleResend();
-          }}
-        >
-          <Text className="font-sourceSans-medium text-base text-text-default underline">
-            {isResending ? 'Sending...' : 'Resend code'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View className="mt-auto w-full flex-row gap-3">
-        <View className="flex-1">
-          <Button
-            label="Go Back"
-            variant="outline"
-            size="md"
-            className="self-stretch"
-            textClassName="text-text-secondary"
-            onPress={handleGoBack}
-          />
+          <View className="w-full flex-row gap-2 pb-4 pt-6">
+            <View className="flex-1">
+              <Button
+                label="Go Back"
+                variant="outline"
+                onPress={handleGoBack}
+              />
+            </View>
+            <View className="flex-1">
+              <Button
+                label="Submit"
+                disabled={!isComplete}
+                loading={isPending}
+                onPress={() => {
+                  void handleSubmit();
+                }}
+              />
+            </View>
+          </View>
         </View>
-        <View className="flex-1">
-          <Button
-            label="Submit"
-            size="md"
-            className="self-stretch"
-            disabled={!isComplete}
-            loading={isPending}
-            onPress={handleSubmit}
-          />
-        </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Container>
   );
 };

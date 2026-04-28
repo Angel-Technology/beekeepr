@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import clsx from 'clsx';
 import IntroBeeIcon from '@assets/svg/IntroBeeIcon';
@@ -10,6 +11,7 @@ type VerificationStatusPillProps = {
   className?: string;
   textClassName?: string;
   iconColor?: string;
+  icon?: ReactNode;
 };
 
 const VERIFICATION_STATUS_PILL_SIZE_STYLES: Record<
@@ -65,22 +67,28 @@ export const VerificationStatusPill = ({
   className,
   textClassName,
   iconColor,
+  icon,
 }: VerificationStatusPillProps) => {
   const sizeStyles = VERIFICATION_STATUS_PILL_SIZE_STYLES[size];
+
+  const hasBackgroundOverride = Boolean(className?.match(/\bbg-/));
 
   return (
     <View
       className={clsx(
-        'flex flex-row items-center justify-center self-center rounded-full bg-brand-highlight',
+        'flex flex-row items-center justify-center self-center rounded-full',
+        !hasBackgroundOverride && 'bg-brand-highlight',
         sizeStyles.container,
         className,
       )}
     >
-      <IntroBeeIcon
-        width={sizeStyles.iconWidth}
-        height={sizeStyles.iconHeight}
-        color={iconColor}
-      />
+      {icon ?? (
+        <IntroBeeIcon
+          width={sizeStyles.iconWidth}
+          height={sizeStyles.iconHeight}
+          color={iconColor}
+        />
+      )}
       <Text
         className={clsx(
           'font-sourceSans-semiBold text-text-default',

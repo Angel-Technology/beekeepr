@@ -5,32 +5,43 @@ import { VerificationStatusPill } from '@components';
 
 type WhatWeDoSlideProps = {
   illustration: ReactNode;
-  badgeLabel: string;
   title: string;
+  body: ReactNode;
+  pillLabel?: string;
+  pillIcon?: ReactNode;
+  cta?: ReactNode;
 };
 
 export const WhatWeDoSlide = ({
   illustration,
-  badgeLabel,
   title,
+  body,
+  pillLabel,
+  pillIcon,
+  cta,
 }: WhatWeDoSlideProps) => {
   return (
-    <View className="flex-1 items-center justify-center gap-6 self-stretch">
-      <View className="items-center justify-center self-stretch">
+    <View className="w-full max-w-[345px] items-center gap-6 self-center py-4">
+      <View className="w-full items-center gap-4">
+        {pillLabel ? (
+          <VerificationStatusPill
+            label={pillLabel}
+            size="sm"
+            className="bg-bg-default px-3.5"
+            icon={pillIcon}
+          />
+        ) : null}
         {illustration}
       </View>
 
-      <VerificationStatusPill
-        label={badgeLabel}
-        size="sm"
-        className="bg-text-default"
-        textClassName="text-text-inverse"
-        iconColor="#FFFFFF"
-      />
+      <View className="w-full items-center gap-4">
+        <Text className="w-full text-center font-poppins-semiBold text-2xl leading-tight text-text-default">
+          {title}
+        </Text>
+        <View className="w-full items-center">{body}</View>
+      </View>
 
-      <Text className="text-center font-poppins-semiBold text-700 text-text-default">
-        {title}
-      </Text>
+      {cta ? <View className="w-full items-center pt-2">{cta}</View> : null}
     </View>
   );
 };

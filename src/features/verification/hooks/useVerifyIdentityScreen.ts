@@ -73,7 +73,7 @@ const getVerificationStatusDetails = ({
         title: 'Verification not started',
         description:
           'Start Persona to capture your driver’s license and selfie.',
-        ctaLabel: 'Start Verification',
+        ctaLabel: 'Pay fee to get started',
         canStart: true,
       };
   }

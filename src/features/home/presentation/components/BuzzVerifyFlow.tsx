@@ -1,11 +1,6 @@
 import { useRouter } from 'expo-router';
 import { ArrowRight, FolderX, IdCard, ReceiptText } from 'lucide-react-native';
-import {
-  ButtonWithIcon,
-  Card,
-  DetailCard,
-  VerificationStatusPill,
-} from '@components';
+import { Button, Card, DetailCard, VerificationStatusPill } from '@components';
 import { Text, View } from 'react-native';
 
 export const BuzzVerifyFlow = () => {
@@ -27,10 +22,7 @@ export const BuzzVerifyFlow = () => {
         </View>
       </View>
 
-      <VerificationStatusPill
-        label="ID verified / No criminal records found"
-        size="sm"
-      />
+      <VerificationStatusPill label="ID verified / No criminal records found" />
 
       <Text className="text-center font-poppins-regular text-400 text-text-default">
         It&apos;s proven that people with visible trust signals get more
@@ -62,9 +54,8 @@ export const BuzzVerifyFlow = () => {
         ]}
       />
 
-      <ButtonWithIcon
-        label="Verify your identity"
-        size="lg"
+      <Button
+        label="Get Started"
         iconRight={<ArrowRight color="#FFFFFF" size={24} strokeWidth={2.2} />}
         onPress={() => {
           router.push('/verify-identity');

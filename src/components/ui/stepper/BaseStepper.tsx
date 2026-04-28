@@ -61,20 +61,20 @@ const StepperItem = ({
 
       <View className={clsx('flex-1 gap-3', contentClassName)}>
         <Text
-          className={clsx(
-            'font-poppins-semiBold text-400 text-text-default',
-            item.titleClassName,
-          )}
+          className={
+            item.titleClassName ??
+            'font-poppins-semiBold text-400 text-text-default'
+          }
         >
           {item.title}
         </Text>
 
         {item.description ? (
           <Text
-            className={clsx(
-              'font-poppins-regular text-300 text-text-weak',
-              item.descriptionClassName,
-            )}
+            className={
+              item.descriptionClassName ??
+              'font-poppins-regular text-300 text-text-weak'
+            }
           >
             {item.description}
           </Text>

@@ -1,4 +1,5 @@
 export { Button } from './Button';
-export { ButtonWithIcon } from './ButtonWithIcon';
+export { BuzzButton } from './BuzzButton';
+export { CompactButton } from './CompactButton';
 export { IconButton } from './IconButton';
 export { TabButton } from './TabButton';

@@ -4,15 +4,16 @@
 
 ## Where stories live
 
-Co-locate the story next to its component:
+Co-locate three files next to the component:
 
 ```text
 src/components/ui/button/
-  Button.tsx
-  Button.stories.tsx
+  Button.tsx          # the component
+  Button.stories.tsx  # interactive story scenarios (controls + actions)
+  Button.docs.md      # narrative usage doc — anatomy, props table, when to use, quirks
 ```
 
-Story files match `*.stories.{ts,tsx}` under `src/**`. The glob in `.rnstorybook/main.ts` picks them up automatically; `withStorybook` regenerates the registry on every Metro start. **No manual `yarn storybook-generate` is needed during dev.**
+Story files match `*.stories.{ts,tsx}` under `src/**`. The glob in `.rnstorybook/main.ts` picks them up automatically; `withStorybook` regenerates the registry on every Metro start. **No manual `yarn storybook-generate` is needed during dev.** The `.docs.md` file is human-readable reference, not consumed by Storybook itself — link to it from the story's docstring.
 
 ## Coverage tiers
 
@@ -41,6 +42,8 @@ You don't need to repeat that scaffolding inside each story — render the compo
  *
  * Covers: solid + outline variants, every size, loading + disabled states.
  * Press the button in the canvas — `onPress` fires into the Actions panel.
+ *
+ * See `./Button.docs.md` for the full component flow and usage guide.
  */
 import type { Meta, StoryObj } from '@storybook/react-native';
 
@@ -65,29 +68,40 @@ const meta = {
     onPress: { action: 'onPress' },
   },
   parameters: {
-    notes: 'The shared Button. Supports …',
+    notes: `
+# Button
+
+The shared CTA primitive. Solid + outline variants, six sizes, loading + disabled states.
+
+For icon variants, use \`<ButtonWithIcon />\`.
+    `.trim(),
   },
 } satisfies Meta<typeof Button>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Default solid variant. The brand-honey background; primary CTA. */
 export const Solid: Story = {
-  parameters: { notes: 'Primary call-to-action style.' },
+  parameters: {
+    notes: `
+## Solid (default)
+
+Brand-honey background, dark label. The dominant CTA on a screen.
+
+**When to use:** "Continue", "Save", "Submit".
+    `.trim(),
+  },
 };
 
 export const Outline: Story = {
   args: { variant: 'outline', label: 'Go back' },
-  parameters: { notes: 'Secondary action. Pair next to a `Solid` Button on a row.' },
-};
+  parameters: {
+    notes: `
+## Outline
 
-export const Loading: Story = {
-  args: { loading: true },
-};
-
-export const Disabled: Story = {
-  args: { disabled: true },
+Lower visual weight. Pair next to a \`solid\` button on a row ("Go back" + "Submit").
+    `.trim(),
+  },
 };
 ```
 
@@ -100,9 +114,10 @@ export const Disabled: Story = {
 | `component` | The component reference. Drives the `Meta<typeof X>` type so `args` is type-checked. |
 | `args` | Default props for the *meta-level* story. Inherited by every named story unless overridden. |
 | `argTypes` | Maps each prop to a control type (`text`, `boolean`, `radio`, `select`, `color`, etc.) **or** an action. |
-| `meta.parameters.notes` | Component-level description. The single source of truth for what this component is for. |
+| `meta.parameters.notes` | Component-level markdown shown in the **Notes** tab on-device (rendered by `@storybook/addon-ondevice-notes` via `react-native-markdown-display`). Headings, bold, lists, and code spans all render. |
 | Named stories | Each scenario as a top-level export (`Solid`, `Outline`, `Loading`). The export name is the scenario shown in the canvas header. |
-| Per-story `parameters.notes` | One sentence on *why* this scenario exists / when to use it. Optional but encouraged. |
+| Per-story `parameters.notes` | Markdown for *this scenario* — when to use, when not to use, watch-outs. Shown in the same Notes tab when the story is selected. |
+| Companion `.docs.md` | Long-form usage doc — anatomy, props table, when-to-use, behavior quirks. Lives next to the component; not loaded by Storybook (it's the canonical in-repo reference for code reviewers and future maintainers). |
 
 ### Controls
 
@@ -163,16 +178,19 @@ Don't enumerate every prop combination — that's what controls are for. Stories
 
 1. Create `src/components/.../Foo.stories.tsx` next to `Foo.tsx`.
 2. Copy the structure from `Button.stories.tsx`.
-3. Update `title`, `component`, `args`, `argTypes`, `parameters.notes`.
-4. Add named scenarios — at least the default state.
-5. Save. Metro picks it up; reload Storybook on the device.
+3. Update `title`, `component`, `args`, `argTypes`, `parameters.notes` (markdown).
+4. Add named scenarios — at least the default state — each with its own `parameters.notes`.
+5. Create `Foo.docs.md` (copy `Button.docs.md` as a template) — anatomy, props table, when to use, when not to use, quirks, related components.
+6. Save. Metro picks it up; reload Storybook on the device.
 
 If a scenario needs ReactNode props, use `render` (see "Things to avoid" #1).
 
 ## Checklist before committing a story
 
-- [ ] File-level docstring describes what's in the file.
-- [ ] `meta.parameters.notes` describes the component.
+- [ ] File-level docstring describes what's in the file and links to the `.docs.md` companion.
+- [ ] `meta.parameters.notes` (markdown) describes the component.
+- [ ] Every named story has `parameters.notes` (markdown) — what this scenario is and when to use it.
+- [ ] Companion `Foo.docs.md` exists with anatomy, props table, when-to-use, and quirks sections.
 - [ ] Every interactive prop has a control entry in `argTypes`.
 - [ ] Every callback prop is wired via `{ action: '<name>' }`, not a stub.
 - [ ] Named scenarios cover at least: default, the most-different variant, and any boundary states (loading/disabled/error).

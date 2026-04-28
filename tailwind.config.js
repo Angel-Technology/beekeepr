@@ -108,6 +108,18 @@ module.exports = {
            * @example bg-brand-honeycombEnd, text-brand-honeycombEnd
            */
           honeycombEnd: '#F3FF00',
+          /**
+           * Onboarding canvas (honey)
+           * @description Primary onboarding slide canvas used on welcome and search slides
+           * @example bg-brand-canvas, text-brand-canvas
+           */
+          canvas: '#FCD216',
+          /**
+           * Onboarding accent canvas (lime)
+           * @description Secondary onboarding slide canvas used on the verification slide
+           * @example bg-brand-lime, text-brand-lime
+           */
+          lime: '#EDF903',
         },
 
         /**
@@ -339,6 +351,12 @@ module.exports = {
            * @example border-border-subtle
            */
           subtle: 'rgba(0, 0, 0, 0.08)',
+          /**
+           * Faint border color
+           * @description Barely-there border used for outline buttons and quiet card edges
+           * @example border-border-faint
+           */
+          faint: 'rgba(0, 0, 0, 0.12)',
           /**
            * Weak border color
            * @description Low-emphasis border for soft separation between elements

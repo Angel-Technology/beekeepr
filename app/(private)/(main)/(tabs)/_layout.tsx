@@ -1,83 +1,65 @@
-import IntroBeeIcon from '@src/assets/svg/IntroBeeIcon';
-import { NativeTabs } from 'expo-router/unstable-native-tabs';
-import { BookSearch, HeartHandshake } from 'lucide-react-native';
+import { Tabs } from 'expo-router';
+import { BlurView } from 'expo-blur';
+import { Heart, Search } from 'lucide-react-native';
+import { Platform, StyleSheet } from 'react-native';
 
-const iconSize = 22;
+import IntroBeeIcon from '@src/assets/svg/IntroBeeIcon';
+
+const ICON_SIZE = 24;
 
 export default function PrivateTabsLayout() {
   return (
-    <NativeTabs
-      minimizeBehavior="onScrollDown"
-      tintColor={'#000000'}
-      labelStyle={{
-        color: '#000000',
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        animation: 'shift',
+        tabBarActiveTintColor: '#000000',
+        tabBarInactiveTintColor: 'rgba(0, 0, 0, 0.5)',
+        tabBarStyle: {
+          position: 'absolute',
+          backgroundColor: 'transparent',
+          borderTopWidth: 0,
+          elevation: 0,
+        },
+        tabBarBackground: () => (
+          <BlurView
+            tint="light"
+            intensity={60}
+            experimentalBlurMethod={
+              Platform.OS === 'android' ? 'dimezisBlurView' : undefined
+            }
+            style={StyleSheet.absoluteFill}
+          />
+        ),
       }}
-      blurEffect="systemChromeMaterial"
-      disableTransparentOnScrollEdge
     >
-      <NativeTabs.Trigger name="index">
-        <NativeTabs.Trigger.Icon
-          sf={{ default: 'house', selected: 'house.fill' }}
-          src={{
-            default: (
-              <IntroBeeIcon
-                width={iconSize}
-                height={iconSize}
-                color="#6B7280"
-              />
-            ),
-            selected: (
-              <IntroBeeIcon
-                width={iconSize}
-                height={iconSize}
-                color="#000000"
-              />
-            ),
-          }}
-          renderingMode="original"
-        />
-        <NativeTabs.Trigger.Label>TheBuzz</NativeTabs.Trigger.Label>
-      </NativeTabs.Trigger>
-
-      <NativeTabs.Trigger name="search-records" role="search" disablePopToTop>
-        <NativeTabs.Trigger.Icon
-          sf={{ default: 'magnifyingglass', selected: 'magnifyingglass' }}
-          src={{
-            default: (
-              <BookSearch color="#6B7280" size={iconSize} strokeWidth={2.2} />
-            ),
-            selected: (
-              <BookSearch color="#000000" size={iconSize} strokeWidth={2.2} />
-            ),
-          }}
-          renderingMode="original"
-        />
-        <NativeTabs.Trigger.Label>Search</NativeTabs.Trigger.Label>
-      </NativeTabs.Trigger>
-
-      <NativeTabs.Trigger name="explore">
-        <NativeTabs.Trigger.Icon
-          sf={{ default: 'heart', selected: 'heart.fill' }}
-          src={{
-            default: (
-              <HeartHandshake
-                color="#6B7280"
-                size={iconSize}
-                strokeWidth={2.2}
-              />
-            ),
-            selected: (
-              <HeartHandshake
-                color="#000000"
-                size={iconSize}
-                strokeWidth={2.2}
-              />
-            ),
-          }}
-          renderingMode="original"
-        />
-        <NativeTabs.Trigger.Label>Explore</NativeTabs.Trigger.Label>
-      </NativeTabs.Trigger>
-    </NativeTabs>
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'TheBuzz',
+          tabBarIcon: ({ color }) => (
+            <IntroBeeIcon
+              width={ICON_SIZE}
+              height={(ICON_SIZE * 14) / 16}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="search-records"
+        options={{
+          title: 'Search',
+          tabBarIcon: ({ color }) => <Search size={ICON_SIZE} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="explore"
+        options={{
+          title: 'Explore',
+          tabBarIcon: ({ color }) => <Heart size={ICON_SIZE} color={color} />,
+        }}
+      />
+    </Tabs>
   );
 }

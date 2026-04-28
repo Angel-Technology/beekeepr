@@ -4306,6 +4306,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@storybook/addon-ondevice-notes@npm:^10":
+  version: 10.3.2
+  resolution: "@storybook/addon-ondevice-notes@npm:10.3.2"
+  dependencies:
+    "@storybook/react-native-theming": ^10.3.2
+  peerDependencies:
+    "@storybook/react": ^10
+    react: "*"
+    react-native: "*"
+    storybook: ">=10 || ^10"
+  checksum: b24985a96b4e838ac6ed70395288abd9a7f46383b039cddde8fcb2426b57d8d778f489a4c285a7b192978fb1b92fe211ec9ecf2d2d7ab14c8bd158bb946b1919
+  languageName: node
+  linkType: hard
+
 "@storybook/global@npm:^5.0.0":
   version: 5.0.0
   resolution: "@storybook/global@npm:5.0.0"
@@ -5715,6 +5729,7 @@ __metadata:
     "@react-navigation/drawer": ^7.9.4
     "@storybook/addon-ondevice-actions": ^10.3.2
     "@storybook/addon-ondevice-controls": ^10.3.2
+    "@storybook/addon-ondevice-notes": ^10
     "@storybook/react-native": ^10.3.2
     "@tanstack/react-query": ^5.90.2
     "@types/jest": 29.5.14
@@ -5729,12 +5744,14 @@ __metadata:
     better-auth: ^1.5.5
     clsx: ^2.1.1
     cross-env: ^10.1.0
+    dotenv: ^17.4.2
     eslint: ^9.39.2
     eslint-config-prettier: ^10.1.8
     eslint-plugin-prettier: ^5.5.5
     eslint-plugin-react: ^7.37.5
     eslint-plugin-react-hooks: ^7.0.1
     expo: ^55
+    expo-blur: ~55.0.14
     expo-constants: ~55.0.13
     expo-image: ~55.0.8
     expo-linear-gradient: ~55.0.13
@@ -7195,6 +7212,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dotenv@npm:^17.4.2":
+  version: 17.4.2
+  resolution: "dotenv@npm:17.4.2"
+  checksum: 217bf2c4696ca40acc13ad063341e9c77cedfdd75e56e4919f4cf2c6333e4f7b38a4b4067e49d006125502a61060cbe85c7eecb0644e4d99ff014693eb7e62c4
+  languageName: node
+  linkType: hard
+
 "dunder-proto@npm:^1.0.0, dunder-proto@npm:^1.0.1":
   version: 1.0.1
   resolution: "dunder-proto@npm:1.0.1"
@@ -7906,6 +7930,17 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 52e292de63f79a3bcc1a2b6ffb26f9e6f8de3af7bb9e618530495f555a9b2ea321280c1c1166baae0753f2fa95df595bd70db34a10c2157d961c5fb50f42cf9f
+  languageName: node
+  linkType: hard
+
+"expo-blur@npm:~55.0.14":
+  version: 55.0.14
+  resolution: "expo-blur@npm:55.0.14"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+  checksum: 66ea084442a4cb155fe765fe3590dfec34cc70ed481dc5bc25b7cd49a59ff360acea2f45e5bc5e7110a335dbb3f2f5523a3a9cc1f41687fb5a863f06b19f473e
   languageName: node
   linkType: hard
 

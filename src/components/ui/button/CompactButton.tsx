@@ -1,43 +1,32 @@
 import { type ReactNode } from 'react';
 import clsx from 'clsx';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 
 import { BounceLoader } from '../loader/BounceLoader';
 
-const ICON_SLOT_SIZE = 32;
-
-type ButtonProps = {
+type CompactButtonProps = {
   label: string;
   onPress?: () => void;
+  variant?: 'solid' | 'outline';
   disabled?: boolean;
   loading?: boolean;
-  variant?: 'solid' | 'outline';
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
   className?: string;
   textClassName?: string;
 };
 
-const IconSlot = ({ children }: { children?: ReactNode }) => (
-  <View
-    style={{ width: ICON_SLOT_SIZE, height: ICON_SLOT_SIZE }}
-    className="items-center justify-center"
-  >
-    {children}
-  </View>
-);
-
-export const Button = ({
+export const CompactButton = ({
   label,
   onPress,
+  variant = 'solid',
   disabled = false,
   loading = false,
-  variant = 'solid',
   iconLeft,
   iconRight,
   className,
   textClassName,
-}: ButtonProps) => {
+}: CompactButtonProps) => {
   const isOutline = variant === 'outline';
   const isDisabled = disabled || loading;
   const loaderColorClassName = isOutline
@@ -51,8 +40,8 @@ export const Button = ({
       disabled={isDisabled}
       onPress={onPress}
       className={clsx(
-        'min-h-[56px] flex-row items-center gap-3 self-stretch rounded-round px-4 py-2',
-        isOutline && 'border-border-faint border',
+        'min-h-[44px] flex-row items-center justify-center gap-2 self-stretch rounded-round px-4 py-3',
+        isOutline && 'border border-border-default',
         isDisabled
           ? 'bg-bg-disabled'
           : isOutline
@@ -61,21 +50,19 @@ export const Button = ({
         className,
       )}
     >
-      <IconSlot>{!loading ? iconLeft : null}</IconSlot>
+      {iconLeft && !loading ? iconLeft : null}
       {loading ? (
-        <View className="flex-1 items-center justify-center">
-          <BounceLoader colorClassName={loaderColorClassName} />
-        </View>
+        <BounceLoader colorClassName={loaderColorClassName} />
       ) : (
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
           className={clsx(
-            'flex-1 text-center font-lexend-semiBold text-base leading-tight',
+            'font-lexend-semiBold text-base leading-tight',
             isDisabled
               ? 'text-text-disabled'
               : isOutline
-                ? 'text-text-default'
+                ? 'text-text-secondary'
                 : 'text-text-inverse',
             textClassName,
           )}
@@ -83,7 +70,7 @@ export const Button = ({
           {label}
         </Text>
       )}
-      <IconSlot>{!loading ? iconRight : null}</IconSlot>
+      {iconRight && !loading ? iconRight : null}
     </TouchableOpacity>
   );
 };

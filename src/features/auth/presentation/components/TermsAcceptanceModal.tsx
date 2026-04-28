@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
-import { BaseModal, Button, CustomCheckbox, Divider } from '@components';
+import { BaseModal, CompactButton, CustomCheckbox, Divider } from '@components';
 import { environmentConfig } from '@src/lib/config/environment';
 
 type TermsAcceptanceModalProps = {
@@ -116,23 +116,19 @@ export const TermsAcceptanceModal = ({
         </Text>
       </View>
 
-      <View className="w-full flex-row gap-3">
+      <View className="w-full flex-row gap-2">
         <View className="flex-1">
-          <Button
+          <CompactButton
             label="I Disagree"
             variant="outline"
-            size="md"
             disabled={isDeclining}
             loading={isDeclining}
-            textClassName="text-text-secondary text-base"
             onPress={onDecline}
           />
         </View>
         <View className="flex-1">
-          <Button
+          <CompactButton
             label="Agree & Continue"
-            size="md"
-            textClassName="text-base"
             disabled={!allConfirmed}
             loading={isAccepting}
             onPress={onAccept}

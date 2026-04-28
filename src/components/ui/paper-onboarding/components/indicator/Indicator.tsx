@@ -11,7 +11,7 @@ import type { IndicatorProps } from '../../types';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
-const BORDER_WIDTH = 2;
+const BORDER_WIDTH = 4;
 
 const IndicatorComponent = ({
   index,
@@ -21,20 +21,24 @@ const IndicatorComponent = ({
   animatedIndex,
   item,
 }: IndicatorProps) => {
-  const radius = useMemo(() => (indicatorSize - 2) / 2, [indicatorSize]);
+  const radius = useMemo(
+    () => (indicatorSize - BORDER_WIDTH) / 2,
+    [indicatorSize],
+  );
+  const inactiveRatio = 0.55;
 
   const circleAnimatedProps = useAnimatedProps(() => ({
     r: interpolate(
       animatedIndex.value,
       [index - 1, index, index + 1],
-      [radius * 0.33, radius, radius * 0.33],
-      Extrapolation.CLAMP
+      [radius * inactiveRatio, radius, radius * inactiveRatio],
+      Extrapolation.CLAMP,
     ),
     fillOpacity: interpolate(
       animatedIndex.value,
       [index - 1, index],
       [0, 1],
-      Extrapolation.CLAMP
+      Extrapolation.CLAMP,
     ),
   }));
 
@@ -43,15 +47,15 @@ const IndicatorComponent = ({
       animatedIndex.value,
       [index - 0.25, index, index + 0.25],
       [0, 1, 0],
-      Extrapolation.CLAMP
+      Extrapolation.CLAMP,
     ),
     transform: [
       {
         scale: interpolate(
           animatedIndex.value,
           [index - 1, index, index + 1],
-          [0.33, 1, 0.33],
-          Extrapolation.CLAMP
+          [inactiveRatio, 1, inactiveRatio],
+          Extrapolation.CLAMP,
         ),
       },
     ],
@@ -63,7 +67,7 @@ const IndicatorComponent = ({
       width: indicatorSize,
       height: indicatorSize,
     }),
-    [indicatorSize]
+    [indicatorSize],
   );
 
   const iconStyle = useMemo(
@@ -78,7 +82,7 @@ const IndicatorComponent = ({
       },
       iconAnimatedStyle,
     ],
-    [indicatorSize, iconAnimatedStyle]
+    [indicatorSize, iconAnimatedStyle],
   );
 
   const renderIcon = useCallback(() => {
