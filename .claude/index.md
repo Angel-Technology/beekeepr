@@ -34,6 +34,8 @@ Per-feature flow docs live in [`./features/`](./features/) — start there when 
 - [`features/auth.md`](./features/auth.md) — email + code, Google sign-in, sign-out, terms gate, Persona kickoff
 - [`features/onboarding.md`](./features/onboarding.md) — intro screen, what-we-do carousel, create-account entry
 
+The Storybook conventions (how to write a story file, controls, actions, the global preview decorator) live in [`./stories.md`](./stories.md).
+
 ## Directory Structure
 
 ```text

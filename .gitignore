@@ -60,3 +60,6 @@ build/
 android-upload-key.keystore
 dating-angel-firebase-adminsdk-fbsvc-92efb41728.json
 dating-angel-513f6cf93e44.json
+*storybook.log
+storybook-static
+.rnstorybook/storybook.requires.ts
