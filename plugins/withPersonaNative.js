@@ -1,4 +1,5 @@
 const {
+  withAppBuildGradle,
   withInfoPlist,
   withPodfileProperties,
   withProjectBuildGradle,
@@ -7,6 +8,24 @@ const {
 
 const PERSONA_ANDROID_MAVEN_REPO =
   "maven { url 'https://sdk.withpersona.com/android/releases' }";
+
+const COMMONMARK_EXCLUDE_BLOCK = `
+// Persona's \`markwon\` dependency drags in the legacy \`com.atlassian.commonmark:commonmark:0.13.0\`,
+// while Persona itself uses the modern \`org.commonmark:commonmark:0.21.0\`. The two jars share
+// identical package + class names, causing \`checkDebugDuplicateClasses\` to fail. Exclude the old
+// artifact globally; the modern one is a drop-in replacement.
+configurations.all {
+    exclude group: 'com.atlassian.commonmark', module: 'commonmark'
+}
+`;
+
+const ensureCommonmarkExclude = (contents) => {
+  if (contents.includes("'com.atlassian.commonmark'")) {
+    return contents;
+  }
+
+  return contents.trimEnd() + '\n' + COMMONMARK_EXCLUDE_BLOCK;
+};
 
 const ensureAndroidRepo = (contents) => {
   if (contents.includes('https://sdk.withpersona.com/android/releases')) {
@@ -63,6 +82,13 @@ const withPersonaNative = (config) => {
 
   config = withProjectBuildGradle(config, (gradleConfig) => {
     gradleConfig.modResults.contents = ensureAndroidRepo(
+      gradleConfig.modResults.contents,
+    );
+    return gradleConfig;
+  });
+
+  config = withAppBuildGradle(config, (gradleConfig) => {
+    gradleConfig.modResults.contents = ensureCommonmarkExclude(
       gradleConfig.modResults.contents,
     );
     return gradleConfig;

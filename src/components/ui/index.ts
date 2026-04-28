@@ -5,6 +5,7 @@ export * from './header';
 export * from './input';
 export * from './loader';
 export * from './modal';
+export * from './paper-onboarding';
 export * from './pill';
 export * from './spacing';
 export * from './stepper';

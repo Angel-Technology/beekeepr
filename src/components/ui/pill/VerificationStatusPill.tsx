@@ -9,6 +9,7 @@ type VerificationStatusPillProps = {
   size?: VerificationStatusPillSize;
   className?: string;
   textClassName?: string;
+  iconColor?: string;
 };
 
 const VERIFICATION_STATUS_PILL_SIZE_STYLES: Record<
@@ -63,6 +64,7 @@ export const VerificationStatusPill = ({
   size = 'sm',
   className,
   textClassName,
+  iconColor,
 }: VerificationStatusPillProps) => {
   const sizeStyles = VERIFICATION_STATUS_PILL_SIZE_STYLES[size];
 
@@ -77,6 +79,7 @@ export const VerificationStatusPill = ({
       <IntroBeeIcon
         width={sizeStyles.iconWidth}
         height={sizeStyles.iconHeight}
+        color={iconColor}
       />
       <Text
         className={clsx(
