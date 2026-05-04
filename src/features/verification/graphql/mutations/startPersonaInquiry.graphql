@@ -4,7 +4,9 @@ mutation StartPersonaInquiry {
     error
     createdNewInquiry
     inquiryId
+    sessionToken
     identityVerificationStatus
     personaInquiryStatus
+    subscriptionRequired
   }
 }

@@ -11,8 +11,13 @@ import {
   IconButton,
   VerticalSpacer,
 } from '@components';
-import { useBuzzScreen } from '../../hooks/useBuzzScreen';
-import { BuzzActiveFlow, BuzzVerifyFlow } from '../components';
+import { useBuzzTab } from '../../hooks/useBuzzTab';
+import {
+  BuzzActiveFlow,
+  BuzzDeniedFlow,
+  BuzzVerifyFlow,
+  BuzzWelcomeFlow,
+} from '../components';
 
 export const BuzzScreen = () => {
   const navigation = useNavigation();
@@ -20,7 +25,8 @@ export const BuzzScreen = () => {
   const headerOffset = APP_HEADER_HEIGHT + insets.top;
   const topMaskHeight = headerOffset + 8;
   const headerVisibility = useSharedValue(1);
-  const { flow, resetSubmittedBackgroundCheck } = useBuzzScreen();
+  const { flow, ctaLabel, onGetStarted, resetSubmittedBackgroundCheck } =
+    useBuzzTab();
 
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -76,7 +82,10 @@ export const BuzzScreen = () => {
         style={{ paddingBottom: Math.max(insets.bottom + 32, 48) }}
       >
         <VerticalSpacer size="xs" />
-        {flow === 'verify' ? <BuzzVerifyFlow /> : null}
+        {flow === 'verify' ? (
+          <BuzzVerifyFlow ctaLabel={ctaLabel} onGetStarted={onGetStarted} />
+        ) : null}
+        {flow === 'welcome' ? <BuzzWelcomeFlow /> : null}
         {flow === 'active' ? (
           <BuzzActiveFlow
             onReviewSubmittedInfo={() => {
@@ -84,6 +93,7 @@ export const BuzzScreen = () => {
             }}
           />
         ) : null}
+        {flow === 'denied' ? <BuzzDeniedFlow /> : null}
       </View>
     </View>
   );

@@ -1,11 +1,16 @@
-import { useRouter } from 'expo-router';
 import { ArrowRight, FolderX, IdCard, ReceiptText } from 'lucide-react-native';
 import { Button, Card, DetailCard, VerificationStatusPill } from '@components';
 import { Text, View } from 'react-native';
 
-export const BuzzVerifyFlow = () => {
-  const router = useRouter();
+type BuzzVerifyFlowProps = {
+  ctaLabel: string;
+  onGetStarted: () => void;
+};
 
+export const BuzzVerifyFlow = ({
+  ctaLabel,
+  onGetStarted,
+}: BuzzVerifyFlowProps) => {
   return (
     <Card className="gap-6 rounded-5 border-secondary">
       <View className="flex-row items-start justify-between gap-4">
@@ -55,11 +60,9 @@ export const BuzzVerifyFlow = () => {
       />
 
       <Button
-        label="Get Started"
+        label={ctaLabel}
         iconRight={<ArrowRight color="#FFFFFF" size={24} strokeWidth={2.2} />}
-        onPress={() => {
-          router.push('/verify-identity');
-        }}
+        onPress={onGetStarted}
       />
     </Card>
   );

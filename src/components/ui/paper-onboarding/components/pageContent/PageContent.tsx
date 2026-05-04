@@ -20,12 +20,12 @@ const PageContentComponent = ({
 }: PageContentProps) => {
   const titleStyle = useMemo(
     () => [styles.title, titleStyleOverride],
-    [titleStyleOverride]
+    [titleStyleOverride],
   );
 
   const descriptionStyle = useMemo(
     () => [styles.description, descriptionStyleOverride],
-    [descriptionStyleOverride]
+    [descriptionStyleOverride],
   );
 
   const imageContainerAnimatedStyle = useAnimatedStyle(() => ({
@@ -35,7 +35,7 @@ const PageContentComponent = ({
           animatedFocus.value,
           [0, 1],
           [SCREEN_HEIGHT / 8, 0],
-          Extrapolation.CLAMP
+          Extrapolation.CLAMP,
         ),
       },
     ],
@@ -43,7 +43,7 @@ const PageContentComponent = ({
 
   const imageContainerStyle = useMemo(
     () => [styles.imageContainer, imageContainerAnimatedStyle],
-    [imageContainerAnimatedStyle]
+    [imageContainerAnimatedStyle],
   );
 
   return (

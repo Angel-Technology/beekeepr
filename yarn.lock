@@ -5777,9 +5777,8 @@ __metadata:
     react-dom: 19.2.0
     react-native: 0.83.4
     react-native-gesture-handler: ^2.30.0
-    react-native-persona: 2.33.1
+    react-native-persona: ">=2.7.0"
     react-native-purchases: ^9.15.2
-    react-native-purchases-ui: ^9.15.2
     react-native-reanimated: 4.2.1
     react-native-safe-area-context: ~5.6.0
     react-native-screens: ~4.23.0
@@ -12838,30 +12837,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-persona@npm:2.33.1":
-  version: 2.33.1
-  resolution: "react-native-persona@npm:2.33.1"
+"react-native-persona@npm:>=2.7.0":
+  version: 2.40.0
+  resolution: "react-native-persona@npm:2.40.0"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 0f81f97f805836fb58c97b1b1156af84ed8bf2e7c49104d56186068d35153439ba5152d0cbf2d3e0ed1f61cb05c8f5d67bf86a2bc38971d0f430a16b6cc1088e
-  languageName: node
-  linkType: hard
-
-"react-native-purchases-ui@npm:^9.15.2":
-  version: 9.15.2
-  resolution: "react-native-purchases-ui@npm:9.15.2"
-  dependencies:
-    "@revenuecat/purchases-typescript-internal": 17.55.1
-  peerDependencies:
-    react: "*"
-    react-native: ">= 0.73.0"
-    react-native-purchases: 9.15.2
-    react-native-web: "*"
-  peerDependenciesMeta:
-    react-native-web:
-      optional: true
-  checksum: 0378e2ed515462cac1ccdf7dc00b7cf8aa42138e73bc514d086c8c2a886863261722b9e0cab2bf299769d28ee97c661881549e787d3f5929f1262ea4e13152eb
+  checksum: 1e2b25b7e8af356011d2ff0b9e58620257167e06fa9fc40551e48678c18a7fedfd225830d6f51977bb605ce03f7e37237a489ce160254edfe0c0582d70871ff3
   languageName: node
   linkType: hard
 

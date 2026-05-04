@@ -87,6 +87,7 @@ const IndicatorComponent = ({
 
   const renderIcon = useCallback(() => {
     if (item.icon) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const IconComponent: any = item.icon;
       return (
         <Animated.View style={iconStyle}>

@@ -26,7 +26,7 @@ const BackgroundCircleComponent = ({
       animatedIndex.value,
       [index - 1, index, index + 1],
       [0, 1, 2],
-      Extrapolation.CLAMP
+      Extrapolation.CLAMP,
     );
     return interpolate(focus, [0, 1], [0, extendedSize], Extrapolation.CLAMP);
   });

@@ -9,8 +9,5 @@ export const REVENUECAT_API_KEY =
     ? environmentConfig.revenueCatAndroidApiKey
     : environmentConfig.revenueCatIosApiKey;
 
-export const REVENUECAT_MONTHLY_PRODUCT_ID = 'monthly';
-export const REVENUECAT_YEARLY_PRODUCT_ID = 'yearly';
-
 export const isRevenueCatConfigured =
   REVENUECAT_API_KEY.length > 0 && REVENUECAT_ENTITLEMENT_ID.length > 0;

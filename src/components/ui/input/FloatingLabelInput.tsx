@@ -107,9 +107,7 @@ export const FloatingLabelInput = ({
 
   const animatedLabelContainerStyle = useAnimatedStyle(() => {
     return {
-      left: required
-        ? interpolate(labelPosition.value, [0, 1], [12, 0])
-        : 0,
+      left: required ? interpolate(labelPosition.value, [0, 1], [12, 0]) : 0,
       transform: [
         {
           translateY: interpolate(labelPosition.value, [0, 1], [0, -18]),
@@ -176,8 +174,8 @@ export const FloatingLabelInput = ({
         className="absolute top-5 flex-row items-center"
         style={animatedLabelContainerStyle}
       >
-      {required ? (
-        <Animated.Text
+        {required ? (
+          <Animated.Text
             className="mr-1 font-sourceSans-regular text-text-critical"
             style={animatedRequiredStarStyle}
           >

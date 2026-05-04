@@ -26,7 +26,7 @@ type TabButtonProps = {
 export const TabButton = ({ tabs, style, childrenStyle }: TabButtonProps) => {
   return (
     <View
-      className="border-secondary mx-auto w-full rounded-5 border bg-bg-default"
+      className="mx-auto w-full rounded-5 border border-secondary bg-bg-default"
       style={style}
     >
       {tabs.map((tab, index) => {

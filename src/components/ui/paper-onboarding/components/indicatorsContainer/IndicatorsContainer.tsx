@@ -15,7 +15,7 @@ const IndicatorsContainerComponent = ({
 }: IndicatorsContainerProps) => {
   const containerWidth = useMemo(
     () => data.length * indicatorSize,
-    [data, indicatorSize]
+    [data, indicatorSize],
   );
 
   const containerAnimatedStyle = useAnimatedStyle(() => ({
@@ -32,7 +32,7 @@ const IndicatorsContainerComponent = ({
       },
       containerAnimatedStyle,
     ],
-    [containerWidth, indicatorSize, containerAnimatedStyle, safeInsets]
+    [containerWidth, indicatorSize, containerAnimatedStyle, safeInsets],
   );
 
   const renderIndicators = useCallback(
@@ -54,7 +54,7 @@ const IndicatorsContainerComponent = ({
       indicatorBackgroundColor,
       indicatorBorderColor,
       animatedIndex,
-    ]
+    ],
   );
 
   return (

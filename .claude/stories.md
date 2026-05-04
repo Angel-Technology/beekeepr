@@ -4,7 +4,11 @@
 
 ## Where stories live
 
-Co-locate three files next to the component:
+Two patterns, depending on how crowded the surrounding folder is.
+
+### Co-located (default for shared UI primitives)
+
+When the component lives in its own folder, keep its three files together:
 
 ```text
 src/components/ui/button/
@@ -13,7 +17,36 @@ src/components/ui/button/
   Button.docs.md      # narrative usage doc — anatomy, props table, when to use, quirks
 ```
 
-Story files match `*.stories.{ts,tsx}` under `src/**`. The glob in `.rnstorybook/main.ts` picks them up automatically; `withStorybook` regenerates the registry on every Metro start. **No manual `yarn storybook-generate` is needed during dev.** The `.docs.md` file is human-readable reference, not consumed by Storybook itself — link to it from the story's docstring.
+This is the right pattern under `src/components/ui/**` where each primitive owns its own folder.
+
+### Sibling `stories/` folder (default for crowded feature dirs)
+
+Once a feature's `presentation/components/` accumulates many components, co-location triples the file count and obscures the production surface. Move stories into a sibling `stories/` folder:
+
+```text
+src/features/verification/presentation/
+  components/                              # production components only
+    IdentityKickoffSection.tsx
+    IdentityWaitingSection.tsx
+    CriminalFormSection.tsx
+    …
+  stories/                                 # story files + docs companions
+    IdentityKickoffSection.stories.tsx
+    IdentityKickoffSection.docs.md
+    IdentityWaitingSection.stories.tsx
+    IdentityWaitingSection.docs.md
+    VerificationFlowPreview.stories.tsx    # flow-level preview composition
+    VerificationFlowPreview.docs.md
+    …
+  screens/
+    VerificationFlowScreen.tsx
+```
+
+Imports inside a sibling `stories/` file reach into `../components/<Component>` instead of `./Component`.
+
+Rule of thumb: **co-locate by default; flip to `stories/` once the production folder has more than ~5–6 components, or once stories+docs would more than double the file count.** The verification feature uses `stories/` (10+ section/modal components); onboarding/auth use co-location (smaller surface).
+
+Story files match `*.stories.{ts,tsx}` under `src/**`. The glob in `.rnstorybook/main.ts` picks them up automatically — both patterns work without config changes. The `.docs.md` file is human-readable reference, not consumed by Storybook itself; link to it from the story's docstring.
 
 ## Coverage tiers
 
@@ -176,12 +209,13 @@ Don't enumerate every prop combination — that's what controls are for. Stories
 
 ## Adding a new story
 
-1. Create `src/components/.../Foo.stories.tsx` next to `Foo.tsx`.
-2. Copy the structure from `Button.stories.tsx`.
-3. Update `title`, `component`, `args`, `argTypes`, `parameters.notes` (markdown).
-4. Add named scenarios — at least the default state — each with its own `parameters.notes`.
-5. Create `Foo.docs.md` (copy `Button.docs.md` as a template) — anatomy, props table, when to use, when not to use, quirks, related components.
-6. Save. Metro picks it up; reload Storybook on the device.
+1. Decide where the story files live (see "Where stories live" above): co-located next to `Foo.tsx`, or in a sibling `stories/` folder if the feature has accumulated many components.
+2. Create `Foo.stories.tsx` (importing `Foo` via `./Foo` for co-location, or `../components/Foo` for the sibling pattern).
+3. Copy the structure from `Button.stories.tsx`.
+4. Update `title`, `component`, `args`, `argTypes`, `parameters.notes` (markdown).
+5. Add named scenarios — at least the default state — each with its own `parameters.notes`.
+6. Create `Foo.docs.md` (copy `Button.docs.md` as a template) — anatomy, props table, when to use, when not to use, quirks, related components.
+7. Save. Metro picks it up; reload Storybook on the device.
 
 If a scenario needs ReactNode props, use `render` (see "Things to avoid" #1).
 

@@ -1,5 +1,5 @@
+import type { SharedValue } from 'react-native-reanimated';
 import {
-  SharedValue,
   useDerivedValue,
   withTiming,
   Easing,
@@ -36,7 +36,7 @@ export const useTiming = ({
       const rawTranslation = translationValue.value;
       const clampedTranslation = Math.max(
         -screenWidth,
-        Math.min(screenWidth, rawTranslation)
+        Math.min(screenWidth, rawTranslation),
       );
       const normalizedDrag = I18nManager.isRTL
         ? clampedTranslation / screenWidth
@@ -80,7 +80,7 @@ export const useTiming = ({
       runOnJS(onSnap)(targetIndex);
     }
 
-    return withTiming(targetIndex, TIMING_CONFIG, finished => {
+    return withTiming(targetIndex, TIMING_CONFIG, (finished) => {
       'worklet';
       if (finished) {
         currentIndex.value = targetIndex;

@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import { BlurView } from 'expo-blur';
 import { Heart, Search } from 'lucide-react-native';
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import IntroBeeIcon from '@src/assets/svg/IntroBeeIcon';
 
@@ -25,9 +25,6 @@ export default function PrivateTabsLayout() {
           <BlurView
             tint="light"
             intensity={60}
-            experimentalBlurMethod={
-              Platform.OS === 'android' ? 'dimezisBlurView' : undefined
-            }
             style={StyleSheet.absoluteFill}
           />
         ),

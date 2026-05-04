@@ -43,6 +43,7 @@ export const Button = ({
   const loaderColorClassName = isOutline
     ? 'bg-text-default'
     : 'bg-text-inverse';
+  const hasIcon = Boolean(iconLeft || iconRight);
 
   return (
     <TouchableOpacity
@@ -52,7 +53,7 @@ export const Button = ({
       onPress={onPress}
       className={clsx(
         'min-h-[56px] flex-row items-center gap-3 self-stretch rounded-round px-4 py-2',
-        isOutline && 'border-border-faint border',
+        isOutline && 'border border-border-faint',
         isDisabled
           ? 'bg-bg-disabled'
           : isOutline
@@ -61,7 +62,7 @@ export const Button = ({
         className,
       )}
     >
-      <IconSlot>{!loading ? iconLeft : null}</IconSlot>
+      {hasIcon && !loading ? <IconSlot>{iconLeft}</IconSlot> : null}
       {loading ? (
         <View className="flex-1 items-center justify-center">
           <BounceLoader colorClassName={loaderColorClassName} />
@@ -83,7 +84,7 @@ export const Button = ({
           {label}
         </Text>
       )}
-      <IconSlot>{!loading ? iconRight : null}</IconSlot>
+      {hasIcon && !loading ? <IconSlot>{iconRight}</IconSlot> : null}
     </TouchableOpacity>
   );
 };

@@ -24,8 +24,8 @@ const PageComponent = ({
       animatedIndex.value,
       [index - 1, index, index + 1],
       [0, 1, 2],
-      Extrapolation.CLAMP
-    )
+      Extrapolation.CLAMP,
+    ),
   );
 
   const contentContainerAnimatedStyle = useAnimatedStyle(() => {
@@ -35,7 +35,7 @@ const PageComponent = ({
         focus,
         [0.5, 1, 1.5],
         [0, 1, 0],
-        Extrapolation.CLAMP
+        Extrapolation.CLAMP,
       ),
       transform: [
         {
@@ -47,7 +47,7 @@ const PageComponent = ({
               0,
               (screenDimensions.height / 6) * -1,
             ],
-            Extrapolation.CLAMP
+            Extrapolation.CLAMP,
           ),
         },
       ],
@@ -65,7 +65,7 @@ const PageComponent = ({
       },
       contentContainerAnimatedStyle,
     ],
-    [safeInsets, indicatorSize, contentContainerAnimatedStyle]
+    [safeInsets, indicatorSize, contentContainerAnimatedStyle],
   );
 
   const pointerEventsAnimatedStyle = useAnimatedStyle(() => {
@@ -77,19 +77,19 @@ const PageComponent = ({
 
   const containerStyle = useMemo(
     () => [styles.container, pointerEventsAnimatedStyle],
-    [pointerEventsAnimatedStyle]
+    [pointerEventsAnimatedStyle],
   );
 
   const titleStyle = useMemo(
     () => [titleStyleOverride, item.titleStyle ? item.titleStyle : null],
-    [item, titleStyleOverride]
+    [item, titleStyleOverride],
   );
   const descriptionStyle = useMemo(
     () => [
       descriptionStyleOverride,
       item.descriptionStyle ? item.descriptionStyle : null,
     ],
-    [item, descriptionStyleOverride]
+    [item, descriptionStyleOverride],
   );
 
   const pageContentProps = useMemo(
@@ -102,10 +102,11 @@ const PageComponent = ({
       titleStyle,
       descriptionStyle,
     }),
-    [index, item, titleStyle, descriptionStyle, animatedFocus]
+    [index, item, titleStyle, descriptionStyle, animatedFocus],
   );
 
   const renderContent = useCallback(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const ContentComponent: any = item.content;
     return ContentComponent ? (
       typeof ContentComponent === 'function' ? (

@@ -1,9 +1,6 @@
 export { BuzzActiveFlow } from './BuzzActiveFlow';
-export { BuzzRecordsFlow } from './BuzzRecordsFlow';
+export { BuzzDeniedFlow } from './BuzzDeniedFlow';
 export { BuzzVerifyFlow } from './BuzzVerifyFlow';
+export { BuzzWelcomeFlow } from './BuzzWelcomeFlow';
 export { TabPlaceholder } from './TabPlaceholder';
-export type {
-  BackgroundCheckFormErrors,
-  BackgroundCheckFormState,
-  BuzzFlow,
-} from '../../models/buzzFlow.types';
+export type { BuzzFlow } from '../../models/buzzFlow.types';

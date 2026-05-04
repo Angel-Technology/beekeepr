@@ -19,14 +19,6 @@ export default function PrivateLayout() {
           name="verify-identity"
           options={{ animation: 'slide_from_bottom' }}
         />
-        <Stack.Screen
-          name="buzz-records"
-          options={{ animation: 'slide_from_bottom' }}
-        />
-        <Stack.Screen
-          name="buy-pro"
-          options={{ animation: 'slide_from_bottom' }}
-        />
       </Stack>
 
       <TermsAcceptanceModal

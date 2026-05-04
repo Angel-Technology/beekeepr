@@ -8,13 +8,8 @@ export default function VerifyIdentityLayout() {
         animation: 'slide_from_right',
       }}
     >
-      <Stack.Screen
-        name="index"
-        options={{ animation: 'slide_from_bottom' }}
-      />
+      <Stack.Screen name="index" options={{ animation: 'slide_from_bottom' }} />
       <Stack.Screen name="identity" />
-      <Stack.Screen name="criminal-check" />
-      <Stack.Screen name="find-records" />
     </Stack>
   );
 }

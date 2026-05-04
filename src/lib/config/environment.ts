@@ -34,10 +34,7 @@ const mapAndroidLoopbackURL = (value: string) => {
   try {
     const nextURL = new URL(value);
 
-    if (
-      nextURL.hostname === '127.0.0.1' ||
-      nextURL.hostname === 'localhost'
-    ) {
+    if (nextURL.hostname === '127.0.0.1' || nextURL.hostname === 'localhost') {
       nextURL.hostname = ANDROID_EMULATOR_HOST;
       return nextURL.toString();
     }
@@ -62,8 +59,7 @@ export const environmentConfig: EnvironmentConfig = {
   revenueCatAndroidApiKey:
     process.env.EXPO_PUBLIC_REVENUECAT_API_KEY_ANDROID ?? '',
   revenueCatEntitlementId:
-    process.env.EXPO_PUBLIC_REVENUECAT_ENTITLEMENT_ID ??
-    'Buzzkeepr Test Pro',
+    process.env.EXPO_PUBLIC_REVENUECAT_ENTITLEMENT_ID ?? 'Buzzkeepr Test Pro',
   revenueCatIosApiKey: process.env.EXPO_PUBLIC_REVENUECAT_API_KEY_IOS ?? '',
   privacyPolicyURL: process.env.EXPO_PUBLIC_PRIVACY_POLICY_URL ?? '',
   personaEnvironment:

@@ -21,5 +21,12 @@ export default function IllustrationLetsdothis({
   height = 295,
   ...props
 }: IllustrationLetsdothisProps) {
-  return <SvgXml xml={illustrationLetsdothisXml} width={width} height={height} {...props} />;
+  return (
+    <SvgXml
+      xml={illustrationLetsdothisXml}
+      width={width}
+      height={height}
+      {...props}
+    />
+  );
 }

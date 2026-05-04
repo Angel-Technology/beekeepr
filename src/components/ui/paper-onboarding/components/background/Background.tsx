@@ -24,7 +24,7 @@ const BackgroundComponent = ({
 
   const bottomPosition = useMemo(
     () => screenDimensions.height - indicatorSize / 2 - safeInsets.bottom,
-    [screenDimensions, indicatorSize, safeInsets]
+    [screenDimensions, indicatorSize, safeInsets],
   );
 
   return (

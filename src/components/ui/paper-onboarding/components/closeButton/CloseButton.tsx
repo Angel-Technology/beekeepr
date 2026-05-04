@@ -17,9 +17,9 @@ export const CloseButtonComponent = ({
     () =>
       data.map(
         (item, index) =>
-          index === data.length - 1 || item.showCloseButton === true
+          index === data.length - 1 || item.showCloseButton === true,
       ),
-    [data]
+    [data],
   );
 
   const containerAnimatedStyle = useAnimatedStyle(() => {
@@ -36,12 +36,12 @@ export const CloseButtonComponent = ({
 
   const containerStyle = useMemo(
     () => [styles.container, { top: safeInsets.top }, containerAnimatedStyle],
-    [safeInsets, containerAnimatedStyle]
+    [safeInsets, containerAnimatedStyle],
   );
 
   const textStyle = useMemo(
     () => [styles.text, textStyleOverride],
-    [textStyleOverride]
+    [textStyleOverride],
   );
 
   return (

@@ -7,6 +7,16 @@ const googleIosClientId = environmentConfig.googleIosClientId;
 
 let isConfigured = false;
 
+export class GoogleSignInCancelledError extends Error {
+  constructor() {
+    super('Google sign-in was cancelled.');
+    this.name = 'GoogleSignInCancelledError';
+  }
+}
+
+export const isGoogleSignInCancelled = (error: unknown): boolean =>
+  error instanceof GoogleSignInCancelledError;
+
 export const googleAuth = {
   configure() {
     if (isConfigured) {
@@ -39,7 +49,7 @@ export const googleAuth = {
     const response = await GoogleSignin.signIn();
 
     if (response.type !== 'success') {
-      throw new Error('Google sign-in was cancelled.');
+      throw new GoogleSignInCancelledError();
     }
 
     if (!response.data.idToken) {

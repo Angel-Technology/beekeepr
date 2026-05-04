@@ -13,8 +13,6 @@ import {
   type SignInWithGoogleMutationVariables,
   SignOutDocument,
   type SignOutMutation,
-  StartPersonaInquiryDocument,
-  type StartPersonaInquiryMutation,
   VerifyEmailSignInDocument,
   type VerifyEmailSignInMutation,
   type VerifyEmailSignInMutationVariables,
@@ -65,12 +63,6 @@ export const authRepository = {
   acceptTerms() {
     return executeGraphQL<AcceptTermsMutation, AcceptTermsMutationVariables>({
       document: AcceptTermsDocument,
-    });
-  },
-
-  startPersonaInquiry() {
-    return executeGraphQL<StartPersonaInquiryMutation>({
-      document: StartPersonaInquiryDocument,
     });
   },
 
