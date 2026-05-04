@@ -1,7 +1,10 @@
+import { type ReactNode } from 'react';
 import clsx from 'clsx';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import { BounceLoader } from '../loader/BounceLoader';
+
+const ICON_SLOT_SIZE = 32;
 
 type ButtonProps = {
   label: string;
@@ -9,9 +12,20 @@ type ButtonProps = {
   disabled?: boolean;
   loading?: boolean;
   variant?: 'solid' | 'outline';
+  iconLeft?: ReactNode;
+  iconRight?: ReactNode;
   className?: string;
   textClassName?: string;
 };
+
+const IconSlot = ({ children }: { children?: ReactNode }) => (
+  <View
+    style={{ width: ICON_SLOT_SIZE, height: ICON_SLOT_SIZE }}
+    className="items-center justify-center"
+  >
+    {children}
+  </View>
+);
 
 export const Button = ({
   label,
@@ -19,6 +33,8 @@ export const Button = ({
   disabled = false,
   loading = false,
   variant = 'solid',
+  iconLeft,
+  iconRight,
   className,
   textClassName,
 }: ButtonProps) => {
@@ -27,45 +43,48 @@ export const Button = ({
   const loaderColorClassName = isOutline
     ? 'bg-text-default'
     : 'bg-text-inverse';
+  const hasIcon = Boolean(iconLeft || iconRight);
 
   return (
     <TouchableOpacity
-      accessibilityState={{ disabled: isDisabled, busy: loading }}
       accessibilityRole="button"
-      className={clsx(
-        'min-h-8 items-center justify-center self-stretch rounded-round px-lg py-md',
-        isOutline
-          ? 'border border-action-neutral-border-default bg-bg-default'
-          : 'bg-action-neutral-background-solid',
-        isDisabled &&
-          (isOutline
-            ? 'border-none border-border-disabled bg-bg-disabled opacity-60'
-            : 'bg-bg-disabled opacity-60'),
-        className,
-      )}
+      accessibilityState={{ disabled: isDisabled, busy: loading }}
       disabled={isDisabled}
       onPress={onPress}
+      className={clsx(
+        'min-h-[56px] flex-row items-center gap-3 self-stretch rounded-round px-4 py-2',
+        isOutline && 'border border-border-faint',
+        isDisabled
+          ? 'bg-bg-disabled'
+          : isOutline
+            ? 'bg-bg-default'
+            : 'bg-text-default',
+        className,
+      )}
     >
-      <View className="items-center justify-center">
-        {loading ? (
+      {hasIcon && !loading ? <IconSlot>{iconLeft}</IconSlot> : null}
+      {loading ? (
+        <View className="flex-1 items-center justify-center">
           <BounceLoader colorClassName={loaderColorClassName} />
-        ) : (
-          <Text
-            numberOfLines={1}
-            ellipsizeMode="tail"
-            className={clsx(
-              'text-center font-sourceSans-semiBold text-600',
-              isOutline
+        </View>
+      ) : (
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          className={clsx(
+            'flex-1 text-center font-lexend-semiBold text-base leading-tight',
+            isDisabled
+              ? 'text-text-disabled'
+              : isOutline
                 ? 'text-text-default'
-                : 'text-action-neutral-text-onAction',
-              isDisabled && 'text-text-disabled',
-              textClassName,
-            )}
-          >
-            {label}
-          </Text>
-        )}
-      </View>
+                : 'text-text-inverse',
+            textClassName,
+          )}
+        >
+          {label}
+        </Text>
+      )}
+      {hasIcon && !loading ? <IconSlot>{iconRight}</IconSlot> : null}
     </TouchableOpacity>
   );
 };

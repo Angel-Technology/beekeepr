@@ -57,7 +57,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     orientation: 'portrait',
     scheme: APP.scheme,
     userInterfaceStyle: 'light',
-    newArchEnabled: true,
 
     // Fallback icon (Expo requires this; use your preferred default)
     icon: APP.icon,
@@ -106,21 +105,23 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         foregroundImage: APP.androidAdaptiveIconForeground,
         backgroundColor: APP.androidAdaptiveIconBackgroundColor,
       },
-
-      edgeToEdgeEnabled: true,
     },
 
     plugins: [
       'expo-router',
+      'expo-secure-store',
+      'expo-image',
+      'expo-web-browser',
+      '@react-native-community/datetimepicker',
       [
         'expo-splash-screen',
         {
           image: './src/assets/images/splash-icon.png',
           dark: {
             image: './src/assets/images/splash-icon.png',
-            backgroundColor: '#151718',
+            backgroundColor: '#FFFFFF',
           },
-          backgroundColor: '#ECEDEE',
+          backgroundColor: '#FFFFFF',
           resizeMode: 'cover',
         },
       ],
@@ -168,6 +169,15 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             './src/assets/fonts/Poppins-ExtraBoldItalic.ttf',
             './src/assets/fonts/Poppins-Black.ttf',
             './src/assets/fonts/Poppins-BlackItalic.ttf',
+            './src/assets/fonts/Lexend-Thin.ttf',
+            './src/assets/fonts/Lexend-ExtraLight.ttf',
+            './src/assets/fonts/Lexend-Light.ttf',
+            './src/assets/fonts/Lexend-Regular.ttf',
+            './src/assets/fonts/Lexend-Medium.ttf',
+            './src/assets/fonts/Lexend-SemiBold.ttf',
+            './src/assets/fonts/Lexend-Bold.ttf',
+            './src/assets/fonts/Lexend-ExtraBold.ttf',
+            './src/assets/fonts/Lexend-Black.ttf',
             './src/assets/fonts/Inter-Regular.ttf',
             './src/assets/fonts/Inter-SemiBold.ttf',
             './src/assets/fonts/Inter-Bold.ttf',

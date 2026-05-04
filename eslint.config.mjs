@@ -187,9 +187,11 @@ export default [
         console: 'readonly',
         process: 'readonly',
         __dirname: 'readonly',
+        __DEV__: 'readonly',
         module: 'readonly',
         require: 'readonly',
         exports: 'readonly',
+        URL: 'readonly',
       },
     },
     plugins: {

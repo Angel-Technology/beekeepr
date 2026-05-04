@@ -1,5 +1,10 @@
 import { environmentConfig } from '@src/lib/config/environment';
+import { verificationRepository } from '../repository/verificationRepository';
+import { subscriptionRequiredError } from '../models/verification.types';
 import type {
+  CriminalCheckInput,
+  CriminalCheckResult,
+  PersonaInquiryStartResult,
   StartVerificationInput,
   VerificationLaunchResult,
 } from '../models/verification.types';
@@ -55,6 +60,66 @@ const getPersonaEnvironment = (personaModule: PersonaModule) => {
 };
 
 export const verificationService = {
+  /**
+   * Mints a Persona inquiry on the backend.
+   *
+   * @returns the inquiry payload with `inquiryId` set
+   * @throws an `Error & { subscriptionRequired: true }` when the backend
+   * gates on subscription; the kickoff hook treats that tag as a redirect
+   * back to the paywall rather than a generic error.
+   */
+  async startPersonaInquiry(): Promise<PersonaInquiryStartResult> {
+    const payload = await verificationRepository.startPersonaInquiry();
+
+    if (payload.startPersonaInquiry.subscriptionRequired) {
+      throw subscriptionRequiredError(
+        payload.startPersonaInquiry.error ??
+          'An active subscription is required to start identity verification.',
+      );
+    }
+
+    if (!payload.startPersonaInquiry.success) {
+      throw new Error(
+        payload.startPersonaInquiry.error ??
+          'Unable to start identity verification.',
+      );
+    }
+
+    if (!payload.startPersonaInquiry.inquiryId) {
+      throw new Error(
+        'Verification started but no Persona inquiry ID was returned.',
+      );
+    }
+
+    return payload.startPersonaInquiry;
+  },
+
+  /**
+   * Submits the find-records form to the backend criminal-check service.
+   * Throws on `!success` so consumers can surface the error message.
+   */
+  async startCriminalCheck(
+    input: CriminalCheckInput,
+  ): Promise<CriminalCheckResult> {
+    const payload =
+      await verificationRepository.startInstantCriminalCheck(input);
+    const result = payload.startInstantCriminalCheck;
+
+    if (!result.success) {
+      throw new Error(
+        result.error ?? 'Unable to start the criminal record search.',
+      );
+    }
+
+    return result;
+  },
+
+  /**
+   * Launches the Persona SDK against an existing inquiry. Returns when the
+   * user completes (or rejects) on `onCanceled`/`onError`. The backend has to
+   * receive Persona's webhook before `user.identityVerificationStatus`
+   * actually flips — kickoff polls for that.
+   */
   async startVerification(
     input: StartVerificationInput,
   ): Promise<VerificationLaunchResult> {

@@ -56,6 +56,12 @@ module.exports = {
        */
       colors: {
         /**
+         * Direct color aliases
+         * @description Convenience tokens for single-word utility usage like border-secondary
+         */
+        secondary: 'rgba(0, 0, 0, 0.16)',
+
+        /**
          * Brand colors - Primary brand identity colors
          * Used for key brand elements and high-emphasis actions
          */
@@ -90,6 +96,30 @@ module.exports = {
            * @example bg-brand-highlight, text-brand-highlight
            */
           highlight: '#FDD301',
+          /**
+           * Honeycomb gradient start
+           * @description Primary Honeycomb gradient anchor for promotional brand treatments
+           * @example bg-brand-honeycombStart, text-brand-honeycombStart
+           */
+          honeycombStart: '#FFBF00',
+          /**
+           * Honeycomb gradient end
+           * @description Secondary Honeycomb gradient anchor for promotional brand treatments
+           * @example bg-brand-honeycombEnd, text-brand-honeycombEnd
+           */
+          honeycombEnd: '#F3FF00',
+          /**
+           * Onboarding canvas (honey)
+           * @description Primary onboarding slide canvas used on welcome and search slides
+           * @example bg-brand-canvas, text-brand-canvas
+           */
+          canvas: '#FCD216',
+          /**
+           * Onboarding accent canvas (lime)
+           * @description Secondary onboarding slide canvas used on the verification slide
+           * @example bg-brand-lime, text-brand-lime
+           */
+          lime: '#EDF903',
         },
 
         /**
@@ -321,6 +351,12 @@ module.exports = {
            * @example border-border-subtle
            */
           subtle: 'rgba(0, 0, 0, 0.08)',
+          /**
+           * Faint border color
+           * @description Barely-there border used for outline buttons and quiet card edges
+           * @example border-border-faint
+           */
+          faint: 'rgba(0, 0, 0, 0.12)',
           /**
            * Weak border color
            * @description Low-emphasis border for soft separation between elements
@@ -803,6 +839,20 @@ module.exports = {
         'poppins-extraBoldItalic': ['Poppins-ExtraBoldItalic', 'sans-serif'],
         'poppins-black': ['Poppins-Black', 'sans-serif'],
         'poppins-blackItalic': ['Poppins-BlackItalic', 'sans-serif'],
+
+        /**
+         * Lexend font families
+         * @description Alternate geometric text family for emphasis-heavy UI copy
+         */
+        'lexend-thin': ['Lexend-Thin', 'sans-serif'],
+        'lexend-extraLight': ['Lexend-ExtraLight', 'sans-serif'],
+        'lexend-light': ['Lexend-Light', 'sans-serif'],
+        'lexend-regular': ['Lexend-Regular', 'sans-serif'],
+        'lexend-medium': ['Lexend-Medium', 'sans-serif'],
+        'lexend-semiBold': ['Lexend-SemiBold', 'sans-serif'],
+        'lexend-bold': ['Lexend-Bold', 'sans-serif'],
+        'lexend-extraBold': ['Lexend-ExtraBold', 'sans-serif'],
+        'lexend-black': ['Lexend-Black', 'sans-serif'],
 
         /**
          * System fallback

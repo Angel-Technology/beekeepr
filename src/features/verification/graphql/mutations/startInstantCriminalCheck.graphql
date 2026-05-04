@@ -1,0 +1,10 @@
+mutation StartInstantCriminalCheck($input: StartInstantCriminalCheckInput!) {
+  startInstantCriminalCheck(input: $input) {
+    success
+    error
+    checkId
+    profileId
+    resultCount
+    hasPossibleMatches
+  }
+}

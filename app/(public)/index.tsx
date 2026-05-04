@@ -1,5 +1,5 @@
-import { OnboardingIntroScreen } from '@features/onboarding';
+import { OnboardingWhatWeDoScreen } from '@features/onboarding';
 
 export default function LandingPage() {
-  return <OnboardingIntroScreen />;
+  return <OnboardingWhatWeDoScreen />;
 }

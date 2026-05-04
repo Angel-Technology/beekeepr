@@ -4,16 +4,15 @@
     "strict": true,
     "noEmit": true,
     "allowImportingTsExtensions": true,
-    "baseUrl": ".",
     "paths": {
-      "@src/*": ["src/*"],
-      "@assets/*": ["src/assets/*"],
-      "@common/*": ["src/common/*"],
-      "@common": ["src/common/index.ts"],
-      "@components": ["src/components/index.ts"],
-      "@components/*": ["src/components/*"],
-      "@features/*": ["src/features/*"],
-      "@features": ["src/features/index.ts"]
+      "@src/*": ["./src/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@common/*": ["./src/common/*"],
+      "@common": ["./src/common/index.ts"],
+      "@components": ["./src/components/index.ts"],
+      "@components/*": ["./src/components/*"],
+      "@features/*": ["./src/features/*"],
+      "@features": ["./src/features/index.ts"]
     }
   },
   "include": [
@@ -23,9 +22,5 @@
     "metro.config.js",
     "nativewind-env.d.ts"
   ],
-  "exclude": [
-    "node_modules",
-    ".expo",
-    "src/features/**/graphql/generated/**/*"
-  ]
+  "exclude": ["node_modules", ".expo", "src/features/**/graphql/generated/**/*"]
 }

@@ -1,46 +1,82 @@
 import { Alert } from 'react-native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { authQueryKeys, authService } from '@features/auth';
+import { authQueryKeys } from '@features/auth';
 import { verificationService } from '../services/verificationService';
+import {
+  isSubscriptionRequiredError,
+  type CriminalCheckInput,
+} from '../models/verification.types';
 
+/**
+ * Single home for every TanStack mutation in the verification flow:
+ * - `startPersonaVerification`: mint a Persona inquiry on the backend, then
+ *   launch the Persona SDK against it. The SDK promise resolves when the
+ *   user completes the in-flow capture; the backend status flip happens
+ *   asynchronously via Persona's webhook (kickoff polls for it).
+ * - `startCriminalCheck`: submit the find-records form once Persona has
+ *   approved.
+ * - `refreshVerificationStatus`: invalidate the session query so the next
+ *   poll/hook read picks up backend changes (used after the Persona SDK
+ *   closes, before the polling loop converges).
+ *
+ * Why one hook: these are the three discrete user-driven writes the flow
+ * needs. Splitting them across multiple hooks (as we used to) made each
+ * screen import a different shape of action, and made it harder to see
+ * the full set of writes at a glance.
+ *
+ * RevenueCat purchase/promo are deliberately not here — they're driven by
+ * the paywall hook because they belong to the subscription system, not the
+ * verification system.
+ */
 export const useVerificationActions = () => {
   const queryClient = useQueryClient();
 
-  const startVerification = useMutation({
+  const startPersonaVerification = useMutation({
     mutationFn: async () => {
-      console.log('[verification] starting backend inquiry');
-
-      const inquiry = await authService.startPersonaInquiry();
-
-      console.log('[verification] backend inquiry created', inquiry);
+      const inquiry = await verificationService.startPersonaInquiry();
 
       if (!inquiry.inquiryId) {
         throw new Error('Backend returned no Persona inquiry ID.');
       }
 
-      console.log('[verification] launching Persona SDK', {
-        inquiryId: inquiry.inquiryId,
-      });
+      // Backend omits the session token when the user has already finished
+      // the SDK flow (Approved / Completed / NeedsReview). There's nothing
+      // to launch in that case — let the mutation resolve so `onSuccess`
+      // refreshes the session and the UI routes to the matching phase
+      // (e.g., criminal-intro after Approved).
+      if (!inquiry.sessionToken) {
+        return { inquiry, launch: null };
+      }
 
       const launch = await verificationService.startVerification({
         inquiryId: inquiry.inquiryId,
+        sessionToken: inquiry.sessionToken,
       });
 
-      console.log('[verification] Persona SDK completed', launch);
-
-      return {
-        inquiry,
-        launch,
-      };
+      return { inquiry, launch };
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: authQueryKeys.session(),
       });
     },
-    onError: (error) => {
-      console.log('[verification] startVerification failed', error);
+    onError: (error: Error) => {
+      // The kickoff hook redirects on subscription-required; staying silent
+      // here avoids a duplicate Alert.
+      if (isSubscriptionRequiredError(error)) {
+        return;
+      }
       Alert.alert('Verification Failed', error.message);
+    },
+  });
+
+  const startCriminalCheck = useMutation({
+    mutationFn: (input: CriminalCheckInput) =>
+      verificationService.startCriminalCheck(input),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: authQueryKeys.session(),
+      });
     },
   });
 
@@ -53,7 +89,8 @@ export const useVerificationActions = () => {
   });
 
   return {
-    startVerification,
+    startPersonaVerification,
+    startCriminalCheck,
     refreshVerificationStatus,
   };
 };

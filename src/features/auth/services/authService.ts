@@ -4,7 +4,6 @@ import { authRepository } from '../repository/authRepository';
 import type {
   AuthCredentials,
   EmailVerificationRequestInput,
-  PersonaInquiryStartResult,
   VerifyEmailCodeInput,
 } from '../models/auth.types';
 
@@ -85,23 +84,18 @@ export const authService = {
     return payload.signOut.success;
   },
 
-  async startPersonaInquiry(): Promise<PersonaInquiryStartResult> {
-    const payload = await authRepository.startPersonaInquiry();
+  async acceptTerms() {
+    const payload = await authRepository.acceptTerms();
 
-    if (!payload.startPersonaInquiry.success) {
-      throw new Error(
-        payload.startPersonaInquiry.error ??
-          'Unable to start identity verification.',
-      );
+    if (payload.acceptTerms.error) {
+      throw new Error(payload.acceptTerms.error);
     }
 
-    if (!payload.startPersonaInquiry.inquiryId) {
-      throw new Error(
-        'Verification started but no Persona inquiry ID was returned.',
-      );
+    if (!payload.acceptTerms.user) {
+      throw new Error('Terms acceptance succeeded but no user was returned.');
     }
 
-    return payload.startPersonaInquiry;
+    return payload.acceptTerms.user;
   },
 
   async getCurrentUser() {

@@ -1,0 +1,12 @@
+mutation StartPersonaInquiry {
+  startPersonaInquiry {
+    success
+    error
+    createdNewInquiry
+    inquiryId
+    sessionToken
+    identityVerificationStatus
+    personaInquiryStatus
+    subscriptionRequired
+  }
+}

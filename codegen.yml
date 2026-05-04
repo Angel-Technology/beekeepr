@@ -1,6 +1,4 @@
 schema: ${EXPO_PUBLIC_GRAPHQL_URL}
-documents:
-  - src/features/**/*.graphql
 generates:
   src/features/auth/graphql/generated/auth.generated.ts:
     config:
@@ -10,6 +8,18 @@ generates:
       useTypeImports: true
     documents:
       - src/features/auth/graphql/**/*.graphql
+    plugins:
+      - typescript
+      - typescript-operations
+      - typed-document-node
+  src/features/verification/graphql/generated/verification.generated.ts:
+    config:
+      scalars:
+        DateTime: string
+        UUID: string
+      useTypeImports: true
+    documents:
+      - src/features/verification/graphql/**/*.graphql
     plugins:
       - typescript
       - typescript-operations

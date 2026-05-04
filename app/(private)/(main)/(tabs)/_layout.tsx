@@ -1,9 +1,11 @@
-import IntroBeeIcon from '@src/assets/svg/IntroBeeIcon';
 import { Tabs } from 'expo-router';
-import { BookSearch, HeartHandshake } from 'lucide-react-native';
-import { AppTabBar } from '@features/home/presentation/components/AppTabBar';
+import { BlurView } from 'expo-blur';
+import { Heart, Search } from 'lucide-react-native';
+import { StyleSheet } from 'react-native';
 
-const iconSize = 22;
+import IntroBeeIcon from '@src/assets/svg/IntroBeeIcon';
+
+const ICON_SIZE = 24;
 
 export default function PrivateTabsLayout() {
   return (
@@ -11,8 +13,22 @@ export default function PrivateTabsLayout() {
       screenOptions={{
         headerShown: false,
         animation: 'shift',
+        tabBarActiveTintColor: '#000000',
+        tabBarInactiveTintColor: 'rgba(0, 0, 0, 0.5)',
+        tabBarStyle: {
+          position: 'absolute',
+          backgroundColor: 'transparent',
+          borderTopWidth: 0,
+          elevation: 0,
+        },
+        tabBarBackground: () => (
+          <BlurView
+            tint="light"
+            intensity={60}
+            style={StyleSheet.absoluteFill}
+          />
+        ),
       }}
-      tabBar={(props) => <AppTabBar {...props} />}
     >
       <Tabs.Screen
         name="index"
@@ -20,10 +36,9 @@ export default function PrivateTabsLayout() {
           title: 'TheBuzz',
           tabBarIcon: ({ color }) => (
             <IntroBeeIcon
+              width={ICON_SIZE}
+              height={(ICON_SIZE * 14) / 16}
               color={color}
-              width={iconSize}
-              height={iconSize}
-              strokeWidth={2.2}
             />
           ),
         }}
@@ -31,19 +46,15 @@ export default function PrivateTabsLayout() {
       <Tabs.Screen
         name="search-records"
         options={{
-          title: 'Search Records',
-          tabBarIcon: ({ color }) => (
-            <BookSearch color={color} size={iconSize} strokeWidth={2.2} />
-          ),
+          title: 'Search',
+          tabBarIcon: ({ color }) => <Search size={ICON_SIZE} color={color} />,
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
           title: 'Explore',
-          tabBarIcon: ({ color }) => (
-            <HeartHandshake color={color} size={iconSize} strokeWidth={2.2} />
-          ),
+          tabBarIcon: ({ color }) => <Heart size={ICON_SIZE} color={color} />,
         }}
       />
     </Tabs>

@@ -1,0 +1,155 @@
+import { useRef, type ReactNode } from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import { CircleHelp } from 'lucide-react-native';
+import { Button, Input } from '@components';
+
+// Breathing room above the phone field once we scroll to it — keeps the
+// section header ("PHONE & DOB") in view instead of pinning the input flush
+// to the top.
+const PHONE_FIELD_TOP_PADDING = 24;
+
+type SectionProps = {
+  label: string;
+  children: ReactNode;
+};
+
+const FieldGroup = ({ label, children }: SectionProps) => {
+  return (
+    <View className="w-full">
+      <View className="w-full flex-row items-center justify-between px-4 pb-3 pt-6">
+        <Text className="text-text-tertiary font-lexend-regular text-200 leading-none">
+          {label}
+        </Text>
+        <CircleHelp size={16} color="rgba(0,0,0,0.5)" />
+      </View>
+      <View className="w-full gap-4 rounded-5 bg-bg-weak p-6">{children}</View>
+    </View>
+  );
+};
+
+type CriminalFormSectionProps = {
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  dateOfBirth: string;
+  licenseState: string;
+  phoneNumber: string;
+  phoneError?: string;
+  isSubmitting: boolean;
+  canSubmit: boolean;
+  onChangePhoneNumber: (value: string) => void;
+  onValidatePhoneNumber: () => void;
+  onSubmit: () => void;
+};
+
+export const CriminalFormSection = ({
+  firstName,
+  middleName,
+  lastName,
+  dateOfBirth,
+  licenseState,
+  phoneNumber,
+  phoneError,
+  isSubmitting,
+  canSubmit,
+  onChangePhoneNumber,
+  onValidatePhoneNumber,
+  onSubmit,
+}: CriminalFormSectionProps) => {
+  const scrollRef = useRef<ScrollView>(null);
+  // First-mount only — `onLayout` can fire again on rotation/keyboard changes,
+  // and we don't want to yank the user back to the phone field if they've
+  // intentionally scrolled away.
+  const hasScrolledToPhoneRef = useRef(false);
+
+  return (
+    <ScrollView
+      ref={scrollRef}
+      className="w-full"
+      contentContainerClassName="gap-7 pb-8 pt-6"
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
+    >
+      <View className="w-full gap-2">
+        <Text className="font-poppins-semiBold text-title-4 text-text-default">
+          Find my records
+        </Text>
+        <Text className="font-lexend-regular text-base leading-[24px] -tracking-[0.3px] text-text-secondary">
+          To search for your records, please provide your phone number and tap
+          submit.
+        </Text>
+      </View>
+
+      <FieldGroup label="LEGAL NAME">
+        <Input
+          label="First name"
+          value={firstName}
+          onChangeText={() => {}}
+          disabled
+        />
+        <Input
+          label="Middle name"
+          value={middleName}
+          onChangeText={() => {}}
+          disabled
+        />
+        <Input
+          label="Last name"
+          value={lastName}
+          onChangeText={() => {}}
+          disabled
+        />
+      </FieldGroup>
+
+      <View
+        onLayout={(event) => {
+          if (hasScrolledToPhoneRef.current) {
+            return;
+          }
+          hasScrolledToPhoneRef.current = true;
+          const { y } = event.nativeEvent.layout;
+          scrollRef.current?.scrollTo({
+            y: Math.max(y - PHONE_FIELD_TOP_PADDING, 0),
+            animated: true,
+          });
+        }}
+      >
+        <FieldGroup label="PHONE & DOB">
+          <Input
+            label="Phone Number (assigned by your carrier)"
+            value={phoneNumber}
+            onChangeText={onChangePhoneNumber}
+            onBlur={onValidatePhoneNumber}
+            error={phoneError}
+            type="phone"
+            placeholder="(555) 555-5555"
+            autoFocus
+          />
+          <Input
+            label="Date of Birth (mm/dd/yyyy)"
+            value={dateOfBirth}
+            onChangeText={() => {}}
+            disabled
+          />
+        </FieldGroup>
+      </View>
+
+      <FieldGroup label="STATE OF RESIDENCE">
+        <Input
+          label="Select State"
+          value={licenseState}
+          onChangeText={() => {}}
+          disabled
+        />
+      </FieldGroup>
+
+      <Button
+        label="Submit"
+        className="self-stretch"
+        loading={isSubmitting}
+        disabled={!canSubmit}
+        onPress={onSubmit}
+      />
+    </ScrollView>
+  );
+};

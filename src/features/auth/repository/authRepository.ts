@@ -1,5 +1,8 @@
 import { executeGraphQL } from '@src/lib/graphql/client';
 import {
+  AcceptTermsDocument,
+  type AcceptTermsMutation,
+  type AcceptTermsMutationVariables,
   CurrentUserDocument,
   type CurrentUserQuery,
   RequestEmailSignInDocument,
@@ -10,8 +13,6 @@ import {
   type SignInWithGoogleMutationVariables,
   SignOutDocument,
   type SignOutMutation,
-  StartPersonaInquiryDocument,
-  type StartPersonaInquiryMutation,
   VerifyEmailSignInDocument,
   type VerifyEmailSignInMutation,
   type VerifyEmailSignInMutationVariables,
@@ -59,9 +60,9 @@ export const authRepository = {
     });
   },
 
-  startPersonaInquiry() {
-    return executeGraphQL<StartPersonaInquiryMutation>({
-      document: StartPersonaInquiryDocument,
+  acceptTerms() {
+    return executeGraphQL<AcceptTermsMutation, AcceptTermsMutationVariables>({
+      document: AcceptTermsDocument,
     });
   },
 

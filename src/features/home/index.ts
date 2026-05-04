@@ -1,2 +1,3 @@
-export { HomeScreen } from './presentation/screens/HomeScreen';
-export { PlaceholderTabScreen } from './presentation/screens/PlaceholderTabScreen';
+export type { BuzzFlow } from './models/buzzFlow.types';
+export { TabPlaceholder } from './presentation/components';
+export { BuzzScreen } from './presentation/screens/BuzzScreen';
