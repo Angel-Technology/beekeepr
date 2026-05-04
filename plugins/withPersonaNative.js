@@ -1,6 +1,5 @@
 const {
   AndroidConfig,
-  withAndroidManifest,
   withAppBuildGradle,
   withGradleProperties,
   withInfoPlist,
@@ -8,6 +7,8 @@ const {
   withProjectBuildGradle,
   // eslint-disable-next-line no-undef
 } = require('@expo/config-plugins');
+
+const { withPermissions } = AndroidConfig.Permissions;
 
 // Persona's identity flow needs the camera (ID capture + selfie). Without
 // these declared in the merged manifest, Android denies the runtime permission
@@ -119,13 +120,13 @@ const withPersonaNative = (config) => {
     return gradleConfig;
   });
 
-  config = withAndroidManifest(config, (manifestConfig) => {
-    manifestConfig.modResults = AndroidConfig.Permissions.ensurePermissions(
-      manifestConfig.modResults,
-      PERSONA_ANDROID_PERMISSIONS,
-    );
-    return manifestConfig;
-  });
+  // `withPermissions` is the documented public API for adding Android
+  // permissions. The previous attempt called `AndroidConfig.Permissions
+  // .ensurePermissions` directly and reassigned its return value
+  // (`{[name]: boolean}` status map) back to `manifestConfig.modResults`,
+  // which replaced the entire manifest with the status map and made the
+  // base manifest mod fail with "missing required MainApplication element".
+  config = withPermissions(config, PERSONA_ANDROID_PERMISSIONS);
 
   config = withProjectBuildGradle(config, (gradleConfig) => {
     gradleConfig.modResults.contents = ensureAndroidRepo(
