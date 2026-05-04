@@ -46,14 +46,14 @@ export const ExitScreeningModal = ({
 
         <View className="mt-4 w-full flex-row gap-3">
           <View className="flex-1">
-            <CompactButton label="Cancel" onPress={onCancel} />
-          </View>
-          <View className="flex-1">
             <CompactButton
               label="Yes, exit"
               variant="outline"
               onPress={onConfirmExit}
             />
+          </View>
+          <View className="flex-1">
+            <CompactButton label="Cancel" onPress={onCancel} />
           </View>
         </View>
       </View>

@@ -116,24 +116,20 @@ export const TermsAcceptanceModal = ({
         </Text>
       </View>
 
-      <View className="w-full flex-row gap-2">
-        <View className="flex-1">
-          <CompactButton
-            label="I Disagree"
-            variant="outline"
-            disabled={isDeclining}
-            loading={isDeclining}
-            onPress={onDecline}
-          />
-        </View>
-        <View className="flex-1">
-          <CompactButton
-            label="Agree & Continue"
-            disabled={!allConfirmed}
-            loading={isAccepting}
-            onPress={onAccept}
-          />
-        </View>
+      <View className="w-full flex-col gap-2">
+        <CompactButton
+          label="Agree & Continue"
+          disabled={!allConfirmed}
+          loading={isAccepting}
+          onPress={onAccept}
+        />
+        <CompactButton
+          label="I Disagree"
+          variant="outline"
+          disabled={isDeclining}
+          loading={isDeclining}
+          onPress={onDecline}
+        />
       </View>
     </BaseModal>
   );
