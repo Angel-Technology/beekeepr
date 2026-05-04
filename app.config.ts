@@ -133,6 +133,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         },
       ],
       './plugins/withPersonaNative',
+      './plugins/withAndroidSigning',
       [
         'expo-font',
         {

@@ -143,52 +143,36 @@ def ensure_android_signing_env!
   UI.user_error!("Missing ANDROID_KEYSTORE_PASSWORD") if ENV["ANDROID_KEYSTORE_PASSWORD"].to_s.strip.empty?
 end
 
-def patch_android_release_signing!(package_name)
-  gradle_path = File.join(project_root, "android", "app", "build.gradle")
-  UI.user_error!("Missing #{gradle_path}. Run Expo prebuild first.") unless File.exist?(gradle_path)
+RELEASE_NOTES_MAX_CHARS = 3500
 
-  gradle = File.read(gradle_path)
-  signing_block = <<~GRADLE.chomp
-    signingConfigs {
-        debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-        }
-        release {
-            def keystorePath = findProperty("ANDROID_KEYSTORE_PATH") ?: System.getenv("ANDROID_KEYSTORE_PATH")
-            def keystorePassword = findProperty("ANDROID_KEYSTORE_PASSWORD") ?: System.getenv("ANDROID_KEYSTORE_PASSWORD")
-            def keyAliasValue = findProperty("ANDROID_KEY_ALIAS") ?: System.getenv("ANDROID_KEY_ALIAS")
-            def keyPasswordValue = findProperty("ANDROID_KEY_PASSWORD") ?: System.getenv("ANDROID_KEY_PASSWORD")
+def truncated_release_notes
+  notes = ENV["RELEASE_NOTES"].to_s
+  return nil if notes.empty?
+  return notes if notes.length <= RELEASE_NOTES_MAX_CHARS
 
-            if (!keystorePath) {
-                throw new GradleException("Missing ANDROID_KEYSTORE_PATH for Android release signing")
-            }
+  # TestFlight's changelog field caps around 4000 chars; supply has its own
+  # limits. Trim well under to leave room for the truncation marker.
+  notes[0, RELEASE_NOTES_MAX_CHARS - 12].rstrip + "\n…(truncated)"
+end
 
-            storeFile file(keystorePath)
-            storePassword keystorePassword
-            keyAlias keyAliasValue
-            keyPassword keyPasswordValue
-        }
-    }
-  GRADLE
+# ==========================================
+# Cross-platform housekeeping
+# ==========================================
 
-  updated = gradle.dup
-  updated.sub!(/namespace ['"][^'"]+['"]/, "namespace '#{package_name}'")
-  updated.sub!(/applicationId ['"][^'"]+['"]/, "applicationId '#{package_name}'")
-  updated.sub!(
-    /signingConfigs\s*\{\s*debug\s*\{.*?keyPassword 'android'\s*\}\s*\}/m,
-    signing_block
-  )
-  updated.sub!(
-    /(release\s*\{\s*(?:\/\/.*\s*)*signingConfig )signingConfigs\.debug/m,
-    "\\1signingConfigs.release"
-  )
-
-  UI.user_error!("Unable to patch Android signing in #{gradle_path}") if updated == gradle
-
-  File.write(gradle_path, updated)
+desc "Wipe local build outputs and Fastlane scratch directory"
+lane :clean do
+  paths = [
+    File.expand_path(BUILD_DIR, __dir__),
+    File.expand_path(File.join(__dir__, ".tmp")),
+    File.expand_path(File.join(__dir__, "buildlog")),
+  ]
+  paths.each do |path|
+    if Dir.exist?(path)
+      FileUtils.rm_rf(path)
+      UI.message("Removed #{path}")
+    end
+  end
+  UI.success("Clean complete")
 end
 
 # ==========================================
@@ -299,7 +283,7 @@ platform :ios do
       ipa: ipa_path,
       app_identifier: ensure_ios_bundle_id!,
       skip_waiting_for_build_processing: false,
-      changelog: ENV["RELEASE_NOTES"],
+      changelog: truncated_release_notes,
       distribute_external: false
     )
   end
@@ -329,13 +313,11 @@ platform :android do
     ensure_build_dir!
     ensure_android_signing_env!
 
-    package_name = ensure_android_package_name!
     keystore_path = resolve_android_keystore_path!
 
     UI.message("Building Android (#{APP_NAME})")
 
     expo_prebuild("android")
-    patch_android_release_signing!(package_name)
 
     gradle(
       project_dir: "android",
@@ -363,13 +345,11 @@ platform :android do
     ensure_build_dir!
     ensure_android_signing_env!
 
-    package_name = ensure_android_package_name!
     keystore_path = resolve_android_keystore_path!
 
     UI.message("Building Android APK (#{APP_NAME})")
 
     expo_prebuild("android")
-    patch_android_release_signing!(package_name)
 
     gradle(
       project_dir: "android",
@@ -407,7 +387,7 @@ platform :android do
       track: track,
       json_key: resolve_play_json_key_path!,
       release_status: release_status,
-      changelog: ENV["RELEASE_NOTES"],
+      changelog: truncated_release_notes,
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true
@@ -433,7 +413,7 @@ platform :android do
       android_artifact_type: artifact_type,
       android_artifact_path: artifact_path,
       service_credentials_file: resolve_firebase_credentials_path!,
-      release_notes: ENV["RELEASE_NOTES"],
+      release_notes: truncated_release_notes,
       testers: ENV["FIREBASE_TESTERS"],
       groups: ENV["FIREBASE_GROUPS"]
     )
