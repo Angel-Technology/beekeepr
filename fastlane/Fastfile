@@ -252,11 +252,19 @@ platform :ios do
     # automatic signing can fetch / create provisioning profiles via the API.
     api_key = setup_asc_api_key!
 
+    # Force Apple Distribution on the main app's Release config. Expo prebuild
+    # leaves this as `Apple Development`, which makes ASC mint a Development
+    # profile (which then needs registered devices). Scoping to this xcodeproj
+    # keeps Pods on their default Development identity — Cocoapods skips
+    # signing pod targets during distribution archive, so they don't conflict.
     update_code_signing_settings(
       use_automatic_signing: true,
       path: "ios/#{APP_NAME}.xcodeproj",
       team_id: team_id,
-      bundle_identifier: bundle_id
+      bundle_identifier: bundle_id,
+      code_sign_identity: "Apple Distribution",
+      targets: [APP_NAME],
+      build_configurations: ["Release"]
     )
 
     # Use the workflow-provided build number so CI controls monotonic versioning.
@@ -271,19 +279,18 @@ platform :ios do
     # Store provisioning profile via ASC API on demand. The auth flags hand
     # xcodebuild the same ASC key fastlane already loaded so it can register
     # devices / cert mappings without prompting.
-    # Build settings: override CODE_SIGN_IDENTITY because Expo prebuild bakes
-    # `Apple Development` into the Release config; with that left in place
-    # xcodebuild asks ASC for a Development profile (which then fails on
-    # `your team has no devices`). Forcing `Apple Distribution` makes the
-    # archive use the right identity → ASC mints the App Store profile.
+    # `-allowProvisioningUpdates` lets xcodebuild create / refresh the App
+    # Store provisioning profile via ASC API on demand. The auth flags hand
+    # xcodebuild the same ASC key fastlane already loaded so it can register
+    # cert mappings without prompting. We deliberately don't override
+    # CODE_SIGN_IDENTITY here — the per-target update above handles the main
+    # app, and pods keep their own (Development) identity, which Cocoapods
+    # disables signing for at archive time.
     asc_xcargs = [
       "-allowProvisioningUpdates",
       "-authenticationKeyPath '#{api_key[:key_filepath]}'",
       "-authenticationKeyID #{api_key[:key_id]}",
-      "-authenticationKeyIssuerID #{api_key[:issuer_id]}",
-      "CODE_SIGN_STYLE=Automatic",
-      "CODE_SIGN_IDENTITY=Apple\\ Distribution",
-      "DEVELOPMENT_TEAM=#{team_id}"
+      "-authenticationKeyIssuerID #{api_key[:issuer_id]}"
     ].join(" ")
 
     gym(
@@ -293,7 +300,6 @@ platform :ios do
       clean: true,
       export_method: "app-store",
       export_team_id: team_id,
-      codesigning_identity: "Apple Distribution",
       xcargs: asc_xcargs,
 
       # raw xcodebuild output (no xcpretty). Old flag is deprecated.
