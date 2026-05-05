@@ -271,11 +271,19 @@ platform :ios do
     # Store provisioning profile via ASC API on demand. The auth flags hand
     # xcodebuild the same ASC key fastlane already loaded so it can register
     # devices / cert mappings without prompting.
+    # Build settings: override CODE_SIGN_IDENTITY because Expo prebuild bakes
+    # `Apple Development` into the Release config; with that left in place
+    # xcodebuild asks ASC for a Development profile (which then fails on
+    # `your team has no devices`). Forcing `Apple Distribution` makes the
+    # archive use the right identity → ASC mints the App Store profile.
     asc_xcargs = [
       "-allowProvisioningUpdates",
       "-authenticationKeyPath '#{api_key[:key_filepath]}'",
       "-authenticationKeyID #{api_key[:key_id]}",
-      "-authenticationKeyIssuerID #{api_key[:issuer_id]}"
+      "-authenticationKeyIssuerID #{api_key[:issuer_id]}",
+      "CODE_SIGN_STYLE=Automatic",
+      "CODE_SIGN_IDENTITY=Apple\\ Distribution",
+      "DEVELOPMENT_TEAM=#{team_id}"
     ].join(" ")
 
     gym(
@@ -285,6 +293,7 @@ platform :ios do
       clean: true,
       export_method: "app-store",
       export_team_id: team_id,
+      codesigning_identity: "Apple Distribution",
       xcargs: asc_xcargs,
 
       # raw xcodebuild output (no xcpretty). Old flag is deprecated.
