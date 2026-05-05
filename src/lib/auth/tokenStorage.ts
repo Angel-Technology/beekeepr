@@ -1,6 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 
-const AUTH_TOKEN_KEY = 'beekeepr_auth_token';
+const AUTH_TOKEN_KEY = 'buzzkeepr_auth_token';
 
 export const tokenStorage = {
   async getToken() {

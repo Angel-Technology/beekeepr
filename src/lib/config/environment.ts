@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 
 export type AppEnvironment = 'local' | 'staging' | 'production';
 
-const DEFAULT_AUTH_SCHEME = 'beekeepr';
+const DEFAULT_AUTH_SCHEME = 'buzzkeepr';
 const ANDROID_EMULATOR_HOST = '10.0.2.2';
 
 export type EnvironmentConfig = {

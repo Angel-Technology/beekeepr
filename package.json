@@ -1,5 +1,5 @@
 {
-  "name": "beekeepr",
+  "name": "buzzkeepr",
   "packageManager": "yarn@3.2.4",
   "version": "1.0.0",
   "main": "expo-router/entry",

@@ -5711,86 +5711,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"beekeepr@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "beekeepr@workspace:."
-  dependencies:
-    "@babel/core": ^7.29.0
-    "@better-auth/expo": ^1.5.5
-    "@gorhom/bottom-sheet": ^5.2.10
-    "@graphql-codegen/cli": ^6.0.1
-    "@graphql-codegen/typed-document-node": ^6.0.1
-    "@graphql-codegen/typescript": ^5.0.5
-    "@graphql-codegen/typescript-operations": ^5.0.5
-    "@react-native-async-storage/async-storage": 2.2.0
-    "@react-native-community/datetimepicker": 8.6.0
-    "@react-native-community/slider": 5.1.2
-    "@react-native-google-signin/google-signin": ^16.1.2
-    "@react-navigation/drawer": ^7.9.4
-    "@storybook/addon-ondevice-actions": ^10.3.2
-    "@storybook/addon-ondevice-controls": ^10.3.2
-    "@storybook/addon-ondevice-notes": ^10
-    "@storybook/react-native": ^10.3.2
-    "@tanstack/react-query": ^5.90.2
-    "@types/jest": 29.5.14
-    "@types/js-yaml": ^4.0.9
-    "@types/react": ~19.2.10
-    "@types/react-test-renderer": ^19.1.0
-    "@typescript-eslint/eslint-plugin": ^8.53.0
-    "@typescript-eslint/parser": ^8.53.0
-    babel-loader: ^8.4.1
-    babel-plugin-module-resolver: ^5.0.2
-    babel-preset-expo: ^55
-    better-auth: ^1.5.5
-    clsx: ^2.1.1
-    cross-env: ^10.1.0
-    dotenv: ^17.4.2
-    eslint: ^9.39.2
-    eslint-config-prettier: ^10.1.8
-    eslint-plugin-prettier: ^5.5.5
-    eslint-plugin-react: ^7.37.5
-    eslint-plugin-react-hooks: ^7.0.1
-    expo: ^55
-    expo-blur: ~55.0.14
-    expo-constants: ~55.0.13
-    expo-image: ~55.0.8
-    expo-linear-gradient: ~55.0.13
-    expo-linking: ~55.0.12
-    expo-network: ~55.0.13
-    expo-router: ~55.0.12
-    expo-secure-store: ~55.0.13
-    expo-splash-screen: ~55.0.17
-    expo-status-bar: ~55.0.5
-    expo-system-ui: ~55.0.15
-    expo-web-browser: ~55.0.14
-    graphql: ^16.11.0
-    graphql-request: ^7.3.4
-    jest: ~29.7.0
-    jest-expo: ^55
-    jest-junit: ^16.0.0
-    js-yaml: ^4.1.1
-    lucide-react-native: ^1.6.0
-    nativewind: ^4.2.1
-    prettier: ^3.8.0
-    prettier-plugin-tailwindcss: ^0.5.11
-    react: 19.2.0
-    react-dom: 19.2.0
-    react-native: 0.83.4
-    react-native-gesture-handler: ^2.30.0
-    react-native-persona: ">=2.7.0"
-    react-native-purchases: ^9.15.2
-    react-native-reanimated: 4.2.1
-    react-native-safe-area-context: ~5.6.0
-    react-native-screens: ~4.23.0
-    react-native-svg: ^15.15.3
-    react-native-worklets: 0.7.2
-    react-test-renderer: ^19.2.3
-    storybook: ^10.3.5
-    tailwindcss: ^3.4.17
-    typescript: latest
-  languageName: unknown
-  linkType: soft
-
 "better-auth@npm:^1.5.5":
   version: 1.5.5
   resolution: "better-auth@npm:1.5.5"
@@ -6051,6 +5971,86 @@ __metadata:
   checksum: 1d966c8d2dbf4d9d394e53b724ac756c2414c45c01340b37743621f59cc565a435024b394ddcb62b9b335d1c9a31f4640eb648c3fec7f97ee74dc0694c9beb6c
   languageName: node
   linkType: hard
+
+"buzzkeepr@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "buzzkeepr@workspace:."
+  dependencies:
+    "@babel/core": ^7.29.0
+    "@better-auth/expo": ^1.5.5
+    "@gorhom/bottom-sheet": ^5.2.10
+    "@graphql-codegen/cli": ^6.0.1
+    "@graphql-codegen/typed-document-node": ^6.0.1
+    "@graphql-codegen/typescript": ^5.0.5
+    "@graphql-codegen/typescript-operations": ^5.0.5
+    "@react-native-async-storage/async-storage": 2.2.0
+    "@react-native-community/datetimepicker": 8.6.0
+    "@react-native-community/slider": 5.1.2
+    "@react-native-google-signin/google-signin": ^16.1.2
+    "@react-navigation/drawer": ^7.9.4
+    "@storybook/addon-ondevice-actions": ^10.3.2
+    "@storybook/addon-ondevice-controls": ^10.3.2
+    "@storybook/addon-ondevice-notes": ^10
+    "@storybook/react-native": ^10.3.2
+    "@tanstack/react-query": ^5.90.2
+    "@types/jest": 29.5.14
+    "@types/js-yaml": ^4.0.9
+    "@types/react": ~19.2.10
+    "@types/react-test-renderer": ^19.1.0
+    "@typescript-eslint/eslint-plugin": ^8.53.0
+    "@typescript-eslint/parser": ^8.53.0
+    babel-loader: ^8.4.1
+    babel-plugin-module-resolver: ^5.0.2
+    babel-preset-expo: ^55
+    better-auth: ^1.5.5
+    clsx: ^2.1.1
+    cross-env: ^10.1.0
+    dotenv: ^17.4.2
+    eslint: ^9.39.2
+    eslint-config-prettier: ^10.1.8
+    eslint-plugin-prettier: ^5.5.5
+    eslint-plugin-react: ^7.37.5
+    eslint-plugin-react-hooks: ^7.0.1
+    expo: ^55
+    expo-blur: ~55.0.14
+    expo-constants: ~55.0.13
+    expo-image: ~55.0.8
+    expo-linear-gradient: ~55.0.13
+    expo-linking: ~55.0.12
+    expo-network: ~55.0.13
+    expo-router: ~55.0.12
+    expo-secure-store: ~55.0.13
+    expo-splash-screen: ~55.0.17
+    expo-status-bar: ~55.0.5
+    expo-system-ui: ~55.0.15
+    expo-web-browser: ~55.0.14
+    graphql: ^16.11.0
+    graphql-request: ^7.3.4
+    jest: ~29.7.0
+    jest-expo: ^55
+    jest-junit: ^16.0.0
+    js-yaml: ^4.1.1
+    lucide-react-native: ^1.6.0
+    nativewind: ^4.2.1
+    prettier: ^3.8.0
+    prettier-plugin-tailwindcss: ^0.5.11
+    react: 19.2.0
+    react-dom: 19.2.0
+    react-native: 0.83.4
+    react-native-gesture-handler: ^2.30.0
+    react-native-persona: ">=2.7.0"
+    react-native-purchases: ^9.15.2
+    react-native-reanimated: 4.2.1
+    react-native-safe-area-context: ~5.6.0
+    react-native-screens: ~4.23.0
+    react-native-svg: ^15.15.3
+    react-native-worklets: 0.7.2
+    react-test-renderer: ^19.2.3
+    storybook: ^10.3.5
+    tailwindcss: ^3.4.17
+    typescript: latest
+  languageName: unknown
+  linkType: soft
 
 "bytes@npm:3.1.2":
   version: 3.1.2

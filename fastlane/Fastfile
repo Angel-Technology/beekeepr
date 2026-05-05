@@ -1,5 +1,5 @@
 # fastlane/Fastfile
-# Beekeepr - Single app (App Store only)
+# Buzzkeepr - Single app (App Store only)
 
 require "base64"
 require "fileutils"
@@ -8,9 +8,9 @@ require "json"
 opt_out_usage
 default_platform(:ios)
 
-APP_NAME = "Beekeepr"
+APP_NAME = "Buzzkeepr"
 
-SCHEME    = ENV["IOS_SCHEME"] || "Beekeepr"
+SCHEME    = ENV["IOS_SCHEME"] || "Buzzkeepr"
 WORKSPACE = ENV["IOS_WORKSPACE"] || "ios/#{SCHEME}.xcworkspace"
 
 BUILD_DIR   = File.expand_path("../build", __dir__) # <repo>/build
@@ -85,7 +85,7 @@ end
 
 def ensure_android_package_name!
   package_name = ENV["ANDROID_PACKAGE_NAME"].to_s.strip
-  package_name = "com.beekeepr.app" if package_name.empty?
+  package_name = "com.buzzkeepr.app" if package_name.empty?
   package_name
 end
 
@@ -212,7 +212,7 @@ platform :ios do
 
     # Set team
     update_project_team(
-      path: "ios/Beekeepr.xcodeproj",
+      path: "ios/Buzzkeepr.xcodeproj",
       teamid: team_id
     )
 
@@ -229,7 +229,7 @@ platform :ios do
     # Force manual signing for Release
     update_code_signing_settings(
       use_automatic_signing: false,
-      path: "ios/Beekeepr.xcodeproj",
+      path: "ios/Buzzkeepr.xcodeproj",
       team_id: team_id,
       bundle_identifier: bundle_id,
       profile_name: "match AppStore #{bundle_id}",
@@ -239,7 +239,7 @@ platform :ios do
     # Use the workflow-provided build number so CI controls monotonic versioning.
     build_num = (ENV["IOS_BUILD_NUMBER"] || ENV["GITHUB_RUN_NUMBER"] || "1").to_i
     increment_build_number(
-      xcodeproj: "ios/Beekeepr.xcodeproj",
+      xcodeproj: "ios/Buzzkeepr.xcodeproj",
       build_number: build_num
     )
     UI.message("Using iOS build number: #{build_num}")
