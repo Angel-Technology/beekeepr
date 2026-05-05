@@ -61,11 +61,21 @@ def setup_asc_api_key!
   key_content = ENV["ASC_KEY_P8"]
   UI.user_error!("Missing ASC_KEY_P8") if key_content.to_s.strip.empty?
 
+  # Write the .p8 to a known path so xcodebuild can authenticate via
+  # `-authenticationKeyPath`. fastlane's `key_content:` mode keeps the key
+  # in memory only, leaving `:key_filepath` nil — which breaks automatic
+  # signing under gym since xcodebuild needs the file on disk.
+  decoded = ENV["ASC_KEY_P8_BASE64"] == "true" ? Base64.decode64(key_content) : key_content
+  tmp_dir = File.join(__dir__, ".tmp")
+  FileUtils.mkdir_p(tmp_dir)
+  key_path = File.expand_path(File.join(tmp_dir, "asc_api_key.p8"))
+  File.write(key_path, decoded)
+  File.chmod(0o600, key_path)
+
   app_store_connect_api_key(
     key_id: ENV["ASC_KEY_ID"],
     issuer_id: ENV["ASC_ISSUER_ID"],
-    key_content: key_content,
-    is_key_content_base64: ENV["ASC_KEY_P8_BASE64"] == "true"
+    key_filepath: key_path
   )
 end
 
