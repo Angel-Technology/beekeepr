@@ -5,11 +5,6 @@ on:
     branches: [main]
   workflow_dispatch:
     inputs:
-      submit_ios_for_review:
-        description: 'Submit iOS build for App Store review'
-        required: false
-        type: boolean
-        default: false
       play_track:
         description: 'Google Play track'
         required: false
@@ -23,124 +18,39 @@ concurrency:
 
 jobs:
   ios:
-    name: iOS → TestFlight
-    runs-on: macos-26
+    # Promotes the latest TestFlight build (uploaded by `dev.yml`) to App
+    # Store review along with screenshots from `fastlane/screenshots/`. We
+    # do NOT rebuild here — the build that's been on TestFlight is the one
+    # that gets submitted, so QA on TestFlight reflects what's reviewed.
+    name: iOS → App Store
+    runs-on: ubuntu-latest
     environment: production
 
     env:
-      # CI stability + less noise
       CI: 'true'
       FASTLANE_SKIP_UPDATE_CHECK: 'true'
       FASTLANE_DISABLE_COLORS: '1'
-      COCOAPODS_DISABLE_STATS: 'true'
-      EXPO_NO_TELEMETRY: '1'
-      EXPO_PUBLIC_APP_ENV: production
-      EXPO_PUBLIC_GRAPHQL_URL: ${{ vars.EXPO_PUBLIC_GRAPHQL_URL_PRODUCTION }}
-      EXPO_PUBLIC_AUTH_BASE_URL: ${{ vars.EXPO_PUBLIC_AUTH_BASE_URL_PRODUCTION }}
-      EXPO_PUBLIC_AUTH_SCHEME: buzzkeepr
-      EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: ${{ vars.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID }}
-      EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: ${{ vars.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID }}
-      EXPO_PUBLIC_REVENUECAT_API_KEY_IOS: ${{ vars.EXPO_PUBLIC_REVENUECAT_API_KEY_IOS_PRODUCTION }}
-      EXPO_PUBLIC_REVENUECAT_API_KEY_ANDROID: ${{ vars.EXPO_PUBLIC_REVENUECAT_API_KEY_ANDROID_PRODUCTION }}
-      EXPO_PUBLIC_REVENUECAT_ENTITLEMENT_ID: ${{ vars.EXPO_PUBLIC_REVENUECAT_ENTITLEMENT_ID_PRODUCTION }}
-      EXPO_PUBLIC_PERSONA_ENVIRONMENT: ${{ vars.EXPO_PUBLIC_PERSONA_ENVIRONMENT_PRODUCTION }}
-      EXPO_PUBLIC_PERSONA_TEMPLATE_ID: ${{ vars.EXPO_PUBLIC_PERSONA_TEMPLATE_ID_PRODUCTION }}
-      EXPO_PUBLIC_TERMS_OF_USE_URL: ${{ vars.EXPO_PUBLIC_TERMS_OF_USE_URL }}
-      EXPO_PUBLIC_PRIVACY_POLICY_URL: ${{ vars.EXPO_PUBLIC_PRIVACY_POLICY_URL }}
 
       IOS_BUNDLE_ID: com.buzzkeepr.app
       IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
 
-      # App Store Connect API key
+      # App Store Connect API key — used by `deliver` to submit for review
       ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
       ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
       ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
       ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
 
-      # match (CI signing)
-      MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
-      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-      MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
-
-      # auto increment build number
-      IOS_BUILD_NUMBER: ${{ github.run_number }}
-
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # needed for release notes from commits
-
-      - name: Release notes from commit
-        run: |
-          DELIM="RELEASE_NOTES_$(date +%s%N)"
-          {
-            echo "RELEASE_NOTES<<$DELIM"
-            git log -1 --pretty=format:'%s%n%n%b'
-            echo
-            echo "$DELIM"
-          } >> "$GITHUB_ENV"
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: yarn
-
-      - name: Select Xcode 26
-        run: |
-          XCODE_APP=""
-          if [ -d /Applications/Xcode.app ]; then
-            XCODE_VERSION="$(/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -version | head -n 1 | awk '{print $2}')"
-            if [[ "$XCODE_VERSION" == 26* ]]; then
-              XCODE_APP="/Applications/Xcode.app"
-            fi
-          fi
-          if [ -z "$XCODE_APP" ]; then
-            XCODE_APP="$(find /Applications -maxdepth 1 -type d -name 'Xcode_26*.app' ! -name '*beta*' | sort -V | tail -n 1)"
-          fi
-          if [ -z "$XCODE_APP" ]; then
-            XCODE_APP="$(find /Applications -maxdepth 1 -type d -name 'Xcode_26*.app' | sort -V | tail -n 1)"
-          fi
-          if [ -z "$XCODE_APP" ]; then
-            echo "Xcode 26 not found on runner"
-            exit 1
-          fi
-          sudo xcode-select -s "$XCODE_APP/Contents/Developer"
-          xcodebuild -version
-
-      - run: corepack enable
-      - run: yarn install --immutable
 
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3'
           bundler-cache: true
 
-      - name: Build iOS (Fastlane)
-        timeout-minutes: 60
-        run: bundle exec fastlane ios build --verbose
-
-      - name: Upload TestFlight
-        timeout-minutes: 30
-        run: bundle exec fastlane ios upload_testflight --verbose
-
-      - name: Submit to App Store review (manual gate)
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.submit_ios_for_review }}
+      - name: Submit iOS to App Store review
         timeout-minutes: 30
         run: bundle exec fastlane ios submit_review --verbose
-
-      # Always upload raw build logs for debugging
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: ios-build-logs
-          path: fastlane/buildlog
-          retention-days: 14
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ios-build
-          path: build/*.ipa
-          retention-days: 14
 
   android:
     name: Android → Play
