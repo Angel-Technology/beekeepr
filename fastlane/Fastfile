@@ -260,8 +260,6 @@ platform :ios do
     sigh(
       app_identifier: bundle_id,
       api_key: api_key,
-      adhoc: false,
-      development: false,
       force: false,
       output_path: File.join(__dir__, ".tmp")
     )
