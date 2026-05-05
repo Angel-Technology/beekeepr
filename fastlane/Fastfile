@@ -252,6 +252,17 @@ platform :ios do
     )
     UI.message("Using iOS build number: #{build_num}")
 
+    # `-allowProvisioningUpdates` lets xcodebuild create / refresh the App
+    # Store provisioning profile via ASC API on demand. The auth flags hand
+    # xcodebuild the same ASC key fastlane already loaded so it can register
+    # devices / cert mappings without prompting.
+    asc_xcargs = [
+      "-allowProvisioningUpdates",
+      "-authenticationKeyPath '#{api_key[:key_filepath]}'",
+      "-authenticationKeyID #{api_key[:key_id]}",
+      "-authenticationKeyIssuerID #{api_key[:issuer_id]}"
+    ].join(" ")
+
     gym(
       workspace: WORKSPACE,
       scheme: SCHEME,
@@ -259,12 +270,7 @@ platform :ios do
       clean: true,
       export_method: "app-store",
       export_team_id: team_id,
-      api_key: api_key,
-
-      # `-allowProvisioningUpdates` lets xcodebuild create / refresh the
-      # App Store provisioning profile via ASC API on demand. With it, a
-      # bundle-ID rename never needs manual cert/profile work again.
-      xcargs: "-allowProvisioningUpdates",
+      xcargs: asc_xcargs,
 
       # raw xcodebuild output (no xcpretty). Old flag is deprecated.
       xcodebuild_formatter: "",
