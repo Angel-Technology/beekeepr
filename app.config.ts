@@ -18,17 +18,17 @@ type EnvironmentConfig = {
 };
 
 const APP: EnvironmentConfig = {
-  name: 'Beekeepr',
-  slug: 'beekeepr',
-  scheme: 'beekeepr',
+  name: 'Buzzkeepr',
+  slug: 'buzzkeepr',
+  scheme: 'buzzkeepr',
 
   icon: './src/assets/images/app-icon.png',
 
-  bundleIdentifier: 'com.beekeepr.app',
-  androidPackage: 'com.beekeepr.app',
+  bundleIdentifier: 'com.buzzkeepr.app',
+  androidPackage: 'com.buzzkeepr.app',
 
   androidAdaptiveIconForeground: './src/assets/images/adaptive-icon.png',
-  androidAdaptiveIconBackgroundColor: '#ffffff',
+  androidAdaptiveIconBackgroundColor: '#000000',
 };
 
 const ciBuildNumber = Number.parseInt(
@@ -84,11 +84,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           },
         ],
         NSCameraUsageDescription:
-          "Beekeepr uses the camera to capture your driver's license and selfie for identity verification.",
+          "Buzzkeepr uses the camera to capture your driver's license and selfie for identity verification.",
         NSLocationWhenInUseUsageDescription:
-          'Beekeepr uses location during identity verification for fraud prevention and security checks.',
+          'Buzzkeepr uses location during identity verification for fraud prevention and security checks.',
         NSPhotoLibraryUsageDescription:
-          'Beekeepr can access your photo library if identity verification allows uploading ID images instead of capturing them live.',
+          'Buzzkeepr can access your photo library if identity verification allows uploading ID images instead of capturing them live.',
       },
     },
 
@@ -129,7 +129,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         '@react-native-google-signin/google-signin',
         {
           iosUrlScheme:
-            'com.googleusercontent.apps.1065098379708-jkbfs6ro7rlopgeqo94al7dm8jl1815b',
+            'com.googleusercontent.apps.280443449247-82661408bk0p6u7o05h7p0004l82sm43',
         },
       ],
       './plugins/withPersonaNative',

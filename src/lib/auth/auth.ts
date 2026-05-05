@@ -7,7 +7,7 @@ export const auth = betterAuth({
     enabled: true, // Enable authentication using email and password.
   },
   trustedOrigins: [
-    'beekeepr://',
+    'buzzkeepr://',
 
     ...(process.env.NODE_ENV === 'development'
       ? [

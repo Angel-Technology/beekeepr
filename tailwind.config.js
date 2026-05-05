@@ -1,7 +1,7 @@
 /**
- * Tailwind CSS configuration for the Beekeepr React Native app
+ * Tailwind CSS configuration for the Buzzkeepr React Native app
  *
- * This configuration extends Tailwind CSS with Beekeepr's app theme values and
+ * This configuration extends Tailwind CSS with Buzzkeepr's app theme values and
  * provides React Native-specific styling through NativeWind.
  *
  * Structure notes:
