@@ -1,4 +1,4 @@
-import { ExpoConfig, ConfigContext } from 'expo/config';
+import type { ExpoConfig, ConfigContext } from 'expo/config';
 
 type EnvironmentConfig = {
   name: string;
@@ -7,6 +7,7 @@ type EnvironmentConfig = {
 
   // icon assets
   icon: string;
+
   // platform identifiers
   bundleIdentifier: string;
   androidPackage: string;
@@ -17,18 +18,34 @@ type EnvironmentConfig = {
 };
 
 const APP: EnvironmentConfig = {
-  name: 'Beekeepr',
-  slug: 'beekeepr',
-  scheme: 'beekeepr',
+  name: 'Buzzkeepr',
+  slug: 'buzzkeepr',
+  scheme: 'buzzkeepr',
 
   icon: './src/assets/images/app-icon.png',
 
-  bundleIdentifier: 'com.beekeepr.app',
-  androidPackage: 'com.beekeepr.app',
+  bundleIdentifier: 'com.buzzkeepr.app',
+  androidPackage: 'com.buzzkeepr.app',
 
   androidAdaptiveIconForeground: './src/assets/images/adaptive-icon.png',
-  androidAdaptiveIconBackgroundColor: '#ffffff',
+  androidAdaptiveIconBackgroundColor: '#000000',
 };
+
+const ciBuildNumber = Number.parseInt(
+  process.env.IOS_BUILD_NUMBER || process.env.GITHUB_RUN_NUMBER || '',
+  10,
+);
+const iosBuildNumber =
+  Number.isFinite(ciBuildNumber) && ciBuildNumber > 0
+    ? String(ciBuildNumber)
+    : '1';
+
+const ciVersionCode = Number.parseInt(
+  process.env.ANDROID_VERSION_CODE || process.env.GITHUB_RUN_NUMBER || '',
+  10,
+);
+const androidVersionCode =
+  Number.isFinite(ciVersionCode) && ciVersionCode > 0 ? ciVersionCode : 1;
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
@@ -40,7 +57,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     orientation: 'portrait',
     scheme: APP.scheme,
     userInterfaceStyle: 'light',
-    newArchEnabled: true,
 
     // Fallback icon (Expo requires this; use your preferred default)
     icon: APP.icon,
@@ -49,7 +65,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ...config.ios,
       supportsTablet: true,
       bundleIdentifier: APP.bundleIdentifier,
-      buildNumber: config.ios?.buildNumber ?? '1',
+      buildNumber: config.ios?.buildNumber ?? iosBuildNumber,
 
       // iOS app icon (static). Pick the best looking one (usually light bg).
       icon: APP.icon,
@@ -67,13 +83,19 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             CFBundleURLSchemes: [APP.scheme],
           },
         ],
+        NSCameraUsageDescription:
+          "Buzzkeepr uses the camera to capture your driver's license and selfie for identity verification.",
+        NSLocationWhenInUseUsageDescription:
+          'Buzzkeepr uses location during identity verification for fraud prevention and security checks.',
+        NSPhotoLibraryUsageDescription:
+          'Buzzkeepr can access your photo library if identity verification allows uploading ID images instead of capturing them live.',
       },
     },
 
     android: {
       ...config.android,
       package: APP.androidPackage,
-      versionCode: config.android?.versionCode ?? 1,
+      versionCode: config.android?.versionCode ?? androidVersionCode,
       googleServicesFile: './google-services.json',
 
       // Android app icon setup
@@ -83,24 +105,35 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         foregroundImage: APP.androidAdaptiveIconForeground,
         backgroundColor: APP.androidAdaptiveIconBackgroundColor,
       },
-
-      edgeToEdgeEnabled: true,
     },
 
     plugins: [
       'expo-router',
+      'expo-secure-store',
+      'expo-image',
+      'expo-web-browser',
+      '@react-native-community/datetimepicker',
       [
         'expo-splash-screen',
         {
           image: './src/assets/images/splash-icon.png',
           dark: {
             image: './src/assets/images/splash-icon.png',
-            backgroundColor: '#151718',
+            backgroundColor: '#FFFFFF',
           },
-          backgroundColor: '#ECEDEE',
+          backgroundColor: '#FFFFFF',
           resizeMode: 'cover',
         },
       ],
+      [
+        '@react-native-google-signin/google-signin',
+        {
+          iosUrlScheme:
+            'com.googleusercontent.apps.280443449247-82661408bk0p6u7o05h7p0004l82sm43',
+        },
+      ],
+      './plugins/withPersonaNative',
+      './plugins/withAndroidSigning',
       [
         'expo-font',
         {
@@ -137,6 +170,15 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             './src/assets/fonts/Poppins-ExtraBoldItalic.ttf',
             './src/assets/fonts/Poppins-Black.ttf',
             './src/assets/fonts/Poppins-BlackItalic.ttf',
+            './src/assets/fonts/Lexend-Thin.ttf',
+            './src/assets/fonts/Lexend-ExtraLight.ttf',
+            './src/assets/fonts/Lexend-Light.ttf',
+            './src/assets/fonts/Lexend-Regular.ttf',
+            './src/assets/fonts/Lexend-Medium.ttf',
+            './src/assets/fonts/Lexend-SemiBold.ttf',
+            './src/assets/fonts/Lexend-Bold.ttf',
+            './src/assets/fonts/Lexend-ExtraBold.ttf',
+            './src/assets/fonts/Lexend-Black.ttf',
             './src/assets/fonts/Inter-Regular.ttf',
             './src/assets/fonts/Inter-SemiBold.ttf',
             './src/assets/fonts/Inter-Bold.ttf',

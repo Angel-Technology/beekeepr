@@ -1,0 +1,74 @@
+import { executeGraphQL } from '@src/lib/graphql/client';
+import {
+  AcceptTermsDocument,
+  type AcceptTermsMutation,
+  type AcceptTermsMutationVariables,
+  CurrentUserDocument,
+  type CurrentUserQuery,
+  RequestEmailSignInDocument,
+  type RequestEmailSignInMutation,
+  type RequestEmailSignInMutationVariables,
+  SignInWithGoogleDocument,
+  type SignInWithGoogleMutation,
+  type SignInWithGoogleMutationVariables,
+  SignOutDocument,
+  type SignOutMutation,
+  VerifyEmailSignInDocument,
+  type VerifyEmailSignInMutation,
+  type VerifyEmailSignInMutationVariables,
+} from '../graphql/generated/auth.generated';
+import type {
+  EmailVerificationRequestInput,
+  GoogleSignInInput,
+  VerifyEmailCodeInput,
+} from '../models/auth.types';
+
+export const authRepository = {
+  requestEmailSignIn(input: EmailVerificationRequestInput) {
+    return executeGraphQL<
+      RequestEmailSignInMutation,
+      RequestEmailSignInMutationVariables
+    >({
+      document: RequestEmailSignInDocument,
+      variables: { input },
+    });
+  },
+
+  verifyEmailSignIn(input: VerifyEmailCodeInput) {
+    return executeGraphQL<
+      VerifyEmailSignInMutation,
+      VerifyEmailSignInMutationVariables
+    >({
+      document: VerifyEmailSignInDocument,
+      variables: { input },
+    });
+  },
+
+  signInWithGoogle(input: GoogleSignInInput) {
+    return executeGraphQL<
+      SignInWithGoogleMutation,
+      SignInWithGoogleMutationVariables
+    >({
+      document: SignInWithGoogleDocument,
+      variables: { input },
+    });
+  },
+
+  signOut() {
+    return executeGraphQL<SignOutMutation>({
+      document: SignOutDocument,
+    });
+  },
+
+  acceptTerms() {
+    return executeGraphQL<AcceptTermsMutation, AcceptTermsMutationVariables>({
+      document: AcceptTermsDocument,
+    });
+  },
+
+  getCurrentUser() {
+    return executeGraphQL<CurrentUserQuery>({
+      document: CurrentUserDocument,
+    });
+  },
+};

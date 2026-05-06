@@ -1,0 +1,1 @@
+export { VerificationStatusPill } from './VerificationStatusPill';

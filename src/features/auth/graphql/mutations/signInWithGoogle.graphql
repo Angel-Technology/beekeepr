@@ -1,0 +1,11 @@
+mutation SignInWithGoogle($input: SignInWithGoogleInput!) {
+  signInWithGoogle(input: $input) {
+    session {
+      ...AuthSessionFields
+    }
+    user {
+      ...AuthUserFields
+    }
+    error
+  }
+}

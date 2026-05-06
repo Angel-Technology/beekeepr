@@ -8,4 +8,4 @@ team_id(ENV["IOS_TEAM_ID"])  # set in CI as a secret/env var
 
 # Optional: only needed if you want fastlane to know an identifier up front.
 # With multiple variants, you can leave this out or set it to prod.
-# app_identifier("com.beekeepr.app")
+# app_identifier("com.buzzkeepr.app")

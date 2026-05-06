@@ -1,0 +1,21 @@
+fragment AuthUserFields on UserGraph {
+  id
+  email
+  displayName
+  emailVerified
+  createdAtUtc
+  identityVerificationStatus
+  personaInquiryId
+  personaInquiryStatus
+  personaVerifiedAtUtc
+  verifiedFirstName
+  verifiedMiddleName
+  verifiedLastName
+  verifiedBirthdate
+  verifiedLicenseState
+  phoneNumber
+  imageUrl
+  backgroundCheckBadge
+  backgroundCheckBadgeExpiresAtUtc
+  termsAcceptedAtUtc
+}

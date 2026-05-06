@@ -1,5 +1,5 @@
 # fastlane/Fastfile
-# Beekeepr - Single app (App Store only)
+# Buzzkeepr - Single app (App Store only)
 
 require "base64"
 require "fileutils"
@@ -8,9 +8,9 @@ require "json"
 opt_out_usage
 default_platform(:ios)
 
-APP_NAME = "Beekeepr"
+APP_NAME = "Buzzkeepr"
 
-SCHEME    = ENV["IOS_SCHEME"] || "Beekeepr"
+SCHEME    = ENV["IOS_SCHEME"] || "Buzzkeepr"
 WORKSPACE = ENV["IOS_WORKSPACE"] || "ios/#{SCHEME}.xcworkspace"
 
 BUILD_DIR   = File.expand_path("../build", __dir__) # <repo>/build
@@ -54,19 +54,34 @@ def ensure_ios_team_id!
   team_id
 end
 
-def setup_asc_api_key!
+def write_asc_api_key_file!
   UI.user_error!("Missing ASC_KEY_ID") if ENV["ASC_KEY_ID"].to_s.strip.empty?
   UI.user_error!("Missing ASC_ISSUER_ID") if ENV["ASC_ISSUER_ID"].to_s.strip.empty?
 
   key_content = ENV["ASC_KEY_P8"]
   UI.user_error!("Missing ASC_KEY_P8") if key_content.to_s.strip.empty?
 
-  app_store_connect_api_key(
+  decoded = ENV["ASC_KEY_P8_BASE64"] == "true" ? Base64.decode64(key_content) : key_content
+  tmp_dir = File.join(__dir__, ".tmp")
+  FileUtils.mkdir_p(tmp_dir)
+  key_path = File.expand_path(File.join(tmp_dir, "asc_api_key.p8"))
+  File.write(key_path, decoded)
+  File.chmod(0o600, key_path)
+  key_path
+end
+
+def setup_asc_api_key!
+  key_path = write_asc_api_key_file!
+  api_key = app_store_connect_api_key(
     key_id: ENV["ASC_KEY_ID"],
     issuer_id: ENV["ASC_ISSUER_ID"],
-    key_content: key_content,
-    is_key_content_base64: ENV["ASC_KEY_P8_BASE64"] == "true"
+    key_filepath: key_path
   )
+  # fastlane's return hash sometimes omits :key_filepath even when one was
+  # passed in; xcodebuild's automatic signing needs the path explicitly,
+  # so stash it on the result so callers don't have to re-derive it.
+  api_key[:key_filepath] ||= key_path
+  api_key
 end
 
 def resolve_play_json_key_path!
@@ -78,14 +93,14 @@ def resolve_play_json_key_path!
   tmp_dir = File.join(__dir__, ".tmp")
   FileUtils.mkdir_p(tmp_dir)
 
-  path = File.join(tmp_dir, "play-service-account.json")
+  path = File.expand_path(File.join(tmp_dir, "play-service-account.json"))
   File.write(path, json_data)
   path
 end
 
 def ensure_android_package_name!
   package_name = ENV["ANDROID_PACKAGE_NAME"].to_s.strip
-  package_name = "com.beekeepr.app" if package_name.empty?
+  package_name = "com.buzzkeepr.app" if package_name.empty?
   package_name
 end
 
@@ -118,7 +133,7 @@ def resolve_firebase_credentials_path!
   tmp_dir = File.join(__dir__, ".tmp")
   FileUtils.mkdir_p(tmp_dir)
 
-  path = File.join(tmp_dir, "firebase-service-account.json")
+  path = File.expand_path(File.join(tmp_dir, "firebase-service-account.json"))
   File.write(path, json_data)
   path
 end
@@ -132,7 +147,7 @@ def resolve_android_keystore_path!
   tmp_dir = File.join(__dir__, ".tmp")
   FileUtils.mkdir_p(tmp_dir)
 
-  keystore_path = File.join(tmp_dir, "android-release.keystore")
+  keystore_path = File.expand_path(File.join(tmp_dir, "android-release.keystore"))
   File.binwrite(keystore_path, Base64.decode64(keystore_data))
   keystore_path
 end
@@ -143,43 +158,36 @@ def ensure_android_signing_env!
   UI.user_error!("Missing ANDROID_KEYSTORE_PASSWORD") if ENV["ANDROID_KEYSTORE_PASSWORD"].to_s.strip.empty?
 end
 
-def patch_android_release_signing!(package_name)
-  gradle_path = File.join(project_root, "android", "app", "build.gradle")
-  UI.user_error!("Missing #{gradle_path}. Run Expo prebuild first.") unless File.exist?(gradle_path)
+RELEASE_NOTES_MAX_CHARS = 3500
 
-  gradle = File.read(gradle_path)
-  signing_block = <<~GRADLE.chomp
-    signingConfigs {
-        debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-        }
-        release {
-            storeFile file(System.getenv("ANDROID_KEYSTORE_PATH"))
-            storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
-            keyAlias System.getenv("ANDROID_KEY_ALIAS")
-            keyPassword System.getenv("ANDROID_KEY_PASSWORD")
-        }
-    }
-  GRADLE
+def truncated_release_notes
+  notes = ENV["RELEASE_NOTES"].to_s
+  return nil if notes.empty?
+  return notes if notes.length <= RELEASE_NOTES_MAX_CHARS
 
-  updated = gradle.dup
-  updated.sub!(/namespace ['"][^'"]+['"]/, "namespace '#{package_name}'")
-  updated.sub!(/applicationId ['"][^'"]+['"]/, "applicationId '#{package_name}'")
-  updated.sub!(
-    /signingConfigs\s*\{\s*debug\s*\{.*?keyPassword 'android'\s*\}\s*\}/m,
-    signing_block
-  )
-  updated.sub!(
-    /(release\s*\{\s*(?:\/\/.*\s*)*signingConfig )signingConfigs\.debug/m,
-    "\\1signingConfigs.release"
-  )
+  # TestFlight's changelog field caps around 4000 chars; supply has its own
+  # limits. Trim well under to leave room for the truncation marker.
+  notes[0, RELEASE_NOTES_MAX_CHARS - 12].rstrip + "\n…(truncated)"
+end
 
-  UI.user_error!("Unable to patch Android signing in #{gradle_path}") if updated == gradle
+# ==========================================
+# Cross-platform housekeeping
+# ==========================================
 
-  File.write(gradle_path, updated)
+desc "Wipe local build outputs and Fastlane scratch directory"
+lane :clean do
+  paths = [
+    File.expand_path(BUILD_DIR, __dir__),
+    File.expand_path(File.join(__dir__, ".tmp")),
+    File.expand_path(File.join(__dir__, "buildlog")),
+  ]
+  paths.each do |path|
+    if Dir.exist?(path)
+      FileUtils.rm_rf(path)
+      UI.message("Removed #{path}")
+    end
+  end
+  UI.success("Clean complete")
 end
 
 # ==========================================
@@ -187,22 +195,7 @@ end
 # ==========================================
 
 platform :ios do
-  desc "Sync App Store signing (match)"
-  lane :sync_signing do
-    setup_asc_api_key!
-
-    match(
-      type: "appstore",
-      readonly: ENV["CI"] == "true",
-      team_id: ensure_ios_team_id!,
-      git_url: ENV["MATCH_GIT_URL"],
-      git_branch: "master",
-      app_identifier: [ensure_ios_bundle_id!],
-      git_basic_authorization: ENV["MATCH_GIT_BASIC_AUTHORIZATION"]
-    )
-  end
-
-  desc "Build signed IPA for TestFlight / App Store"
+  desc "Build signed IPA for TestFlight / App Store using automatic signing"
   lane :build do
     ensure_build_dir!
 
@@ -211,15 +204,40 @@ platform :ios do
 
     UI.message("Building iOS (#{APP_NAME})")
 
-    # Generate ios folder
+    # Generate ios folder.
     expo_prebuild("ios")
 
-    # CI keychain + codesign setup
+    # Create the temp CI keychain that codesign will reach into.
     setup_ci
 
-    # Set team
+    # Import the Apple Distribution cert from a base64-encoded .p12 stored as
+    # a CI secret. Without this in the keychain, codesign fails to find a
+    # signing identity even though Xcode + ASC API can fetch profiles.
+    cert_b64 = ENV["IOS_DISTRIBUTION_CERT_P12_BASE64"].to_s
+    UI.user_error!(
+      "Missing IOS_DISTRIBUTION_CERT_P12_BASE64. Export your team's Apple " \
+      "Distribution certificate from Keychain Access as a .p12, base64-encode " \
+      "it, and store the result as a CI secret."
+    ) if cert_b64.strip.empty?
+
+    cert_password = ENV["IOS_DISTRIBUTION_CERT_PASSWORD"].to_s
+    UI.user_error!("Missing IOS_DISTRIBUTION_CERT_PASSWORD") if cert_password.empty?
+
+    cert_path = File.expand_path(File.join(__dir__, ".tmp", "ios_distribution.p12"))
+    FileUtils.mkdir_p(File.dirname(cert_path))
+    File.binwrite(cert_path, Base64.decode64(cert_b64))
+
+    import_certificate(
+      certificate_path: cert_path,
+      certificate_password: cert_password,
+      keychain_name: "fastlane_tmp_keychain",
+      keychain_password: ""
+    )
+
+    # Set the development team in the xcodeproj so automatic signing knows
+    # which team to provision profiles under.
     update_project_team(
-      path: "ios/Beekeepr.xcodeproj",
+      path: "ios/#{APP_NAME}.xcodeproj",
       teamid: team_id
     )
 
@@ -230,26 +248,49 @@ platform :ios do
       verbose: true
     )
 
-    # Pull certs & profiles
-    sync_signing
+    # Authenticate fastlane with App Store Connect so we can fetch/create the
+    # App Store provisioning profile via the API.
+    api_key = setup_asc_api_key!
 
-    # Force manual signing for Release
-    update_code_signing_settings(
-      use_automatic_signing: false,
-      path: "ios/Beekeepr.xcodeproj",
-      team_id: team_id,
-      bundle_identifier: bundle_id,
-      profile_name: "match AppStore #{bundle_id}",
-      code_sign_identity: "Apple Distribution"
+    # Fetch (or create on first run) the App Store Distribution profile for
+    # this bundle id via ASC API. Manual signing is required because Xcode's
+    # automatic signing only mints Apple Development profiles — and those
+    # need a registered device on the team. Using a manually-pinned App
+    # Store Distribution profile sidesteps that requirement entirely.
+    sigh(
+      app_identifier: bundle_id,
+      api_key: api_key,
+      force: false,
+      output_path: File.join(__dir__, ".tmp")
     )
 
-    # ✅ Auto-increment build number for TestFlight using GitHub Actions run number
-    build_num = (ENV["GITHUB_RUN_NUMBER"] || "1").to_i
+    profile_name = lane_context[SharedValues::SIGH_NAME]
+    profile_uuid = lane_context[SharedValues::SIGH_UUID]
+    UI.message("Using provisioning profile '#{profile_name}' (#{profile_uuid})")
+
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "ios/#{APP_NAME}.xcodeproj",
+      team_id: team_id,
+      bundle_identifier: bundle_id,
+      code_sign_identity: "Apple Distribution",
+      profile_name: profile_name,
+      profile_uuid: profile_uuid,
+      targets: [APP_NAME],
+      build_configurations: ["Release"]
+    )
+
+    # Use the workflow-provided build number so CI controls monotonic versioning.
+    build_num = (ENV["IOS_BUILD_NUMBER"] || ENV["GITHUB_RUN_NUMBER"] || "1").to_i
     increment_build_number(
-      xcodeproj: "ios/Beekeepr.xcodeproj",
+      xcodeproj: "ios/#{APP_NAME}.xcodeproj",
       build_number: build_num
     )
     UI.message("Using iOS build number: #{build_num}")
+
+    # We're on manual signing now; no need for -allowProvisioningUpdates or
+    # the ASC auth args (xcodebuild won't talk to ASC during archive).
+    asc_xcargs = ""
 
     gym(
       workspace: WORKSPACE,
@@ -258,19 +299,19 @@ platform :ios do
       clean: true,
       export_method: "app-store",
       export_team_id: team_id,
+      xcargs: asc_xcargs,
 
       # raw xcodebuild output (no xcpretty). Old flag is deprecated.
       xcodebuild_formatter: "",
       silent: false,
       buildlog_path: File.join(project_root, "fastlane", "buildlog"),
 
-      xcargs: "CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=#{team_id} CODE_SIGN_IDENTITY='Apple Distribution' PROVISIONING_PROFILE_SPECIFIER='match AppStore #{bundle_id}'",
       export_options: {
         method: "app-store",
         signingStyle: "manual",
         teamID: team_id,
         provisioningProfiles: {
-          bundle_id => "match AppStore #{bundle_id}"
+          bundle_id => profile_name
         }
       },
       output_directory: BUILD_DIR,
@@ -290,22 +331,40 @@ platform :ios do
     pilot(
       ipa: ipa_path,
       app_identifier: ensure_ios_bundle_id!,
-      skip_waiting_for_build_processing: true,
-      changelog: ENV["RELEASE_NOTES"]
+      skip_waiting_for_build_processing: false,
+      changelog: truncated_release_notes,
+      distribute_external: false
     )
   end
 
-  desc "Submit to App Store review"
+  desc "Submit the latest TestFlight build to App Store review (with screenshots)"
   lane :submit_review do
-    setup_asc_api_key!
+    api_key = setup_asc_api_key!
 
+    screenshots_dir = File.expand_path(File.join(__dir__, "screenshots"))
+    has_screenshots = Dir.exist?(screenshots_dir) &&
+      Dir.glob(File.join(screenshots_dir, "**", "*.{png,jpg,jpeg}")).any?
+
+    if has_screenshots
+      UI.message("Uploading screenshots from #{screenshots_dir}")
+    else
+      UI.important("No screenshots found in #{screenshots_dir}; submitting without updating screenshots.")
+    end
+
+    # `deliver` defaults to submitting whichever build is currently the latest
+    # available on App Store Connect — i.e. whatever the dev workflow last
+    # uploaded to TestFlight. No `ipa:` parameter; this lane never builds.
     deliver(
+      api_key: api_key,
       app_identifier: ensure_ios_bundle_id!,
       submit_for_review: true,
       automatic_release: false,
       force: true,
-      skip_screenshots: true,
-      skip_metadata: true
+      skip_metadata: true,
+      skip_screenshots: !has_screenshots,
+      overwrite_screenshots: has_screenshots,
+      screenshots_path: screenshots_dir,
+      precheck_include_in_app_purchases: false
     )
   end
 end
@@ -320,19 +379,21 @@ platform :android do
     ensure_build_dir!
     ensure_android_signing_env!
 
-    package_name = ensure_android_package_name!
     keystore_path = resolve_android_keystore_path!
 
     UI.message("Building Android (#{APP_NAME})")
 
     expo_prebuild("android")
-    patch_android_release_signing!(package_name)
 
     gradle(
       project_dir: "android",
       task: "bundleRelease",
+      flags: "--stacktrace --warning-mode all",
       properties: {
         "ANDROID_KEYSTORE_PATH" => keystore_path,
+        "ANDROID_KEYSTORE_PASSWORD" => ENV["ANDROID_KEYSTORE_PASSWORD"],
+        "ANDROID_KEY_ALIAS" => ENV["ANDROID_KEY_ALIAS"],
+        "ANDROID_KEY_PASSWORD" => ENV["ANDROID_KEY_PASSWORD"],
         "android.injected.signing.store.file" => keystore_path,
         "android.injected.signing.store.password" => ENV["ANDROID_KEYSTORE_PASSWORD"],
         "android.injected.signing.key.alias" => ENV["ANDROID_KEY_ALIAS"],
@@ -350,19 +411,21 @@ platform :android do
     ensure_build_dir!
     ensure_android_signing_env!
 
-    package_name = ensure_android_package_name!
     keystore_path = resolve_android_keystore_path!
 
     UI.message("Building Android APK (#{APP_NAME})")
 
     expo_prebuild("android")
-    patch_android_release_signing!(package_name)
 
     gradle(
       project_dir: "android",
       task: "assembleRelease",
+      flags: "--stacktrace --warning-mode all",
       properties: {
         "ANDROID_KEYSTORE_PATH" => keystore_path,
+        "ANDROID_KEYSTORE_PASSWORD" => ENV["ANDROID_KEYSTORE_PASSWORD"],
+        "ANDROID_KEY_ALIAS" => ENV["ANDROID_KEY_ALIAS"],
+        "ANDROID_KEY_PASSWORD" => ENV["ANDROID_KEY_PASSWORD"],
         "android.injected.signing.store.file" => keystore_path,
         "android.injected.signing.store.password" => ENV["ANDROID_KEYSTORE_PASSWORD"],
         "android.injected.signing.key.alias" => ENV["ANDROID_KEY_ALIAS"],
@@ -390,7 +453,7 @@ platform :android do
       track: track,
       json_key: resolve_play_json_key_path!,
       release_status: release_status,
-      changelog: ENV["RELEASE_NOTES"],
+      changelog: truncated_release_notes,
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true
@@ -416,7 +479,7 @@ platform :android do
       android_artifact_type: artifact_type,
       android_artifact_path: artifact_path,
       service_credentials_file: resolve_firebase_credentials_path!,
-      release_notes: ENV["RELEASE_NOTES"],
+      release_notes: truncated_release_notes,
       testers: ENV["FIREBASE_TESTERS"],
       groups: ENV["FIREBASE_GROUPS"]
     )

@@ -1,0 +1,8 @@
+mutation RequestEmailSignIn($input: RequestEmailSignInInput!) {
+  requestEmailSignIn(input: $input) {
+    success
+    email
+    expiresAtUtc
+    error
+  }
+}

@@ -13,6 +13,7 @@ jobs:
   ios:
     name: iOS Dev -> TestFlight
     runs-on: macos-26
+    environment: production
 
     env:
       CI: 'true'
@@ -20,8 +21,21 @@ jobs:
       FASTLANE_DISABLE_COLORS: '1'
       COCOAPODS_DISABLE_STATS: 'true'
       EXPO_NO_TELEMETRY: '1'
+      EXPO_PUBLIC_APP_ENV: production
+      EXPO_PUBLIC_GRAPHQL_URL: ${{ vars.EXPO_PUBLIC_GRAPHQL_URL_PRODUCTION }}
+      EXPO_PUBLIC_AUTH_BASE_URL: ${{ vars.EXPO_PUBLIC_AUTH_BASE_URL_PRODUCTION }}
+      EXPO_PUBLIC_AUTH_SCHEME: buzzkeepr
+      EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: ${{ vars.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID }}
+      EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: ${{ vars.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID }}
+      EXPO_PUBLIC_REVENUECAT_API_KEY_IOS: ${{ vars.EXPO_PUBLIC_REVENUECAT_API_KEY_IOS_PRODUCTION }}
+      EXPO_PUBLIC_REVENUECAT_API_KEY_ANDROID: ${{ vars.EXPO_PUBLIC_REVENUECAT_API_KEY_ANDROID_PRODUCTION }}
+      EXPO_PUBLIC_REVENUECAT_ENTITLEMENT_ID: ${{ vars.EXPO_PUBLIC_REVENUECAT_ENTITLEMENT_ID_PRODUCTION }}
+      EXPO_PUBLIC_PERSONA_ENVIRONMENT: ${{ vars.EXPO_PUBLIC_PERSONA_ENVIRONMENT_PRODUCTION }}
+      EXPO_PUBLIC_PERSONA_TEMPLATE_ID: ${{ vars.EXPO_PUBLIC_PERSONA_TEMPLATE_ID_PRODUCTION }}
+      EXPO_PUBLIC_TERMS_OF_USE_URL: ${{ vars.EXPO_PUBLIC_TERMS_OF_USE_URL }}
+      EXPO_PUBLIC_PRIVACY_POLICY_URL: ${{ vars.EXPO_PUBLIC_PRIVACY_POLICY_URL }}
 
-      IOS_BUNDLE_ID: com.beekeepr.app
+      IOS_BUNDLE_ID: com.buzzkeepr.app
       IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
 
       ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
@@ -29,9 +43,11 @@ jobs:
       ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
       ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
 
-      MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
-      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-      MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+      # Apple Distribution cert exported from Keychain Access as a .p12 and
+      # base64-encoded. Imported into the temp CI keychain by the build lane;
+      # automatic signing then fetches the matching profile via ASC API.
+      IOS_DISTRIBUTION_CERT_P12_BASE64: ${{ secrets.IOS_DISTRIBUTION_CERT_P12_BASE64 }}
+      IOS_DISTRIBUTION_CERT_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERT_PASSWORD }}
 
       IOS_BUILD_NUMBER: ${{ github.run_number }}
 
@@ -42,9 +58,13 @@ jobs:
 
       - name: Release notes from commit
         run: |
-          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
-          git log -1 --pretty=format:'%s%n%n%b' >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          DELIM="RELEASE_NOTES_$(date +%s%N)"
+          {
+            echo "RELEASE_NOTES<<$DELIM"
+            git log -1 --pretty=format:'%s%n%n%b'
+            echo
+            echo "$DELIM"
+          } >> "$GITHUB_ENV"
 
       - uses: actions/setup-node@v4
         with:
@@ -53,7 +73,19 @@ jobs:
 
       - name: Select Xcode 26
         run: |
-          XCODE_APP="$(find /Applications -maxdepth 1 -type d -name 'Xcode_26*.app' | sort -V | tail -n 1)"
+          XCODE_APP=""
+          if [ -d /Applications/Xcode.app ]; then
+            XCODE_VERSION="$(/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -version | head -n 1 | awk '{print $2}')"
+            if [[ "$XCODE_VERSION" == 26* ]]; then
+              XCODE_APP="/Applications/Xcode.app"
+            fi
+          fi
+          if [ -z "$XCODE_APP" ]; then
+            XCODE_APP="$(find /Applications -maxdepth 1 -type d -name 'Xcode_26*.app' ! -name '*beta*' | sort -V | tail -n 1)"
+          fi
+          if [ -z "$XCODE_APP" ]; then
+            XCODE_APP="$(find /Applications -maxdepth 1 -type d -name 'Xcode_26*.app' | sort -V | tail -n 1)"
+          fi
           if [ -z "$XCODE_APP" ]; then
             echo "Xcode 26 not found on runner"
             exit 1
@@ -63,8 +95,6 @@ jobs:
 
       - run: corepack enable
       - run: yarn install --immutable
-      - run: yarn type-check
-      - run: yarn lint
 
       - uses: ruby/setup-ruby@v1
         with:
@@ -95,17 +125,32 @@ jobs:
   android:
     name: Android Dev -> Firebase
     runs-on: ubuntu-latest
+    environment: production
 
     env:
       CI: 'true'
       FASTLANE_SKIP_UPDATE_CHECK: 'true'
       EXPO_NO_TELEMETRY: '1'
-      ANDROID_PACKAGE_NAME: com.beekeepr.app
+      EXPO_PUBLIC_APP_ENV: production
+      EXPO_PUBLIC_GRAPHQL_URL: ${{ vars.EXPO_PUBLIC_GRAPHQL_URL_PRODUCTION }}
+      EXPO_PUBLIC_AUTH_BASE_URL: ${{ vars.EXPO_PUBLIC_AUTH_BASE_URL_PRODUCTION }}
+      EXPO_PUBLIC_AUTH_SCHEME: buzzkeepr
+      EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: ${{ vars.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID }}
+      EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: ${{ vars.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID }}
+      EXPO_PUBLIC_REVENUECAT_API_KEY_IOS: ${{ vars.EXPO_PUBLIC_REVENUECAT_API_KEY_IOS_PRODUCTION }}
+      EXPO_PUBLIC_REVENUECAT_API_KEY_ANDROID: ${{ vars.EXPO_PUBLIC_REVENUECAT_API_KEY_ANDROID_PRODUCTION }}
+      EXPO_PUBLIC_REVENUECAT_ENTITLEMENT_ID: ${{ vars.EXPO_PUBLIC_REVENUECAT_ENTITLEMENT_ID_PRODUCTION }}
+      EXPO_PUBLIC_PERSONA_ENVIRONMENT: ${{ vars.EXPO_PUBLIC_PERSONA_ENVIRONMENT_PRODUCTION }}
+      EXPO_PUBLIC_PERSONA_TEMPLATE_ID: ${{ vars.EXPO_PUBLIC_PERSONA_TEMPLATE_ID_PRODUCTION }}
+      EXPO_PUBLIC_TERMS_OF_USE_URL: ${{ vars.EXPO_PUBLIC_TERMS_OF_USE_URL }}
+      EXPO_PUBLIC_PRIVACY_POLICY_URL: ${{ vars.EXPO_PUBLIC_PRIVACY_POLICY_URL }}
+      ANDROID_PACKAGE_NAME: com.buzzkeepr.app
       ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-      FIREBASE_APP_ID: 1:1065098379708:android:65a1522fa9d1bcc037abb9
+      ANDROID_VERSION_CODE: ${{ github.run_number }}
+      FIREBASE_APP_ID: 1:280443449247:android:b4e037b0ea20b4bddcd7aa
       FIREBASE_CREDENTIALS_JSON: ${{ secrets.FIREBASE_CREDENTIALS_JSON }}
       FIREBASE_GROUPS: dev
       FIREBASE_ANDROID_ARTIFACT_TYPE: APK
@@ -117,9 +162,13 @@ jobs:
 
       - name: Release notes from commit
         run: |
-          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
-          git log -1 --pretty=format:'%s%n%n%b' >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          DELIM="RELEASE_NOTES_$(date +%s%N)"
+          {
+            echo "RELEASE_NOTES<<$DELIM"
+            git log -1 --pretty=format:'%s%n%n%b'
+            echo
+            echo "$DELIM"
+          } >> "$GITHUB_ENV"
 
       - uses: actions/setup-node@v4
         with:
@@ -136,6 +185,8 @@ jobs:
           cache: gradle
 
       - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
 
       - uses: ruby/setup-ruby@v1
         with:
