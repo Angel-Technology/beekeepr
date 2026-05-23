@@ -63,7 +63,7 @@ export const ProfileScreen = () => {
           paddingBottom: insets.bottom + 32,
           gap: 24,
         }}
-        bottomOffset={24}
+        bottomOffset={100}
         keyboardShouldPersistTaps="handled"
       >
         <View className="gap-1 px-1">

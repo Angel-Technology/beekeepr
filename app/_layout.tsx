@@ -1,7 +1,10 @@
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { KeyboardProvider } from 'react-native-keyboard-controller';
+import {
+  KeyboardProvider,
+  KeyboardToolbar,
+} from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useAuthSession } from '@features/auth';
 
@@ -92,6 +95,7 @@ export default function RootLayout() {
             </RevenueCatProvider>
           </SafeAreaProvider>
         </QueryProvider>
+        <KeyboardToolbar />
       </KeyboardProvider>
     </GestureHandlerRootView>
   );
