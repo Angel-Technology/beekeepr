@@ -1,5 +1,5 @@
-import { AccountPlaceholderScreen } from '@features/account';
+import { ProfileScreen } from '@features/account';
 
 export default function ProfilePage() {
-  return <AccountPlaceholderScreen title="My Profile" />;
+  return <ProfileScreen />;
 }

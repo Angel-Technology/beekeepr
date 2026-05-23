@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useAuthSession } from '@features/auth';
 
@@ -8,6 +9,8 @@ import '../global.css';
 import { useEffect, type ComponentType } from 'react';
 import { QueryProvider } from '@src/lib/tanstack/QueryProvider';
 import { RevenueCatProvider } from '@src/lib/revenuecat';
+import { GlobalLoaderProvider, GlobalLoaderOverlay } from '@src/lib/loader';
+import { ErrorModalProvider } from '@src/lib/error-modal';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -65,22 +68,31 @@ export default function RootLayout() {
   if (storybookEnabled && StorybookUIRoot) {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <SafeAreaProvider>
-          <StorybookUIRoot />
-        </SafeAreaProvider>
+        <KeyboardProvider>
+          <SafeAreaProvider>
+            <StorybookUIRoot />
+          </SafeAreaProvider>
+        </KeyboardProvider>
       </GestureHandlerRootView>
     );
   }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <QueryProvider>
-        <SafeAreaProvider>
-          <RevenueCatProvider>
-            <RootNavigator />
-          </RevenueCatProvider>
-        </SafeAreaProvider>
-      </QueryProvider>
+      <KeyboardProvider>
+        <QueryProvider>
+          <SafeAreaProvider>
+            <RevenueCatProvider>
+              <ErrorModalProvider>
+                <GlobalLoaderProvider>
+                  <RootNavigator />
+                  <GlobalLoaderOverlay />
+                </GlobalLoaderProvider>
+              </ErrorModalProvider>
+            </RevenueCatProvider>
+          </SafeAreaProvider>
+        </QueryProvider>
+      </KeyboardProvider>
     </GestureHandlerRootView>
   );
 }
