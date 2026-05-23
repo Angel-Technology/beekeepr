@@ -5,7 +5,13 @@ import { Text, View } from 'react-native';
 type BuzzVerifyFlowProps = {
   ctaLabel: string;
   onGetStarted: () => void;
-  onLearnMore: () => void;
+  /**
+   * When provided, renders the secondary "Learn more" button below the
+   * primary CTA. Omitted for users who only need to start a membership —
+   * the primary CTA already points at the learn-more screen, so a second
+   * button would be redundant.
+   */
+  onLearnMore?: () => void;
 };
 
 const DETAIL_ICON_COLOR = 'rgba(0,0,0,0.7)';
@@ -67,7 +73,13 @@ export const BuzzVerifyFlow = ({
           iconRight={<ArrowRight color="#FFFFFF" size={24} strokeWidth={2.2} />}
           onPress={onGetStarted}
         />
-        <Button label="Learn more" variant="outline" onPress={onLearnMore} />
+        {onLearnMore ? (
+          <Button
+            label="Learn more"
+            variant="outline"
+            onPress={onLearnMore}
+          />
+        ) : null}
       </View>
     </Card>
   );
