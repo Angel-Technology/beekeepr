@@ -57,11 +57,11 @@ export const useBuzzTab = () => {
   const ctaLabel = hasResumableVerification(user) ? 'Resume' : 'Get Started';
 
   const onGetStarted = () => {
-    router.push('/verify-identity/identity');
+    router.push('/verify-identity');
   };
 
   const onLearnMore = () => {
-    router.push('/verify-identity');
+    router.push('/verify-learn-more');
   };
 
   return {

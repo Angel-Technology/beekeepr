@@ -1,7 +1,7 @@
 /**
  * Stories for the kickoff body of the verification flow — phase 1 of the
  * post-paywall state machine. This is what the user sees the moment they
- * land on `/verify-identity/identity` before tapping "Start verification"
+ * land on `/verify-identity` before tapping "Start verification"
  * to launch the Persona SDK.
  *
  * Press the CTA in the canvas — `onStart` and `onMoreInfo` fire into the

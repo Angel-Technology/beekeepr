@@ -17,7 +17,7 @@ const formatLongDate = (value: Date) => {
   }).format(value);
 };
 
-const NEXT_ROUTE = '/verify-identity/identity';
+const NEXT_ROUTE = '/verify-identity';
 
 export const useVerificationLearnMore = () => {
   const router = useRouter();
@@ -28,7 +28,7 @@ export const useVerificationLearnMore = () => {
   return {
     reminderLabel: `In ${TRIAL_LENGTH_DAYS - REMINDER_LEAD_DAYS} days`,
     trialEndLabel: formatLongDate(trialEndDate),
-    handleGetStarted: () => router.push(NEXT_ROUTE),
+    handleGetStarted: () => router.replace(NEXT_ROUTE),
     handleGoBack: () => router.back(),
   };
 };

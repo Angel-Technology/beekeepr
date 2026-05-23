@@ -15,22 +15,16 @@ export default function PrivateLayout() {
     <>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(main)" />
+        <Stack.Screen name="verify-identity" />
         <Stack.Screen
-          name="verify-identity"
-          options={{ animation: 'slide_from_bottom' }}
+          name="verify-learn-more"
+          options={{
+            animation: 'slide_from_bottom',
+          }}
         />
-        <Stack.Screen
-          name="profile"
-          options={{ animation: 'slide_from_right' }}
-        />
-        <Stack.Screen
-          name="partner"
-          options={{ animation: 'slide_from_right' }}
-        />
-        <Stack.Screen
-          name="delete-account"
-          options={{ animation: 'slide_from_right' }}
-        />
+        <Stack.Screen name="profile" />
+        <Stack.Screen name="partner" />
+        <Stack.Screen name="delete-account" />
       </Stack>
 
       <TermsAcceptanceModal
