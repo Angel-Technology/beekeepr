@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import clsx from 'clsx';
 import { StyleSheet, View } from 'react-native';
 import LottieView from 'lottie-react-native';
 import { appAnimations } from '@assets/animations';
@@ -91,13 +92,16 @@ export const VerificationFlowBody = ({
 }: VerificationFlowBodyProps) => {
   const [isExitOpen, setIsExitOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+  // Phases with their own sticky bottom UI (e.g. criminal-form's shadow bar)
+  // already clear the home indicator — skip the safe-area pad to avoid
+  // double-spacing.
 
   return (
     <View className="flex-1">
       <Container
         safeArea
-        safeAreaEdges={['top', 'bottom']}
-        className="bg-bg-default px-2"
+        safeAreaEdges={['top']}
+        className={clsx('bg-bg-default px-2')}
       >
         <View className="-mx-5 self-stretch">
           <VerificationTopNav
@@ -111,7 +115,7 @@ export const VerificationFlowBody = ({
             }
           />
         </View>
-        <View className="w-full flex-1 pb-4">
+        <View className="w-full flex-1">
           {phase === 'kickoff' ? (
             <IdentityKickoffSection
               isStarting={isStarting}

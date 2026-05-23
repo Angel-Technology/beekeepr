@@ -4,6 +4,7 @@ import { appImages } from '@assets/images';
 import { Button } from '@components';
 import { NextStepsCard } from '../components/NextStepsCard';
 import { PrivacyComplianceCard } from '../components/PrivacyComplianceCard';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type DeniedSectionProps = {
   onGotIt: () => void;
@@ -27,8 +28,15 @@ export const DeniedSection = ({
   onAppealDecision,
   onMoreInfo,
 }: DeniedSectionProps) => {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View className="w-full flex-1">
+    <View
+      className="w-full flex-1"
+      style={{
+        paddingBottom: insets.bottom,
+      }}
+    >
       <ScrollView
         className="w-full flex-1"
         contentContainerClassName="gap-6 px-2 pb-6 pt-6"

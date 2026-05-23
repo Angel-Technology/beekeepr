@@ -6,6 +6,7 @@ import SpeechBubble from '@assets/svg/SpeechBubble';
 import { Button } from '@components';
 import { PrivacyComplianceCard } from '../components/PrivacyComplianceCard';
 import { StepBadge } from '../components/StepBadge';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const PRIVACY_BULLETS = [
   'This search is strictly confidential',
@@ -21,8 +22,15 @@ export const CriminalIntroSection = ({
   onStartSearch,
   onMoreInfo,
 }: CriminalIntroSectionProps) => {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View className="w-full flex-1 gap-7">
+    <View
+      className="w-full flex-1 gap-7"
+      style={{
+        paddingBottom: insets.bottom,
+      }}
+    >
       <View className="w-full gap-2">
         <StepBadge current={2} total={2} />
         <Text className="font-poppins-semiBold text-title-4 text-text-default">

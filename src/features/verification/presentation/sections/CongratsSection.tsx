@@ -3,6 +3,7 @@ import { Image } from 'expo-image';
 import { ArrowRight, Check } from 'lucide-react-native';
 import { appImages } from '@assets/images';
 import { Button, DetailCard } from '@components';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type CongratsSectionProps = {
   onStartTrial: () => void;
@@ -19,8 +20,14 @@ export const CongratsSection = ({
   onStartTrial,
   onEnterPromoCode,
 }: CongratsSectionProps) => {
+  const insets = useSafeAreaInsets();
   return (
-    <View className="w-full flex-1 gap-8 pt-6">
+    <View
+      className="w-full flex-1 gap-8 pt-6"
+      style={{
+        paddingBottom: insets.bottom,
+      }}
+    >
       <View className="w-full gap-1 px-2">
         <Text className="font-poppins-semiBold text-title-4 leading-tight text-text-default">
           WooHoo! You&rsquo;re in.
