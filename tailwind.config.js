@@ -1077,6 +1077,12 @@ module.exports = {
          * @example shadow-bottom-bar
          */
         'bottom-bar': '0 -2px 8px 0 rgba(0, 0, 0, 0.06)',
+        /**
+         * Compact lift shadow
+         * @description Mirrors the Figma `shadows/small` token (offset 0/2, blur 4, 8% black)
+         * @example shadow-small
+         */
+        small: '0 2px 4px 0 rgba(0, 0, 0, 0.08)',
       },
 
       /**
