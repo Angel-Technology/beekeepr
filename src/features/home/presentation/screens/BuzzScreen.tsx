@@ -24,8 +24,13 @@ export const BuzzScreen = () => {
   const headerOffset = APP_HEADER_HEIGHT + insets.top;
   const topMaskHeight = headerOffset + 8;
   const headerVisibility = useSharedValue(1);
-  const { flow, ctaLabel, onGetStarted, resetSubmittedBackgroundCheck } =
-    useBuzzTab();
+  const {
+    flow,
+    ctaLabel,
+    onGetStarted,
+    onLearnMore,
+    resetSubmittedBackgroundCheck,
+  } = useBuzzTab();
 
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -75,7 +80,11 @@ export const BuzzScreen = () => {
       >
         <VerticalSpacer size="xs" />
         {flow === 'verify' ? (
-          <BuzzVerifyFlow ctaLabel={ctaLabel} onGetStarted={onGetStarted} />
+          <BuzzVerifyFlow
+            ctaLabel={ctaLabel}
+            onGetStarted={onGetStarted}
+            onLearnMore={onLearnMore}
+          />
         ) : null}
         {flow === 'welcome' ? <BuzzWelcomeFlow /> : null}
         {flow === 'active' ? (

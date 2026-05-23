@@ -4,7 +4,6 @@ import { BackgroundCheckBadge, useAuthSession } from '@features/auth';
 import {
   hasResumableVerification,
   isVerificationDenied,
-  resolveVerifyIdentityRoute,
 } from '@features/verification';
 import { useRevenueCat } from '@src/lib/revenuecat';
 import type { BuzzFlow } from '../models/buzzFlow.types';
@@ -62,16 +61,18 @@ export const useBuzzTab = () => {
     : 'Get Started';
 
   const onGetStarted = () => {
-    const next = resolveVerifyIdentityRoute({ user, isPro });
-    if (next) {
-      router.push(next);
-    }
+    router.push('/verify-identity/identity');
+  };
+
+  const onLearnMore = () => {
+    router.push('/verify-identity');
   };
 
   return {
     flow,
     ctaLabel,
     onGetStarted,
+    onLearnMore,
     resetSubmittedBackgroundCheck: () => {
       router.replace('/');
     },

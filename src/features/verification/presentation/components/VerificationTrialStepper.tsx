@@ -10,7 +10,7 @@ type VerificationTrialStepperProps = {
 
 const titleClassName = 'font-poppins-semiBold text-base text-text-default';
 const descriptionClassName =
-  'font-poppins-regular text-sm leading-[20px] text-text-default';
+  'font-poppins-regular text-sm leading-[20px] text-text-tertiary';
 const outlineIconWrapperClassName =
   'p-[10px] bg-transparent border border-brand-highlight';
 const filledIconWrapperClassName = 'p-[10px] bg-brand-highlight';
@@ -33,10 +33,10 @@ export const VerificationTrialStepper = ({
           descriptionClassName,
           iconWrapperClassName: filledIconWrapperClassName,
           connectorClassName,
-          description: 'Today you pay $3.95 application fee.',
+          description: 'You pay nothing.',
           content: (
-            <Text className="font-poppins-regular text-xs leading-[1.3] text-text-weak">
-              After you pass our screening, your 7-day free trial begins.
+            <Text className="text-text-tertiary font-poppins-regular text-xs leading-[1.3]">
+              After you pass our screening, your 30-day free trial begins.
             </Text>
           ),
         },
@@ -46,7 +46,7 @@ export const VerificationTrialStepper = ({
           icon: <Bell size={15} strokeWidth={2.8} color="#000000" />,
           titleClassName,
           descriptionClassName:
-            'font-poppins-medium text-sm leading-[20px] text-text-weak',
+            'font-poppins-medium text-sm leading-[20px] text-text-tertiary',
           iconWrapperClassName: outlineIconWrapperClassName,
           connectorClassName,
           description:
@@ -58,7 +58,7 @@ export const VerificationTrialStepper = ({
           icon: <IntroBeeIcon width={15} height={15} />,
           titleClassName,
           descriptionClassName:
-            'font-poppins-medium text-sm leading-[20px] text-text-weak',
+            'font-poppins-medium text-sm leading-[20px] text-text-tertiary',
           iconWrapperClassName: outlineIconWrapperClassName,
           description:
             'Trial ends. You will be charged $9.95 unless you cancel before this date.',

@@ -164,6 +164,12 @@ module.exports = {
            */
           secondary: 'rgba(0, 0, 0, 0.7)',
           /**
+           * Tertiary text color
+           * @description Lower-emphasis text color for descriptions, helper, and supporting copy
+           * @example text-text-tertiary
+           */
+          tertiary: 'rgba(0, 0, 0, 0.5)',
+          /**
            * Strong text color
            * @description Highest-emphasis text color for headings and key content
            * @example text-text-strong

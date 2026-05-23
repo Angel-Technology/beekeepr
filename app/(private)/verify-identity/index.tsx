@@ -1,5 +1,5 @@
-import { VerificationPaywallScreen } from '@features/verification';
+import { VerificationLearnMoreScreen } from '@features/verification';
 
-export default function VerificationPaywallPage() {
-  return <VerificationPaywallScreen />;
+export default function VerificationLearnMorePage() {
+  return <VerificationLearnMoreScreen />;
 }
