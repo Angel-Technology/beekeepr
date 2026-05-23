@@ -9,7 +9,11 @@ const ICON_SIZE = 24;
 export default function PrivateTabsLayout() {
   return (
     <Tabs
-      screenOptions={{ headerShown: false, animation: 'shift' }}
+      detachInactiveScreens={false}
+      screenOptions={{
+        headerShown: false,
+        animation: 'shift',
+      }}
       tabBar={(props) => <BottomTabBar {...props} />}
     >
       <Tabs.Screen

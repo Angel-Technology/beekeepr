@@ -19,7 +19,7 @@ export const BuzzVerifyFlow = ({
             Join TheBuzz
           </Text>
           <Text className="text-center font-poppins-regular text-xl text-text-default">
-            7-day Free Trial
+            30-day Free Trial
           </Text>
           <Text className="text-center font-poppins-regular text-base text-text-default">
             $9.95/month

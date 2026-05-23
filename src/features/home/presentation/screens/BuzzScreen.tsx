@@ -1,7 +1,6 @@
 import { Text, View } from 'react-native';
 import { useNavigation } from 'expo-router';
 import { DrawerActions } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Menu } from 'lucide-react-native';
 import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -46,23 +45,16 @@ export const BuzzScreen = () => {
         animatedStyle={headerAnimatedStyle}
         topMaskHeight={topMaskHeight}
         center={
-          <View className="flex-row items-start justify-center gap-3">
-            <Text className="font-poppins-semiBold text-2xl text-text-default">
+          <View className="flex-row items-start justify-center gap-1">
+            <Text className="font-poppins-semiBold text-base text-text-default">
               TheBuzz
             </Text>
-            <LinearGradient
-              colors={['#FFBF00', '#FFBF00', '#F3FF00']}
-              locations={[0, 0.3861, 0.8159]}
-              start={{ x: 0.88, y: 0.92 }}
-              end={{ x: 0.12, y: 0.18 }}
-              style={{ borderRadius: 4, overflow: 'hidden' }}
-            >
-              <View className="px-[3px] py-[0.5px]">
-                <Text className="font-sourceSans-semiBold text-[10px] text-text-default">
-                  BETA
-                </Text>
-              </View>
-            </LinearGradient>
+
+            <View className="items-center justify-center rounded bg-brand-highlight px-[3px] py-[1px]">
+              <Text className="font-sourceSans-semiBold text-[7px] text-text-default">
+                BETA
+              </Text>
+            </View>
           </View>
         }
         right={
