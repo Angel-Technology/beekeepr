@@ -15,6 +15,7 @@ export type AppImages = {
   readonly welcomeBee: ImageRequireSource;
   readonly standoutBee: ImageRequireSource;
   readonly newMatchBee: ImageRequireSource;
+  readonly partnerships: ImageRequireSource;
 };
 
 export const appImages: AppImages = {
@@ -30,6 +31,7 @@ export const appImages: AppImages = {
   welcomeBee: require('./welcome-bee.png'),
   standoutBee: require('./standout-bee.png'),
   newMatchBee: require('./new-match-bee.png'),
+  partnerships: require('./partnerships.png'),
 };
 
 export type AppImageKey = keyof typeof appImages;
