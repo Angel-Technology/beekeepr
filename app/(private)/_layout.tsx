@@ -19,6 +19,18 @@ export default function PrivateLayout() {
           name="verify-identity"
           options={{ animation: 'slide_from_bottom' }}
         />
+        <Stack.Screen
+          name="profile"
+          options={{ animation: 'slide_from_right' }}
+        />
+        <Stack.Screen
+          name="partner"
+          options={{ animation: 'slide_from_right' }}
+        />
+        <Stack.Screen
+          name="delete-account"
+          options={{ animation: 'slide_from_right' }}
+        />
       </Stack>
 
       <TermsAcceptanceModal
