@@ -120,6 +120,12 @@ module.exports = {
            * @example bg-brand-lime, text-brand-lime
            */
           lime: '#EDF903',
+          /**
+           * Brand lighter (pale honey)
+           * @description Soft pale-yellow brand surface used to tint informational cards
+           * @example bg-brand-lighter, text-brand-lighter
+           */
+          lighter: '#FFFAD9',
         },
 
         /**

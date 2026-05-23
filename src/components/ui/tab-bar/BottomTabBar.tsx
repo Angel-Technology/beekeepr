@@ -77,16 +77,6 @@ export const BottomTabBar = ({
               onLongPress={handleLongPress}
               className="relative flex-1 items-center justify-end gap-1 px-1.5 py-2"
             >
-              {isFocused ? (
-                <View className="absolute inset-x-1 inset-y-1 overflow-hidden rounded-lg">
-                  <BlurView
-                    intensity={25}
-                    tint="light"
-                    style={[StyleSheet.absoluteFill, { opacity: 0.75 }]}
-                  />
-                </View>
-              ) : null}
-
               <View className="h-6 w-6 items-center justify-center">
                 {options.tabBarIcon
                   ? options.tabBarIcon({

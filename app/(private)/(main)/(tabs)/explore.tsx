@@ -1,10 +1,5 @@
-import { TabPlaceholder } from '@features/home';
+import { ExploreScreen } from '@features/explore';
 
 export default function ExplorePage() {
-  return (
-    <TabPlaceholder
-      title="Explore"
-      description="This tab is reserved for discovery and profile exploration."
-    />
-  );
+  return <ExploreScreen />;
 }
