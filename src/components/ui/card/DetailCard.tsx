@@ -10,18 +10,29 @@ type DetailCardItem =
       icon?: ReactNode;
     };
 
+type DetailCardTone = 'brand' | 'neutral';
+
 type DetailCardProps = {
   title: string;
   items: DetailCardItem[];
+  tone?: DetailCardTone;
   className?: string;
   titleClassName?: string;
   itemsClassName?: string;
   itemTextClassName?: string;
 };
 
+// Surface tokens kept separate from layout so callers can pick a tone without
+// fighting NativeWind's class precedence rules on conflicting `bg-` utilities.
+const SURFACE_BY_TONE: Record<DetailCardTone, string> = {
+  brand: 'rounded-4 bg-brand-secondary p-5',
+  neutral: 'rounded-xl bg-bg-weak p-4',
+};
+
 export const DetailCard = ({
   title,
   items,
+  tone = 'brand',
   className,
   titleClassName,
   itemsClassName,
@@ -30,7 +41,8 @@ export const DetailCard = ({
   return (
     <View
       className={clsx(
-        'flex flex-col items-start gap-1 self-stretch rounded-4 bg-brand-secondary p-5',
+        'flex flex-col items-start gap-1 self-stretch',
+        SURFACE_BY_TONE[tone],
         className,
       )}
     >

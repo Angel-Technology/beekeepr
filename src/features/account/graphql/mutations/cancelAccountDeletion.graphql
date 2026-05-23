@@ -1,0 +1,9 @@
+mutation CancelAccountDeletion {
+  cancelAccountDeletion {
+    user {
+      id
+      deletedAtUtc
+    }
+    error
+  }
+}

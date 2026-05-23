@@ -35,6 +35,12 @@ export enum BackgroundCheckBadge {
   None = 'NONE'
 }
 
+export type CancelAccountDeletionPayload = {
+  __typename?: 'CancelAccountDeletionPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  user?: Maybe<UserGraph>;
+};
+
 export type CreateUserInput = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
@@ -68,6 +74,12 @@ export enum PersonaInquiryStatus {
   NeedsReview = 'NEEDS_REVIEW',
   Pending = 'PENDING'
 }
+
+export type RequestAccountDeletionPayload = {
+  __typename?: 'RequestAccountDeletionPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  user?: Maybe<UserGraph>;
+};
 
 export type RequestEmailSignInInput = {
   email: Scalars['String']['input'];
@@ -167,6 +179,7 @@ export type UserGraph = {
   backgroundCheckBadge: BackgroundCheckBadge;
   backgroundCheckBadgeExpiresAtUtc?: Maybe<Scalars['DateTime']['output']>;
   createdAtUtc: Scalars['DateTime']['output'];
+  deletedAtUtc?: Maybe<Scalars['DateTime']['output']>;
   displayName?: Maybe<Scalars['String']['output']>;
   email: Scalars['String']['output'];
   emailVerified: Scalars['Boolean']['output'];
@@ -191,7 +204,9 @@ export type UserGraph = {
 export type UserMutations = {
   __typename?: 'UserMutations';
   acceptTerms: AcceptTermsPayload;
+  cancelAccountDeletion: CancelAccountDeletionPayload;
   createUser: CreateUserPayload;
+  requestAccountDeletion: RequestAccountDeletionPayload;
   requestEmailSignIn: RequestEmailSignInPayload;
   signInWithGoogle: SignInWithGooglePayload;
   signOut: SignOutPayload;

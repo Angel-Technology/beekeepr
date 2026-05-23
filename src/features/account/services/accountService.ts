@@ -1,5 +1,9 @@
 import { accountRepository } from '../repository/accountRepository';
-import type { ProfileUser, UpdateProfilePatch } from '../models/account.types';
+import type {
+  AccountDeletionState,
+  ProfileUser,
+  UpdateProfilePatch,
+} from '../models/account.types';
 
 export const accountService = {
   /**
@@ -22,5 +26,57 @@ export const accountService = {
     }
 
     return payload.updateProfile.user;
+  },
+
+  /**
+   * Schedules the current account for deletion. The backend marks the user
+   * deactivated immediately and stamps `deletedAtUtc`; the user has 72 hours
+   * to log back in and undo it. The caller is responsible for clearing the
+   * local session afterward.
+   *
+   * @throws an Error carrying the server `error` string when deletion fails.
+   */
+  async requestAccountDeletion(): Promise<AccountDeletionState> {
+    const payload = await accountRepository.requestAccountDeletion();
+
+    if (payload.requestAccountDeletion.error) {
+      throw new Error(payload.requestAccountDeletion.error);
+    }
+
+    if (!payload.requestAccountDeletion.user) {
+      throw new Error(
+        'Account deletion succeeded but no user was returned.',
+      );
+    }
+
+    return {
+      userId: payload.requestAccountDeletion.user.id,
+      deletedAtUtc: payload.requestAccountDeletion.user.deletedAtUtc ?? null,
+    };
+  },
+
+  /**
+   * Reverses a pending deletion within the 72-hour window. Returns the new
+   * deletion state (typically `deletedAtUtc: null`).
+   *
+   * @throws an Error carrying the server `error` string on failure.
+   */
+  async cancelAccountDeletion(): Promise<AccountDeletionState> {
+    const payload = await accountRepository.cancelAccountDeletion();
+
+    if (payload.cancelAccountDeletion.error) {
+      throw new Error(payload.cancelAccountDeletion.error);
+    }
+
+    if (!payload.cancelAccountDeletion.user) {
+      throw new Error(
+        'Cancel account deletion succeeded but no user was returned.',
+      );
+    }
+
+    return {
+      userId: payload.cancelAccountDeletion.user.id,
+      deletedAtUtc: payload.cancelAccountDeletion.user.deletedAtUtc ?? null,
+    };
   },
 };

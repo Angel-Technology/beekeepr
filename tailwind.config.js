@@ -1065,6 +1065,12 @@ module.exports = {
          * @example shadow-focus-visible
          */
         'focus-visible': '0 0 0 3px rgba(34, 139, 230, 0.6), 0 0 0 1px #228be6',
+        /**
+         * Upward shadow for sticky bottom action bars
+         * @description Soft shadow cast above an element to imply content scrolls under it
+         * @example shadow-bottom-bar
+         */
+        'bottom-bar': '0 -2px 8px 0 rgba(0, 0, 0, 0.06)',
       },
 
       /**

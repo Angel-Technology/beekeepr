@@ -1,5 +1,5 @@
-import { AccountPlaceholderScreen } from '@features/account';
+import { DeleteAccountScreen } from '@features/account';
 
 export default function DeleteAccountPage() {
-  return <AccountPlaceholderScreen title="Delete Account" />;
+  return <DeleteAccountScreen />;
 }

@@ -35,6 +35,12 @@ export enum BackgroundCheckBadge {
   None = 'NONE'
 }
 
+export type CancelAccountDeletionPayload = {
+  __typename?: 'CancelAccountDeletionPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  user?: Maybe<UserGraph>;
+};
+
 export type CreateUserInput = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
@@ -68,6 +74,12 @@ export enum PersonaInquiryStatus {
   NeedsReview = 'NEEDS_REVIEW',
   Pending = 'PENDING'
 }
+
+export type RequestAccountDeletionPayload = {
+  __typename?: 'RequestAccountDeletionPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  user?: Maybe<UserGraph>;
+};
 
 export type RequestEmailSignInInput = {
   email: Scalars['String']['input'];
@@ -167,6 +179,7 @@ export type UserGraph = {
   backgroundCheckBadge: BackgroundCheckBadge;
   backgroundCheckBadgeExpiresAtUtc?: Maybe<Scalars['DateTime']['output']>;
   createdAtUtc: Scalars['DateTime']['output'];
+  deletedAtUtc?: Maybe<Scalars['DateTime']['output']>;
   displayName?: Maybe<Scalars['String']['output']>;
   email: Scalars['String']['output'];
   emailVerified: Scalars['Boolean']['output'];
@@ -191,7 +204,9 @@ export type UserGraph = {
 export type UserMutations = {
   __typename?: 'UserMutations';
   acceptTerms: AcceptTermsPayload;
+  cancelAccountDeletion: CancelAccountDeletionPayload;
   createUser: CreateUserPayload;
+  requestAccountDeletion: RequestAccountDeletionPayload;
   requestEmailSignIn: RequestEmailSignInPayload;
   signInWithGoogle: SignInWithGooglePayload;
   signOut: SignOutPayload;
@@ -256,6 +271,16 @@ export type VerifyEmailSignInPayload = {
 
 export type ProfileFieldsFragment = { __typename?: 'UserGraph', id: string, email: string, displayName?: string | null, nickname?: string | null, handle?: string | null, imageUrl?: string | null };
 
+export type CancelAccountDeletionMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CancelAccountDeletionMutation = { __typename?: 'UserMutations', cancelAccountDeletion: { __typename?: 'CancelAccountDeletionPayload', error?: string | null, user?: { __typename?: 'UserGraph', id: string, deletedAtUtc?: string | null } | null } };
+
+export type RequestAccountDeletionMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RequestAccountDeletionMutation = { __typename?: 'UserMutations', requestAccountDeletion: { __typename?: 'RequestAccountDeletionPayload', error?: string | null, user?: { __typename?: 'UserGraph', id: string, deletedAtUtc?: string | null } | null } };
+
 export type UpdateProfileMutationVariables = Exact<{
   input: UpdateProfileInput;
 }>;
@@ -264,4 +289,6 @@ export type UpdateProfileMutationVariables = Exact<{
 export type UpdateProfileMutation = { __typename?: 'UserMutations', updateProfile: { __typename?: 'UpdateProfilePayload', error?: string | null, user?: { __typename?: 'UserGraph', id: string, email: string, displayName?: string | null, nickname?: string | null, handle?: string | null, imageUrl?: string | null } | null } };
 
 export const ProfileFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProfileFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}}]}}]} as unknown as DocumentNode<ProfileFieldsFragment, unknown>;
+export const CancelAccountDeletionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CancelAccountDeletion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cancelAccountDeletion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"deletedAtUtc"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<CancelAccountDeletionMutation, CancelAccountDeletionMutationVariables>;
+export const RequestAccountDeletionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RequestAccountDeletion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"requestAccountDeletion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"deletedAtUtc"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<RequestAccountDeletionMutation, RequestAccountDeletionMutationVariables>;
 export const UpdateProfileDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateProfile"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateProfileInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateProfile"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProfileFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProfileFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}}]}}]} as unknown as DocumentNode<UpdateProfileMutation, UpdateProfileMutationVariables>;

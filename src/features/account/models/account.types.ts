@@ -5,3 +5,8 @@ import type {
 
 export type ProfileUser = ProfileFieldsFragment;
 export type UpdateProfilePatch = UpdateProfileInput;
+
+export type AccountDeletionState = {
+  userId: string;
+  deletedAtUtc: string | null;
+};
