@@ -9,3 +9,4 @@ export * from './paper-onboarding';
 export * from './pill';
 export * from './spacing';
 export * from './stepper';
+export * from './tab-bar';
