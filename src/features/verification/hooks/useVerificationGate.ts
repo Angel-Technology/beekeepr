@@ -22,10 +22,11 @@ export const useVerificationGate = (): void => {
   const isDenied = isVerificationDenied(user);
 
   useEffect(() => {
-    if (isDenied) {
-      router.replace('/(main)');
-    }
-    // Approved badge intentionally stays in-flow so the congrats section
-    // can render. The body owns the dismissal CTA from there.
+    // Approved + denied badges intentionally stay in-flow so the congrats /
+    // denied sections can render. The body owns the dismissal CTA from
+    // there. `isDenied` here is the Persona-declined check, which the
+    // `IdentityDeclinedSection` already handles via the `declined` phase.
+    void badge;
+    void isDenied;
   }, [badge, isDenied, router]);
 };

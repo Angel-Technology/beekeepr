@@ -4,7 +4,13 @@ import { useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { ChevronLeft } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppHeader, Button, DetailCard, IconButton } from '@components';
+import {
+  AppHeader,
+  BottomActionBar,
+  Button,
+  DetailCard,
+  IconButton,
+} from '@components';
 import { environmentConfig } from '@src/lib/config/environment';
 import { useDeleteAccount } from '../../hooks/useDeleteAccount';
 import { DeleteAccountConfirmModal } from '../components/DeleteAccountConfirmModal';
@@ -109,10 +115,7 @@ export const DeleteAccountScreen = () => {
         </Text>
       </ScrollView>
 
-      <View
-        className="shadow-bottom-bar gap-3 bg-bg-default px-6 pt-4"
-        style={{ paddingBottom: insets.bottom + 16 }}
-      >
+      <BottomActionBar>
         <Button
           label="Cancel"
           variant="solid"
@@ -126,7 +129,7 @@ export const DeleteAccountScreen = () => {
           loading={isDeleting}
           onPress={() => setIsConfirmOpen(true)}
         />
-      </View>
+      </BottomActionBar>
 
       <DeleteAccountConfirmModal
         visible={isConfirmOpen}

@@ -10,7 +10,7 @@ type CongratsSectionProps = {
 };
 
 const YellowCheckIcon = () => (
-  <View className="rounded-full bg-brand-highlight p-1.5">
+  <View className="mt-[2px] rounded-full bg-brand-highlight p-1.5">
     <Check size={10} color="#000000" strokeWidth={3} />
   </View>
 );
@@ -26,28 +26,29 @@ export const CongratsSection = ({
           WooHoo! You&rsquo;re in.
         </Text>
         <Text className="text-text-tertiary font-lexend-regular text-subhead leading-5">
-          You can proudly display your Buzz badge on any dating app
-          we&rsquo;re partnered with.
+          You can proudly display your Buzz badge on any dating app we&rsquo;re
+          partnered with.
         </Text>
       </View>
 
-      <View className="items-center justify-center">
+      <View className="flex-1 items-center justify-center">
         <Image
           source={appImages.congrats}
           style={{ width: 179.492, height: 188.629 }}
-          contentFit="contain"
+          contentFit="cover"
         />
       </View>
 
       <DetailCard
         title="What’s included"
-        className="gap-4 rounded-5 p-4"
-        titleClassName="font-lexend-semiBold text-base leading-6 text-text-default"
-        itemsClassName="gap-3 pl-0"
+        className="gap-5 rounded-5 p-4"
+        titleClassName="font-lexend-semiBold text-base text-text-default"
+        itemsClassName="gap-5 flex-start justify-center item-center"
         itemTextClassName="font-lexend-regular text-subhead leading-5 text-text-secondary"
         items={[
           {
             id: 'buzz-badge',
+
             label:
               'Boost your profile by adding your Buzz Badge to your dating app profile.',
             icon: <YellowCheckIcon />,

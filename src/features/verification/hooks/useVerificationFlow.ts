@@ -126,6 +126,9 @@ export const useVerificationFlow = () => {
     if (badge === BackgroundCheckBadge.Approved) {
       return 'congrats';
     }
+    if (badge === BackgroundCheckBadge.Denied) {
+      return 'denied';
+    }
     if (baseline === 'approved') {
       return criminalIntroAcknowledged ? 'criminal-form' : 'criminal-intro';
     }

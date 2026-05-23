@@ -64,4 +64,5 @@ export type VerificationPhase =
   | 'declined'
   | 'criminal-intro'
   | 'criminal-form'
-  | 'congrats';
+  | 'congrats'
+  | 'denied';

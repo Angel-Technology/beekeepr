@@ -58,6 +58,8 @@ export const VerificationFlowScreen = () => {
       // TODO: wire trial / promo when the payment step lands post-criminal-check.
       onStartTrial={() => {}}
       onEnterPromoCode={() => {}}
+      // TODO: wire to the appeal-decision flow when it lands.
+      onAppealDecision={() => {}}
     />
   );
 };

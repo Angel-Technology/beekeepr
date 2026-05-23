@@ -66,10 +66,7 @@ export const DetailCard = ({
         {items.map((item, index) => (
           <View
             key={typeof item === 'string' ? item : (item.id ?? `item-${index}`)}
-            className={clsx(
-              'flex-row gap-2 self-stretch',
-              typeof item === 'string' ? 'items-start' : 'items-center',
-            )}
+            className="flex-row items-start gap-2 self-stretch"
           >
             {typeof item === 'string' || !item.icon ? (
               <Text

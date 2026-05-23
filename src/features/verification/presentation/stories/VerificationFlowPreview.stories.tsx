@@ -72,6 +72,7 @@ const meta = {
     onSubmit: () => {},
     onStartTrial: () => {},
     onEnterPromoCode: () => {},
+    onAppealDecision: () => {},
   },
   argTypes: {
     phase: {
@@ -85,6 +86,7 @@ const meta = {
         'criminal-intro',
         'criminal-form',
         'congrats',
+        'denied',
       ],
     },
     isStarting: { control: { type: 'boolean' } },
@@ -105,6 +107,7 @@ const meta = {
     onSubmit: { action: 'onSubmit' },
     onStartTrial: { action: 'onStartTrial' },
     onEnterPromoCode: { action: 'onEnterPromoCode' },
+    onAppealDecision: { action: 'onAppealDecision' },
   },
   parameters: {
     notes: componentNotes,

@@ -2,23 +2,42 @@ import { Text, View } from 'react-native';
 import { useNavigation } from 'expo-router';
 import { DrawerActions } from '@react-navigation/native';
 import { Menu } from 'lucide-react-native';
-import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import Animated, {
+  Extrapolation,
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { APP_HEADER_HEIGHT, AppHeader, IconButton } from '@components';
+import {
+  APP_HEADER_HEIGHT,
+  AppHeader,
+  BOTTOM_TAB_BAR_HEIGHT,
+  IconButton,
+} from '@components';
 import { useBuzzTab } from '../../hooks/useBuzzTab';
 import {
   BuzzActiveFlow,
-  BuzzDeniedFlow,
+  BuzzScreeningDeniedCard,
   BuzzVerifyFlow,
   BuzzWelcomeFlow,
 } from '../components';
+
+// Wrapping with `createAnimatedComponent` lets us drive a Reanimated scroll
+// handler (UI-thread) against the keyboard-aware scroll view from
+// `react-native-keyboard-controller`.
+const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(
+  KeyboardAwareScrollView,
+);
 
 export const BuzzScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const headerOffset = APP_HEADER_HEIGHT + insets.top;
   const topMaskHeight = headerOffset + 8;
-  const headerVisibility = useSharedValue(1);
+
   const {
     flow,
     ctaLabel,
@@ -27,29 +46,79 @@ export const BuzzScreen = () => {
     resetSubmittedBackgroundCheck,
   } = useBuzzTab();
 
+  const scrollY = useSharedValue(0);
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y;
+    },
+  });
+
   const headerAnimatedStyle = useAnimatedStyle(() => {
+    const progress = interpolate(
+      scrollY.value,
+      [0, headerOffset],
+      [0, 1],
+      Extrapolation.CLAMP,
+    );
     return {
-      transform: [
-        {
-          translateY: (1 - headerVisibility.value) * -headerOffset,
-        },
-      ],
-      opacity: headerVisibility.value,
+      transform: [{ translateY: -progress * headerOffset }],
+      opacity: 1 - progress,
     };
   });
 
   return (
-    <View className="flex-1 gap-2 bg-bg-default">
+    <View className="flex-1 bg-bg-default">
+      <AnimatedKeyboardAwareScrollView
+        className="flex-1"
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingTop: headerOffset + 8,
+          paddingBottom: BOTTOM_TAB_BAR_HEIGHT + insets.bottom + 16,
+          gap: 16,
+        }}
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        bottomOffset={24}
+      >
+        {flow === 'denied' ? (
+          <BuzzScreeningDeniedCard
+            // TODO: wire to the appeal-decision flow when it lands.
+            onAppealDecision={() => {}}
+          />
+        ) : null}
+
+        {flow === 'verify' || flow === 'denied' ? (
+          <BuzzVerifyFlow
+            ctaLabel={ctaLabel}
+            onGetStarted={onGetStarted}
+            onLearnMore={onLearnMore}
+          />
+        ) : null}
+
+        {flow === 'welcome' ? <BuzzWelcomeFlow /> : null}
+
+        {flow === 'active' ? (
+          <BuzzActiveFlow
+            onReviewSubmittedInfo={() => {
+              resetSubmittedBackgroundCheck();
+            }}
+          />
+        ) : null}
+      </AnimatedKeyboardAwareScrollView>
+
       <AppHeader
+        floating
         topInset={insets.top}
         animatedStyle={headerAnimatedStyle}
+        showTopMask
         topMaskHeight={topMaskHeight}
         center={
           <View className="flex-row items-start justify-center gap-1">
             <Text className="font-poppins-semiBold text-base text-text-default">
               TheBuzz
             </Text>
-
             <View className="items-center justify-center rounded bg-brand-highlight px-[3px] py-[1px]">
               <Text className="font-sourceSans-semiBold text-[7px] text-text-default">
                 BETA
@@ -68,28 +137,6 @@ export const BuzzScreen = () => {
           />
         }
       />
-
-      <View
-        className="flex-1 gap-6 px-5"
-        style={{ paddingBottom: Math.max(insets.bottom + 32, 48) }}
-      >
-        {flow === 'verify' ? (
-          <BuzzVerifyFlow
-            ctaLabel={ctaLabel}
-            onGetStarted={onGetStarted}
-            onLearnMore={onLearnMore}
-          />
-        ) : null}
-        {flow === 'welcome' ? <BuzzWelcomeFlow /> : null}
-        {flow === 'active' ? (
-          <BuzzActiveFlow
-            onReviewSubmittedInfo={() => {
-              resetSubmittedBackgroundCheck();
-            }}
-          />
-        ) : null}
-        {flow === 'denied' ? <BuzzDeniedFlow /> : null}
-      </View>
     </View>
   );
 };
