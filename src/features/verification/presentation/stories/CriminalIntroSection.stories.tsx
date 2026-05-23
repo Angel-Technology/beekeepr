@@ -8,7 +8,7 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-native';
 
-import { CriminalIntroSection } from '../components/CriminalIntroSection';
+import { CriminalIntroSection } from '../sections/CriminalIntroSection';
 
 const componentNotes = `
 # CriminalIntroSection

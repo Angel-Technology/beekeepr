@@ -25,44 +25,6 @@ export type CriminalCheckInput =
 export type CriminalCheckResult =
   StartInstantCriminalCheckMutation['startInstantCriminalCheck'];
 
-/**
- * Tagged error thrown by `verificationService.startPersonaInquiry` when the
- * backend signals that the caller doesn't have an active subscription.
- *
- * Why: the kickoff flow needs to differentiate "subscription gate" (redirect
- * to paywall) from a generic verification failure (Alert). Carrying the tag
- * on the error keeps the throw site and the catch site decoupled — no
- * stringly-typed error code matching, no parallel result channel.
- */
-export type SubscriptionRequiredError = Error & {
-  readonly subscriptionRequired: true;
-};
-
-/**
- * Constructor for {@link SubscriptionRequiredError}. Centralises the single
- * unavoidable cast so consumers never need to assert the shape themselves.
- */
-export const subscriptionRequiredError = (
-  message: string,
-): SubscriptionRequiredError => {
-  const error = new Error(message) as SubscriptionRequiredError;
-  Object.defineProperty(error, 'subscriptionRequired', {
-    value: true,
-    enumerable: true,
-  });
-  return error;
-};
-
-/**
- * Type guard for {@link SubscriptionRequiredError}. Use this in catch blocks
- * instead of casting an `unknown` error to a shape with optional fields.
- */
-export const isSubscriptionRequiredError = (
-  error: unknown,
-): error is SubscriptionRequiredError =>
-  error instanceof Error &&
-  (error as { subscriptionRequired?: unknown }).subscriptionRequired === true;
-
 export type VerificationFlowResult = {
   inquiry: PersonaInquiryStartResult;
   launch: VerificationLaunchResult;

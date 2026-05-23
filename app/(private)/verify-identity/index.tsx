@@ -1,5 +1,5 @@
-import { VerificationLearnMoreScreen } from '@features/verification';
+import { VerificationFlowScreen } from '@features/verification';
 
-export default function VerificationLearnMorePage() {
-  return <VerificationLearnMoreScreen />;
+export default function VerificationFlowPage() {
+  return <VerificationFlowScreen />;
 }

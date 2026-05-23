@@ -2,8 +2,8 @@ import { Text, View } from 'react-native';
 import { ArrowRight } from 'lucide-react-native';
 import IllustrationLetsdothis from '@assets/svg/IllustrationLetsdothis';
 import { Button } from '@components';
-import { PrivacyComplianceCard } from './PrivacyComplianceCard';
-import { StepBadge } from './StepBadge';
+import { PrivacyComplianceCard } from '../components/PrivacyComplianceCard';
+import { StepBadge } from '../components/StepBadge';
 
 const PRIVACY_BULLETS = [
   'We only screen age to verify you’re 18+',
@@ -36,7 +36,7 @@ export const IdentityKickoffSection = ({
       </View>
 
       <View className="w-full flex-1 items-center justify-center">
-        <IllustrationLetsdothis width={240} height={254} />
+        <IllustrationLetsdothis />
       </View>
 
       <PrivacyComplianceCard

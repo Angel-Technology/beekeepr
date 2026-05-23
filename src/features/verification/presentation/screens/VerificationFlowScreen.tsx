@@ -30,7 +30,7 @@ export const VerificationFlowScreen = () => {
   const flow = useVerificationFlow();
   const form = useCriminalCheckForm();
 
-  useVerificationGate('subscription');
+  useVerificationGate();
 
   return (
     <VerificationFlowBody

@@ -131,7 +131,6 @@ export type StartPersonaInquiryPayload = {
   inquiryId?: Maybe<Scalars['String']['output']>;
   personaInquiryStatus?: Maybe<PersonaInquiryStatus>;
   sessionToken?: Maybe<Scalars['String']['output']>;
-  subscriptionRequired: Scalars['Boolean']['output'];
   success: Scalars['Boolean']['output'];
 };
 

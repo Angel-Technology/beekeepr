@@ -10,7 +10,7 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-native';
 
-import { IdentityKickoffSection } from '../components/IdentityKickoffSection';
+import { IdentityKickoffSection } from '../sections/IdentityKickoffSection';
 
 const componentNotes = `
 # IdentityKickoffSection

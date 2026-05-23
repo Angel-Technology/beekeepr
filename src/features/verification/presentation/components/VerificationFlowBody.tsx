@@ -2,14 +2,16 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { Container } from '@components';
 import type { VerificationPhase } from '../../models/verification.types';
-import { CriminalFormSection } from './CriminalFormSection';
-import { CriminalIntroSection } from './CriminalIntroSection';
+import {
+  CriminalFormSection,
+  CriminalIntroSection,
+  IdentityDeclinedSection,
+  IdentityKickoffSection,
+  IdentityNeedsReviewSection,
+  IdentityTimedOutSection,
+  IdentityWaitingSection,
+} from '../sections';
 import { ExitScreeningModal } from './ExitScreeningModal';
-import { IdentityDeclinedSection } from './IdentityDeclinedSection';
-import { IdentityKickoffSection } from './IdentityKickoffSection';
-import { IdentityNeedsReviewSection } from './IdentityNeedsReviewSection';
-import { IdentityTimedOutSection } from './IdentityTimedOutSection';
-import { IdentityWaitingSection } from './IdentityWaitingSection';
 import { PrivacyComplianceModal } from './PrivacyComplianceModal';
 import { VerificationTopNav } from './VerificationTopNav';
 

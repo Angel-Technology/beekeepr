@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import {
   IdentityVerificationStatus,
@@ -7,10 +6,7 @@ import {
   authService,
   useAuthSession,
 } from '@features/auth';
-import {
-  isSubscriptionRequiredError,
-  type VerificationPhase,
-} from '../models/verification.types';
+import type { VerificationPhase } from '../models/verification.types';
 import { useVerificationActions } from './useVerificationActions';
 
 const POLL_INTERVAL_MS = 2000;
@@ -81,7 +77,6 @@ const identityBaseline = (
  * sections to fight with `usePreventRemove`.
  */
 export const useVerificationFlow = () => {
-  const router = useRouter();
   const { data: user } = useAuthSession();
   const { startPersonaVerification } = useVerificationActions();
   const [criminalIntroAcknowledged, setCriminalIntroAcknowledged] =
@@ -145,16 +140,9 @@ export const useVerificationFlow = () => {
   });
 
   const handleStartVerification = async () => {
-    try {
-      await startPersonaVerification.mutateAsync();
-    } catch (error) {
-      // Only the subscription-gate error is handled here (redirect to
-      // paywall); the mutation's `onError` already surfaces every other
-      // failure via Alert.
-      if (isSubscriptionRequiredError(error)) {
-        router.replace('/verify-identity');
-      }
-    }
+    await startPersonaVerification.mutateAsync().catch(() => {
+      // `onError` on the mutation already surfaces the failure via Alert.
+    });
   };
 
   return {

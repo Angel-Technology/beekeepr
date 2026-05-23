@@ -8,7 +8,7 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-native';
 
-import { IdentityWaitingSection } from '../components/IdentityWaitingSection';
+import { IdentityWaitingSection } from '../sections/IdentityWaitingSection';
 
 const componentNotes = `
 # IdentityWaitingSection

@@ -5,7 +5,6 @@ import {
   hasResumableVerification,
   isVerificationDenied,
 } from '@features/verification';
-import { useRevenueCat } from '@src/lib/revenuecat';
 import type { BuzzFlow } from '../models/buzzFlow.types';
 
 /**
@@ -33,7 +32,6 @@ import type { BuzzFlow } from '../models/buzzFlow.types';
 export const useBuzzTab = () => {
   const router = useRouter();
   const { data: user } = useAuthSession();
-  const { isPro } = useRevenueCat();
   const params = useLocalSearchParams<{ backgroundCheck?: string }>();
   const hasSubmittedBackgroundCheck = params.backgroundCheck === 'submitted';
   const badge = user?.backgroundCheckBadge ?? BackgroundCheckBadge.None;
@@ -56,9 +54,7 @@ export const useBuzzTab = () => {
     return 'verify';
   }, [isApproved, isDenied, hasSubmittedBackgroundCheck]);
 
-  const ctaLabel = hasResumableVerification({ user, isPro })
-    ? 'Resume'
-    : 'Get Started';
+  const ctaLabel = hasResumableVerification(user) ? 'Resume' : 'Get Started';
 
   const onGetStarted = () => {
     router.push('/verify-identity/identity');

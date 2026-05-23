@@ -2,8 +2,8 @@ import { Text, View } from 'react-native';
 import { ArrowRight } from 'lucide-react-native';
 import IllustrationLetsdothis from '@assets/svg/IllustrationLetsdothis';
 import { Button } from '@components';
-import { PrivacyComplianceCard } from './PrivacyComplianceCard';
-import { StepBadge } from './StepBadge';
+import { PrivacyComplianceCard } from '../components/PrivacyComplianceCard';
+import { StepBadge } from '../components/StepBadge';
 
 const PRIVACY_BULLETS = [
   'This search is strictly confidential',
