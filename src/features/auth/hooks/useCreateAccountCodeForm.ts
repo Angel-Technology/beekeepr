@@ -1,6 +1,7 @@
 import { Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useErrorModal } from '@src/lib/error-modal';
 import { useAuthActions } from './useAuthActions';
 
 const CODE_LENGTH = 5;
@@ -11,6 +12,7 @@ export const useCreateAccountCodeForm = () => {
   const [code, setCode] = useState('');
   const lastSubmittedCodeRef = useRef<string | null>(null);
   const { requestEmailSignIn, verifyEmailSignIn } = useAuthActions();
+  const { showFromError } = useErrorModal();
 
   const normalizedEmail = typeof email === 'string' ? email.trim() : '';
 
@@ -76,12 +78,7 @@ export const useCreateAccountCodeForm = () => {
         `We sent a new code to ${normalizedEmail}.`,
       );
     } catch (error) {
-      Alert.alert(
-        'Unable to Resend Code',
-        error instanceof Error
-          ? error.message
-          : 'Please try requesting a new code again.',
-      );
+      showFromError(error, 'Unable to Resend Code');
     }
   };
 

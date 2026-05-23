@@ -24,11 +24,8 @@ export const useVerificationGate = (): void => {
   useEffect(() => {
     if (isDenied) {
       router.replace('/(main)');
-      return;
     }
-
-    if (badge !== BackgroundCheckBadge.None) {
-      router.replace('/(main)');
-    }
+    // Approved badge intentionally stays in-flow so the congrats section
+    // can render. The body owns the dismissal CTA from there.
   }, [badge, isDenied, router]);
 };

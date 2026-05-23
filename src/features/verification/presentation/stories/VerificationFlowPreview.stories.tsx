@@ -70,6 +70,8 @@ const meta = {
     onChangePhoneNumber: () => {},
     onValidatePhoneNumber: () => {},
     onSubmit: () => {},
+    onStartTrial: () => {},
+    onEnterPromoCode: () => {},
   },
   argTypes: {
     phase: {
@@ -82,6 +84,7 @@ const meta = {
         'declined',
         'criminal-intro',
         'criminal-form',
+        'congrats',
       ],
     },
     isStarting: { control: { type: 'boolean' } },
@@ -100,6 +103,8 @@ const meta = {
     onChangePhoneNumber: { action: 'onChangePhoneNumber' },
     onValidatePhoneNumber: { action: 'onValidatePhoneNumber' },
     onSubmit: { action: 'onSubmit' },
+    onStartTrial: { action: 'onStartTrial' },
+    onEnterPromoCode: { action: 'onEnterPromoCode' },
   },
   parameters: {
     notes: componentNotes,

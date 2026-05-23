@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { Container } from '@components';
 import type { VerificationPhase } from '../../models/verification.types';
 import {
+  CongratsSection,
   CriminalFormSection,
   CriminalIntroSection,
   IdentityDeclinedSection,
@@ -42,6 +43,9 @@ type VerificationFlowBodyProps = {
   onChangePhoneNumber: (value: string) => void;
   onValidatePhoneNumber: () => void;
   onSubmit: () => void;
+  // Congrats-phase actions — wired to no-ops until payment comes back.
+  onStartTrial: () => void;
+  onEnterPromoCode: () => void;
 };
 
 /**
@@ -76,6 +80,8 @@ export const VerificationFlowBody = ({
   onChangePhoneNumber,
   onValidatePhoneNumber,
   onSubmit,
+  onStartTrial,
+  onEnterPromoCode,
 }: VerificationFlowBodyProps) => {
   const [isExitOpen, setIsExitOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
@@ -87,7 +93,13 @@ export const VerificationFlowBody = ({
       className="bg-bg-default px-2"
     >
       <View className="-mx-5 self-stretch">
-        <VerificationTopNav onPressBack={() => setIsExitOpen(true)} />
+        <VerificationTopNav
+          onPressBack={
+            // Congrats is a success state — chevron-left dismisses straight
+            // to home instead of opening the abandon-flow confirmation.
+            phase === 'congrats' ? onExit : () => setIsExitOpen(true)
+          }
+        />
       </View>
       <View className="w-full flex-1 pb-4">
         {phase === 'kickoff' ? (
@@ -136,6 +148,13 @@ export const VerificationFlowBody = ({
             onChangePhoneNumber={onChangePhoneNumber}
             onValidatePhoneNumber={onValidatePhoneNumber}
             onSubmit={onSubmit}
+          />
+        ) : null}
+
+        {phase === 'congrats' ? (
+          <CongratsSection
+            onStartTrial={onStartTrial}
+            onEnterPromoCode={onEnterPromoCode}
           />
         ) : null}
       </View>

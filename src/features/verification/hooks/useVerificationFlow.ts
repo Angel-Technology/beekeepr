@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
+  BackgroundCheckBadge,
   IdentityVerificationStatus,
   authQueryKeys,
   authService,
@@ -84,6 +85,7 @@ export const useVerificationFlow = () => {
 
   const status =
     user?.identityVerificationStatus ?? IdentityVerificationStatus.NotStarted;
+  const badge = user?.backgroundCheckBadge ?? BackgroundCheckBadge.None;
   const rawBaseline = identityBaseline(status);
 
   // The SDK's `onComplete` resolves our mutation, but the backend only
@@ -118,6 +120,12 @@ export const useVerificationFlow = () => {
   const isTimedOut = baseline === 'waiting' && pollCount >= POLL_TIMEOUT_COUNT;
 
   const phase: VerificationPhase = (() => {
+    // Background-check badge wins over identity phase — once Checkr has come
+    // back (Approved/Denied), the user is past the identity flow and the
+    // congrats / denied section takes over.
+    if (badge === BackgroundCheckBadge.Approved) {
+      return 'congrats';
+    }
     if (baseline === 'approved') {
       return criminalIntroAcknowledged ? 'criminal-form' : 'criminal-intro';
     }

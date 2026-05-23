@@ -1,7 +1,6 @@
-import { Alert } from 'react-native';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'expo-router';
 import { useAuthSession } from '@features/auth';
+import { useErrorModal } from '@src/lib/error-modal';
 import { useVerificationActions } from './useVerificationActions';
 
 /**
@@ -66,9 +65,9 @@ const isValidPhoneNumber = (formatted: string): boolean =>
  * collected here because Persona doesn't capture it.
  */
 export const useCriminalCheckForm = () => {
-  const router = useRouter();
   const { data: user } = useAuthSession();
   const { startCriminalCheck } = useVerificationActions();
+  const { showFromError } = useErrorModal();
   const [phoneNumber, setPhoneNumberRaw] = useState(
     formatPhoneForDisplay(user?.phoneNumber ?? ''),
   );
@@ -111,14 +110,10 @@ export const useCriminalCheckForm = () => {
       await startCriminalCheck.mutateAsync({
         phoneNumber: digitsOnly || undefined,
       });
-      router.replace('/(main)');
+      // No navigation here — the flow re-derives to the `congrats` phase
+      // when the badge flips to Approved (or `denied` once that lands).
     } catch (error) {
-      Alert.alert(
-        'Search Failed',
-        error instanceof Error
-          ? error.message
-          : 'Something went wrong. Please try again.',
-      );
+      showFromError(error, 'Search Failed');
     }
   };
 

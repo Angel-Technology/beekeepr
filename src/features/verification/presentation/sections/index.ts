@@ -1,3 +1,4 @@
+export { CongratsSection } from './CongratsSection';
 export { CriminalFormSection } from './CriminalFormSection';
 export { CriminalIntroSection } from './CriminalIntroSection';
 export { IdentityDeclinedSection } from './IdentityDeclinedSection';

@@ -1,6 +1,6 @@
-import { Alert } from 'react-native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authQueryKeys } from '@features/auth';
+import { useErrorModal } from '@src/lib/error-modal';
 import { verificationService } from '../services/verificationService';
 import type { CriminalCheckInput } from '../models/verification.types';
 
@@ -23,6 +23,7 @@ import type { CriminalCheckInput } from '../models/verification.types';
  */
 export const useVerificationActions = () => {
   const queryClient = useQueryClient();
+  const { showFromError } = useErrorModal();
 
   const startPersonaVerification = useMutation({
     mutationFn: async () => {
@@ -54,7 +55,7 @@ export const useVerificationActions = () => {
       });
     },
     onError: (error: Error) => {
-      Alert.alert('Verification Failed', error.message);
+      showFromError(error, 'Verification Failed');
     },
   });
 

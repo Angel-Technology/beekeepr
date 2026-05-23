@@ -1,16 +1,17 @@
-import { Alert } from 'react-native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { isGoogleSignInCancelled } from '@src/lib/auth/google';
+import { useErrorModal } from '@src/lib/error-modal';
 import { authQueryKeys } from '../models/authQueryKeys';
 import { authService } from '../services/authService';
 
 export const useAuthActions = () => {
   const queryClient = useQueryClient();
+  const { showFromError } = useErrorModal();
 
   const requestEmailSignIn = useMutation({
     mutationFn: authService.requestEmailSignIn,
     onError: (error) => {
-      Alert.alert('Sign-In Failed', error.message);
+      showFromError(error, 'Sign-In Failed');
     },
   });
 
@@ -20,7 +21,7 @@ export const useAuthActions = () => {
       queryClient.setQueryData(authQueryKeys.session(), user);
     },
     onError: (error) => {
-      Alert.alert('Verification Failed', error.message);
+      showFromError(error, 'Verification Failed');
     },
   });
 
@@ -33,7 +34,7 @@ export const useAuthActions = () => {
       if (isGoogleSignInCancelled(error)) {
         return;
       }
-      Alert.alert('Google Sign-In Failed', error.message);
+      showFromError(error, 'Google Sign-In Failed');
     },
   });
 
@@ -50,7 +51,7 @@ export const useAuthActions = () => {
       queryClient.setQueryData(authQueryKeys.session(), user);
     },
     onError: (error) => {
-      Alert.alert('Terms Acceptance Failed', error.message);
+      showFromError(error, 'Terms Acceptance Failed');
     },
   });
 

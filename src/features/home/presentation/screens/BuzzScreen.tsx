@@ -4,12 +4,7 @@ import { DrawerActions } from '@react-navigation/native';
 import { Menu } from 'lucide-react-native';
 import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-  APP_HEADER_HEIGHT,
-  AppHeader,
-  IconButton,
-  VerticalSpacer,
-} from '@components';
+import { APP_HEADER_HEIGHT, AppHeader, IconButton } from '@components';
 import { useBuzzTab } from '../../hooks/useBuzzTab';
 import {
   BuzzActiveFlow,
@@ -44,7 +39,7 @@ export const BuzzScreen = () => {
   });
 
   return (
-    <View className="flex-1 bg-bg-default">
+    <View className="flex-1 gap-2 bg-bg-default">
       <AppHeader
         topInset={insets.top}
         animatedStyle={headerAnimatedStyle}
@@ -78,7 +73,6 @@ export const BuzzScreen = () => {
         className="flex-1 gap-6 px-5"
         style={{ paddingBottom: Math.max(insets.bottom + 32, 48) }}
       >
-        <VerticalSpacer size="xs" />
         {flow === 'verify' ? (
           <BuzzVerifyFlow
             ctaLabel={ctaLabel}

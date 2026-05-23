@@ -55,6 +55,9 @@ export const VerificationFlowScreen = () => {
       onSubmit={() => {
         void form.handleSubmit();
       }}
+      // TODO: wire trial / promo when the payment step lands post-criminal-check.
+      onStartTrial={() => {}}
+      onEnterPromoCode={() => {}}
     />
   );
 };
