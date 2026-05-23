@@ -22,7 +22,13 @@ jobs:
     # Store review along with screenshots from `fastlane/screenshots/`. We
     # do NOT rebuild here — the build that's been on TestFlight is the one
     # that gets submitted, so QA on TestFlight reflects what's reviewed.
+    #
+    # Manual-trigger only: each App Store submission needs a fresh editable
+    # version pre-created in App Store Connect, so it's not worth running
+    # this on every push to main. Use `workflow_dispatch` when the ASC
+    # version is ready, or submit through the ASC UI directly.
     name: iOS → App Store
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment: production
 
@@ -129,7 +135,12 @@ jobs:
         timeout-minutes: 30
         run: bundle exec fastlane android play --verbose
 
-      - uses: actions/upload-artifact@v4
+      # Always upload the AAB — even when the Play upload step fails — so we
+      # can manually upload the artifact to Play Console while debugging
+      # supply/permission issues.
+      - name: Upload AAB artifact
+        if: always() && hashFiles('build/*.aab') != ''
+        uses: actions/upload-artifact@v4
         with:
           name: android-build
           path: build/*.aab

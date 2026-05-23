@@ -95,7 +95,10 @@ const meta = {
   argTypes: {
     label: { control: { type: 'text' } },
     variant: { control: { type: 'radio' }, options: ['solid', 'outline'] },
-    size: { control: { type: 'radio' }, options: ['xs', 'sm', 'md', 'lg', 'xl', '2xl'] },
+    size: {
+      control: { type: 'radio' },
+      options: ['xs', 'sm', 'md', 'lg', 'xl', '2xl'],
+    },
     disabled: { control: { type: 'boolean' } },
     loading: { control: { type: 'boolean' } },
     onPress: { action: 'onPress' },
@@ -140,35 +143,35 @@ Lower visual weight. Pair next to a \`solid\` button on a row ("Go back" + "Subm
 
 ### Required pieces
 
-| Piece | Purpose |
-| --- | --- |
-| File-level docstring | One short paragraph: what this file covers and what to look for in the canvas. |
-| `title` | Slash-separated path (`UI / Button`, `Onboarding / WhatWeDoSlide`). The first segment groups in the navigator. |
-| `component` | The component reference. Drives the `Meta<typeof X>` type so `args` is type-checked. |
-| `args` | Default props for the *meta-level* story. Inherited by every named story unless overridden. |
-| `argTypes` | Maps each prop to a control type (`text`, `boolean`, `radio`, `select`, `color`, etc.) **or** an action. |
-| `meta.parameters.notes` | Component-level markdown shown in the **Notes** tab on-device (rendered by `@storybook/addon-ondevice-notes` via `react-native-markdown-display`). Headings, bold, lists, and code spans all render. |
-| Named stories | Each scenario as a top-level export (`Solid`, `Outline`, `Loading`). The export name is the scenario shown in the canvas header. |
-| Per-story `parameters.notes` | Markdown for *this scenario* — when to use, when not to use, watch-outs. Shown in the same Notes tab when the story is selected. |
-| Companion `.docs.md` | Long-form usage doc — anatomy, props table, when-to-use, behavior quirks. Lives next to the component; not loaded by Storybook (it's the canonical in-repo reference for code reviewers and future maintainers). |
+| Piece                        | Purpose                                                                                                                                                                                                          |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File-level docstring         | One short paragraph: what this file covers and what to look for in the canvas.                                                                                                                                   |
+| `title`                      | Slash-separated path (`UI / Button`, `Onboarding / WhatWeDoSlide`). The first segment groups in the navigator.                                                                                                   |
+| `component`                  | The component reference. Drives the `Meta<typeof X>` type so `args` is type-checked.                                                                                                                             |
+| `args`                       | Default props for the _meta-level_ story. Inherited by every named story unless overridden.                                                                                                                      |
+| `argTypes`                   | Maps each prop to a control type (`text`, `boolean`, `radio`, `select`, `color`, etc.) **or** an action.                                                                                                         |
+| `meta.parameters.notes`      | Component-level markdown shown in the **Notes** tab on-device (rendered by `@storybook/addon-ondevice-notes` via `react-native-markdown-display`). Headings, bold, lists, and code spans all render.             |
+| Named stories                | Each scenario as a top-level export (`Solid`, `Outline`, `Loading`). The export name is the scenario shown in the canvas header.                                                                                 |
+| Per-story `parameters.notes` | Markdown for _this scenario_ — when to use, when not to use, watch-outs. Shown in the same Notes tab when the story is selected.                                                                                 |
+| Companion `.docs.md`         | Long-form usage doc — anatomy, props table, when-to-use, behavior quirks. Lives next to the component; not loaded by Storybook (it's the canonical in-repo reference for code reviewers and future maintainers). |
 
 ### Controls
 
 Every interactive prop needs an `argTypes` entry so it shows up as a control. Pick the type that matches:
 
-| Prop type | Control |
-| --- | --- |
-| `string` (free text) | `{ control: { type: 'text' } }` |
-| `string` (enum) | `{ control: { type: 'radio' }, options: [...] }` (≤ 4 options) or `'select'` (5+) |
-| `boolean` | `{ control: { type: 'boolean' } }` |
-| `number` | `{ control: { type: 'number' } }` or `'range'` with min/max/step |
-| `string` (color) | `{ control: { type: 'color' } }` |
+| Prop type            | Control                                                                           |
+| -------------------- | --------------------------------------------------------------------------------- |
+| `string` (free text) | `{ control: { type: 'text' } }`                                                   |
+| `string` (enum)      | `{ control: { type: 'radio' }, options: [...] }` (≤ 4 options) or `'select'` (5+) |
+| `boolean`            | `{ control: { type: 'boolean' } }`                                                |
+| `number`             | `{ control: { type: 'number' } }` or `'range'` with min/max/step                  |
+| `string` (color)     | `{ control: { type: 'color' } }`                                                  |
 
 Anything matching the `controls.matchers` regex in `preview.tsx` (`color`/`background` named props, `Date` suffix) gets the right control inferred — but explicit is always clearer.
 
 ### Actions
 
-For callback props (`onPress`, `onChange`, etc.), use `{ action: '<name>' }` in `argTypes`. Storybook auto-wires a function that logs to the Actions panel — you don't supply one in `args`.
+For callback props (`onPress`, `onChange`, etc.), use `{ action: '<name>' }` in `argTypes`. Storybook auto-wires a function that logs to the Actions panel — you don't signss one in `args`.
 
 ```tsx
 argTypes: {
@@ -180,14 +183,14 @@ When you tap the button in the canvas, `onPress` shows up in the Actions tab wit
 
 ### Multiple scenarios per component
 
-Each *named export* is a scenario. Show what's worth seeing — typically:
+Each _named export_ is a scenario. Show what's worth seeing — typically:
 
 - **Default** state (`Solid`)
 - Each **variant** that changes layout/visuals (`Outline`)
 - **Boundary states** (`Loading`, `Disabled`, `Error`)
 - **Edge cases** that surprised us in production (long label, RTL, etc.)
 
-Don't enumerate every prop combination — that's what controls are for. Stories are named, screenshot-able demonstrations of *meaningful* states.
+Don't enumerate every prop combination — that's what controls are for. Stories are named, screenshot-able demonstrations of _meaningful_ states.
 
 ### Things to avoid
 
@@ -201,7 +204,7 @@ Don't enumerate every prop combination — that's what controls are for. Stories
 
 2. **Don't import expo-router hooks** (`useRouter`, `useLocalSearchParams`, etc.) in story files or in components rendered by stories. Storybook short-circuits the router; those hooks crash with `UnhandledLinkingContext`. Either refactor the component to take navigation callbacks as props, or wrap it in a small story-only adapter.
 
-3. **Don't depend on QueryProvider / RevenueCat / auth context.** Storybook mode skips all providers. If a component reads from `useQuery` / `useAuthSession`, story it at the *presentation* level (props in, JSX out) — not the connected version.
+3. **Don't depend on QueryProvider / RevenueCat / auth context.** Storybook mode skips all providers. If a component reads from `useQuery` / `useAuthSession`, story it at the _presentation_ level (props in, JSX out) — not the connected version.
 
 4. **Don't hand-roll padding inside the story.** The global decorator already applies it. Doubling up makes layouts inconsistent.
 
