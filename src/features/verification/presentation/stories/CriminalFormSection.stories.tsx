@@ -10,7 +10,7 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-native';
 
-import { CriminalFormSection } from '../components/CriminalFormSection';
+import { CriminalFormSection } from '../sections/CriminalFormSection';
 
 const componentNotes = `
 # CriminalFormSection

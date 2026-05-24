@@ -6,6 +6,7 @@ import {
   View,
   type KeyboardTypeOptions,
   type NativeSyntheticEvent,
+  type TextInputProps,
   type TextInputSubmitEditingEventData,
 } from 'react-native';
 
@@ -27,6 +28,8 @@ type InputProps = {
     event: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
   ) => void;
   rightAccessory?: ReactNode;
+  autoCapitalize?: TextInputProps['autoCapitalize'];
+  autoCorrect?: boolean;
 };
 
 const KEYBOARD_BY_TYPE: Record<InputType, KeyboardTypeOptions> = {
@@ -51,6 +54,8 @@ export const Input = ({
   onBlur,
   onSubmitEditing,
   rightAccessory,
+  autoCapitalize,
+  autoCorrect,
 }: InputProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const hasError = Boolean(error);
@@ -82,8 +87,10 @@ export const Input = ({
           editable={!disabled}
           autoFocus={autoFocus}
           keyboardType={KEYBOARD_BY_TYPE[type]}
-          autoCapitalize={type === 'email' ? 'none' : 'sentences'}
-          autoCorrect={type !== 'email' && type !== 'password'}
+          autoCapitalize={
+            autoCapitalize ?? (type === 'email' ? 'none' : 'sentences')
+          }
+          autoCorrect={autoCorrect ?? (type !== 'email' && type !== 'password')}
           secureTextEntry={type === 'password'}
           onFocus={() => setIsFocused(true)}
           onBlur={() => {

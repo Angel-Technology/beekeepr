@@ -7,6 +7,5 @@ mutation StartPersonaInquiry {
     sessionToken
     identityVerificationStatus
     personaInquiryStatus
-    subscriptionRequired
   }
 }

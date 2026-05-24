@@ -18,6 +18,7 @@ export type EnvironmentConfig = {
   privacyPolicyURL: string;
   personaEnvironment: 'sandbox' | 'production';
   personaTemplateId: string;
+  supportURL: string;
   termsOfUseURL: string;
 };
 
@@ -67,5 +68,6 @@ export const environmentConfig: EnvironmentConfig = {
       ? 'production'
       : 'sandbox',
   personaTemplateId: process.env.EXPO_PUBLIC_PERSONA_TEMPLATE_ID ?? '',
+  supportURL: process.env.EXPO_PUBLIC_SUPPORT_URL ?? '',
   termsOfUseURL: process.env.EXPO_PUBLIC_TERMS_OF_USE_URL ?? '',
 };

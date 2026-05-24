@@ -70,6 +70,10 @@ const meta = {
     onChangePhoneNumber: () => {},
     onValidatePhoneNumber: () => {},
     onSubmit: () => {},
+    isStartingTrial: false,
+    onStartTrial: () => {},
+    onEnterPromoCode: () => {},
+    onAppealDecision: () => {},
   },
   argTypes: {
     phase: {
@@ -82,6 +86,8 @@ const meta = {
         'declined',
         'criminal-intro',
         'criminal-form',
+        'congrats',
+        'denied',
       ],
     },
     isStarting: { control: { type: 'boolean' } },
@@ -100,6 +106,10 @@ const meta = {
     onChangePhoneNumber: { action: 'onChangePhoneNumber' },
     onValidatePhoneNumber: { action: 'onValidatePhoneNumber' },
     onSubmit: { action: 'onSubmit' },
+    isStartingTrial: { control: { type: 'boolean' } },
+    onStartTrial: { action: 'onStartTrial' },
+    onEnterPromoCode: { action: 'onEnterPromoCode' },
+    onAppealDecision: { action: 'onAppealDecision' },
   },
   parameters: {
     notes: componentNotes,
@@ -116,7 +126,7 @@ export const Kickoff: Story = {
 ## Kickoff
 
 Step 1 of the flow — what the user sees the moment they land on
-\`/verify-identity/identity\` after paying. CTA launches Persona.
+\`/verify-identity\` after paying. CTA launches Persona.
 
 **Try this:** flip \`isStarting\` to \`true\` to see the loading state.
     `.trim(),

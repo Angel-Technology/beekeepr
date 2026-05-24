@@ -10,18 +10,30 @@ type DetailCardItem =
       icon?: ReactNode;
     };
 
+type DetailCardTone = 'brand' | 'neutral' | 'surface';
+
 type DetailCardProps = {
   title: string;
   items: DetailCardItem[];
+  tone?: DetailCardTone;
   className?: string;
   titleClassName?: string;
   itemsClassName?: string;
   itemTextClassName?: string;
 };
 
+// Surface tokens kept separate from layout so callers can pick a tone without
+// fighting NativeWind's class precedence rules on conflicting `bg-` utilities.
+const SURFACE_BY_TONE: Record<DetailCardTone, string> = {
+  brand: 'rounded-4 bg-brand-secondary p-5',
+  neutral: 'rounded-xl bg-bg-weak p-4',
+  surface: 'rounded-lg bg-white p-4',
+};
+
 export const DetailCard = ({
   title,
   items,
+  tone = 'brand',
   className,
   titleClassName,
   itemsClassName,
@@ -30,7 +42,8 @@ export const DetailCard = ({
   return (
     <View
       className={clsx(
-        'flex flex-col items-start gap-1 self-stretch rounded-4 bg-brand-secondary p-5',
+        'flex flex-col items-start gap-1 self-stretch',
+        SURFACE_BY_TONE[tone],
         className,
       )}
     >
@@ -53,20 +66,23 @@ export const DetailCard = ({
         {items.map((item, index) => (
           <View
             key={typeof item === 'string' ? item : (item.id ?? `item-${index}`)}
-            className={clsx(
-              'flex-row gap-2 self-stretch',
-              typeof item === 'string' ? 'items-start' : 'items-center',
-            )}
+            className="flex-row items-start gap-2 self-stretch"
           >
-            {typeof item === 'string' ? (
-              <Text className="shrink-0 font-sourceSans-regular text-base text-text-secondary">
+            {typeof item === 'string' || !item.icon ? (
+              <Text
+                className={clsx(
+                  'shrink-0 text-base text-text-secondary',
+                  itemTextClassName ? null : 'font-sourceSans-regular',
+                  itemTextClassName,
+                )}
+              >
                 •
               </Text>
-            ) : item.icon ? (
+            ) : (
               <View className="mr-1 h-5 w-5 items-center justify-center">
                 {item.icon}
               </View>
-            ) : null}
+            )}
             {typeof item === 'string' ? (
               <Text
                 className={clsx(

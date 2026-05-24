@@ -2,8 +2,9 @@ import { Text, View } from 'react-native';
 import { ArrowRight } from 'lucide-react-native';
 import IllustrationLetsdothis from '@assets/svg/IllustrationLetsdothis';
 import { Button } from '@components';
-import { PrivacyComplianceCard } from './PrivacyComplianceCard';
-import { StepBadge } from './StepBadge';
+import { PrivacyComplianceCard } from '../components/PrivacyComplianceCard';
+import { StepBadge } from '../components/StepBadge';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const PRIVACY_BULLETS = [
   'We only screen age to verify you’re 18+',
@@ -22,8 +23,15 @@ export const IdentityKickoffSection = ({
   onStart,
   onMoreInfo,
 }: IdentityKickoffSectionProps) => {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View className="w-full flex-1 gap-7">
+    <View
+      className="w-full flex-1 gap-7"
+      style={{
+        paddingBottom: insets.bottom,
+      }}
+    >
       <View className="w-full gap-2">
         <StepBadge current={1} total={2} />
         <Text className="font-poppins-semiBold text-title-4 text-text-default">
@@ -36,7 +44,7 @@ export const IdentityKickoffSection = ({
       </View>
 
       <View className="w-full flex-1 items-center justify-center">
-        <IllustrationLetsdothis width={240} height={254} />
+        <IllustrationLetsdothis />
       </View>
 
       <PrivacyComplianceCard

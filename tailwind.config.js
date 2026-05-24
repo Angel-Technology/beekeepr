@@ -120,6 +120,12 @@ module.exports = {
            * @example bg-brand-lime, text-brand-lime
            */
           lime: '#EDF903',
+          /**
+           * Brand lighter (pale honey)
+           * @description Soft pale-yellow brand surface used to tint informational cards
+           * @example bg-brand-lighter, text-brand-lighter
+           */
+          lighter: '#FFFAD9',
         },
 
         /**
@@ -157,6 +163,12 @@ module.exports = {
            * @example text-text-secondary
            */
           secondary: 'rgba(0, 0, 0, 0.7)',
+          /**
+           * Tertiary text color
+           * @description Lower-emphasis text color for descriptions, helper, and supporting copy
+           * @example text-text-tertiary
+           */
+          tertiary: 'rgba(0, 0, 0, 0.5)',
           /**
            * Strong text color
            * @description Highest-emphasis text color for headings and key content
@@ -1065,6 +1077,18 @@ module.exports = {
          * @example shadow-focus-visible
          */
         'focus-visible': '0 0 0 3px rgba(34, 139, 230, 0.6), 0 0 0 1px #228be6',
+        /**
+         * Upward shadow for sticky bottom action bars
+         * @description Soft shadow cast above an element to imply content scrolls under it
+         * @example shadow-bottom-bar
+         */
+        'bottom-bar': '0 -2px 8px 0 rgba(0, 0, 0, 0.06)',
+        /**
+         * Compact lift shadow
+         * @description Mirrors the Figma `shadows/small` token (offset 0/2, blur 4, 8% black)
+         * @example shadow-small
+         */
+        small: '0 2px 4px 0 rgba(0, 0, 0, 0.08)',
       },
 
       /**

@@ -8,7 +8,7 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-native';
 
-import { IdentityDeclinedSection } from '../components/IdentityDeclinedSection';
+import { IdentityDeclinedSection } from '../sections/IdentityDeclinedSection';
 
 const componentNotes = `
 # IdentityDeclinedSection

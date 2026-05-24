@@ -1,18 +1,19 @@
 import { Text, View } from 'react-native';
 import { Search } from 'lucide-react-native';
-import { useNavigation } from 'expo-router';
-import { Button, Card } from '@components';
+import { Card } from '@components';
 import JoinBeeIllustration from '@src/assets/svg/JoinBeeIllustration';
+import { useRevenueCat } from '@src/lib/revenuecat';
+import { BuzzTrialCountdownCard } from './BuzzTrialCountdownCard';
 
 export const BuzzWelcomeFlow = () => {
-  const navigation = useNavigation();
-
-  const goToSearch = () => {
-    navigation.navigate('search-records' as never);
-  };
+  const { isOnTrial, trialDaysRemaining } = useRevenueCat();
 
   return (
     <View className="w-full gap-7">
+      {isOnTrial && trialDaysRemaining !== null ? (
+        <BuzzTrialCountdownCard daysRemaining={trialDaysRemaining} />
+      ) : null}
+
       <View className="w-full gap-2">
         <Text className="font-lexend-regular text-sm leading-5 text-text-default">
           Search TheBuzz Community
@@ -41,12 +42,6 @@ export const BuzzWelcomeFlow = () => {
         <View className="items-center justify-center">
           <JoinBeeIllustration width={235} height={234} />
         </View>
-
-        <Button
-          label="Learn more"
-          className="self-stretch"
-          onPress={goToSearch}
-        />
       </Card>
     </View>
   );

@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useCriminalCheckForm } from '../../hooks/useCriminalCheckForm';
+import { useTrialPurchase } from '../../hooks/useTrialPurchase';
 import { useVerificationFlow } from '../../hooks/useVerificationFlow';
 import { useVerificationGate } from '../../hooks/useVerificationGate';
 import { VerificationFlowBody } from '../components/VerificationFlowBody';
@@ -29,8 +30,9 @@ export const VerificationFlowScreen = () => {
   const router = useRouter();
   const flow = useVerificationFlow();
   const form = useCriminalCheckForm();
+  const trial = useTrialPurchase();
 
-  useVerificationGate('subscription');
+  useVerificationGate();
 
   return (
     <VerificationFlowBody
@@ -55,6 +57,14 @@ export const VerificationFlowScreen = () => {
       onSubmit={() => {
         void form.handleSubmit();
       }}
+      isStartingTrial={trial.isPurchasing}
+      onStartTrial={() => {
+        void trial.startTrial();
+      }}
+      // TODO: wire promo-code redemption when the offer set is finalised.
+      onEnterPromoCode={() => {}}
+      // TODO: wire to the appeal-decision flow when it lands.
+      onAppealDecision={() => {}}
     />
   );
 };

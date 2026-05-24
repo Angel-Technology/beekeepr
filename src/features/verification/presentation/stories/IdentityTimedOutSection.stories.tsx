@@ -7,7 +7,7 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-native';
 
-import { IdentityTimedOutSection } from '../components/IdentityTimedOutSection';
+import { IdentityTimedOutSection } from '../sections/IdentityTimedOutSection';
 
 const componentNotes = `
 # IdentityTimedOutSection

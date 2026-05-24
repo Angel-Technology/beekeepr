@@ -1,11 +1,8 @@
-import { Alert } from 'react-native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authQueryKeys } from '@features/auth';
+import { useErrorModal } from '@src/lib/error-modal';
 import { verificationService } from '../services/verificationService';
-import {
-  isSubscriptionRequiredError,
-  type CriminalCheckInput,
-} from '../models/verification.types';
+import type { CriminalCheckInput } from '../models/verification.types';
 
 /**
  * Single home for every TanStack mutation in the verification flow:
@@ -23,13 +20,10 @@ import {
  * needs. Splitting them across multiple hooks (as we used to) made each
  * screen import a different shape of action, and made it harder to see
  * the full set of writes at a glance.
- *
- * RevenueCat purchase/promo are deliberately not here — they're driven by
- * the paywall hook because they belong to the subscription system, not the
- * verification system.
  */
 export const useVerificationActions = () => {
   const queryClient = useQueryClient();
+  const { showFromError } = useErrorModal();
 
   const startPersonaVerification = useMutation({
     mutationFn: async () => {
@@ -61,12 +55,7 @@ export const useVerificationActions = () => {
       });
     },
     onError: (error: Error) => {
-      // The kickoff hook redirects on subscription-required; staying silent
-      // here avoids a duplicate Alert.
-      if (isSubscriptionRequiredError(error)) {
-        return;
-      }
-      Alert.alert('Verification Failed', error.message);
+      showFromError(error, 'Verification Failed');
     },
   });
 

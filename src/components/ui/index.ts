@@ -1,3 +1,4 @@
+export * from './action-bar';
 export * from './button';
 export * from './card';
 export * from './divider';
@@ -9,3 +10,4 @@ export * from './paper-onboarding';
 export * from './pill';
 export * from './spacing';
 export * from './stepper';
+export * from './tab-bar';

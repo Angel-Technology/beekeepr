@@ -1,6 +1,5 @@
 import { environmentConfig } from '@src/lib/config/environment';
 import { verificationRepository } from '../repository/verificationRepository';
-import { subscriptionRequiredError } from '../models/verification.types';
 import type {
   CriminalCheckInput,
   CriminalCheckResult,
@@ -62,21 +61,9 @@ const getPersonaEnvironment = (personaModule: PersonaModule) => {
 export const verificationService = {
   /**
    * Mints a Persona inquiry on the backend.
-   *
-   * @returns the inquiry payload with `inquiryId` set
-   * @throws an `Error & { subscriptionRequired: true }` when the backend
-   * gates on subscription; the kickoff hook treats that tag as a redirect
-   * back to the paywall rather than a generic error.
    */
   async startPersonaInquiry(): Promise<PersonaInquiryStartResult> {
     const payload = await verificationRepository.startPersonaInquiry();
-
-    if (payload.startPersonaInquiry.subscriptionRequired) {
-      throw subscriptionRequiredError(
-        payload.startPersonaInquiry.error ??
-          'An active subscription is required to start identity verification.',
-      );
-    }
 
     if (!payload.startPersonaInquiry.success) {
       throw new Error(

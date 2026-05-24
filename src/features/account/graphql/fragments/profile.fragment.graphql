@@ -1,0 +1,8 @@
+fragment ProfileFields on UserGraph {
+  id
+  email
+  displayName
+  nickname
+  handle
+  imageUrl
+}

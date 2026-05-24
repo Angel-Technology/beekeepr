@@ -35,6 +35,12 @@ export enum BackgroundCheckBadge {
   None = 'NONE'
 }
 
+export type CancelAccountDeletionPayload = {
+  __typename?: 'CancelAccountDeletionPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  user?: Maybe<UserGraph>;
+};
+
 export type CreateUserInput = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
@@ -68,6 +74,12 @@ export enum PersonaInquiryStatus {
   NeedsReview = 'NEEDS_REVIEW',
   Pending = 'PENDING'
 }
+
+export type RequestAccountDeletionPayload = {
+  __typename?: 'RequestAccountDeletionPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  user?: Maybe<UserGraph>;
+};
 
 export type RequestEmailSignInInput = {
   email: Scalars['String']['input'];
@@ -119,7 +131,6 @@ export type StartPersonaInquiryPayload = {
   inquiryId?: Maybe<Scalars['String']['output']>;
   personaInquiryStatus?: Maybe<PersonaInquiryStatus>;
   sessionToken?: Maybe<Scalars['String']['output']>;
-  subscriptionRequired: Scalars['Boolean']['output'];
   success: Scalars['Boolean']['output'];
 };
 
@@ -151,17 +162,31 @@ export enum SubscriptionStore {
   Unknown = 'UNKNOWN'
 }
 
+export type UpdateProfileInput = {
+  handle?: InputMaybe<Scalars['String']['input']>;
+  nickname?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateProfilePayload = {
+  __typename?: 'UpdateProfilePayload';
+  error?: Maybe<Scalars['String']['output']>;
+  user?: Maybe<UserGraph>;
+};
+
 export type UserGraph = {
   __typename?: 'UserGraph';
   backgroundCheckBadge: BackgroundCheckBadge;
   backgroundCheckBadgeExpiresAtUtc?: Maybe<Scalars['DateTime']['output']>;
   createdAtUtc: Scalars['DateTime']['output'];
+  deletedAtUtc?: Maybe<Scalars['DateTime']['output']>;
   displayName?: Maybe<Scalars['String']['output']>;
   email: Scalars['String']['output'];
   emailVerified: Scalars['Boolean']['output'];
+  handle?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   identityVerificationStatus: IdentityVerificationStatus;
   imageUrl?: Maybe<Scalars['String']['output']>;
+  nickname?: Maybe<Scalars['String']['output']>;
   personaInquiryId?: Maybe<Scalars['String']['output']>;
   personaInquiryStatus?: Maybe<PersonaInquiryStatus>;
   personaVerifiedAtUtc?: Maybe<Scalars['DateTime']['output']>;
@@ -178,12 +203,15 @@ export type UserGraph = {
 export type UserMutations = {
   __typename?: 'UserMutations';
   acceptTerms: AcceptTermsPayload;
+  cancelAccountDeletion: CancelAccountDeletionPayload;
   createUser: CreateUserPayload;
+  requestAccountDeletion: RequestAccountDeletionPayload;
   requestEmailSignIn: RequestEmailSignInPayload;
   signInWithGoogle: SignInWithGooglePayload;
   signOut: SignOutPayload;
   startInstantCriminalCheck: StartInstantCriminalCheckPayload;
   startPersonaInquiry: StartPersonaInquiryPayload;
+  updateProfile: UpdateProfilePayload;
   verifyEmailSignIn: VerifyEmailSignInPayload;
 };
 
@@ -205,6 +233,11 @@ export type UserMutationsSignInWithGoogleArgs = {
 
 export type UserMutationsStartInstantCriminalCheckArgs = {
   input: StartInstantCriminalCheckInput;
+};
+
+
+export type UserMutationsUpdateProfileArgs = {
+  input: UpdateProfileInput;
 };
 
 
@@ -245,8 +278,8 @@ export type StartInstantCriminalCheckMutation = { __typename?: 'UserMutations', 
 export type StartPersonaInquiryMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type StartPersonaInquiryMutation = { __typename?: 'UserMutations', startPersonaInquiry: { __typename?: 'StartPersonaInquiryPayload', success: boolean, error?: string | null, createdNewInquiry: boolean, inquiryId?: string | null, sessionToken?: string | null, identityVerificationStatus?: IdentityVerificationStatus | null, personaInquiryStatus?: PersonaInquiryStatus | null, subscriptionRequired: boolean } };
+export type StartPersonaInquiryMutation = { __typename?: 'UserMutations', startPersonaInquiry: { __typename?: 'StartPersonaInquiryPayload', success: boolean, error?: string | null, createdNewInquiry: boolean, inquiryId?: string | null, sessionToken?: string | null, identityVerificationStatus?: IdentityVerificationStatus | null, personaInquiryStatus?: PersonaInquiryStatus | null } };
 
 
 export const StartInstantCriminalCheckDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"StartInstantCriminalCheck"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"StartInstantCriminalCheckInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startInstantCriminalCheck"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"checkId"}},{"kind":"Field","name":{"kind":"Name","value":"profileId"}},{"kind":"Field","name":{"kind":"Name","value":"resultCount"}},{"kind":"Field","name":{"kind":"Name","value":"hasPossibleMatches"}}]}}]}}]} as unknown as DocumentNode<StartInstantCriminalCheckMutation, StartInstantCriminalCheckMutationVariables>;
-export const StartPersonaInquiryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"StartPersonaInquiry"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startPersonaInquiry"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"createdNewInquiry"}},{"kind":"Field","name":{"kind":"Name","value":"inquiryId"}},{"kind":"Field","name":{"kind":"Name","value":"sessionToken"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryStatus"}},{"kind":"Field","name":{"kind":"Name","value":"subscriptionRequired"}}]}}]}}]} as unknown as DocumentNode<StartPersonaInquiryMutation, StartPersonaInquiryMutationVariables>;
+export const StartPersonaInquiryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"StartPersonaInquiry"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startPersonaInquiry"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"createdNewInquiry"}},{"kind":"Field","name":{"kind":"Name","value":"inquiryId"}},{"kind":"Field","name":{"kind":"Name","value":"sessionToken"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryStatus"}}]}}]}}]} as unknown as DocumentNode<StartPersonaInquiryMutation, StartPersonaInquiryMutationVariables>;

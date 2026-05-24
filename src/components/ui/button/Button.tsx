@@ -6,16 +6,29 @@ import { BounceLoader } from '../loader/BounceLoader';
 
 const ICON_SLOT_SIZE = 32;
 
+type ButtonTone = 'default' | 'critical';
+
 type ButtonProps = {
   label: string;
   onPress?: () => void;
   disabled?: boolean;
   loading?: boolean;
   variant?: 'solid' | 'outline';
+  tone?: ButtonTone;
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
   className?: string;
   textClassName?: string;
+};
+
+// Tone-driven text color kept off the className override path so callers don't
+// fight NativeWind's class precedence rules when picking a destructive label.
+const TONE_TEXT_CLASSNAME: Record<
+  ButtonTone,
+  { solid: string; outline: string }
+> = {
+  default: { solid: 'text-text-inverse', outline: 'text-text-default' },
+  critical: { solid: 'text-text-inverse', outline: 'text-text-critical' },
 };
 
 const IconSlot = ({ children }: { children?: ReactNode }) => (
@@ -33,6 +46,7 @@ export const Button = ({
   disabled = false,
   loading = false,
   variant = 'solid',
+  tone = 'default',
   iconLeft,
   iconRight,
   className,
@@ -44,6 +58,9 @@ export const Button = ({
     ? 'bg-text-default'
     : 'bg-text-inverse';
   const hasIcon = Boolean(iconLeft || iconRight);
+  const toneTextClassName = isOutline
+    ? TONE_TEXT_CLASSNAME[tone].outline
+    : TONE_TEXT_CLASSNAME[tone].solid;
 
   return (
     <TouchableOpacity
@@ -73,11 +90,7 @@ export const Button = ({
           ellipsizeMode="tail"
           className={clsx(
             'flex-1 text-center font-lexend-semiBold text-base leading-tight',
-            isDisabled
-              ? 'text-text-disabled'
-              : isOutline
-                ? 'text-text-default'
-                : 'text-text-inverse',
+            isDisabled ? 'text-text-disabled' : toneTextClassName,
             textClassName,
           )}
         >

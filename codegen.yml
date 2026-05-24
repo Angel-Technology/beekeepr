@@ -24,3 +24,15 @@ generates:
       - typescript
       - typescript-operations
       - typed-document-node
+  src/features/account/graphql/generated/account.generated.ts:
+    config:
+      scalars:
+        DateTime: string
+        UUID: string
+      useTypeImports: true
+    documents:
+      - src/features/account/graphql/**/*.graphql
+    plugins:
+      - typescript
+      - typescript-operations
+      - typed-document-node

@@ -1,12 +1,9 @@
-import { useRef, type ReactNode } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { type ReactNode } from 'react';
+import { Text, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { CircleHelp } from 'lucide-react-native';
 import { Button, Input } from '@components';
-
-// Breathing room above the phone field once we scroll to it — keeps the
-// section header ("PHONE & DOB") in view instead of pinning the input flush
-// to the top.
-const PHONE_FIELD_TOP_PADDING = 24;
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type SectionProps = {
   label: string;
@@ -56,19 +53,18 @@ export const CriminalFormSection = ({
   onValidatePhoneNumber,
   onSubmit,
 }: CriminalFormSectionProps) => {
-  const scrollRef = useRef<ScrollView>(null);
-  // First-mount only — `onLayout` can fire again on rotation/keyboard changes,
-  // and we don't want to yank the user back to the phone field if they've
-  // intentionally scrolled away.
-  const hasScrolledToPhoneRef = useRef(false);
+  const insets = useSafeAreaInsets();
 
   return (
-    <ScrollView
-      ref={scrollRef}
-      className="w-full"
-      contentContainerClassName="gap-7 pb-8 pt-6"
+    <KeyboardAwareScrollView
+      className="w-full flex-1"
+      contentContainerClassName="gap-7"
+      contentContainerStyle={{
+        paddingBottom: insets.bottom,
+      }}
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
+      bottomOffset={100}
     >
       <View className="w-full gap-2">
         <Text className="font-poppins-semiBold text-title-4 text-text-default">
@@ -101,38 +97,24 @@ export const CriminalFormSection = ({
         />
       </FieldGroup>
 
-      <View
-        onLayout={(event) => {
-          if (hasScrolledToPhoneRef.current) {
-            return;
-          }
-          hasScrolledToPhoneRef.current = true;
-          const { y } = event.nativeEvent.layout;
-          scrollRef.current?.scrollTo({
-            y: Math.max(y - PHONE_FIELD_TOP_PADDING, 0),
-            animated: true,
-          });
-        }}
-      >
-        <FieldGroup label="PHONE & DOB">
-          <Input
-            label="Phone Number (assigned by your carrier)"
-            value={phoneNumber}
-            onChangeText={onChangePhoneNumber}
-            onBlur={onValidatePhoneNumber}
-            error={phoneError}
-            type="phone"
-            placeholder="(555) 555-5555"
-            autoFocus
-          />
-          <Input
-            label="Date of Birth (mm/dd/yyyy)"
-            value={dateOfBirth}
-            onChangeText={() => {}}
-            disabled
-          />
-        </FieldGroup>
-      </View>
+      <FieldGroup label="PHONE & DOB">
+        <Input
+          label="Phone Number (assigned by your carrier)"
+          value={phoneNumber}
+          onChangeText={onChangePhoneNumber}
+          onBlur={onValidatePhoneNumber}
+          error={phoneError}
+          type="phone"
+          placeholder="(555) 555-5555"
+          autoFocus
+        />
+        <Input
+          label="Date of Birth (mm/dd/yyyy)"
+          value={dateOfBirth}
+          onChangeText={() => {}}
+          disabled
+        />
+      </FieldGroup>
 
       <FieldGroup label="STATE OF RESIDENCE">
         <Input
@@ -142,7 +124,6 @@ export const CriminalFormSection = ({
           disabled
         />
       </FieldGroup>
-
       <Button
         label="Submit"
         className="self-stretch"
@@ -150,6 +131,6 @@ export const CriminalFormSection = ({
         disabled={!canSubmit}
         onPress={onSubmit}
       />
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };

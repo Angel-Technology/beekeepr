@@ -11,10 +11,14 @@ export type AppImages = {
   readonly adaptiveIcon: ImageRequireSource;
   readonly appIcon: ImageRequireSource;
   readonly awkwardBee: ImageRequireSource;
+  readonly awkwardSadBee: ImageRequireSource;
   readonly splashIcon: ImageRequireSource;
   readonly welcomeBee: ImageRequireSource;
   readonly standoutBee: ImageRequireSource;
   readonly newMatchBee: ImageRequireSource;
+  readonly partnerships: ImageRequireSource;
+  readonly location: ImageRequireSource;
+  readonly congrats: ImageRequireSource;
 };
 
 export const appImages: AppImages = {
@@ -26,10 +30,14 @@ export const appImages: AppImages = {
   adaptiveIcon: require('./adaptive-icon.png'),
   appIcon: require('./app-icon.png'),
   awkwardBee: require('./awkward-bee-4.png'),
+  awkwardSadBee: require('./awkward-sad-bee.png'),
   splashIcon: require('./splash-icon.png'),
   welcomeBee: require('./welcome-bee.png'),
   standoutBee: require('./standout-bee.png'),
   newMatchBee: require('./new-match-bee.png'),
+  partnerships: require('./partnerships.png'),
+  location: require('./location.png'),
+  congrats: require('./congrats.png'),
 };
 
 export type AppImageKey = keyof typeof appImages;

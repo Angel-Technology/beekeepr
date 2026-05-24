@@ -63,7 +63,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 
     ios: {
       ...config.ios,
-      supportsTablet: true,
+      supportsTablet: false,
       bundleIdentifier: APP.bundleIdentifier,
       buildNumber: config.ios?.buildNumber ?? iosBuildNumber,
 

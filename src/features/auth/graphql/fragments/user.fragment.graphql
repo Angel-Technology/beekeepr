@@ -2,6 +2,8 @@ fragment AuthUserFields on UserGraph {
   id
   email
   displayName
+  nickname
+  handle
   emailVerified
   createdAtUtc
   identityVerificationStatus

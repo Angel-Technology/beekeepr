@@ -1,15 +1,22 @@
 import { useState } from 'react';
-import { View } from 'react-native';
+import clsx from 'clsx';
+import { StyleSheet, View } from 'react-native';
+import LottieView from 'lottie-react-native';
+import { appAnimations } from '@assets/animations';
 import { Container } from '@components';
 import type { VerificationPhase } from '../../models/verification.types';
-import { CriminalFormSection } from './CriminalFormSection';
-import { CriminalIntroSection } from './CriminalIntroSection';
+import {
+  CongratsSection,
+  CriminalFormSection,
+  CriminalIntroSection,
+  DeniedSection,
+  IdentityDeclinedSection,
+  IdentityKickoffSection,
+  IdentityNeedsReviewSection,
+  IdentityTimedOutSection,
+  IdentityWaitingSection,
+} from '../sections';
 import { ExitScreeningModal } from './ExitScreeningModal';
-import { IdentityDeclinedSection } from './IdentityDeclinedSection';
-import { IdentityKickoffSection } from './IdentityKickoffSection';
-import { IdentityNeedsReviewSection } from './IdentityNeedsReviewSection';
-import { IdentityTimedOutSection } from './IdentityTimedOutSection';
-import { IdentityWaitingSection } from './IdentityWaitingSection';
 import { PrivacyComplianceModal } from './PrivacyComplianceModal';
 import { VerificationTopNav } from './VerificationTopNav';
 
@@ -40,6 +47,13 @@ type VerificationFlowBodyProps = {
   onChangePhoneNumber: (value: string) => void;
   onValidatePhoneNumber: () => void;
   onSubmit: () => void;
+  // Congrats-phase trial purchase. `isStartingTrial` drives the button
+  // loading state while `useRevenueCat().purchase()` is in flight.
+  isStartingTrial: boolean;
+  onStartTrial: () => void;
+  onEnterPromoCode: () => void;
+  // Denied-phase action — wired to a no-op until the appeal flow lands.
+  onAppealDecision: () => void;
 };
 
 /**
@@ -74,83 +88,129 @@ export const VerificationFlowBody = ({
   onChangePhoneNumber,
   onValidatePhoneNumber,
   onSubmit,
+  isStartingTrial,
+  onStartTrial,
+  onEnterPromoCode,
+  onAppealDecision,
 }: VerificationFlowBodyProps) => {
   const [isExitOpen, setIsExitOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+  // Phases with their own sticky bottom UI (e.g. criminal-form's shadow bar)
+  // already clear the home indicator — skip the safe-area pad to avoid
+  // double-spacing.
 
   return (
-    <Container
-      safeArea
-      safeAreaEdges={['top', 'bottom']}
-      className="bg-bg-default px-2"
-    >
-      <View className="-mx-5 self-stretch">
-        <VerificationTopNav onPressBack={() => setIsExitOpen(true)} />
-      </View>
-      <View className="w-full flex-1 pb-4">
-        {phase === 'kickoff' ? (
-          <IdentityKickoffSection
-            isStarting={isStarting}
-            onStart={onStartVerification}
-            onMoreInfo={() => setIsPrivacyOpen(true)}
+    <View className="flex-1">
+      <Container
+        safeArea
+        safeAreaEdges={['top']}
+        className={clsx('bg-bg-default px-2')}
+      >
+        <View className="-mx-5 self-stretch">
+          <VerificationTopNav
+            onPressBack={
+              // Congrats / denied are terminal states — chevron-left
+              // dismisses straight to home instead of opening the abandon-
+              // flow modal.
+              phase === 'congrats' || phase === 'denied'
+                ? onExit
+                : () => setIsExitOpen(true)
+            }
           />
-        ) : null}
+        </View>
+        <View className="w-full flex-1">
+          {phase === 'kickoff' ? (
+            <IdentityKickoffSection
+              isStarting={isStarting}
+              onStart={onStartVerification}
+              onMoreInfo={() => setIsPrivacyOpen(true)}
+            />
+          ) : null}
 
-        {phase === 'waiting' ? <IdentityWaitingSection /> : null}
+          {phase === 'waiting' ? <IdentityWaitingSection /> : null}
 
-        {phase === 'timed-out' ? (
-          <IdentityTimedOutSection onGoHome={onExit} />
-        ) : null}
+          {phase === 'timed-out' ? (
+            <IdentityTimedOutSection onGoHome={onExit} />
+          ) : null}
 
-        {phase === 'needs-review' ? (
-          <IdentityNeedsReviewSection onGoHome={onExit} />
-        ) : null}
+          {phase === 'needs-review' ? (
+            <IdentityNeedsReviewSection onGoHome={onExit} />
+          ) : null}
 
-        {phase === 'declined' ? (
-          <IdentityDeclinedSection
-            isStarting={isStarting}
-            onRetry={onStartVerification}
+          {phase === 'declined' ? (
+            <IdentityDeclinedSection
+              isStarting={isStarting}
+              onRetry={onStartVerification}
+            />
+          ) : null}
+
+          {phase === 'criminal-intro' ? (
+            <CriminalIntroSection
+              onStartSearch={onStartCriminalSearch}
+              onMoreInfo={() => setIsPrivacyOpen(true)}
+            />
+          ) : null}
+
+          {phase === 'criminal-form' ? (
+            <CriminalFormSection
+              firstName={firstName}
+              middleName={middleName}
+              lastName={lastName}
+              dateOfBirth={dateOfBirth}
+              licenseState={licenseState}
+              phoneNumber={phoneNumber}
+              phoneError={phoneError}
+              isSubmitting={isSubmitting}
+              canSubmit={canSubmit}
+              onChangePhoneNumber={onChangePhoneNumber}
+              onValidatePhoneNumber={onValidatePhoneNumber}
+              onSubmit={onSubmit}
+            />
+          ) : null}
+
+          {phase === 'congrats' ? (
+            <CongratsSection
+              isStartingTrial={isStartingTrial}
+              onStartTrial={onStartTrial}
+              onEnterPromoCode={onEnterPromoCode}
+            />
+          ) : null}
+
+          {phase === 'denied' ? (
+            <DeniedSection
+              onGotIt={onExit}
+              onAppealDecision={onAppealDecision}
+              onMoreInfo={() => setIsPrivacyOpen(true)}
+            />
+          ) : null}
+        </View>
+
+        <PrivacyComplianceModal
+          visible={isPrivacyOpen}
+          onClose={() => setIsPrivacyOpen(false)}
+        />
+
+        <ExitScreeningModal
+          visible={isExitOpen}
+          onCancel={() => setIsExitOpen(false)}
+          onConfirmExit={() => {
+            setIsExitOpen(false);
+            onExit();
+          }}
+        />
+      </Container>
+
+      {phase === 'congrats' ? (
+        <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+          <LottieView
+            source={appAnimations.confetti}
+            autoPlay
+            loop={false}
+            resizeMode="cover"
+            style={StyleSheet.absoluteFill}
           />
-        ) : null}
-
-        {phase === 'criminal-intro' ? (
-          <CriminalIntroSection
-            onStartSearch={onStartCriminalSearch}
-            onMoreInfo={() => setIsPrivacyOpen(true)}
-          />
-        ) : null}
-
-        {phase === 'criminal-form' ? (
-          <CriminalFormSection
-            firstName={firstName}
-            middleName={middleName}
-            lastName={lastName}
-            dateOfBirth={dateOfBirth}
-            licenseState={licenseState}
-            phoneNumber={phoneNumber}
-            phoneError={phoneError}
-            isSubmitting={isSubmitting}
-            canSubmit={canSubmit}
-            onChangePhoneNumber={onChangePhoneNumber}
-            onValidatePhoneNumber={onValidatePhoneNumber}
-            onSubmit={onSubmit}
-          />
-        ) : null}
-      </View>
-
-      <PrivacyComplianceModal
-        visible={isPrivacyOpen}
-        onClose={() => setIsPrivacyOpen(false)}
-      />
-
-      <ExitScreeningModal
-        visible={isExitOpen}
-        onCancel={() => setIsExitOpen(false)}
-        onConfirmExit={() => {
-          setIsExitOpen(false);
-          onExit();
-        }}
-      />
-    </Container>
+        </View>
+      ) : null}
+    </View>
   );
 };

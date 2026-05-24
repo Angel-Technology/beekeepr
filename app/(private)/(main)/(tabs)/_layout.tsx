@@ -1,8 +1,7 @@
 import { Tabs } from 'expo-router';
-import { BlurView } from 'expo-blur';
-import { Heart, Search } from 'lucide-react-native';
-import { StyleSheet } from 'react-native';
+import { LayoutGrid, Search } from 'lucide-react-native';
 
+import { BottomTabBar } from '@components';
 import IntroBeeIcon from '@src/assets/svg/IntroBeeIcon';
 
 const ICON_SIZE = 24;
@@ -10,30 +9,17 @@ const ICON_SIZE = 24;
 export default function PrivateTabsLayout() {
   return (
     <Tabs
+      detachInactiveScreens={false}
       screenOptions={{
         headerShown: false,
         animation: 'shift',
-        tabBarActiveTintColor: '#000000',
-        tabBarInactiveTintColor: 'rgba(0, 0, 0, 0.5)',
-        tabBarStyle: {
-          position: 'absolute',
-          backgroundColor: 'transparent',
-          borderTopWidth: 0,
-          elevation: 0,
-        },
-        tabBarBackground: () => (
-          <BlurView
-            tint="light"
-            intensity={60}
-            style={StyleSheet.absoluteFill}
-          />
-        ),
       }}
+      tabBar={(props) => <BottomTabBar {...props} />}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'TheBuzz',
+          title: 'Buzz Badge',
           tabBarIcon: ({ color }) => (
             <IntroBeeIcon
               width={ICON_SIZE}
@@ -46,7 +32,7 @@ export default function PrivateTabsLayout() {
       <Tabs.Screen
         name="search-records"
         options={{
-          title: 'Search',
+          title: 'Criminal Search',
           tabBarIcon: ({ color }) => <Search size={ICON_SIZE} color={color} />,
         }}
       />
@@ -54,7 +40,9 @@ export default function PrivateTabsLayout() {
         name="explore"
         options={{
           title: 'Explore',
-          tabBarIcon: ({ color }) => <Heart size={ICON_SIZE} color={color} />,
+          tabBarIcon: ({ color }) => (
+            <LayoutGrid size={ICON_SIZE} color={color} />
+          ),
         }}
       />
     </Tabs>
