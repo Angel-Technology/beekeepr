@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { ChevronLeft } from 'lucide-react-native';
+import { ChevronLeft, CreditCard } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   AppHeader,
@@ -12,6 +12,8 @@ import {
   IconButton,
 } from '@components';
 import { environmentConfig } from '@src/lib/config/environment';
+import { useErrorModal } from '@src/lib/error-modal';
+import { useRevenueCat } from '@src/lib/revenuecat';
 import { useDeleteAccount } from '../../hooks/useDeleteAccount';
 import { DeleteAccountConfirmModal } from '../components/DeleteAccountConfirmModal';
 
@@ -38,7 +40,18 @@ export const DeleteAccountScreen = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { confirmDelete, isDeleting } = useDeleteAccount();
+  const { isPro, isLapsed, openManageSubscription } = useRevenueCat();
+  const { showFromError } = useErrorModal();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const hasSubscriptionHistory = isPro || isLapsed;
+
+  const handleManageSubscription = async () => {
+    try {
+      await openManageSubscription();
+    } catch (error) {
+      showFromError(error, 'Unable to open subscription settings');
+    }
+  };
 
   const handleConfirm = () => {
     setIsConfirmOpen(false);
@@ -113,6 +126,18 @@ export const DeleteAccountScreen = () => {
         <Text className="font-lexend-regular text-sm leading-5 text-text-secondary">
           If you log back in within 72 hours, your account will be restored.
         </Text>
+
+        {hasSubscriptionHistory ? (
+          <Button
+            label="Manage Subscription"
+            variant="outline"
+            iconLeft={<CreditCard size={20} color="#000000" strokeWidth={2} />}
+            disabled={isDeleting}
+            onPress={() => {
+              void handleManageSubscription();
+            }}
+          />
+        ) : null}
       </ScrollView>
 
       <BottomActionBar>

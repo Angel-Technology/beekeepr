@@ -4,9 +4,10 @@ import { useRouter } from 'expo-router';
 import type { DrawerContentComponentProps } from '@react-navigation/drawer';
 import * as WebBrowser from 'expo-web-browser';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ArchiveRestore, LogOut, Trash } from 'lucide-react-native';
+import { ArchiveRestore, CreditCard, LogOut, Trash } from 'lucide-react-native';
 import { AppHeader } from '@components';
 import { useAuthActions } from '@features/auth';
+import { useErrorModal } from '@src/lib/error-modal';
 import { useRevenueCat } from '@src/lib/revenuecat';
 import { environmentConfig } from '@src/lib/config/environment';
 import { MenuSection } from './MenuSection';
@@ -30,7 +31,10 @@ export const MenuDrawerContent = ({
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { signOut } = useAuthActions();
-  const { restorePurchases } = useRevenueCat();
+  const { isPro, isLapsed, restorePurchases, openManageSubscription } =
+    useRevenueCat();
+  const { showError, showFromError } = useErrorModal();
+  const hasSubscriptionHistory = isPro || isLapsed;
 
   const closeDrawerThen = useCallback(
     (action: () => void) => {
@@ -39,6 +43,28 @@ export const MenuDrawerContent = ({
     },
     [navigation],
   );
+
+  const handleManageSubscription = useCallback(async () => {
+    try {
+      await openManageSubscription();
+    } catch (error) {
+      showFromError(error, 'Unable to open subscription settings');
+    }
+  }, [openManageSubscription, showFromError]);
+
+  const handleRestorePurchases = useCallback(async () => {
+    try {
+      const restored = await restorePurchases();
+      showError({
+        title: restored ? 'Subscription restored' : 'No purchases found',
+        message: restored
+          ? 'Your subscription is active again.'
+          : 'We couldn’t find any active subscriptions tied to this account.',
+      });
+    } catch (error) {
+      showFromError(error, 'Restore Failed');
+    }
+  }, [restorePurchases, showError, showFromError]);
 
   return (
     <View className="flex-1 bg-bg-default">
@@ -105,9 +131,21 @@ export const MenuDrawerContent = ({
               icon: <ArchiveRestore size={MENU_ICON_SIZE} color="#000000" />,
               onPress: () =>
                 closeDrawerThen(() => {
-                  void restorePurchases();
+                  void handleRestorePurchases();
                 }),
             },
+            ...(hasSubscriptionHistory
+              ? [
+                  {
+                    label: 'Manage Subscription',
+                    icon: <CreditCard size={MENU_ICON_SIZE} color="#000000" />,
+                    onPress: () =>
+                      closeDrawerThen(() => {
+                        void handleManageSubscription();
+                      }),
+                  },
+                ]
+              : []),
             {
               label: 'Delete Account',
               icon: (

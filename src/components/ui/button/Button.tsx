@@ -23,7 +23,10 @@ type ButtonProps = {
 
 // Tone-driven text color kept off the className override path so callers don't
 // fight NativeWind's class precedence rules when picking a destructive label.
-const TONE_TEXT_CLASSNAME: Record<ButtonTone, { solid: string; outline: string }> = {
+const TONE_TEXT_CLASSNAME: Record<
+  ButtonTone,
+  { solid: string; outline: string }
+> = {
   default: { solid: 'text-text-inverse', outline: 'text-text-default' },
   critical: { solid: 'text-text-inverse', outline: 'text-text-critical' },
 };

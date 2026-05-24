@@ -9,6 +9,7 @@ export default function PrivateDrawerLayout() {
         headerShown: false,
         drawerType: 'slide',
         drawerPosition: 'right',
+        swipeEdgeWidth: 150,
         drawerStyle: {
           width: '88%',
         },

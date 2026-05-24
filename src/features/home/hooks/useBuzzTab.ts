@@ -5,6 +5,7 @@ import {
   hasResumableVerification,
   isVerificationDenied,
 } from '@features/verification';
+import { useErrorModal } from '@src/lib/error-modal';
 import { useRevenueCat } from '@src/lib/revenuecat';
 import type { BuzzFlow } from '../models/buzzFlow.types';
 
@@ -32,13 +33,18 @@ import type { BuzzFlow } from '../models/buzzFlow.types';
 export const useBuzzTab = () => {
   const router = useRouter();
   const { data: user } = useAuthSession();
-  const { isPro } = useRevenueCat();
+  const { isPro, isLapsed, purchase } = useRevenueCat();
+  const { showFromError } = useErrorModal();
   const params = useLocalSearchParams<{ backgroundCheck?: string }>();
   const hasSubmittedBackgroundCheck = params.backgroundCheck === 'submitted';
   const badge = user?.backgroundCheckBadge ?? BackgroundCheckBadge.None;
   const isDenied = isVerificationDenied(user);
   const isApproved = badge === BackgroundCheckBadge.Approved;
   const needsMembership = isApproved && !isPro;
+  // Lapsed subscribers have already seen the trial pitch and made a choice
+  // once — bouncing them through /verify-learn-more again is friction. Send
+  // them straight to the OS purchase sheet via RevenueCat's `purchase()`.
+  const needsRenewal = needsMembership && isLapsed;
 
   const flow = useMemo<BuzzFlow>(() => {
     // Denied (Persona Declined or Checkr Denied) trumps the post-submit
@@ -59,13 +65,27 @@ export const useBuzzTab = () => {
     return 'verify';
   }, [isApproved, isPro, isDenied, hasSubmittedBackgroundCheck]);
 
-  const ctaLabel = needsMembership
-    ? 'Start membership'
-    : hasResumableVerification(user)
-      ? 'Resume'
-      : 'Get Started';
+  const ctaLabel = needsRenewal
+    ? 'Renew membership'
+    : needsMembership
+      ? 'Start membership'
+      : hasResumableVerification(user)
+        ? 'Resume'
+        : 'Get Started';
+
+  const handleRenewalPurchase = async () => {
+    try {
+      await purchase();
+    } catch (error) {
+      showFromError(error, 'Purchase Failed');
+    }
+  };
 
   const onGetStarted = () => {
+    if (needsRenewal) {
+      void handleRenewalPurchase();
+      return;
+    }
     if (needsMembership) {
       router.push('/verify-learn-more');
       return;

@@ -44,9 +44,7 @@ export const accountService = {
     }
 
     if (!payload.requestAccountDeletion.user) {
-      throw new Error(
-        'Account deletion succeeded but no user was returned.',
-      );
+      throw new Error('Account deletion succeeded but no user was returned.');
     }
 
     return {

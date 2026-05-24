@@ -11,6 +11,7 @@ export const VerificationLearnMoreScreen = () => {
   const { width: windowWidth } = useWindowDimensions();
   const {
     isVerified,
+    isPurchasing,
     reminderLabel,
     trialEndLabel,
     handleGetStarted,
@@ -102,12 +103,16 @@ export const VerificationLearnMoreScreen = () => {
               iconRight={
                 <ArrowRight size={24} color="#FFFFFF" strokeWidth={2.2} />
               }
-              onPress={handleStartTrial}
+              loading={isPurchasing}
+              onPress={() => {
+                void handleStartTrial();
+              }}
             />
             <Button
               label="Enter promo code"
               className="self-stretch"
               variant="outline"
+              disabled={isPurchasing}
               onPress={handleEnterPromoCode}
             />
           </>

@@ -15,6 +15,7 @@ import {
   AppHeader,
   BOTTOM_TAB_BAR_HEIGHT,
   IconButton,
+  VerticalSpacer,
 } from '@components';
 import {
   DatingAppsExploreCard,
@@ -67,6 +68,7 @@ export const ExploreScreen = () => {
         <DatingAppsExploreCard />
         <STIScreeningExploreCard />
         <SurvivorSupportExploreCard />
+        <VerticalSpacer size="3xl" />
       </Animated.ScrollView>
 
       <AppHeader

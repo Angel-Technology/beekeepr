@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { NativeModules } from 'react-native';
+import { Linking, NativeModules, Platform } from 'react-native';
 import Purchases, {
   LOG_LEVEL,
   type CustomerInfo,
@@ -35,9 +35,32 @@ import {
 type RevenueCatContextValue = {
   isReady: boolean;
   isPro: boolean;
+  /**
+   * `true` when the user has held the entitlement in the past but does not
+   * currently. Distinguishes lapsed subscribers (skip the trial pitch, go
+   * straight to checkout) from never-subscribed users (sell the trial).
+   */
+  isLapsed: boolean;
+  /**
+   * `true` when the active entitlement is in its trial period (RC's
+   * `periodType === TRIAL`). Used by the home tab to render the
+   * trial-countdown card.
+   */
+  isOnTrial: boolean;
+  /**
+   * Whole days remaining on the active trial, rounded up so that "<1 day"
+   * still reads as "1 day left". `null` when the user is not on a trial.
+   */
+  trialDaysRemaining: number | null;
   subscriptionPriceString: string | null;
   purchase: () => Promise<boolean>;
   restorePurchases: () => Promise<boolean>;
+  /**
+   * Opens the device's native subscription management screen. Apps can't
+   * cancel IAP subscriptions programmatically — Apple/Google reserve that
+   * for the store UI. This deep-link is the closest we get.
+   */
+  openManageSubscription: () => Promise<void>;
 };
 
 const RevenueCatContext = createContext<RevenueCatContextValue | null>(null);
@@ -49,6 +72,40 @@ const REVENUECAT_NATIVE_MODULE_ERROR =
 
 const hasActiveEntitlement = (info: CustomerInfo | null): boolean =>
   Boolean(info?.entitlements.active[REVENUECAT_ENTITLEMENT_ID]);
+
+// `entitlements.all` retains historical (now-expired) grants alongside
+// active ones. If the entitlement exists in `.all` but not in `.active`
+// the user is lapsed.
+const hasLapsedEntitlement = (info: CustomerInfo | null): boolean => {
+  if (!info) {
+    return false;
+  }
+  if (info.entitlements.active[REVENUECAT_ENTITLEMENT_ID]) {
+    return false;
+  }
+  return Boolean(info.entitlements.all[REVENUECAT_ENTITLEMENT_ID]);
+};
+
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+const getTrialState = (
+  info: CustomerInfo | null,
+): { isOnTrial: boolean; trialDaysRemaining: number | null } => {
+  const entitlement = info?.entitlements.active[REVENUECAT_ENTITLEMENT_ID];
+  if (!entitlement || entitlement.periodType !== 'TRIAL') {
+    return { isOnTrial: false, trialDaysRemaining: null };
+  }
+  if (!entitlement.expirationDate) {
+    // Lifetime trial (unlikely) — treat as no countdown but still on trial.
+    return { isOnTrial: true, trialDaysRemaining: null };
+  }
+  const msRemaining =
+    new Date(entitlement.expirationDate).getTime() - Date.now();
+  // Round up so the last partial day still reads as "1 day left" instead of
+  // flipping to 0 before the trial actually ends.
+  const trialDaysRemaining = Math.max(0, Math.ceil(msRemaining / MS_PER_DAY));
+  return { isOnTrial: true, trialDaysRemaining };
+};
 
 export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
   const { data: user } = useAuthSession();
@@ -207,13 +264,26 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
     return hasActiveEntitlement(info);
   };
 
+  const openManageSubscription = async (): Promise<void> => {
+    const url =
+      Platform.OS === 'ios'
+        ? 'itms-apps://apps.apple.com/account/subscriptions'
+        : 'https://play.google.com/store/account/subscriptions';
+    await Linking.openURL(url);
+  };
+
   const value = useMemo<RevenueCatContextValue>(() => {
+    const { isOnTrial, trialDaysRemaining } = getTrialState(customerInfo);
     return {
       isReady,
       isPro: hasActiveEntitlement(customerInfo),
+      isLapsed: hasLapsedEntitlement(customerInfo),
+      isOnTrial,
+      trialDaysRemaining,
       subscriptionPriceString: subscriptionPackage?.product.priceString ?? null,
       purchase,
       restorePurchases,
+      openManageSubscription,
     };
     // `purchase` and `restorePurchases` are recreated each render but
     // closure-stable enough — callers don't memoise them, and the cost is

@@ -74,11 +74,7 @@ export const BuzzVerifyFlow = ({
           onPress={onGetStarted}
         />
         {onLearnMore ? (
-          <Button
-            label="Learn more"
-            variant="outline"
-            onPress={onLearnMore}
-          />
+          <Button label="Learn more" variant="outline" onPress={onLearnMore} />
         ) : null}
       </View>
     </Card>
