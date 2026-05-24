@@ -23,7 +23,6 @@ export default function PrivateLayout() {
           }}
         />
         <Stack.Screen name="profile" />
-        <Stack.Screen name="partner" />
         <Stack.Screen name="delete-account" />
       </Stack>
 

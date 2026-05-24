@@ -17,6 +17,8 @@ import {
   BOTTOM_TAB_BAR_HEIGHT,
   IconButton,
 } from '@components';
+import { openInAppBrowser } from '@src/lib/browser';
+import { environmentConfig } from '@src/lib/config/environment';
 import { useBuzzTab } from '../../hooks/useBuzzTab';
 import {
   BuzzActiveFlow,
@@ -85,7 +87,9 @@ export const BuzzScreen = () => {
         {flow === 'denied' ? (
           <BuzzScreeningDeniedCard
             // TODO: wire to the appeal-decision flow when it lands.
-            onAppealDecision={() => {}}
+            onAppealDecision={() =>
+              openInAppBrowser(environmentConfig.supportURL)
+            }
           />
         ) : null}
 

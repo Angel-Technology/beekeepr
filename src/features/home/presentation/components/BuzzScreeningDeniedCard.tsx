@@ -40,7 +40,7 @@ export const BuzzScreeningDeniedCard = ({
         className="min-h-[24px] flex-row items-center justify-center self-end rounded-full bg-bg-mutedSubtle px-3 py-1.5"
       >
         <Text className="font-lexend-semiBold text-xs text-text-secondary">
-          Appeal decision
+          Contact Support
         </Text>
       </TouchableOpacity>
     </View>

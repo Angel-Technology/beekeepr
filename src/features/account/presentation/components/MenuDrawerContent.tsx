@@ -2,11 +2,11 @@ import { useCallback } from 'react';
 import { Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import type { DrawerContentComponentProps } from '@react-navigation/drawer';
-import * as WebBrowser from 'expo-web-browser';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArchiveRestore, CreditCard, LogOut, Trash } from 'lucide-react-native';
 import { AppHeader } from '@components';
 import { useAuthActions } from '@features/auth';
+import { openInAppBrowser } from '@src/lib/browser';
 import { useErrorModal } from '@src/lib/error-modal';
 import { useRevenueCat } from '@src/lib/revenuecat';
 import { environmentConfig } from '@src/lib/config/environment';
@@ -14,16 +14,6 @@ import { MenuSection } from './MenuSection';
 
 const DELETE_ACCOUNT_COLOR = '#FF0000';
 const MENU_ICON_SIZE = 20;
-
-const openInAppBrowser = (url: string) => {
-  const trimmed = url.trim();
-  if (!trimmed) {
-    return;
-  }
-  void WebBrowser.openBrowserAsync(trimmed, {
-    presentationStyle: WebBrowser.WebBrowserPresentationStyle.POPOVER,
-  });
-};
 
 export const MenuDrawerContent = ({
   navigation,
@@ -96,7 +86,10 @@ export const MenuDrawerContent = ({
           items={[
             {
               label: 'Want to be a partner?',
-              onPress: () => closeDrawerThen(() => router.push('/partner')),
+              onPress: () =>
+                closeDrawerThen(() =>
+                  openInAppBrowser(environmentConfig.partnershipsURL),
+                ),
             },
           ]}
         />
