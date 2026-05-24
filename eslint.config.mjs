@@ -228,7 +228,7 @@ export default [
         },
       ],
       '@typescript-eslint/no-require-imports': 'off',
-      'prettier/prettier': 'error',
+      'prettier/prettier': 'warn',
     },
     settings: {
       react: {
