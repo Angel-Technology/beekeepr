@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 import { Search } from 'lucide-react-native';
 import { Card } from '@components';
-import JoinBeeIllustration from '@src/assets/svg/JoinBeeIllustration';
+import IllustrationBuzzBadge from '@src/assets/svg/IllustrationBuzzBadge';
 import { useRevenueCat } from '@src/lib/revenuecat';
 import { BuzzTrialCountdownCard } from './BuzzTrialCountdownCard';
 
@@ -26,7 +26,7 @@ export const BuzzWelcomeFlow = () => {
         </View>
       </View>
 
-      <Card className="items-center gap-6 rounded-5">
+      <Card className="items-center gap-6 rounded-5 border-none bg-bg-medium">
         <View className="w-full gap-2">
           <Text className="font-lexend-semiBold text-base leading-6 text-text-default">
             Welcome to TheBuzz Community!
@@ -40,7 +40,7 @@ export const BuzzWelcomeFlow = () => {
         </View>
 
         <View className="items-center justify-center">
-          <JoinBeeIllustration width={235} height={234} />
+          <IllustrationBuzzBadge width={235} height={247} />
         </View>
       </Card>
     </View>

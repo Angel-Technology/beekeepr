@@ -3,7 +3,6 @@ export { MenuSection } from './presentation/components/MenuSection';
 export type { MenuItem } from './presentation/components/MenuSection';
 export { DeleteAccountScreen } from './presentation/screens/DeleteAccountScreen';
 export { ProfileScreen } from './presentation/screens/ProfileScreen';
-export { PartnershipScreen } from './presentation/screens/PartnershipScreen';
 export { useDeleteAccount } from './hooks/useDeleteAccount';
 export { useProfileForm } from './hooks/useProfileForm';
 export { accountService } from './services/accountService';

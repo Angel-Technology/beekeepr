@@ -1,4 +1,6 @@
 import { useRouter } from 'expo-router';
+import { openInAppBrowser } from '@src/lib/browser';
+import { environmentConfig } from '@src/lib/config/environment';
 import { useCriminalCheckForm } from '../../hooks/useCriminalCheckForm';
 import { useTrialPurchase } from '../../hooks/useTrialPurchase';
 import { useVerificationFlow } from '../../hooks/useVerificationFlow';
@@ -63,8 +65,9 @@ export const VerificationFlowScreen = () => {
       }}
       // TODO: wire promo-code redemption when the offer set is finalised.
       onEnterPromoCode={() => {}}
-      // TODO: wire to the appeal-decision flow when it lands.
-      onAppealDecision={() => {}}
+      onAppealDecision={() =>
+        openInAppBrowser(environmentConfig.supportURL)
+      }
     />
   );
 };
