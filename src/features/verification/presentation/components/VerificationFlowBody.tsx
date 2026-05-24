@@ -47,7 +47,9 @@ type VerificationFlowBodyProps = {
   onChangePhoneNumber: (value: string) => void;
   onValidatePhoneNumber: () => void;
   onSubmit: () => void;
-  // Congrats-phase actions — wired to no-ops until payment comes back.
+  // Congrats-phase trial purchase. `isStartingTrial` drives the button
+  // loading state while `useRevenueCat().purchase()` is in flight.
+  isStartingTrial: boolean;
   onStartTrial: () => void;
   onEnterPromoCode: () => void;
   // Denied-phase action — wired to a no-op until the appeal flow lands.
@@ -86,6 +88,7 @@ export const VerificationFlowBody = ({
   onChangePhoneNumber,
   onValidatePhoneNumber,
   onSubmit,
+  isStartingTrial,
   onStartTrial,
   onEnterPromoCode,
   onAppealDecision,
@@ -167,6 +170,7 @@ export const VerificationFlowBody = ({
 
           {phase === 'congrats' ? (
             <CongratsSection
+              isStartingTrial={isStartingTrial}
               onStartTrial={onStartTrial}
               onEnterPromoCode={onEnterPromoCode}
             />

@@ -6,6 +6,7 @@ import { Button, DetailCard } from '@components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type CongratsSectionProps = {
+  isStartingTrial: boolean;
   onStartTrial: () => void;
   onEnterPromoCode: () => void;
 };
@@ -17,6 +18,7 @@ const YellowCheckIcon = () => (
 );
 
 export const CongratsSection = ({
+  isStartingTrial,
   onStartTrial,
   onEnterPromoCode,
 }: CongratsSectionProps) => {
@@ -73,12 +75,14 @@ export const CongratsSection = ({
           label="Start 30-day free trial"
           className="self-stretch"
           iconRight={<ArrowRight size={24} color="#FFFFFF" strokeWidth={2.2} />}
+          loading={isStartingTrial}
           onPress={onStartTrial}
         />
         <Button
           label="Enter promo code"
           className="self-stretch"
           variant="outline"
+          disabled={isStartingTrial}
           onPress={onEnterPromoCode}
         />
       </View>
