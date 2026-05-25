@@ -13,10 +13,7 @@ const { withPermissions } = AndroidConfig.Permissions;
 // Persona's identity flow needs the camera (ID capture + selfie). Without
 // these declared in the merged manifest, Android denies the runtime permission
 // request the SDK fires and its activity hard-crashes the process.
-const PERSONA_ANDROID_PERMISSIONS = [
-  'android.permission.CAMERA',
-  'android.permission.RECORD_AUDIO',
-];
+const PERSONA_ANDROID_PERMISSIONS = ['android.permission.CAMERA'];
 
 const PERSONA_ANDROID_MAVEN_REPO =
   "maven { url 'https://sdk.withpersona.com/android/releases' }";

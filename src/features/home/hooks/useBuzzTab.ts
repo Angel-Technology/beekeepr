@@ -8,7 +8,6 @@ import {
   isVerificationDenied,
 } from '@features/verification';
 import { useTrialPurchase } from '@features/verification/hooks/useTrialPurchase';
-import { useErrorModal } from '@src/lib/error-modal';
 import { useRevenueCat } from '@src/lib/revenuecat';
 import type { BuzzFlow } from '../models/buzzFlow.types';
 
@@ -51,10 +50,9 @@ const formatLongDate = (value: Date) =>
  */
 export const useBuzzTab = () => {
   const router = useRouter();
-  const { data: user } = useAuthSession();
-  const { isPro, isLapsed, purchase } = useRevenueCat();
+  const { data: user, isPending: isUserPending } = useAuthSession();
+  const { isReady: isRevenueCatReady, isPro, isLapsed } = useRevenueCat();
   const { isPurchasing, startTrial } = useTrialPurchase();
-  const { showFromError } = useErrorModal();
 
   const [searchQuery, setSearchQuery] = useState('');
   const {
@@ -82,7 +80,16 @@ export const useBuzzTab = () => {
   // them straight to the OS purchase sheet via RevenueCat's `purchase()`.
   const needsRenewal = needsMembership && isLapsed;
 
-  const flow = useMemo<BuzzFlow>(() => {
+  // Until both the auth session AND the RevenueCat customer info have
+  // resolved, `isPro`/`isApproved` are unreliable defaults (both false).
+  // Returning `null` lets the screen render a loader instead of flashing
+  // through 'verify' → 'membership' → 'welcome' as each source lands.
+  const isResolving = isUserPending || !isRevenueCatReady;
+
+  const flow = useMemo<BuzzFlow | null>(() => {
+    if (isResolving) {
+      return null;
+    }
     // Denied (Persona Declined or Checkr Denied) trumps the post-submit
     // celebration — we don't want to flash a welcome screen before the
     // denied screen lands.
@@ -95,16 +102,25 @@ export const useBuzzTab = () => {
     if (isApproved && isPro) {
       return 'welcome';
     }
+    // Lapsed before fresh — a previously-subscribed user can't use the
+    // trial again (Apple/Google won't honor a second free trial for the
+    // same subscription group), so we route them to a renewal-focused
+    // view instead of pitching "Start 30-day free trial".
+    if (needsRenewal) {
+      return 'renewal';
+    }
     if (needsMembership) {
       return 'membership';
     }
     return 'verify';
   }, [
+    isResolving,
     isApproved,
     isPro,
     isDenied,
     hasSubmittedBackgroundCheck,
     needsMembership,
+    needsRenewal,
   ]);
 
   const ctaLabel = needsRenewal
@@ -115,17 +131,9 @@ export const useBuzzTab = () => {
         ? 'Resume'
         : 'Get Started';
 
-  const handleRenewalPurchase = async () => {
-    try {
-      await purchase();
-    } catch (error) {
-      showFromError(error, 'Purchase Failed');
-    }
-  };
-
   const onGetStarted = () => {
     if (needsRenewal) {
-      void handleRenewalPurchase();
+      void startTrial();
       return;
     }
     if (needsMembership) {
@@ -154,6 +162,14 @@ export const useBuzzTab = () => {
       reminderLabel: `In ${TRIAL_LENGTH_DAYS - REMINDER_LEAD_DAYS} days`,
       trialEndLabel: formatLongDate(trialEndDate),
       onStartTrial: () => {
+        void startTrial();
+      },
+      // TODO: wire promo-code redemption when the offer set is finalised.
+      onEnterPromoCode: () => {},
+    },
+    renewalProps: {
+      isPurchasing,
+      onRenew: () => {
         void startTrial();
       },
       // TODO: wire promo-code redemption when the offer set is finalised.

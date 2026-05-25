@@ -27,9 +27,16 @@ if (storybookEnabled) {
 function RootNavigator() {
   const { data: user, isPending } = useAuthSession();
 
+  // Hold the native splash until the auth session has resolved. Hiding
+  // unconditionally on mount drops us into the `isPending` `return null`
+  // branch with no view behind the splash, which renders as a black flash
+  // on release builds (TestFlight / Play internal) between splash and the
+  // first navigator frame.
   useEffect(() => {
-    SplashScreen.hideAsync();
-  }, []);
+    if (!isPending) {
+      SplashScreen.hideAsync();
+    }
+  }, [isPending]);
 
   if (isPending) {
     return null;

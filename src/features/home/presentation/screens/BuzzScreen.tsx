@@ -16,6 +16,7 @@ import {
   APP_HEADER_HEIGHT,
   AppHeader,
   BOTTOM_TAB_BAR_HEIGHT,
+  BounceLoader,
   IconButton,
 } from '@components';
 import { appAnimations } from '@src/assets/animations';
@@ -25,6 +26,7 @@ import { useBuzzTab } from '../../hooks/useBuzzTab';
 import {
   BuzzActiveFlow,
   BuzzMembershipFlow,
+  BuzzRenewalFlow,
   BuzzScreeningDeniedCard,
   BuzzVerifyFlow,
   BuzzWelcomeFlow,
@@ -49,6 +51,7 @@ export const BuzzScreen = () => {
     onGetStarted,
     onLearnMore,
     membershipProps,
+    renewalProps,
     welcomeProps,
     resetSubmittedBackgroundCheck,
   } = useBuzzTab();
@@ -89,6 +92,16 @@ export const BuzzScreen = () => {
         keyboardShouldPersistTaps="handled"
         bottomOffset={24}
       >
+        {flow === null ? (
+          // Wait for the auth session + RevenueCat customer info to land
+          // before picking a flow — otherwise we flash 'verify' or
+          // 'membership' for ~500ms before snapping to 'welcome' once
+          // `isPro` resolves.
+          <View className="flex-1 items-center justify-center py-24">
+            <BounceLoader colorClassName="bg-text-default" />
+          </View>
+        ) : null}
+
         {flow === 'denied' ? (
           <BuzzScreeningDeniedCard
             // TODO: wire to the appeal-decision flow when it lands.
@@ -109,6 +122,8 @@ export const BuzzScreen = () => {
         {flow === 'membership' ? (
           <BuzzMembershipFlow {...membershipProps} />
         ) : null}
+
+        {flow === 'renewal' ? <BuzzRenewalFlow {...renewalProps} /> : null}
 
         {flow === 'welcome' ? <BuzzWelcomeFlow {...welcomeProps} /> : null}
 
