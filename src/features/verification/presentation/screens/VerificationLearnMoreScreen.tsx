@@ -46,7 +46,7 @@ export const VerificationLearnMoreScreen = () => {
                   Try 30 days for free,
                 </Text>
                 <Text className="text-center font-sourceSans-regular text-base text-text-weak">
-                  then $9.95/month.
+                  then $9.99/month.
                 </Text>
               </View>
             </View>

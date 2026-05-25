@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
 
-type CardTone = 'default' | 'brand';
+type CardTone = 'default' | 'brand' | 'muted';
 
 type CardProps = {
   children: ReactNode;
@@ -15,6 +15,7 @@ type CardProps = {
 const SURFACE_BY_TONE: Record<CardTone, string> = {
   default: 'bg-white',
   brand: 'bg-brand-lighter',
+  muted: 'bg-bg-weak',
 };
 
 export const Card = ({ children, tone = 'default', className }: CardProps) => {

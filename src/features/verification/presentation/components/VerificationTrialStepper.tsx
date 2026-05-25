@@ -61,7 +61,7 @@ export const VerificationTrialStepper = ({
             'font-poppins-medium text-sm leading-[20px] text-text-tertiary',
           iconWrapperClassName: outlineIconWrapperClassName,
           description:
-            'Trial ends. You will be charged $9.95 unless you cancel before this date.',
+            'Trial ends. You will be charged $9.99 unless you cancel before this date.',
         },
       ]}
     />

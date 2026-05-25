@@ -52,6 +52,12 @@ export type CreateUserPayload = {
   user?: Maybe<UserGraph>;
 };
 
+export type HandleAvailabilityResult = {
+  __typename?: 'HandleAvailabilityResult';
+  available: Scalars['Boolean']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+};
+
 export enum IdentityVerificationStatus {
   Approved = 'APPROVED',
   Completed = 'COMPLETED',
@@ -280,9 +286,15 @@ export type UserMutationsVerifyEmailSignInArgs = {
 
 export type UserQueries = {
   __typename?: 'UserQueries';
+  checkHandleAvailability: HandleAvailabilityResult;
   currentUser?: Maybe<UserGraph>;
   searchUsers?: Maybe<SearchUsersConnection>;
   userById?: Maybe<UserGraph>;
+};
+
+
+export type UserQueriesCheckHandleAvailabilityArgs = {
+  handle: Scalars['String']['input'];
 };
 
 

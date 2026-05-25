@@ -1,0 +1,6 @@
+query CheckHandleAvailability($handle: String!) {
+  checkHandleAvailability(handle: $handle) {
+    available
+    reason
+  }
+}

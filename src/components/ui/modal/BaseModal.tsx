@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
-import { Modal, Pressable, View } from 'react-native';
+import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 type BaseModalProps = {
   visible: boolean;
@@ -33,8 +34,26 @@ export const BaseModal = ({
       statusBarTranslucent
       onRequestClose={onRequestClose}
     >
-      <View className="flex-1 items-center justify-center bg-black/70 px-lg">
-        <Pressable className="absolute inset-0" onPress={handleBackdropPress} />
+      <KeyboardAwareScrollView
+        // Scrolls the focused input above the keyboard. `flexGrow: 1` +
+        // `justifyContent: 'center'` keeps the modal centered when content
+        // fits the viewport; once the keyboard opens, the scroll view
+        // shifts the focused input into view automatically.
+        className="bg-black/70"
+        contentContainerStyle={{
+          flexGrow: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingHorizontal: 24,
+        }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        bottomOffset={24}
+      >
+        <Pressable
+          style={StyleSheet.absoluteFill}
+          onPress={handleBackdropPress}
+        />
         <View
           className={clsx(
             'w-full max-w-[360px] rounded-5 bg-bg-default p-lg',
@@ -43,7 +62,7 @@ export const BaseModal = ({
         >
           {children}
         </View>
-      </View>
+      </KeyboardAwareScrollView>
     </Modal>
   );
 };

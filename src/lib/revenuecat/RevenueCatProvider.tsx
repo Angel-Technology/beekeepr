@@ -23,7 +23,7 @@ import {
  *   before RC's first response lands.
  * - `isPro`: user currently has the entitlement. Source of truth for
  *   "should we let them past the paywall?"
- * - `subscriptionPriceString`: localised display price (e.g. "$9.95"). Null
+ * - `subscriptionPriceString`: localised display price (e.g. "$9.99"). Null
  *   until offerings load.
  * - `purchase`: triggers the platform purchase sheet. Resolves to `true`
  *   when the entitlement is granted, `false` when the user cancels.

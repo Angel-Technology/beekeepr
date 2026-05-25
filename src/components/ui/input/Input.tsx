@@ -24,6 +24,7 @@ type InputProps = {
   className?: string;
   inputClassName?: string;
   onBlur?: () => void;
+  onFocus?: () => void;
   onSubmitEditing?: (
     event: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
   ) => void;
@@ -53,6 +54,7 @@ export const Input = ({
   className,
   inputClassName,
   onBlur,
+  onFocus,
   onSubmitEditing,
   leftAccessory,
   rightAccessory,
@@ -95,7 +97,10 @@ export const Input = ({
           }
           autoCorrect={autoCorrect ?? (type !== 'email' && type !== 'password')}
           secureTextEntry={type === 'password'}
-          onFocus={() => setIsFocused(true)}
+          onFocus={() => {
+            setIsFocused(true);
+            onFocus?.();
+          }}
           onBlur={() => {
             setIsFocused(false);
             onBlur?.();

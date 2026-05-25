@@ -14,3 +14,8 @@ export type AccountDeletionState = {
 };
 
 export type FieldStatus = 'idle' | 'saving' | 'success' | 'error';
+
+export type HandleAvailability = {
+  available: boolean;
+  reason?: string | null;
+};
