@@ -94,6 +94,16 @@ export enum PersonaInquiryStatus {
   Pending = 'PENDING'
 }
 
+export type RedeemPromoCodeInput = {
+  code: Scalars['String']['input'];
+};
+
+export type RedeemPromoCodePayload = {
+  __typename?: 'RedeemPromoCodePayload';
+  error?: Maybe<Scalars['String']['output']>;
+  subscription?: Maybe<SubscriptionDto>;
+};
+
 export type RequestAccountDeletionPayload = {
   __typename?: 'RequestAccountDeletionPayload';
   error?: Maybe<Scalars['String']['output']>;
@@ -244,6 +254,7 @@ export type UserMutations = {
   acceptTerms: AcceptTermsPayload;
   cancelAccountDeletion: CancelAccountDeletionPayload;
   createUser: CreateUserPayload;
+  redeemPromoCode: RedeemPromoCodePayload;
   requestAccountDeletion: RequestAccountDeletionPayload;
   requestEmailSignIn: RequestEmailSignInPayload;
   signInWithGoogle: SignInWithGooglePayload;
@@ -257,6 +268,11 @@ export type UserMutations = {
 
 export type UserMutationsCreateUserArgs = {
   input: CreateUserInput;
+};
+
+
+export type UserMutationsRedeemPromoCodeArgs = {
+  input: RedeemPromoCodeInput;
 };
 
 

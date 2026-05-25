@@ -2,6 +2,7 @@ import { executeGraphQL } from '@src/lib/graphql/client';
 import {
   CancelAccountDeletionDocument,
   CheckHandleAvailabilityDocument,
+  RedeemPromoCodeDocument,
   RequestAccountDeletionDocument,
   SearchUsersDocument,
   UpdateProfileDocument,
@@ -9,6 +10,8 @@ import {
   type CancelAccountDeletionMutationVariables,
   type CheckHandleAvailabilityQuery,
   type CheckHandleAvailabilityQueryVariables,
+  type RedeemPromoCodeMutation,
+  type RedeemPromoCodeMutationVariables,
   type RequestAccountDeletionMutation,
   type RequestAccountDeletionMutationVariables,
   type SearchUsersQuery,
@@ -42,6 +45,15 @@ export const accountRepository = {
       CancelAccountDeletionMutationVariables
     >({
       document: CancelAccountDeletionDocument,
+    });
+  },
+  redeemPromoCode(variables: RedeemPromoCodeMutationVariables) {
+    return executeGraphQL<
+      RedeemPromoCodeMutation,
+      RedeemPromoCodeMutationVariables
+    >({
+      document: RedeemPromoCodeDocument,
+      variables,
     });
   },
   searchUsers(variables: SearchUsersQueryVariables) {

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCompleteProfile } from '@features/account/hooks/useCompleteProfile';
+import { useRedeemPromoCode } from '@features/account/hooks/useRedeemPromoCode';
 import { useSearchUsers } from '@features/account/hooks/useSearchUsers';
 import { BackgroundCheckBadge, useAuthSession } from '@features/auth';
 import {
@@ -68,6 +69,15 @@ export const useBuzzTab = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const profileForm = useCompleteProfile({
     onSaved: () => setShowProfileModal(false),
+  });
+
+  // Promo-code modal is shared by membership + renewal CTAs. The flow on
+  // success: hook refreshes RC → `isPro` flips → flow derivation drops
+  // from 'membership'/'renewal' to 'welcome' → modal closes. The user
+  // sees the screen transform; no separate "promo applied!" surface.
+  const [showPromoModal, setShowPromoModal] = useState(false);
+  const promoCodeForm = useRedeemPromoCode({
+    onRedeemed: () => setShowPromoModal(false),
   });
   const params = useLocalSearchParams<{ backgroundCheck?: string }>();
   const hasSubmittedBackgroundCheck = params.backgroundCheck === 'submitted';
@@ -164,16 +174,27 @@ export const useBuzzTab = () => {
       onStartTrial: () => {
         void startTrial();
       },
-      // TODO: wire promo-code redemption when the offer set is finalised.
-      onEnterPromoCode: () => {},
+      onEnterPromoCode: () => setShowPromoModal(true),
     },
     renewalProps: {
       isPurchasing,
       onRenew: () => {
         void startTrial();
       },
-      // TODO: wire promo-code redemption when the offer set is finalised.
-      onEnterPromoCode: () => {},
+      onEnterPromoCode: () => setShowPromoModal(true),
+    },
+    promoModalProps: {
+      visible: showPromoModal,
+      code: promoCodeForm.code,
+      error: promoCodeForm.error,
+      isRedeeming: promoCodeForm.isRedeeming,
+      canRedeem: promoCodeForm.canRedeem,
+      onChangeCode: promoCodeForm.setCode,
+      onRedeem: promoCodeForm.redeem,
+      onClose: () => {
+        promoCodeForm.reset();
+        setShowPromoModal(false);
+      },
     },
     welcomeProps: {
       searchQuery,
