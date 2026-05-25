@@ -2,11 +2,14 @@ import { executeGraphQL } from '@src/lib/graphql/client';
 import {
   CancelAccountDeletionDocument,
   RequestAccountDeletionDocument,
+  SearchUsersDocument,
   UpdateProfileDocument,
   type CancelAccountDeletionMutation,
   type CancelAccountDeletionMutationVariables,
   type RequestAccountDeletionMutation,
   type RequestAccountDeletionMutationVariables,
+  type SearchUsersQuery,
+  type SearchUsersQueryVariables,
   type UpdateProfileMutation,
   type UpdateProfileMutationVariables,
 } from '../graphql/generated/account.generated';
@@ -36,6 +39,12 @@ export const accountRepository = {
       CancelAccountDeletionMutationVariables
     >({
       document: CancelAccountDeletionDocument,
+    });
+  },
+  searchUsers(variables: SearchUsersQueryVariables) {
+    return executeGraphQL<SearchUsersQuery, SearchUsersQueryVariables>({
+      document: SearchUsersDocument,
+      variables,
     });
   },
 };

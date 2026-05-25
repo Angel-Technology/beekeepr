@@ -64,6 +64,19 @@ export enum IdentityVerificationStatus {
   Pending = 'PENDING'
 }
 
+/** Information about pagination in a connection. */
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  /** When paginating forwards, the cursor to continue. */
+  endCursor?: Maybe<Scalars['String']['output']>;
+  /** Indicates whether more edges exist following the set defined by the clients arguments. */
+  hasNextPage: Scalars['Boolean']['output'];
+  /** Indicates whether more edges exist prior the set defined by the clients arguments. */
+  hasPreviousPage: Scalars['Boolean']['output'];
+  /** When paginating backwards, the cursor to continue. */
+  startCursor?: Maybe<Scalars['String']['output']>;
+};
+
 export enum PersonaInquiryStatus {
   Approved = 'APPROVED',
   Completed = 'COMPLETED',
@@ -91,6 +104,26 @@ export type RequestEmailSignInPayload = {
   error?: Maybe<Scalars['String']['output']>;
   expiresAtUtc?: Maybe<Scalars['DateTime']['output']>;
   success: Scalars['Boolean']['output'];
+};
+
+/** A connection to a list of items. */
+export type SearchUsersConnection = {
+  __typename?: 'SearchUsersConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<SearchUsersEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<UserSearchResultDto>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type SearchUsersEdge = {
+  __typename?: 'SearchUsersEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: UserSearchResultDto;
 };
 
 export type SignInWithGoogleInput = {
@@ -248,12 +281,33 @@ export type UserMutationsVerifyEmailSignInArgs = {
 export type UserQueries = {
   __typename?: 'UserQueries';
   currentUser?: Maybe<UserGraph>;
+  searchUsers?: Maybe<SearchUsersConnection>;
   userById?: Maybe<UserGraph>;
+};
+
+
+export type UserQueriesSearchUsersArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  query: Scalars['String']['input'];
 };
 
 
 export type UserQueriesUserByIdArgs = {
   id: Scalars['UUID']['input'];
+};
+
+export type UserSearchResultDto = {
+  __typename?: 'UserSearchResultDto';
+  backgroundCheckBadge: BackgroundCheckBadge;
+  createdAtUtc: Scalars['DateTime']['output'];
+  displayName?: Maybe<Scalars['String']['output']>;
+  handle?: Maybe<Scalars['String']['output']>;
+  id: Scalars['UUID']['output'];
+  imageUrl?: Maybe<Scalars['String']['output']>;
+  nickname?: Maybe<Scalars['String']['output']>;
 };
 
 export type VerifyEmailSignInInput = {

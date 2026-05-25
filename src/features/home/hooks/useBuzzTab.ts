@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useSearchUsers } from '@features/account/hooks/useSearchUsers';
 import { BackgroundCheckBadge, useAuthSession } from '@features/auth';
 import {
   hasResumableVerification,
@@ -53,6 +54,13 @@ export const useBuzzTab = () => {
   const { isPro, isLapsed, purchase } = useRevenueCat();
   const { isPurchasing, startTrial } = useTrialPurchase();
   const { showFromError } = useErrorModal();
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const {
+    debouncedQuery: searchDebouncedQuery,
+    results: searchResults,
+    isFetching: isSearchFetching,
+  } = useSearchUsers(searchQuery);
   const params = useLocalSearchParams<{ backgroundCheck?: string }>();
   const hasSubmittedBackgroundCheck = params.backgroundCheck === 'submitted';
   const badge = user?.backgroundCheckBadge ?? BackgroundCheckBadge.None;
@@ -140,6 +148,13 @@ export const useBuzzTab = () => {
       },
       // TODO: wire promo-code redemption when the offer set is finalised.
       onEnterPromoCode: () => {},
+    },
+    welcomeProps: {
+      searchQuery,
+      searchDebouncedQuery,
+      searchResults,
+      isSearchFetching,
+      onChangeSearchQuery: setSearchQuery,
     },
     resetSubmittedBackgroundCheck: () => {
       router.replace('/');
