@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppHeader, FormCard, IconButton, Input } from '@components';
 import { useAuthSession } from '@features/auth';
 import { useProfileForm } from '../../hooks/useProfileForm';
+import { FieldStatusIcon } from '../components/FieldStatusIcon';
 import { ProfilePreviewCard } from '../components/ProfilePreviewCard';
 
 const PREVIEW_DESCRIPTION =
@@ -32,7 +33,9 @@ export const ProfileScreen = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { data: user } = useAuthSession();
-  const { values, setField, submitField } = useProfileForm(user ?? null);
+  const { values, setField, submitField, fieldStatus } = useProfileForm(
+    user ?? null,
+  );
 
   const joinedDate = formatJoinedDate(user?.createdAtUtc);
 
@@ -89,6 +92,7 @@ export const ProfileScreen = () => {
             onChangeText={(next) => setField('nickname', next)}
             onBlur={() => submitField('nickname')}
             placeholder="Your nickname"
+            rightAccessory={<FieldStatusIcon status={fieldStatus.nickname} />}
           />
           <Input
             label="Handle"
@@ -98,6 +102,7 @@ export const ProfileScreen = () => {
             placeholder="@yourhandle"
             autoCapitalize="none"
             autoCorrect={false}
+            rightAccessory={<FieldStatusIcon status={fieldStatus.handle} />}
           />
         </FormCard>
       </KeyboardAwareScrollView>

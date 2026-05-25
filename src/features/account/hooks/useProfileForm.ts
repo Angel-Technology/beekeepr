@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useReducer, useRef } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authQueryKeys, type AuthUser } from '@features/auth';
-import { useGlobalLoader } from '@src/lib/loader';
-import { useErrorModal } from '@src/lib/error-modal';
 import { accountService } from '../services/accountService';
-import type { ProfileUser, UpdateProfilePatch } from '../models/account.types';
+import type {
+  FieldStatus,
+  ProfileUser,
+  UpdateProfilePatch,
+} from '../models/account.types';
 import {
   profileFormReducer,
   seedFromUser,
@@ -13,11 +15,14 @@ import {
   type ProfileFormValues,
 } from './profileFormReducer';
 
-const GLOBAL_LOADER_KEY = 'account.profile.update';
-
 const FIELD_LABEL: Record<ProfileField, string> = {
   nickname: 'Nickname',
   handle: 'Handle',
+};
+
+const INITIAL_FIELD_STATUS: Record<ProfileField, FieldStatus> = {
+  nickname: 'idle',
+  handle: 'idle',
 };
 
 const normalize = (value: string): string => value.trim();
@@ -39,15 +44,14 @@ const wireValueForField = (
  *   fire an `updateProfile` mutation only when the value changed. Blank
  *   values are treated as "no change" so accidentally clearing a field on
  *   blur doesn't wipe the server value.
- * - Raise the global bounce loader for the duration of each in-flight
- *   call, and surface failures through the global error modal.
+ * - Track per-field save status (`idle | saving | success | error`) so the
+ *   UI can render an inline spinner / check / X next to each input. This
+ *   replaces the global bounce loader + error modal for these field saves.
  * - On success, merge the returned user back into the cached auth session
  *   so the rest of the app sees the new nickname/handle.
  */
 export const useProfileForm = (user: AuthUser | null) => {
   const queryClient = useQueryClient();
-  const loader = useGlobalLoader();
-  const errorModal = useErrorModal();
 
   const [state, dispatch] = useReducer(
     profileFormReducer,
@@ -62,6 +66,13 @@ export const useProfileForm = (user: AuthUser | null) => {
     },
   );
 
+  const [fieldStatus, setFieldStatus] =
+    useState<Record<ProfileField, FieldStatus>>(INITIAL_FIELD_STATUS);
+
+  const setStatus = useCallback((field: ProfileField, status: FieldStatus) => {
+    setFieldStatus((previous) => ({ ...previous, [field]: status }));
+  }, []);
+
   // One ref mirrors the latest reducer state so `submitField` never reads a
   // stale closure when blur fires immediately after a keystroke.
   const stateRef = useRef(state);
@@ -75,6 +86,9 @@ export const useProfileForm = (user: AuthUser | null) => {
   const userKey = user?.id ?? null;
   if (userKey !== state.seedUserId) {
     dispatch({ type: 'seeded', userId: userKey, seed: seedFromUser(user) });
+    if (fieldStatus.nickname !== 'idle' || fieldStatus.handle !== 'idle') {
+      setFieldStatus(INITIAL_FIELD_STATUS);
+    }
   }
 
   const mergeIntoSession = useCallback(
@@ -99,21 +113,24 @@ export const useProfileForm = (user: AuthUser | null) => {
   const updateMutation = useMutation({
     mutationFn: (input: UpdateProfilePatch) =>
       accountService.updateProfile(input),
-    onMutate: () => loader.show(GLOBAL_LOADER_KEY),
-    onSettled: () => loader.hide(GLOBAL_LOADER_KEY),
     onSuccess: (updated) => {
       mergeIntoSession(updated);
       dispatch({ type: 'saveSucceeded', updated });
     },
-    onError: (error) => {
+    onError: () => {
       dispatch({ type: 'saveFailed' });
-      errorModal.showFromError(error, 'Update Failed');
     },
   });
 
-  const setField = useCallback((field: ProfileField, value: string) => {
-    dispatch({ type: 'fieldChanged', field, value });
-  }, []);
+  const setField = useCallback(
+    (field: ProfileField, value: string) => {
+      dispatch({ type: 'fieldChanged', field, value });
+      // Editing clears any prior success/error so the icon doesn't linger
+      // while the user is mid-keystroke.
+      setStatus(field, 'idle');
+    },
+    [setStatus],
+  );
 
   const submitField = useCallback(
     (field: ProfileField) => {
@@ -132,9 +149,13 @@ export const useProfileForm = (user: AuthUser | null) => {
         return;
       }
 
-      updateMutation.mutate({ [field]: currentValue } as UpdateProfilePatch);
+      setStatus(field, 'saving');
+      updateMutation.mutate({ [field]: currentValue } as UpdateProfilePatch, {
+        onSuccess: () => setStatus(field, 'success'),
+        onError: () => setStatus(field, 'error'),
+      });
     },
-    [updateMutation],
+    [setStatus, updateMutation],
   );
 
   return {
@@ -142,6 +163,6 @@ export const useProfileForm = (user: AuthUser | null) => {
     setField,
     submitField,
     fieldLabel: FIELD_LABEL,
-    isSaving: updateMutation.isPending,
+    fieldStatus,
   } as const;
 };

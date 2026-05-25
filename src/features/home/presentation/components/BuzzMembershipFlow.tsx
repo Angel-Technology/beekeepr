@@ -116,10 +116,10 @@ export const BuzzMembershipFlow = ({
                 </Text>
               </View>
               <View>
-                <Text className="text-center font-sourceSans-regular text-base text-text-tertiary">
+                <Text className="text-text-tertiary text-center font-sourceSans-regular text-base">
                   Try 30 days for free,
                 </Text>
-                <Text className="text-center font-sourceSans-regular text-base text-text-tertiary">
+                <Text className="text-text-tertiary text-center font-sourceSans-regular text-base">
                   then $9.99/month.
                 </Text>
               </View>

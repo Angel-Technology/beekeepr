@@ -10,3 +10,5 @@ export type AccountDeletionState = {
   userId: string;
   deletedAtUtc: string | null;
 };
+
+export type FieldStatus = 'idle' | 'saving' | 'success' | 'error';

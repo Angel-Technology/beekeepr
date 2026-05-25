@@ -9,16 +9,8 @@ import { VerificationTrialStepper } from '../components/VerificationTrialStepper
 
 export const VerificationLearnMoreScreen = () => {
   const { width: windowWidth } = useWindowDimensions();
-  const {
-    isVerified,
-    isPurchasing,
-    reminderLabel,
-    trialEndLabel,
-    handleGetStarted,
-    handleStartTrial,
-    handleEnterPromoCode,
-    handleGoBack,
-  } = useVerificationLearnMore();
+  const { reminderLabel, trialEndLabel, handleGetStarted, handleGoBack } =
+    useVerificationLearnMore();
   const buzzWidth = Math.max(windowWidth - 130, 200);
   const buzzHeight = (buzzWidth * 63) / 282;
 
@@ -95,37 +87,12 @@ export const VerificationLearnMoreScreen = () => {
       </View>
 
       <View className="mt-auto w-full gap-4">
-        {isVerified ? (
-          <>
-            <Button
-              label="Start 30-day free trial"
-              className="self-stretch"
-              iconRight={
-                <ArrowRight size={24} color="#FFFFFF" strokeWidth={2.2} />
-              }
-              loading={isPurchasing}
-              onPress={() => {
-                void handleStartTrial();
-              }}
-            />
-            <Button
-              label="Enter promo code"
-              className="self-stretch"
-              variant="outline"
-              disabled={isPurchasing}
-              onPress={handleEnterPromoCode}
-            />
-          </>
-        ) : (
-          <Button
-            label="Get started"
-            className="self-stretch"
-            iconRight={
-              <ArrowRight size={22} strokeWidth={2.3} color="#FFFFFF" />
-            }
-            onPress={handleGetStarted}
-          />
-        )}
+        <Button
+          label="Get started"
+          className="self-stretch"
+          iconRight={<ArrowRight size={22} strokeWidth={2.3} color="#FFFFFF" />}
+          onPress={handleGetStarted}
+        />
       </View>
     </Container>
   );
