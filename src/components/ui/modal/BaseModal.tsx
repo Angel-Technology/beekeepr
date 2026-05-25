@@ -48,7 +48,7 @@ export const BaseModal = ({
         }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
-        bottomOffset={24}
+        bottomOffset={150}
       >
         <Pressable
           style={StyleSheet.absoluteFill}

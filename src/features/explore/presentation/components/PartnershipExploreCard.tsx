@@ -7,7 +7,7 @@ import { environmentConfig } from '@src/lib/config/environment';
 
 const HEADLINE = 'Want to partner with us?';
 const BODY =
-  'If you’re a dating app, dating coach, or planning events, we’d love to partner with you.';
+  'If you’re a dating app, matchmaker, dating coach, or planning events, we’d love to partner with you.';
 const CTA_LABEL = 'Contact us about partnerships';
 
 export const PartnershipExploreCard = () => {
@@ -16,30 +16,29 @@ export const PartnershipExploreCard = () => {
   };
 
   return (
-    <Card className="gap-6 rounded-xl pl-6 pr-4">
+    <Card className="gap-6 rounded-xl p-6">
       <View className="gap-2">
-        <Text className="font-lexend-semiBold text-base leading-6 text-text-default">
+        <Text className="font-poppins-semiBold text-xl leading-6 text-text-default">
           {HEADLINE}
         </Text>
-        <View className="flex-row items-center gap-4">
+        <View className="flex-col items-center gap-4">
           <View className="flex-1 gap-2">
-            <Text className="font-lexend-regular text-sm leading-5 text-text-weak">
+            <Text className="font-lexend-regular text-base leading-5 text-text-weak">
               {BODY}
             </Text>
           </View>
           <Image
             source={appImages.partnerships}
-            style={{ width: 130, height: 90 }}
+            style={{
+              width: 224,
+              height: 155,
+            }}
             contentFit="cover"
           />
         </View>
       </View>
 
-      <CompactButton
-        label={CTA_LABEL}
-        textClassName="text-sm"
-        onPress={handleContactPress}
-      />
+      <CompactButton label={CTA_LABEL} onPress={handleContactPress} />
     </Card>
   );
 };

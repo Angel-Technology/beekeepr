@@ -22,7 +22,7 @@ export const Card = ({ children, tone = 'default', className }: CardProps) => {
   return (
     <View
       className={clsx(
-        'border border-border-subtle p-lg',
+        'border border-border-weak p-lg',
         SURFACE_BY_TONE[tone],
         className,
       )}

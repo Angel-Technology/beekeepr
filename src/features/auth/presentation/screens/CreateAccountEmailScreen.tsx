@@ -31,6 +31,7 @@ export const CreateAccountEmailScreen = () => {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View className="flex-1 self-stretch">
+          <VerticalSpacer size="lg" />
           <AuthBrandHeader />
           <VerticalSpacer size="2xl" />
 

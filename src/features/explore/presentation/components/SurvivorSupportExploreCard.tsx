@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
 import { Linking, Text, View } from 'react-native';
-import { Image } from 'expo-image';
-import { appImages } from '@assets/images';
-import { Card, DetailCard, Pill } from '@components';
+import SadBee from '@src/assets/svg/SadBee';
+import { Card, CompactButton, DetailCard } from '@components';
 import { useErrorModal } from '@src/lib/error-modal';
 
 const HEADLINE = 'Survivor Support';
@@ -25,41 +24,37 @@ const HotlineLink = ({ text, url }: { text: string; url: string }) => {
     <Text
       accessibilityRole="link"
       onPress={handlePress}
-      className="flex-1 font-lexend-regular text-sm leading-5 text-text-secondary underline"
+      className="flex-1 font-lexend-regular text-base leading-5 text-text-secondary underline"
     >
       {text}
     </Text>
   );
 };
 
-const ITEM_TEXT_CLASSNAME = 'font-lexend-regular text-sm leading-5';
+const ITEM_TEXT_CLASSNAME = 'font-lexend-regular text-base leading-5';
 const TITLE_CLASSNAME =
-  'font-lexend-regular text-sm leading-5 text-text-default';
+  'font-lexend-regular text-base leading-5 text-text-default';
 
 export const SurvivorSupportExploreCard = () => {
   return (
-    <Card tone="brand" className="gap-4 rounded-xl px-4">
-      <View className="flex-row items-center gap-3">
-        <Image
-          source={appImages.awkwardSadBee}
-          style={{ width: 104, height: 99 }}
-          contentFit="cover"
-        />
-        <View className="flex-1 gap-4">
-          <View className="gap-2">
-            <Text className="font-lexend-semiBold text-base leading-tight text-text-default">
-              {HEADLINE}
-            </Text>
-            <Text className="font-lexend-regular text-sm leading-5 text-text-weak">
+    <Card className="gap-6 rounded-xl p-6">
+      <View className="gap-2">
+        <Text className="font-poppins-semiBold text-xl text-text-default">
+          {HEADLINE}
+        </Text>
+        <View className="flex-row items-end gap-3">
+          <View className="flex-1 gap-4">
+            <Text className="font-lexend-regular text-base leading-5 text-text-weak">
               {BODY}
             </Text>
+            <CompactButton label="Coming soon..." variant="tinted" />
           </View>
-          <Pill label="More coming soon..." tone="tinted" />
+          <SadBee width={120} height={117} />
         </View>
       </View>
 
       <DetailCard
-        tone="surface"
+        tone="brand"
         title="National Sexual Assault Hotline 24/7"
         titleClassName={TITLE_CLASSNAME}
         itemTextClassName={ITEM_TEXT_CLASSNAME}
@@ -73,7 +68,7 @@ export const SurvivorSupportExploreCard = () => {
       />
 
       <DetailCard
-        tone="surface"
+        tone="brand"
         title="National Domestic Violence Hotline 24/7"
         titleClassName={TITLE_CLASSNAME}
         itemTextClassName={ITEM_TEXT_CLASSNAME}

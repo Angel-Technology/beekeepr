@@ -27,16 +27,19 @@ export const IdentityKickoffSection = ({
 
   return (
     <View
-      className="w-full flex-1 gap-7"
+      className="w-full flex-1 gap-7 pt-6"
       style={{
         paddingBottom: insets.bottom,
       }}
     >
       <View className="w-full gap-2">
-        <StepBadge current={1} total={2} />
-        <Text className="font-poppins-semiBold text-title-4 text-text-default">
-          Verify your identity
-        </Text>
+        <View className="gap-6">
+          <StepBadge current={1} total={2} />
+          <Text className="font-poppins-semiBold text-title-4 text-text-default">
+            Verify your identity
+          </Text>
+        </View>
+
         <Text className="font-lexend-regular text-base leading-[24px] -tracking-[0.3px] text-text-secondary">
           First we’ll take you to our partner to confirm your identity. They’ll
           ask you to scan your government ID and take a selfie.

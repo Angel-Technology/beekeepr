@@ -89,7 +89,7 @@ export const Button = ({
           numberOfLines={1}
           ellipsizeMode="tail"
           className={clsx(
-            'flex-1 text-center font-lexend-semiBold text-base leading-tight',
+            'flex-1 text-center font-lexend-semiBold text-xl',
             isDisabled ? 'text-text-disabled' : toneTextClassName,
             textClassName,
           )}

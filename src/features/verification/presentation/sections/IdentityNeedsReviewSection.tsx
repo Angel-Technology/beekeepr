@@ -22,8 +22,7 @@ export const IdentityNeedsReviewSection = ({
       </Text>
       <Text className="text-center font-lexend-regular text-base text-text-secondary">
         Our verification partner is taking a closer look at your submission.
-        This usually finishes within a day. You can close the app — we’ll let
-        you know when it’s done.
+        This usually finishes within a day. We’ll let you know when it’s done.
       </Text>
       <View className="mt-6 w-full">
         <Button

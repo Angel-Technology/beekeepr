@@ -31,9 +31,9 @@ export const BottomTabBar = ({
       style={{ paddingBottom: insets.bottom }}
     >
       <BlurView
-        intensity={50}
-        tint="light"
-        style={[StyleSheet.absoluteFill, { opacity: 0.6 }]}
+        intensity={90}
+        tint="regular"
+        style={[StyleSheet.absoluteFill, { opacity: 1 }]}
       />
       <View
         className="w-full flex-row items-stretch"
