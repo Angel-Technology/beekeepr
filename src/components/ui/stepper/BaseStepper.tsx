@@ -52,7 +52,7 @@ const StepperItem = ({
         {!isLast ? (
           <View
             className={clsx(
-              'my-1 w-[2px] flex-1 bg-brand-primary',
+              'w-[2px] flex-1 bg-brand-primary',
               item.connectorClassName,
             )}
           />
