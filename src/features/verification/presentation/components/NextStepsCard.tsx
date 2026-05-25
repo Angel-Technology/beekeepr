@@ -13,15 +13,15 @@ export const NextStepsCard = ({
   return (
     <InfoCard
       title="Next steps"
-      actionLabel="Appeal decision"
+      actionLabel="Contact Support"
       onPressAction={onPressAppeal}
-      className="bg-[rgba(255,0,0,0.08)]"
+      tone="critical"
     >
-      <View className="gap-2">
+      <View className="gap-4">
         {paragraphs.map((paragraph) => (
           <Text
             key={paragraph}
-            className="font-lexend-regular text-footnote leading-[18px] text-text-secondary"
+            className="font-lexend-regular text-base text-text-secondary"
           >
             {paragraph}
           </Text>

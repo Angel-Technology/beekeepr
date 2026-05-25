@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { CircleHelp } from 'lucide-react-native';
-import { Button, Input } from '@components';
+import { Button, Input, VerticalSpacer } from '@components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type SectionProps = {
@@ -14,7 +14,7 @@ const FieldGroup = ({ label, children }: SectionProps) => {
   return (
     <View className="w-full">
       <View className="w-full flex-row items-center justify-between px-4 pb-3 pt-6">
-        <Text className="text-text-tertiary font-lexend-regular text-200 leading-none">
+        <Text className="font-lexend-regular text-200 leading-none text-text-tertiary">
           {label}
         </Text>
         <CircleHelp size={16} color="rgba(0,0,0,0.5)" />
@@ -58,7 +58,7 @@ export const CriminalFormSection = ({
   return (
     <KeyboardAwareScrollView
       className="w-full flex-1"
-      contentContainerClassName="gap-7"
+      contentContainerClassName="gap-4 pt-lg"
       contentContainerStyle={{
         paddingBottom: insets.bottom,
       }}
@@ -131,6 +131,7 @@ export const CriminalFormSection = ({
         disabled={!canSubmit}
         onPress={onSubmit}
       />
+      <VerticalSpacer size="lg" />
     </KeyboardAwareScrollView>
   );
 };

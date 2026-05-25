@@ -1,8 +1,7 @@
 import { ArrowRight } from 'lucide-react-native';
 import { Text, View } from 'react-native';
 import { Card, CompactButton, VerificationStatusPill } from '@components';
-import { Image } from 'expo-image';
-import { appImages } from '@src/assets/images';
+import Congrats from '@src/assets/svg/Congrats';
 
 type BuzzRenewalFlowProps = {
   isPurchasing: boolean;
@@ -29,11 +28,7 @@ export const BuzzRenewalFlow = ({
         </Text>
       </View>
       <View className="items-center">
-        <Image
-          source={appImages.congrats}
-          style={{ width: 303, height: 191 }}
-          contentFit="cover"
-        />
+        <Congrats width={200} height={254} />
       </View>
 
       <VerificationStatusPill label="ID verified / No criminal records found" />

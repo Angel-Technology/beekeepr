@@ -1,10 +1,9 @@
 import { ScrollView, Text, View } from 'react-native';
-import { Image } from 'expo-image';
-import { appImages } from '@assets/images';
 import { Button } from '@components';
 import { NextStepsCard } from '../components/NextStepsCard';
 import { PrivacyComplianceCard } from '../components/PrivacyComplianceCard';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import SadBee from '@src/assets/svg/SadBee';
 
 type DeniedSectionProps = {
   onGotIt: () => void;
@@ -20,7 +19,7 @@ const NEXT_STEPS_PARAGRAPHS = [
 
 const PRIVACY_BULLETS = [
   'This screening is strictly confidential',
-  'We will not disclose that you did not pass TheBuzz screening or that you even attempted',
+  'We will not disclose that you did not pass the Buzz Badge screening or that you even attempted',
 ] as const;
 
 export const DeniedSection = ({
@@ -43,21 +42,17 @@ export const DeniedSection = ({
         showsVerticalScrollIndicator={false}
       >
         <View className="w-full gap-1">
-          <Text className="font-poppins-semiBold text-title-4 leading-tight text-text-default">
+          <Text className="font-poppins-semiBold text-title-3 leading-tight text-text-default">
             Oh no! Something went wrong.
           </Text>
-          <Text className="text-text-tertiary font-lexend-regular text-subhead leading-5">
+          <Text className="font-lexend-regular text-lg text-text-tertiary">
             Looks like we weren&rsquo;t able to get you into TheBuzz Community
             at this time.
           </Text>
         </View>
 
         <View className="flex-1 items-center justify-center">
-          <Image
-            source={appImages.awkwardSadBee}
-            style={{ width: 303, height: 191 }}
-            contentFit="cover"
-          />
+          <SadBee width={203} height={161} />
         </View>
 
         <NextStepsCard

@@ -51,7 +51,7 @@ export const BuzzButton = ({
           <Text
             numberOfLines={1}
             className={clsx(
-              'flex-1 text-center font-lexend-semiBold text-base leading-tight text-text-inverse',
+              'flex-1 text-center font-lexend-semiBold text-xl text-text-inverse',
               textClassName,
             )}
           >

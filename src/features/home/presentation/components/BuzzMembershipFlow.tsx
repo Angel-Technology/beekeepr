@@ -1,12 +1,11 @@
 import { Text, View, useWindowDimensions } from 'react-native';
 import { ArrowRight, Check } from 'lucide-react-native';
-import { Image } from 'expo-image';
 import { Button, Card, DetailCard, VerificationStatusPill } from '@components';
-import { appImages } from '@src/assets/images';
 import IllustrationAward from '@src/assets/svg/IllustrationAward';
 import IntroBeeIcon from '@src/assets/svg/IntroBeeIcon';
 import LineBuzz from '@src/assets/svg/LineBuzz';
 import { VerificationTrialStepper } from '@features/verification/presentation/components/VerificationTrialStepper';
+import Congrats from '@src/assets/svg/Congrats';
 
 type BuzzMembershipFlowProps = {
   isPurchasing: boolean;
@@ -58,11 +57,7 @@ export const BuzzMembershipFlow = ({
       </View>
 
       <View className="items-center">
-        <Image
-          source={appImages.congrats}
-          style={{ width: 179.492, height: 188.629 }}
-          contentFit="cover"
-        />
+        <Congrats width={200} height={254} />
       </View>
 
       <View className="w-full gap-4">
@@ -116,10 +111,10 @@ export const BuzzMembershipFlow = ({
                 </Text>
               </View>
               <View>
-                <Text className="text-text-tertiary text-center font-sourceSans-regular text-base">
+                <Text className="text-center font-sourceSans-regular text-base text-text-tertiary">
                   Try 30 days for free,
                 </Text>
-                <Text className="text-text-tertiary text-center font-sourceSans-regular text-base">
+                <Text className="text-center font-sourceSans-regular text-base text-text-tertiary">
                   then $9.99/month.
                 </Text>
               </View>

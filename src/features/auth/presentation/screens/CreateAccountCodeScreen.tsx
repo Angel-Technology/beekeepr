@@ -6,7 +6,13 @@ import {
   View,
 } from 'react-native';
 
-import { Button, Container, FormCard, OtpInput } from '@components';
+import {
+  Button,
+  Container,
+  FormCard,
+  OtpInput,
+  VerticalSpacer,
+} from '@components';
 import { useCreateAccountCodeForm } from '../../hooks/useCreateAccountCodeForm';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
 
@@ -36,7 +42,9 @@ export const CreateAccountCodeScreen = () => {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View className="flex-1 self-stretch">
+          <VerticalSpacer size="lg" />
           <AuthBrandHeader />
+          <VerticalSpacer size="lg" />
 
           <View className="flex-1 gap-6 self-stretch pt-7">
             <View className="gap-4 self-stretch">

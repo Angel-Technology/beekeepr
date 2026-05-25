@@ -19,8 +19,8 @@ export const PrivacyComplianceCard = ({
       <View className="gap-2 pl-2">
         {bullets.map((bullet) => (
           <View key={bullet} className="flex-row items-start gap-2">
-            <Text className="text-200 text-text-secondary">{'•'}</Text>
-            <Text className="flex-1 font-lexend-regular text-200 leading-[18px] text-text-secondary">
+            <Text className="text-base text-text-secondary">{'•'}</Text>
+            <Text className="flex-1 font-lexend-regular text-base text-text-secondary">
               {bullet}
             </Text>
           </View>

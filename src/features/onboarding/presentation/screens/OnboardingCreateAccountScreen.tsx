@@ -17,6 +17,7 @@ export const OnboardingCreateAccountScreen = () => {
       safeAreaEdges={['top', 'bottom']}
       className="flex-1 bg-bg-default"
     >
+      <VerticalSpacer size="lg" />
       <AuthBrandHeader />
 
       <View className="flex-1 items-center justify-end self-stretch">

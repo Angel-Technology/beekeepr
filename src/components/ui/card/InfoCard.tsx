@@ -2,8 +2,16 @@ import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import { Text, TouchableOpacity, View } from 'react-native';
 
+type InfoCardTone = 'neutral' | 'critical';
+
 type InfoCardProps = {
   title: string;
+  /**
+   * Optional leading visual rendered to the left of the title — typically
+   * an alert icon for `critical` cards. Caller owns the wrapper styling
+   * (border, padding, size).
+   */
+  icon?: ReactNode;
   /**
    * Caller-defined body — bullets, paragraphs, or any other JSX. Vertical
    * spacing inside the body is the caller's responsibility (wrap children
@@ -18,19 +26,38 @@ type InfoCardProps = {
   actionLabel?: string;
   onPressAction?: () => void;
   /**
-   * Overrides the surface (background, padding, gap, radius) — pass any
-   * Tailwind utilities here. Defaults to a neutral weak surface.
+   * Surface color of the card.
+   * - `neutral` (default): low-emphasis weak surface, for helper content.
+   * - `critical`: soft red tint for destructive / "next steps" messaging
+   *   on denied or error states.
+   */
+  tone?: InfoCardTone;
+  /**
+   * Layout overrides (padding, gap, radius, custom bg). Applied after the
+   * tone-driven surface class so `className` always wins.
    */
   className?: string;
   titleClassName?: string;
   actionLabelClassName?: string;
 };
 
+// Surface kept separate from layout so callers pick a variant without
+// fighting NativeWind precedence on conflicting `bg-` utilities. Same
+// pattern as `Card`, `Pill`, and `CompactButton`.
+const SURFACE_BY_TONE: Record<InfoCardTone, string> = {
+  neutral: 'bg-bg-weak',
+  // Inline rgba until the design system ships a true `bg-bg-criticalSubtle`
+  // — the existing token of that name is actually black/8, not red/8.
+  critical: 'bg-[rgba(255,0,0,0.08)]',
+};
+
 export const InfoCard = ({
   title,
+  icon,
   children,
   actionLabel,
   onPressAction,
+  tone = 'neutral',
   className,
   titleClassName,
   actionLabelClassName,
@@ -40,19 +67,23 @@ export const InfoCard = ({
   return (
     <View
       className={clsx(
-        'w-full gap-3 self-stretch rounded-5 bg-bg-weak p-4',
+        'w-full gap-3 self-stretch rounded-5 p-4',
+        SURFACE_BY_TONE[tone],
         className,
       )}
     >
-      <View className="w-full flex-row items-center justify-between gap-3">
-        <Text
-          className={clsx(
-            'flex-1 font-poppins-semiBold text-base text-text-secondary',
-            titleClassName,
-          )}
-        >
-          {title}
-        </Text>
+      <View className="w-full flex-row items-start justify-between gap-3">
+        <View className="flex-1 flex-row items-start gap-3">
+          {icon}
+          <Text
+            className={clsx(
+              'flex-1 font-poppins-semiBold text-lg text-text-secondary',
+              titleClassName,
+            )}
+          >
+            {title}
+          </Text>
+        </View>
         {hasAction ? (
           <TouchableOpacity
             accessibilityRole="button"
@@ -62,7 +93,7 @@ export const InfoCard = ({
           >
             <Text
               className={clsx(
-                'font-lexend-semiBold text-xs text-text-secondary',
+                'font-lexend-semiBold text-base text-text-secondary',
                 actionLabelClassName,
               )}
             >

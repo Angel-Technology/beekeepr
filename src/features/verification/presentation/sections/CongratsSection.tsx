@@ -1,9 +1,8 @@
 import { Text, View } from 'react-native';
-import { Image } from 'expo-image';
 import { ArrowRight, Check } from 'lucide-react-native';
-import { appImages } from '@assets/images';
 import { Button, DetailCard } from '@components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Congrats from '@src/assets/svg/Congrats';
 
 type CongratsSectionProps = {
   isStartingTrial: boolean;
@@ -31,21 +30,17 @@ export const CongratsSection = ({
       }}
     >
       <View className="w-full gap-1 px-2">
-        <Text className="font-poppins-semiBold text-title-4 leading-tight text-text-default">
-          Congrats, You&rsquo;re in.
+        <Text className="font-poppins-semiBold text-title-3 leading-tight text-text-default">
+          Congrats, You&rsquo;re in!
         </Text>
-        <Text className="text-text-tertiary font-lexend-regular text-subhead leading-5">
+        <Text className="font-lexend-regular text-lg leading-5 text-text-tertiary">
           You can proudly display your Buzz badge on any dating app we&rsquo;re
           partnered with.
         </Text>
       </View>
 
       <View className="flex-1 items-center justify-center">
-        <Image
-          source={appImages.congrats}
-          style={{ width: 179.492, height: 188.629 }}
-          contentFit="cover"
-        />
+        <Congrats width={200} height={254} />
       </View>
 
       <DetailCard
