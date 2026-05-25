@@ -26,7 +26,7 @@ export const BuzzWelcomeFlow = () => {
         </View>
       </View>
 
-      <Card className="items-center gap-6 rounded-5 border-none bg-bg-medium">
+      <Card className="items-center gap-6 rounded-5 border-none bg-secondary/5">
         <View className="w-full gap-2">
           <Text className="font-lexend-semiBold text-base leading-6 text-text-default">
             Welcome to TheBuzz Community!
