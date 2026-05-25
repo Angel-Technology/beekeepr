@@ -2145,34 +2145,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/core@npm:^1.0.0":
-  version: 1.7.5
-  resolution: "@floating-ui/core@npm:1.7.5"
-  dependencies:
-    "@floating-ui/utils": ^0.2.11
-  checksum: 9dda28bb1d301305ba407ad61fc1acf0f498819a6976e0b9c0a91069d92fb4b4bc8d6cffd1c68c4c281cffd0f7d267cbc2e56ea622f91c342aaa060d5b73d5db
-  languageName: node
-  linkType: hard
-
-"@floating-ui/react-native@npm:^0.10.9":
-  version: 0.10.9
-  resolution: "@floating-ui/react-native@npm:0.10.9"
-  dependencies:
-    "@floating-ui/core": ^1.0.0
-  peerDependencies:
-    react: ">=16.8.0"
-    react-native: ">=0.64.0"
-  checksum: eee837b813eab3fb262f73aafc70c35e2253f21d595598e2a32c5b4a0b71cce967225e7f0bc29f8abc11fad08b7700001b0ca489c8be075e96280049534152b4
-  languageName: node
-  linkType: hard
-
-"@floating-ui/utils@npm:^0.2.11":
-  version: 0.2.11
-  resolution: "@floating-ui/utils@npm:0.2.11"
-  checksum: e98a2da3e36bd476460b0b85c3ba37c254516790d8c5eafa79ecf67bae7f2230c46d5fabce196aaf08bcd31586828e2df718cd2ccd1d333f18120f8adef66828
-  languageName: node
-  linkType: hard
-
 "@gorhom/bottom-sheet@npm:^5.2.10":
   version: 5.2.10
   resolution: "@gorhom/bottom-sheet@npm:5.2.10"
@@ -6006,7 +5978,6 @@ __metadata:
   dependencies:
     "@babel/core": ^7.29.0
     "@better-auth/expo": ^1.5.5
-    "@floating-ui/react-native": ^0.10.9
     "@gorhom/bottom-sheet": ^5.2.10
     "@graphql-codegen/cli": ^6.0.1
     "@graphql-codegen/typed-document-node": ^6.0.1

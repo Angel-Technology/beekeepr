@@ -1,11 +1,14 @@
 import { executeGraphQL } from '@src/lib/graphql/client';
 import {
   CancelAccountDeletionDocument,
+  CheckHandleAvailabilityDocument,
   RequestAccountDeletionDocument,
   SearchUsersDocument,
   UpdateProfileDocument,
   type CancelAccountDeletionMutation,
   type CancelAccountDeletionMutationVariables,
+  type CheckHandleAvailabilityQuery,
+  type CheckHandleAvailabilityQueryVariables,
   type RequestAccountDeletionMutation,
   type RequestAccountDeletionMutationVariables,
   type SearchUsersQuery,
@@ -44,6 +47,15 @@ export const accountRepository = {
   searchUsers(variables: SearchUsersQueryVariables) {
     return executeGraphQL<SearchUsersQuery, SearchUsersQueryVariables>({
       document: SearchUsersDocument,
+      variables,
+    });
+  },
+  checkHandleAvailability(variables: CheckHandleAvailabilityQueryVariables) {
+    return executeGraphQL<
+      CheckHandleAvailabilityQuery,
+      CheckHandleAvailabilityQueryVariables
+    >({
+      document: CheckHandleAvailabilityDocument,
       variables,
     });
   },

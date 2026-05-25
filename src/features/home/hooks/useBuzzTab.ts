@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useCompleteProfile } from '@features/account/hooks/useCompleteProfile';
 import { useSearchUsers } from '@features/account/hooks/useSearchUsers';
 import { BackgroundCheckBadge, useAuthSession } from '@features/auth';
 import {
@@ -61,6 +62,15 @@ export const useBuzzTab = () => {
     results: searchResults,
     isFetching: isSearchFetching,
   } = useSearchUsers(searchQuery);
+
+  // "Create a profile" modal visibility + form state. Lives here so the
+  // presentation layer stays dumb and so `useCompleteProfile.onSaved` can
+  // close the modal directly when the mutation resolves (cleaner than
+  // letting the parent infer dismissal from `isProfileIncomplete`).
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const profileForm = useCompleteProfile({
+    onSaved: () => setShowProfileModal(false),
+  });
   const params = useLocalSearchParams<{ backgroundCheck?: string }>();
   const hasSubmittedBackgroundCheck = params.backgroundCheck === 'submitted';
   const badge = user?.backgroundCheckBadge ?? BackgroundCheckBadge.None;
@@ -155,6 +165,24 @@ export const useBuzzTab = () => {
       searchResults,
       isSearchFetching,
       onChangeSearchQuery: setSearchQuery,
+      // Subscribed users without nickname/handle can't be found by others
+      // in the search — surface the soft-nag modal until they fill it in
+      // (or explicitly dismiss).
+      isProfileIncomplete: !user?.nickname || !user?.handle,
+      showProfileModal,
+      onOpenProfileModal: () => setShowProfileModal(true),
+      profileForm: {
+        nickname: profileForm.nickname,
+        handle: profileForm.handle,
+        onChangeNickname: profileForm.setNickname,
+        onChangeHandle: profileForm.setHandle,
+        nicknameStatus: profileForm.nicknameStatus,
+        handleStatus: profileForm.handleStatus,
+        handleReason: profileForm.handleReason,
+        isValid: profileForm.isValid,
+        isSaving: profileForm.isSaving,
+        onSave: profileForm.save,
+      },
     },
     resetSubmittedBackgroundCheck: () => {
       router.replace('/');

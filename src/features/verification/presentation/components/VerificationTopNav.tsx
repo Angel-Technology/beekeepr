@@ -18,7 +18,7 @@ export const VerificationTopNav = ({
         onPress={onPressBack}
       />
       <Text className="font-poppins-semiBold text-base text-text-default">
-        TheBuzz Badge
+        Get the Buzz Badge
       </Text>
       <View className="h-[44px] w-[44px]" />
     </View>

@@ -31,7 +31,7 @@ export const BuzzVerifyFlow = ({
           30-Day Free Trial
         </Text>
         <Text className="text-center font-poppins-regular text-base text-text-default">
-          $9.95/month
+          $9.99/month
         </Text>
       </View>
 

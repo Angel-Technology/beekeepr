@@ -142,7 +142,7 @@ export const BuzzScreen = () => {
         center={
           <View className="flex-row items-start justify-center gap-1">
             <Text className="font-poppins-semiBold text-base text-text-default">
-              TheBuzz
+              Buzz Badge
             </Text>
             <View className="items-center justify-center rounded bg-brand-highlight px-[3px] py-[1px]">
               <Text className="font-sourceSans-semiBold text-[7px] text-text-default">

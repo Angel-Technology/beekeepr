@@ -1,6 +1,7 @@
 import { accountRepository } from '../repository/accountRepository';
 import type {
   AccountDeletionState,
+  HandleAvailability,
   ProfileUser,
   UpdateProfilePatch,
   UserSearchResult,
@@ -85,6 +86,29 @@ export const accountService = {
    * whitespace-only queries short-circuit to an empty list so we don't
    * waste a round-trip.
    */
+  /**
+   * Checks whether a handle is free to claim. Backend authoritatively
+   * decides — this just normalises (strip `@`, trim, lowercase) before
+   * sending. Callers should already have run local format validation;
+   * an empty handle short-circuits to "unavailable" so we don't burn a
+   * network round-trip.
+   */
+  async checkHandleAvailability(handle: string): Promise<HandleAvailability> {
+    const normalized = handle.replace(/^@+/, '').trim().toLowerCase();
+    if (normalized.length === 0) {
+      return { available: false, reason: 'Handle is required.' };
+    }
+
+    const payload = await accountRepository.checkHandleAvailability({
+      handle: normalized,
+    });
+
+    return {
+      available: payload.checkHandleAvailability.available,
+      reason: payload.checkHandleAvailability.reason ?? null,
+    };
+  },
+
   async searchUsers(query: string, limit = 10): Promise<UserSearchResult[]> {
     const trimmed = query.trim();
     if (trimmed.length === 0) {
