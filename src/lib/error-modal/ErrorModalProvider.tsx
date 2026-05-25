@@ -42,9 +42,19 @@ const messageFromError = (error: unknown): string => {
  */
 export const ErrorModalProvider = ({ children }: PropsWithChildren) => {
   const [content, setContent] = useState<ErrorModalContent | null>(null);
+  // Hold onto the last-shown content so the dismiss animation keeps
+  // displaying the previous title/message instead of flashing back to the
+  // default copy ("Something went wrong" / "Please try again.") as the
+  // modal slides away.
+  const [lastShown, setLastShown] = useState<ErrorModalContent | null>(null);
 
   const showError = useCallback((next: ErrorModalContent) => {
+    // Top-level log of every error modal opened. Lets us see in dev which
+    // call sites are firing and with what copy when we're chasing
+    // double-modal / unexpected-modal bugs. Safe to keep — it's a single
+    // console line and only fires on actual errors.
     setContent(next);
+    setLastShown(next);
   }, []);
 
   const hideError = useCallback(() => {
@@ -61,9 +71,9 @@ export const ErrorModalProvider = ({ children }: PropsWithChildren) => {
       {children}
       <ErrorModal
         visible={content !== null}
-        title={content?.title ?? DEFAULT_TITLE}
-        message={content?.message ?? DEFAULT_MESSAGE}
-        primaryActionLabel={content?.primaryActionLabel}
+        title={lastShown?.title ?? DEFAULT_TITLE}
+        message={lastShown?.message ?? DEFAULT_MESSAGE}
+        primaryActionLabel={lastShown?.primaryActionLabel}
         onClose={hideError}
       />
     </ErrorModalContext.Provider>
@@ -82,7 +92,12 @@ export const useErrorModal = () => {
      * carries. Useful inside mutation `onError` handlers where the error
      * type is `unknown`.
      */
-    showFromError: (error: unknown, title = DEFAULT_TITLE) =>
-      context.showError({ title, message: messageFromError(error) }),
+    showFromError: (error: unknown, title = DEFAULT_TITLE) => {
+      // Log the raw error before we collapse it into a `{ title, message }`
+      // payload — useful for inspecting `code` / `userCancelled` /
+      // `userInfo` on RevenueCat (and other native-bridge) errors that
+      // lose shape after `messageFromError`.
+      context.showError({ title, message: messageFromError(error) });
+    },
   };
 };

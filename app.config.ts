@@ -85,6 +85,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         ],
         NSCameraUsageDescription:
           "Buzzkeepr uses the camera to capture your driver's license and selfie for identity verification.",
+        NSFaceIDUsageDescription:
+          'Buzzkeepr uses Face ID during identity verification to confirm you are the person on your ID.',
         NSLocationWhenInUseUsageDescription:
           'Buzzkeepr uses location during identity verification for fraud prevention and security checks.',
         NSPhotoLibraryUsageDescription:

@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { Linking, NativeModules, Platform } from 'react-native';
 import Purchases, {
   LOG_LEVEL,
+  PURCHASES_ERROR_CODE,
   type CustomerInfo,
   type PurchasesPackage,
 } from 'react-native-purchases';
@@ -72,6 +73,27 @@ const REVENUECAT_NATIVE_MODULE_ERROR =
 
 const hasActiveEntitlement = (info: CustomerInfo | null): boolean =>
   Boolean(info?.entitlements.active[REVENUECAT_ENTITLEMENT_ID]);
+
+// Narrow an `unknown` from a RevenueCat catch into the shape we care about.
+// RC's native bridge can surface either an `Error` subclass or a plain
+// object, so we probe with `in` after confirming we have a non-null object —
+// TS narrows the property to `unknown` on its own, no casts required.
+const isUserCancelledPurchaseError = (error: unknown): boolean => {
+  if (typeof error !== 'object' || error === null) {
+    return false;
+  }
+  if (
+    'code' in error &&
+    typeof error.code === 'string' &&
+    error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR
+  ) {
+    return true;
+  }
+  if ('userCancelled' in error && error.userCancelled === true) {
+    return true;
+  }
+  return false;
+};
 
 // `entitlements.all` retains historical (now-expired) grants alongside
 // active ones. If the entitlement exists in `.all` but not in `.active`
@@ -236,12 +258,7 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
       setCustomerInfo(result.customerInfo);
       return hasActiveEntitlement(result.customerInfo);
     } catch (error) {
-      // RevenueCat tags user-cancelled purchases on the error object; treat
-      // them as a soft negative rather than a thrown error.
-      if (
-        error instanceof Error &&
-        (error as { userCancelled?: boolean }).userCancelled === true
-      ) {
+      if (isUserCancelledPurchaseError(error)) {
         return false;
       }
       throw error;
