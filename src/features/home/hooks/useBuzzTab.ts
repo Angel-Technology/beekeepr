@@ -5,9 +5,26 @@ import {
   hasResumableVerification,
   isVerificationDenied,
 } from '@features/verification';
+import { useTrialPurchase } from '@features/verification/hooks/useTrialPurchase';
 import { useErrorModal } from '@src/lib/error-modal';
 import { useRevenueCat } from '@src/lib/revenuecat';
 import type { BuzzFlow } from '../models/buzzFlow.types';
+
+const TRIAL_LENGTH_DAYS = 30;
+const REMINDER_LEAD_DAYS = 5;
+
+const addDays = (value: Date, days: number) => {
+  const next = new Date(value);
+  next.setDate(next.getDate() + days);
+  return next;
+};
+
+const formatLongDate = (value: Date) =>
+  new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(value);
 
 /**
  * Drives the TheBuzz tab — the post-auth landing screen on the bottom-tab
@@ -34,6 +51,7 @@ export const useBuzzTab = () => {
   const router = useRouter();
   const { data: user } = useAuthSession();
   const { isPro, isLapsed, purchase } = useRevenueCat();
+  const { isPurchasing, startTrial } = useTrialPurchase();
   const { showFromError } = useErrorModal();
   const params = useLocalSearchParams<{ backgroundCheck?: string }>();
   const hasSubmittedBackgroundCheck = params.backgroundCheck === 'submitted';
@@ -59,11 +77,17 @@ export const useBuzzTab = () => {
     if (isApproved && isPro) {
       return 'welcome';
     }
-    // Approved-but-not-subscribed users see the same highlighted verify
-    // card as fresh users; copy + handler change via `ctaLabel` /
-    // `onGetStarted` below.
+    if (needsMembership) {
+      return 'membership';
+    }
     return 'verify';
-  }, [isApproved, isPro, isDenied, hasSubmittedBackgroundCheck]);
+  }, [
+    isApproved,
+    isPro,
+    isDenied,
+    hasSubmittedBackgroundCheck,
+    needsMembership,
+  ]);
 
   const ctaLabel = needsRenewal
     ? 'Renew membership'
@@ -100,11 +124,23 @@ export const useBuzzTab = () => {
     ? undefined
     : () => router.push('/verify-learn-more');
 
+  const trialEndDate = addDays(new Date(), TRIAL_LENGTH_DAYS);
+
   return {
     flow,
     ctaLabel,
     onGetStarted,
     onLearnMore,
+    membershipProps: {
+      isPurchasing,
+      reminderLabel: `In ${TRIAL_LENGTH_DAYS - REMINDER_LEAD_DAYS} days`,
+      trialEndLabel: formatLongDate(trialEndDate),
+      onStartTrial: () => {
+        void startTrial();
+      },
+      // TODO: wire promo-code redemption when the offer set is finalised.
+      onEnterPromoCode: () => {},
+    },
     resetSubmittedBackgroundCheck: () => {
       router.replace('/');
     },

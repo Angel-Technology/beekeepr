@@ -1,1 +1,6 @@
-export type BuzzFlow = 'verify' | 'welcome' | 'active' | 'denied';
+export type BuzzFlow =
+  | 'verify'
+  | 'membership'
+  | 'welcome'
+  | 'active'
+  | 'denied';

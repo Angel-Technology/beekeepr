@@ -32,7 +32,7 @@ export const CongratsSection = ({
     >
       <View className="w-full gap-1 px-2">
         <Text className="font-poppins-semiBold text-title-4 leading-tight text-text-default">
-          WooHoo! You&rsquo;re in.
+          Congrats, You&rsquo;re in.
         </Text>
         <Text className="text-text-tertiary font-lexend-regular text-subhead leading-5">
           You can proudly display your Buzz badge on any dating app we&rsquo;re

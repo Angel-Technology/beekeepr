@@ -1,6 +1,7 @@
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from 'expo-router';
 import { DrawerActions } from '@react-navigation/native';
+import LottieView from 'lottie-react-native';
 import { Menu } from 'lucide-react-native';
 import Animated, {
   Extrapolation,
@@ -17,11 +18,13 @@ import {
   BOTTOM_TAB_BAR_HEIGHT,
   IconButton,
 } from '@components';
+import { appAnimations } from '@src/assets/animations';
 import { openInAppBrowser } from '@src/lib/browser';
 import { environmentConfig } from '@src/lib/config/environment';
 import { useBuzzTab } from '../../hooks/useBuzzTab';
 import {
   BuzzActiveFlow,
+  BuzzMembershipFlow,
   BuzzScreeningDeniedCard,
   BuzzVerifyFlow,
   BuzzWelcomeFlow,
@@ -45,6 +48,7 @@ export const BuzzScreen = () => {
     ctaLabel,
     onGetStarted,
     onLearnMore,
+    membershipProps,
     resetSubmittedBackgroundCheck,
   } = useBuzzTab();
 
@@ -101,6 +105,10 @@ export const BuzzScreen = () => {
           />
         ) : null}
 
+        {flow === 'membership' ? (
+          <BuzzMembershipFlow {...membershipProps} />
+        ) : null}
+
         {flow === 'welcome' ? <BuzzWelcomeFlow /> : null}
 
         {flow === 'active' ? (
@@ -111,6 +119,18 @@ export const BuzzScreen = () => {
           />
         ) : null}
       </AnimatedKeyboardAwareScrollView>
+
+      {flow === 'membership' ? (
+        <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+          <LottieView
+            source={appAnimations.confetti}
+            autoPlay
+            loop={false}
+            resizeMode="cover"
+            style={StyleSheet.absoluteFill}
+          />
+        </View>
+      ) : null}
 
       <AppHeader
         floating

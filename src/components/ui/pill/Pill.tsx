@@ -54,7 +54,7 @@ export const Pill = ({
       {icon}
       <Text
         className={clsx(
-          'font-lexend-semiBold text-sm leading-none',
+          'font-lexend-semiBold text-sm',
           TEXT_BY_TONE[tone],
           textClassName,
         )}

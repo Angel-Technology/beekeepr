@@ -65,9 +65,7 @@ export const VerificationFlowScreen = () => {
       }}
       // TODO: wire promo-code redemption when the offer set is finalised.
       onEnterPromoCode={() => {}}
-      onAppealDecision={() =>
-        openInAppBrowser(environmentConfig.supportURL)
-      }
+      onAppealDecision={() => openInAppBrowser(environmentConfig.supportURL)}
     />
   );
 };
