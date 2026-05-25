@@ -19,6 +19,7 @@ import {
   BounceLoader,
   IconButton,
 } from '@components';
+import { PromoCodeModal } from '@features/account/presentation/components/PromoCodeModal';
 import { appAnimations } from '@src/assets/animations';
 import { openInAppBrowser } from '@src/lib/browser';
 import { environmentConfig } from '@src/lib/config/environment';
@@ -53,6 +54,7 @@ export const BuzzScreen = () => {
     membershipProps,
     renewalProps,
     welcomeProps,
+    promoModalProps,
     resetSubmittedBackgroundCheck,
   } = useBuzzTab();
 
@@ -147,6 +149,8 @@ export const BuzzScreen = () => {
           />
         </View>
       ) : null}
+
+      <PromoCodeModal {...promoModalProps} />
 
       <AppHeader
         floating

@@ -81,6 +81,31 @@ export const accountService = {
   },
 
   /**
+   * Redeems a promotional code against the signed-in user. Server validates
+   * the code (existence, expiry, redemption cap, eligibility) — empty
+   * strings short-circuit before the network hop. On success the caller is
+   * responsible for refreshing RevenueCat so the new entitlement reflects
+   * locally.
+   *
+   * @throws an Error carrying the server `error` string when the code is
+   * invalid, expired, already-redeemed, or otherwise rejected.
+   */
+  async redeemPromoCode(code: string): Promise<void> {
+    const normalized = code.trim();
+    if (normalized.length === 0) {
+      throw new Error('Enter a promo code to redeem.');
+    }
+
+    const payload = await accountRepository.redeemPromoCode({
+      input: { code: normalized },
+    });
+
+    if (payload.redeemPromoCode.error) {
+      throw new Error(payload.redeemPromoCode.error);
+    }
+  },
+
+  /**
    * Searches the user directory for matches against a nickname / handle /
    * pin. Returns up to `limit` results (default 10). Empty or
    * whitespace-only queries short-circuit to an empty list so we don't

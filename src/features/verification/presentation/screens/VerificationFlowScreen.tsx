@@ -1,4 +1,7 @@
+import { useState } from 'react';
 import { useRouter } from 'expo-router';
+import { useRedeemPromoCode } from '@features/account/hooks/useRedeemPromoCode';
+import { PromoCodeModal } from '@features/account/presentation/components/PromoCodeModal';
 import { openInAppBrowser } from '@src/lib/browser';
 import { environmentConfig } from '@src/lib/config/environment';
 import { useCriminalCheckForm } from '../../hooks/useCriminalCheckForm';
@@ -34,38 +37,59 @@ export const VerificationFlowScreen = () => {
   const form = useCriminalCheckForm();
   const trial = useTrialPurchase();
 
+  // Promo modal lives on this screen (rather than on the body) so the body
+  // stays storyable without pulling in the RevenueCat-dependent redeem hook.
+  const [showPromoModal, setShowPromoModal] = useState(false);
+  const promoCodeForm = useRedeemPromoCode({
+    onRedeemed: () => setShowPromoModal(false),
+  });
+
   useVerificationGate();
 
   return (
-    <VerificationFlowBody
-      phase={flow.phase}
-      isStarting={flow.isStarting}
-      onExit={() => router.replace(HOME_ROUTE)}
-      onStartVerification={() => {
-        void flow.handleStartVerification();
-      }}
-      onStartCriminalSearch={flow.handleStartCriminalSearch}
-      firstName={form.firstName}
-      middleName={form.middleName}
-      lastName={form.lastName}
-      dateOfBirth={form.dateOfBirth}
-      licenseState={form.licenseState}
-      phoneNumber={form.phoneNumber}
-      phoneError={form.phoneError}
-      isSubmitting={form.isSubmitting}
-      canSubmit={form.canSubmit}
-      onChangePhoneNumber={form.setPhoneNumber}
-      onValidatePhoneNumber={form.validatePhoneNumber}
-      onSubmit={() => {
-        void form.handleSubmit();
-      }}
-      isStartingTrial={trial.isPurchasing}
-      onStartTrial={() => {
-        void trial.startTrial();
-      }}
-      // TODO: wire promo-code redemption when the offer set is finalised.
-      onEnterPromoCode={() => {}}
-      onAppealDecision={() => openInAppBrowser(environmentConfig.supportURL)}
-    />
+    <>
+      <VerificationFlowBody
+        phase={flow.phase}
+        isStarting={flow.isStarting}
+        onExit={() => router.replace(HOME_ROUTE)}
+        onStartVerification={() => {
+          void flow.handleStartVerification();
+        }}
+        onStartCriminalSearch={flow.handleStartCriminalSearch}
+        firstName={form.firstName}
+        middleName={form.middleName}
+        lastName={form.lastName}
+        dateOfBirth={form.dateOfBirth}
+        licenseState={form.licenseState}
+        phoneNumber={form.phoneNumber}
+        phoneError={form.phoneError}
+        isSubmitting={form.isSubmitting}
+        canSubmit={form.canSubmit}
+        onChangePhoneNumber={form.setPhoneNumber}
+        onValidatePhoneNumber={form.validatePhoneNumber}
+        onSubmit={() => {
+          void form.handleSubmit();
+        }}
+        isStartingTrial={trial.isPurchasing}
+        onStartTrial={() => {
+          void trial.startTrial();
+        }}
+        onEnterPromoCode={() => setShowPromoModal(true)}
+        onAppealDecision={() => openInAppBrowser(environmentConfig.supportURL)}
+      />
+      <PromoCodeModal
+        visible={showPromoModal}
+        code={promoCodeForm.code}
+        error={promoCodeForm.error}
+        isRedeeming={promoCodeForm.isRedeeming}
+        canRedeem={promoCodeForm.canRedeem}
+        onChangeCode={promoCodeForm.setCode}
+        onRedeem={promoCodeForm.redeem}
+        onClose={() => {
+          promoCodeForm.reset();
+          setShowPromoModal(false);
+        }}
+      />
+    </>
   );
 };

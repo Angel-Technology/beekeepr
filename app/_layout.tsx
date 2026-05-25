@@ -14,6 +14,13 @@ import { QueryProvider } from '@src/lib/tanstack/QueryProvider';
 import { RevenueCatProvider } from '@src/lib/revenuecat';
 import { GlobalLoaderProvider, GlobalLoaderOverlay } from '@src/lib/loader';
 import { ErrorModalProvider } from '@src/lib/error-modal';
+import { RootErrorBoundary } from '@src/lib/error-boundary';
+import { initSentry, wrapRootComponent } from '@src/lib/sentry';
+
+// Fire at module load — before any provider mounts — so the SDK is ready to
+// receive `captureException` calls from `RootErrorBoundary` on first render.
+// No-ops in __DEV__ or when EXPO_PUBLIC_SENTRY_DSN is unset.
+initSentry();
 
 SplashScreen.preventAutoHideAsync();
 
@@ -68,7 +75,7 @@ function RootNavigator() {
   );
 }
 
-export default function RootLayout() {
+function RootLayout() {
   useEffect(() => {
     if (storybookEnabled) {
       SplashScreen.hideAsync();
@@ -92,14 +99,16 @@ export default function RootLayout() {
       <KeyboardProvider>
         <QueryProvider>
           <SafeAreaProvider>
-            <RevenueCatProvider>
-              <ErrorModalProvider>
-                <GlobalLoaderProvider>
-                  <RootNavigator />
-                  <GlobalLoaderOverlay />
-                </GlobalLoaderProvider>
-              </ErrorModalProvider>
-            </RevenueCatProvider>
+            <RootErrorBoundary>
+              <RevenueCatProvider>
+                <ErrorModalProvider>
+                  <GlobalLoaderProvider>
+                    <RootNavigator />
+                    <GlobalLoaderOverlay />
+                  </GlobalLoaderProvider>
+                </ErrorModalProvider>
+              </RevenueCatProvider>
+            </RootErrorBoundary>
           </SafeAreaProvider>
         </QueryProvider>
         <KeyboardToolbar />
@@ -107,3 +116,8 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
+
+// `wrapRootComponent` enables Sentry's React Navigation / performance
+// instrumentation when initialised, and is an identity pass-through when
+// Sentry is disabled in __DEV__.
+export default wrapRootComponent(RootLayout);

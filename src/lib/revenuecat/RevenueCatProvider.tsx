@@ -57,6 +57,20 @@ type RevenueCatContextValue = {
   purchase: () => Promise<boolean>;
   restorePurchases: () => Promise<boolean>;
   /**
+   * Guarantees the signed-in user is identified to RevenueCat before
+   * returning, calling `Purchases.logIn(user.id)` if RC is still anonymous
+   * or holding a stale app user ID. Idempotent — safe to await before any
+   * server-side RC operation (e.g. promo-code grants) where the backend
+   * needs an existing subscriber record to attach an entitlement to.
+   */
+  ensureIdentified: () => Promise<void>;
+  /**
+   * Forces a re-pull of customer info from RevenueCat and updates context.
+   * Use after a server-side entitlement change (e.g. a promo-code redemption)
+   * so `isPro` flips without waiting on RC's listener to fire.
+   */
+  refreshCustomerInfo: () => Promise<boolean>;
+  /**
    * Opens the device's native subscription management screen. Apps can't
    * cancel IAP subscriptions programmatically — Apple/Google reserve that
    * for the store UI. This deep-link is the closest we get.
@@ -281,6 +295,35 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
     return hasActiveEntitlement(info);
   };
 
+  const refreshCustomerInfo = async (): Promise<boolean> => {
+    if (!shouldUseRevenueCat) {
+      return hasActiveEntitlement(customerInfo);
+    }
+
+    const info = await Purchases.getCustomerInfo();
+    setCustomerInfo(info);
+    return hasActiveEntitlement(info);
+  };
+
+  const ensureIdentified = async (): Promise<void> => {
+    if (!shouldUseRevenueCat || !user?.id) {
+      return;
+    }
+
+    // RC issues `$RCAnonymousID:<uuid>` when no `appUserID` was provided at
+    // configure time. We also re-logIn if the configured ID drifted from
+    // the current auth user (e.g. account-switch mid-session). Server-side
+    // promo grants need a non-anonymous subscriber to attach to, so this
+    // is the gate we hold before any backend RC operation.
+    const currentAppUserId = await Purchases.getAppUserID();
+    if (currentAppUserId === user.id) {
+      return;
+    }
+
+    const result = await Purchases.logIn(user.id);
+    setCustomerInfo(result.customerInfo);
+  };
+
   const openManageSubscription = async (): Promise<void> => {
     const url =
       Platform.OS === 'ios'
@@ -300,6 +343,8 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
       subscriptionPriceString: subscriptionPackage?.product.priceString ?? null,
       purchase,
       restorePurchases,
+      ensureIdentified,
+      refreshCustomerInfo,
       openManageSubscription,
     };
     // `purchase` and `restorePurchases` are recreated each render but

@@ -19,6 +19,8 @@ export type EnvironmentConfig = {
   personaEnvironment: 'sandbox' | 'production';
   personaTemplateId: string;
   partnershipsURL: string;
+  sentryDsn: string;
+  enableSentryInDev: boolean;
   supportURL: string;
   termsOfUseURL: string;
 };
@@ -61,7 +63,7 @@ export const environmentConfig: EnvironmentConfig = {
   revenueCatAndroidApiKey:
     process.env.EXPO_PUBLIC_REVENUECAT_API_KEY_ANDROID ?? '',
   revenueCatEntitlementId:
-    process.env.EXPO_PUBLIC_REVENUECAT_ENTITLEMENT_ID ?? 'Buzzkeepr Test Pro',
+    process.env.EXPO_PUBLIC_REVENUECAT_ENTITLEMENT_ID ?? 'Buzzkeepr Pro',
   revenueCatIosApiKey: process.env.EXPO_PUBLIC_REVENUECAT_API_KEY_IOS ?? '',
   privacyPolicyURL: process.env.EXPO_PUBLIC_PRIVACY_POLICY_URL ?? '',
   personaEnvironment:
@@ -70,6 +72,12 @@ export const environmentConfig: EnvironmentConfig = {
       : 'sandbox',
   personaTemplateId: process.env.EXPO_PUBLIC_PERSONA_TEMPLATE_ID ?? '',
   partnershipsURL: process.env.EXPO_PUBLIC_PARTNERSHIPS_URL ?? '',
+  sentryDsn: process.env.EXPO_PUBLIC_SENTRY_DSN ?? '',
+  // Local escape hatch: set to '1' in `.env` to bypass the __DEV__ guard in
+  // `src/lib/sentry/init.ts` and exercise the full capture pipeline against
+  // the prod Sentry project. Unset when you're done — dev sessions should
+  // not be reporting noise to production.
+  enableSentryInDev: process.env.EXPO_PUBLIC_SENTRY_ENABLE_IN_DEV === '1',
   supportURL: process.env.EXPO_PUBLIC_SUPPORT_URL ?? '',
   termsOfUseURL: process.env.EXPO_PUBLIC_TERMS_OF_USE_URL ?? '',
 };
