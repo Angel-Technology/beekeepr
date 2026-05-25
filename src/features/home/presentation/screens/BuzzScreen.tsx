@@ -49,6 +49,7 @@ export const BuzzScreen = () => {
     onGetStarted,
     onLearnMore,
     membershipProps,
+    welcomeProps,
     resetSubmittedBackgroundCheck,
   } = useBuzzTab();
 
@@ -109,7 +110,7 @@ export const BuzzScreen = () => {
           <BuzzMembershipFlow {...membershipProps} />
         ) : null}
 
-        {flow === 'welcome' ? <BuzzWelcomeFlow /> : null}
+        {flow === 'welcome' ? <BuzzWelcomeFlow {...welcomeProps} /> : null}
 
         {flow === 'active' ? (
           <BuzzActiveFlow

@@ -1,0 +1,7 @@
+query SearchUsers($query: String!, $first: Int) {
+  searchUsers(query: $query, first: $first) {
+    nodes {
+      ...UserSearchResultFields
+    }
+  }
+}

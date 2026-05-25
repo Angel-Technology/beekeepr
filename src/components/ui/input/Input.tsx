@@ -27,6 +27,7 @@ type InputProps = {
   onSubmitEditing?: (
     event: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
   ) => void;
+  leftAccessory?: ReactNode;
   rightAccessory?: ReactNode;
   autoCapitalize?: TextInputProps['autoCapitalize'];
   autoCorrect?: boolean;
@@ -53,6 +54,7 @@ export const Input = ({
   inputClassName,
   onBlur,
   onSubmitEditing,
+  leftAccessory,
   rightAccessory,
   autoCapitalize,
   autoCorrect,
@@ -79,6 +81,7 @@ export const Input = ({
           disabled && 'opacity-60',
         )}
       >
+        {leftAccessory ? <View className="mr-3">{leftAccessory}</View> : null}
         <TextInput
           value={value}
           onChangeText={onChangeText}

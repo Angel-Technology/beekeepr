@@ -3,6 +3,7 @@ import type {
   AccountDeletionState,
   ProfileUser,
   UpdateProfilePatch,
+  UserSearchResult,
 } from '../models/account.types';
 
 export const accountService = {
@@ -76,5 +77,25 @@ export const accountService = {
       userId: payload.cancelAccountDeletion.user.id,
       deletedAtUtc: payload.cancelAccountDeletion.user.deletedAtUtc ?? null,
     };
+  },
+
+  /**
+   * Searches the user directory for matches against a nickname / handle /
+   * pin. Returns up to `limit` results (default 10). Empty or
+   * whitespace-only queries short-circuit to an empty list so we don't
+   * waste a round-trip.
+   */
+  async searchUsers(query: string, limit = 10): Promise<UserSearchResult[]> {
+    const trimmed = query.trim();
+    if (trimmed.length === 0) {
+      return [];
+    }
+
+    const payload = await accountRepository.searchUsers({
+      query: trimmed,
+      first: limit,
+    });
+
+    return payload.searchUsers?.nodes ?? [];
   },
 };

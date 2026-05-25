@@ -6,28 +6,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppHeader, FormCard, IconButton, Input } from '@components';
 import { useAuthSession } from '@features/auth';
 import { useProfileForm } from '../../hooks/useProfileForm';
+import { formatJoinedDate } from '../../models/formatJoinedDate';
 import { FieldStatusIcon } from '../components/FieldStatusIcon';
 import { ProfilePreviewCard } from '../components/ProfilePreviewCard';
 
 const PREVIEW_DESCRIPTION =
   'This is what others will see when searching for you in TheBuzz community.';
-
-const JOINED_DATE_FORMATTER = new Intl.DateTimeFormat(undefined, {
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit',
-});
-
-const formatJoinedDate = (iso?: string | null): string | undefined => {
-  if (!iso) {
-    return undefined;
-  }
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) {
-    return undefined;
-  }
-  return JOINED_DATE_FORMATTER.format(date);
-};
 
 export const ProfileScreen = () => {
   const router = useRouter();
