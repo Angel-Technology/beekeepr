@@ -36,6 +36,15 @@ jobs:
       EXPO_PUBLIC_PRIVACY_POLICY_URL: ${{ vars.EXPO_PUBLIC_PRIVACY_POLICY_URL }}
       EXPO_PUBLIC_SUPPORT_URL: ${{ vars.EXPO_PUBLIC_SUPPORT_URL }}
       EXPO_PUBLIC_PARTNERSHIPS_URL: ${{ vars.EXPO_PUBLIC_PARTNERSHIPS_URL }}
+      EXPO_PUBLIC_SENTRY_DSN: ${{ secrets.EXPO_PUBLIC_SENTRY_DSN }}
+
+      # Required by the @sentry/react-native/expo plugin's source-map upload
+      # phase (sentry-cli reads SENTRY_ORG / SENTRY_PROJECT / SENTRY_AUTH_TOKEN
+      # at build time). Missing these = the iOS/Android build fails with
+      # "An organization ID or slug is required (provide with --org)".
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       IOS_BUNDLE_ID: com.buzzkeepr.app
       IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
@@ -148,6 +157,15 @@ jobs:
       EXPO_PUBLIC_PRIVACY_POLICY_URL: ${{ vars.EXPO_PUBLIC_PRIVACY_POLICY_URL }}
       EXPO_PUBLIC_SUPPORT_URL: ${{ vars.EXPO_PUBLIC_SUPPORT_URL }}
       EXPO_PUBLIC_PARTNERSHIPS_URL: ${{ vars.EXPO_PUBLIC_PARTNERSHIPS_URL }}
+      EXPO_PUBLIC_SENTRY_DSN: ${{ secrets.EXPO_PUBLIC_SENTRY_DSN }}
+
+      # Required by the @sentry/react-native/expo plugin's source-map upload
+      # phase (sentry-cli reads SENTRY_ORG / SENTRY_PROJECT / SENTRY_AUTH_TOKEN
+      # at build time). Missing these = the gradle SentryUpload task fails.
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
       ANDROID_PACKAGE_NAME: com.buzzkeepr.app
       ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
