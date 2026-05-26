@@ -7,9 +7,7 @@ type BuzzScreeningDeniedCardProps = {
 };
 
 const DENIED_PARAGRAPHS = [
-  'Your application was not approved based, in part, on the results of your background screening.',
-  'If you feel this is in error, please tap the button below to resolve this decision.',
-  'You have 30 days to appeal from the time your application was denied.',
+  'If your application was not approved based on the results of your criminal background screening, and you feel this is in error, you have 30 days to appeal from the time your application was denied.',
 ];
 
 export const BuzzScreeningDeniedCard = ({
@@ -17,7 +15,7 @@ export const BuzzScreeningDeniedCard = ({
 }: BuzzScreeningDeniedCardProps) => {
   return (
     <InfoCard
-      title="We’re sorry, you did not pass TheBuzz screening."
+      title=""
       icon={
         <View className="rounded-full border-2 border-text-critical p-2">
           <TriangleAlert size={24} color="#000000" strokeWidth={2} />
@@ -27,6 +25,9 @@ export const BuzzScreeningDeniedCard = ({
       onPressAction={onAppealDecision}
       tone="critical"
     >
+      <Text className="flex-1 font-poppins-semiBold text-lg text-text-secondary">
+        We’re sorry, you did not pass TheBuzz screening.
+      </Text>
       <View className="gap-4">
         {DENIED_PARAGRAPHS.map((paragraph) => (
           <Text

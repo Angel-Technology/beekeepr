@@ -118,6 +118,7 @@ export const BuzzScreen = () => {
             ctaLabel={ctaLabel}
             onGetStarted={onGetStarted}
             onLearnMore={onLearnMore}
+            flow={flow}
           />
         ) : null}
 
