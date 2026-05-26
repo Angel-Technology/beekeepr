@@ -49,7 +49,6 @@ export const ProfilePreviewCard = ({
   nickname,
   handle,
   imageUrl,
-  joinedDate,
 }: ProfilePreviewCardProps) => {
   const displayedHandle = formatHandle(handle);
   const fallbackGrapheme = firstGrapheme(nickname);
@@ -90,11 +89,6 @@ export const ProfilePreviewCard = ({
             </Text>
           ) : null}
         </View>
-        {joinedDate ? (
-          <Text className="font-lexend-regular text-caption leading-200 text-text-weak">
-            {joinedDate}
-          </Text>
-        ) : null}
       </View>
     </View>
   );

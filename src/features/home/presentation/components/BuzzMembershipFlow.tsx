@@ -154,7 +154,6 @@ export const BuzzMembershipFlow = ({
             trialEndLabel={trialEndLabel}
           />
         </View>
-
         <View className="w-full gap-4">
           <Button
             label="Start 30-day free trial"

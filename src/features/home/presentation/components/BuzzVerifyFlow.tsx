@@ -1,6 +1,7 @@
 import { ArrowRight, FolderX, IdCard, ListX } from 'lucide-react-native';
 import { Button, Card, DetailCard, VerificationStatusPill } from '@components';
 import { Text, View } from 'react-native';
+import type { BuzzFlow } from '../../models/buzzFlow.types';
 
 type BuzzVerifyFlowProps = {
   ctaLabel: string;
@@ -12,6 +13,13 @@ type BuzzVerifyFlowProps = {
    * button would be redundant.
    */
   onLearnMore?: () => void;
+  /**
+   * Current Buzz tab flow. The CTA buttons are hidden when flow is
+   * 'denied' — the surrounding `BuzzScreeningDeniedCard` owns the
+   * "Contact Support" action, so the trial pitch buttons are misleading
+   * here.
+   */
+  flow: BuzzFlow;
 };
 
 const DETAIL_ICON_COLOR = 'rgba(0,0,0,0.7)';
@@ -20,6 +28,7 @@ export const BuzzVerifyFlow = ({
   ctaLabel,
   onGetStarted,
   onLearnMore,
+  flow,
 }: BuzzVerifyFlowProps) => {
   return (
     <Card className="gap-6 rounded-5 border-secondary">
@@ -44,7 +53,7 @@ export const BuzzVerifyFlow = ({
 
       <DetailCard
         title="What you’ll show others"
-        className="bg-brand-lighter gap-4 rounded-4 p-4"
+        className="gap-4 rounded-4 bg-brand-lighter p-4"
         titleClassName="font-poppins-semiBold text-base text-text-default"
         itemsClassName="gap-2 pl-0"
         itemTextClassName="font-sourceSans-semiBold text-callout text-text-secondary"
@@ -67,16 +76,24 @@ export const BuzzVerifyFlow = ({
         ]}
       />
 
-      <View className="gap-4">
-        <Button
-          label={ctaLabel}
-          iconRight={<ArrowRight color="#FFFFFF" size={24} strokeWidth={2.2} />}
-          onPress={onGetStarted}
-        />
-        {onLearnMore ? (
-          <Button label="Learn more" variant="outline" onPress={onLearnMore} />
-        ) : null}
-      </View>
+      {flow !== 'denied' ? (
+        <View className="gap-4">
+          <Button
+            label={ctaLabel}
+            iconRight={
+              <ArrowRight color="#FFFFFF" size={24} strokeWidth={2.2} />
+            }
+            onPress={onGetStarted}
+          />
+          {onLearnMore ? (
+            <Button
+              label="Learn more"
+              variant="outline"
+              onPress={onLearnMore}
+            />
+          ) : null}
+        </View>
+      ) : null}
     </Card>
   );
 };

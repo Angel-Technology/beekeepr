@@ -67,7 +67,7 @@ export const InfoCard = ({
   return (
     <View
       className={clsx(
-        'w-full gap-3 self-stretch rounded-5 p-4',
+        'w-full gap-3 self-stretch rounded-5 p-6',
         SURFACE_BY_TONE[tone],
         className,
       )}
