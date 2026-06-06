@@ -2,7 +2,7 @@ import type { PropsWithChildren } from 'react';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { Linking, NativeModules, Platform } from 'react-native';
 import Purchases, {
-  LOG_LEVEL,
+  // LOG_LEVEL,
   PURCHASES_ERROR_CODE,
   type CustomerInfo,
   type PurchasesPackage,
@@ -19,9 +19,9 @@ import {
  * one product (the monthly Buzzkeepr subscription with a 7-day free trial),
  * so callers only need:
  *
- * - `isReady`: provider has finished initial sync. Gate any
- *   entitlement-dependent UI on this so we don't flash "not subscribed"
- *   before RC's first response lands.
+ * - `isReady`: provider has finished initial sync **for the current auth
+ *   user**. Gate any entitlement-dependent UI on this so we don't flash
+ *   "not subscribed" on first sign-in while RC is still identifying.
  * - `isPro`: user currently has the entitlement. Source of truth for
  *   "should we let them past the paywall?"
  * - `subscriptionPriceString`: localised display price (e.g. "$9.99"). Null
@@ -85,33 +85,56 @@ const isRevenueCatNativeModuleAvailable = Boolean(NativeModules.RNPurchases);
 const REVENUECAT_NATIVE_MODULE_ERROR =
   'RevenueCat native module is unavailable. Rebuild the app in a development build after installing the SDK. Expo Go will not work for purchases.';
 
+// ---------------------------------------------------------------------------
+// State model
+// ---------------------------------------------------------------------------
+
+/**
+ * Provider sync state, modelled as a tagged union instead of a soup of
+ * `isReady` / `customerInfo` / `customerInfoUserId` booleans-and-nulls.
+ *
+ * - `pending`: provider mounted but the first sync for the current auth
+ *   user hasn't completed.
+ * - `ready`: we have a CustomerInfo snapshot tied to a specific auth user
+ *   id (or `null` for anonymous). `userId` is the auth user id this
+ *   snapshot was fetched for — if it stops matching the current
+ *   `user?.id ?? null`, callers will see `isReady === false` until the
+ *   next sync lands. This is the mechanism that prevents the sign-in
+ *   flicker; the mismatch is detected synchronously during render.
+ * - `failed`: initial sync threw. Treated as "ready with no entitlement"
+ *   so consumers unblock with `isPro: false` instead of spinning forever;
+ *   a subsequent identity change re-runs the effect and retries.
+ */
+type SyncState =
+  | { kind: 'pending' }
+  | {
+      kind: 'ready';
+      userId: string | null;
+      info: CustomerInfo;
+      monthlyPackage: PurchasesPackage | null;
+    }
+  | { kind: 'failed'; userId: string | null };
+
+const INITIAL_STATE: SyncState = { kind: 'pending' };
+
+const stateInfo = (state: SyncState): CustomerInfo | null =>
+  state.kind === 'ready' ? state.info : null;
+
+const statePackage = (state: SyncState): PurchasesPackage | null =>
+  state.kind === 'ready' ? state.monthlyPackage : null;
+
+// ---------------------------------------------------------------------------
+// Pure derivations
+// ---------------------------------------------------------------------------
+
 const hasActiveEntitlement = (info: CustomerInfo | null): boolean =>
   Boolean(info?.entitlements.active[REVENUECAT_ENTITLEMENT_ID]);
 
-// Narrow an `unknown` from a RevenueCat catch into the shape we care about.
-// RC's native bridge can surface either an `Error` subclass or a plain
-// object, so we probe with `in` after confirming we have a non-null object —
-// TS narrows the property to `unknown` on its own, no casts required.
-const isUserCancelledPurchaseError = (error: unknown): boolean => {
-  if (typeof error !== 'object' || error === null) {
-    return false;
-  }
-  if (
-    'code' in error &&
-    typeof error.code === 'string' &&
-    error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR
-  ) {
-    return true;
-  }
-  if ('userCancelled' in error && error.userCancelled === true) {
-    return true;
-  }
-  return false;
-};
-
-// `entitlements.all` retains historical (now-expired) grants alongside
-// active ones. If the entitlement exists in `.all` but not in `.active`
-// the user is lapsed.
+/**
+ * `entitlements.all` retains historical (now-expired) grants alongside
+ * active ones. If the entitlement exists in `.all` but not in `.active`
+ * the user is lapsed.
+ */
 const hasLapsedEntitlement = (info: CustomerInfo | null): boolean => {
   if (!info) {
     return false;
@@ -143,112 +166,168 @@ const getTrialState = (
   return { isOnTrial: true, trialDaysRemaining };
 };
 
+/**
+ * Narrow an `unknown` from a RevenueCat catch into the shape we care about.
+ * RC's native bridge surfaces either an `Error` subclass or a plain object,
+ * so we probe with `in` after confirming we have a non-null object — TS
+ * narrows the property to `unknown` on its own, no casts required.
+ */
+const isUserCancelledPurchaseError = (error: unknown): boolean => {
+  if (typeof error !== 'object' || error === null) {
+    return false;
+  }
+  if (
+    'code' in error &&
+    typeof error.code === 'string' &&
+    error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR
+  ) {
+    return true;
+  }
+  if ('userCancelled' in error && error.userCancelled === true) {
+    return true;
+  }
+  return false;
+};
+
+// ---------------------------------------------------------------------------
+// Effectful RC SDK calls
+// ---------------------------------------------------------------------------
+
+/**
+ * Configures RC once per process and forces its identified user to match
+ * the auth user. `Purchases.configure` is a no-op when RC was already
+ * configured earlier in the session, so we have to logIn / logOut
+ * explicitly to switch identities.
+ */
+const alignRevenueCatIdentity = async (
+  userId: string | null,
+): Promise<void> => {
+  const alreadyConfigured = await Purchases.isConfigured();
+  if (!alreadyConfigured) {
+    Purchases.configure({
+      apiKey: REVENUECAT_API_KEY,
+      appUserID: userId ?? undefined,
+    });
+  }
+  if (userId) {
+    await Purchases.logIn(userId);
+    return;
+  }
+  if (!(await Purchases.isAnonymous())) {
+    await Purchases.logOut();
+  }
+};
+
+/**
+ * Fetches the server-authoritative snapshot for the currently-identified
+ * RC user. We invalidate first because `logIn` / `getCustomerInfo` can
+ * otherwise return locally-cached info while a background server refresh
+ * is still in flight — a stale `isPro: false` was what caused the
+ * 'membership' → 'welcome' flash on sign-in.
+ */
+const fetchSnapshot = async (): Promise<{
+  info: CustomerInfo;
+  monthlyPackage: PurchasesPackage | null;
+}> => {
+  await Purchases.invalidateCustomerInfoCache();
+  const [offerings, info] = await Promise.all([
+    Purchases.getOfferings(),
+    Purchases.getCustomerInfo(),
+  ]);
+  return { info, monthlyPackage: offerings.current?.monthly ?? null };
+};
+
+// ---------------------------------------------------------------------------
+// Provider
+// ---------------------------------------------------------------------------
+
 export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
-  const { data: user } = useAuthSession();
+  const { data: user, isPending: isUserPending } = useAuthSession();
   const shouldUseRevenueCat =
     isRevenueCatConfigured && isRevenueCatNativeModuleAvailable;
 
-  const [isReady, setIsReady] = useState(!shouldUseRevenueCat);
-  const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
-  const [subscriptionPackage, setSubscriptionPackage] =
-    useState<PurchasesPackage | null>(null);
+  const [state, setState] = useState<SyncState>(INITIAL_STATE);
+
+  // Derived during render so a userId mismatch is visible *immediately*
+  // when auth flips `user.id` — no effect lag, no flicker window. `failed`
+  // counts as ready too, otherwise a transient init error would freeze
+  // consumers on the loader screen.
+  const expectedUserId = user?.id ?? null;
+  const isReady =
+    !shouldUseRevenueCat ||
+    (state.kind !== 'pending' && state.userId === expectedUserId);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const initialize = async () => {
-      if (!shouldUseRevenueCat) {
-        if (isRevenueCatConfigured && !isRevenueCatNativeModuleAvailable) {
-          console.warn(REVENUECAT_NATIVE_MODULE_ERROR);
-        }
-        return;
-      }
-
-      try {
-        await Purchases.setLogLevel(__DEV__ ? LOG_LEVEL.DEBUG : LOG_LEVEL.INFO);
-
-        const alreadyConfigured = await Purchases.isConfigured();
-        if (!alreadyConfigured) {
-          Purchases.configure({
-            apiKey: REVENUECAT_API_KEY,
-            appUserID: user?.id,
-          });
-        }
-
-        const [offerings, info] = await Promise.all([
-          Purchases.getOfferings(),
-          Purchases.getCustomerInfo(),
-        ]);
-
-        if (!isMounted) {
-          return;
-        }
-
-        // We use RevenueCat's standard `monthly` package slot; product IDs
-        // are configured in the RC dashboard, not hardcoded here.
-        setSubscriptionPackage(offerings.current?.monthly ?? null);
-        setCustomerInfo(info);
-      } catch (error) {
-        console.error('RevenueCat initialization failed', error);
-      } finally {
-        if (isMounted) {
-          setIsReady(true);
-        }
-      }
-    };
-
-    if (!shouldUseRevenueCat) {
-      setIsReady(true);
+    if (isUserPending) {
       return;
     }
 
-    const handleCustomerInfoUpdated = (info: CustomerInfo) => {
-      if (isMounted) {
-        setCustomerInfo(info);
+    // Non-RC path: `isReady` already short-circuits to `true` via
+    // `!shouldUseRevenueCat`, so consumers unblock without us touching
+    // state. Just warn once if the native module is missing.
+    if (!shouldUseRevenueCat) {
+      if (isRevenueCatConfigured && !isRevenueCatNativeModuleAvailable) {
+        console.warn(REVENUECAT_NATIVE_MODULE_ERROR);
+      }
+      return;
+    }
+
+    let cancelled = false;
+    // Buffers a CustomerInfo update that arrives before the initial fetch
+    // resolves — without this, the listener event would no-op (state is
+    // still `pending`) and the trailing snapshot setState would overwrite
+    // with stale data.
+    let bufferedListenerInfo: CustomerInfo | null = null;
+
+    const syncForCurrentUser = async () => {
+      try {
+        // await Purchases.setLogLevel(__DEV__ ? LOG_LEVEL.DEBUG : LOG_LEVEL.INFO);
+        await alignRevenueCatIdentity(expectedUserId);
+        if (cancelled) {
+          return;
+        }
+        const snapshot = await fetchSnapshot();
+        if (cancelled) {
+          return;
+        }
+        setState({
+          kind: 'ready',
+          userId: expectedUserId,
+          info: bufferedListenerInfo ?? snapshot.info,
+          monthlyPackage: snapshot.monthlyPackage,
+        });
+      } catch (error) {
+        console.error('RevenueCat initialization failed', error);
+        if (cancelled) {
+          return;
+        }
+        setState({ kind: 'failed', userId: expectedUserId });
       }
     };
 
-    initialize();
+    const handleCustomerInfoUpdated = (info: CustomerInfo) => {
+      if (cancelled) {
+        return;
+      }
+      setState((prev) => {
+        if (prev.kind === 'ready') {
+          return { ...prev, info };
+        }
+        // Pre-`ready` (initial fetch still in flight): stash for the
+        // snapshot transition to pick up.
+        bufferedListenerInfo = info;
+        return prev;
+      });
+    };
+
+    syncForCurrentUser();
     Purchases.addCustomerInfoUpdateListener(handleCustomerInfoUpdated);
 
     return () => {
-      isMounted = false;
+      cancelled = true;
       Purchases.removeCustomerInfoUpdateListener(handleCustomerInfoUpdated);
     };
-  }, [shouldUseRevenueCat, user?.id]);
-
-  // Re-identify with RevenueCat whenever the app user changes. RC ties
-  // entitlement state to its own user ID, so this keeps purchase history
-  // aligned with the signed-in account across login/logout.
-  useEffect(() => {
-    if (!shouldUseRevenueCat || !isReady) {
-      return;
-    }
-
-    const syncIdentity = async () => {
-      try {
-        if (user?.id) {
-          const result = await Purchases.logIn(user.id);
-          setCustomerInfo(result.customerInfo);
-          return;
-        }
-
-        // RC starts anonymous on first launch; calling logOut in that state
-        // throws "Called logOut but the current user is anonymous." We only
-        // need to log out when transitioning away from a signed-in user.
-        if (await Purchases.isAnonymous()) {
-          return;
-        }
-
-        const info = await Purchases.logOut();
-        setCustomerInfo(info);
-      } catch (error) {
-        console.error('RevenueCat identity sync failed', error);
-      }
-    };
-
-    syncIdentity();
-  }, [isReady, shouldUseRevenueCat, user?.id]);
+  }, [shouldUseRevenueCat, expectedUserId, isUserPending]);
 
   /**
    * Triggers the platform purchase sheet for the single subscription
@@ -260,16 +339,17 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
     if (!shouldUseRevenueCat) {
       throw new Error(REVENUECAT_NATIVE_MODULE_ERROR);
     }
-
-    if (!subscriptionPackage) {
+    const monthlyPackage = statePackage(state);
+    if (!monthlyPackage) {
       throw new Error(
         'Subscription package is not available yet. Try again in a moment.',
       );
     }
-
     try {
-      const result = await Purchases.purchasePackage(subscriptionPackage);
-      setCustomerInfo(result.customerInfo);
+      const result = await Purchases.purchasePackage(monthlyPackage);
+      setState((prev) =>
+        prev.kind === 'ready' ? { ...prev, info: result.customerInfo } : prev,
+      );
       return hasActiveEntitlement(result.customerInfo);
     } catch (error) {
       if (isUserCancelledPurchaseError(error)) {
@@ -289,19 +369,17 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
     if (!shouldUseRevenueCat) {
       throw new Error(REVENUECAT_NATIVE_MODULE_ERROR);
     }
-
     const info = await Purchases.restorePurchases();
-    setCustomerInfo(info);
+    setState((prev) => (prev.kind === 'ready' ? { ...prev, info } : prev));
     return hasActiveEntitlement(info);
   };
 
   const refreshCustomerInfo = async (): Promise<boolean> => {
     if (!shouldUseRevenueCat) {
-      return hasActiveEntitlement(customerInfo);
+      return hasActiveEntitlement(stateInfo(state));
     }
-
     const info = await Purchases.getCustomerInfo();
-    setCustomerInfo(info);
+    setState((prev) => (prev.kind === 'ready' ? { ...prev, info } : prev));
     return hasActiveEntitlement(info);
   };
 
@@ -320,8 +398,17 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
       return;
     }
 
-    const result = await Purchases.logIn(user.id);
-    setCustomerInfo(result.customerInfo);
+    await Purchases.logIn(user.id);
+    // Re-pull the full snapshot (info + offerings) so state stays a single
+    // coherent unit. Going through `fetchSnapshot` here mirrors the main
+    // effect's sync path instead of patching `info` alone.
+    const snapshot = await fetchSnapshot();
+    setState({
+      kind: 'ready',
+      userId: user.id,
+      info: snapshot.info,
+      monthlyPackage: snapshot.monthlyPackage,
+    });
   };
 
   const openManageSubscription = async (): Promise<void> => {
@@ -333,25 +420,34 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
   };
 
   const value = useMemo<RevenueCatContextValue>(() => {
-    const { isOnTrial, trialDaysRemaining } = getTrialState(customerInfo);
+    const info = stateInfo(state);
+    const monthlyPackage = statePackage(state);
+    // Gate every derived field on `isReady` — a stale snapshot from a
+    // previous identity must never leak through during transitions, even
+    // if a consumer ignored `isReady`. Asymmetry here would be a foot-gun
+    // for the next field added.
+    const { isOnTrial, trialDaysRemaining } = isReady
+      ? getTrialState(info)
+      : { isOnTrial: false, trialDaysRemaining: null };
     return {
       isReady,
-      isPro: hasActiveEntitlement(customerInfo),
-      isLapsed: hasLapsedEntitlement(customerInfo),
+      isPro: isReady && hasActiveEntitlement(info),
+      isLapsed: isReady && hasLapsedEntitlement(info),
       isOnTrial,
       trialDaysRemaining,
-      subscriptionPriceString: subscriptionPackage?.product.priceString ?? null,
+      subscriptionPriceString: isReady
+        ? (monthlyPackage?.product.priceString ?? null)
+        : null,
       purchase,
       restorePurchases,
       ensureIdentified,
       refreshCustomerInfo,
       openManageSubscription,
     };
-    // `purchase` and `restorePurchases` are recreated each render but
-    // closure-stable enough — callers don't memoise them, and the cost is
-    // negligible compared to the value of a clean signature.
+    // Action methods are recreated each render but closure-stable enough —
+    // callers don't memoise them, and the cost is negligible.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, customerInfo, subscriptionPackage]);
+  }, [isReady, state]);
 
   return (
     <RevenueCatContext.Provider value={value}>
@@ -362,10 +458,8 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
 
 export const useRevenueCat = () => {
   const context = useContext(RevenueCatContext);
-
   if (!context) {
     throw new Error('useRevenueCat must be used within RevenueCatProvider');
   }
-
   return context;
 };

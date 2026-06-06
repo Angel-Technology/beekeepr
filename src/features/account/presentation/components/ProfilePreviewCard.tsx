@@ -78,7 +78,7 @@ export const ProfilePreviewCard = ({
             className="font-lexend-semiBold text-base leading-6 text-text-default"
             numberOfLines={1}
           >
-            {nickname || 'Your name'}
+            {nickname || ''}
           </Text>
           {displayedHandle ? (
             <Text

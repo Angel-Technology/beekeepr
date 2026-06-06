@@ -37,7 +37,7 @@ export const BuzzRenewalFlow = ({
         Your membership has lapsed. Renew to rejoin TheBuzz community and keep
         your Buzz Badge visible on your dating apps.
       </Text>
-      <Text className="text-center font-poppins-regular text-base text-text-default">
+      <Text className="text-center font-poppins-bold text-xl text-text-default">
         $9.99/month
       </Text>
       <View className="gap-3">

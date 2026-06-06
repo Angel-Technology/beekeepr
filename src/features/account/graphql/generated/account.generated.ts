@@ -142,6 +142,18 @@ export type SearchUsersEdge = {
   node: UserSearchResultDto;
 };
 
+export type SignInWithAppleInput = {
+  displayName?: InputMaybe<Scalars['String']['input']>;
+  idToken: Scalars['String']['input'];
+};
+
+export type SignInWithApplePayload = {
+  __typename?: 'SignInWithApplePayload';
+  error?: Maybe<Scalars['String']['output']>;
+  session?: Maybe<AuthSessionGraph>;
+  user?: Maybe<UserGraph>;
+};
+
 export type SignInWithGoogleInput = {
   idToken: Scalars['String']['input'];
 };
@@ -257,6 +269,7 @@ export type UserMutations = {
   redeemPromoCode: RedeemPromoCodePayload;
   requestAccountDeletion: RequestAccountDeletionPayload;
   requestEmailSignIn: RequestEmailSignInPayload;
+  signInWithApple: SignInWithApplePayload;
   signInWithGoogle: SignInWithGooglePayload;
   signOut: SignOutPayload;
   startInstantCriminalCheck: StartInstantCriminalCheckPayload;
@@ -278,6 +291,11 @@ export type UserMutationsRedeemPromoCodeArgs = {
 
 export type UserMutationsRequestEmailSignInArgs = {
   input: RequestEmailSignInInput;
+};
+
+
+export type UserMutationsSignInWithAppleArgs = {
+  input: SignInWithAppleInput;
 };
 
 

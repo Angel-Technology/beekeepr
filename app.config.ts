@@ -135,6 +135,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             'com.googleusercontent.apps.280443449247-82661408bk0p6u7o05h7p0004l82sm43',
         },
       ],
+      'expo-apple-authentication',
       './plugins/withPersonaNative',
       './plugins/withAndroidSigning',
       [

@@ -8,6 +8,9 @@ import {
   RequestEmailSignInDocument,
   type RequestEmailSignInMutation,
   type RequestEmailSignInMutationVariables,
+  SignInWithAppleDocument,
+  type SignInWithAppleMutation,
+  type SignInWithAppleMutationVariables,
   SignInWithGoogleDocument,
   type SignInWithGoogleMutation,
   type SignInWithGoogleMutationVariables,
@@ -18,6 +21,7 @@ import {
   type VerifyEmailSignInMutationVariables,
 } from '../graphql/generated/auth.generated';
 import type {
+  AppleSignInInput,
   EmailVerificationRequestInput,
   GoogleSignInInput,
   VerifyEmailCodeInput,
@@ -50,6 +54,16 @@ export const authRepository = {
       SignInWithGoogleMutationVariables
     >({
       document: SignInWithGoogleDocument,
+      variables: { input },
+    });
+  },
+
+  signInWithApple(input: AppleSignInInput) {
+    return executeGraphQL<
+      SignInWithAppleMutation,
+      SignInWithAppleMutationVariables
+    >({
+      document: SignInWithAppleDocument,
       variables: { input },
     });
   },

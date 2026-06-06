@@ -90,12 +90,10 @@ const PaperOnboardingComponent = forwardRef<
 
     const animatedIndex = useTiming({
       translationValue,
-      velocityValue,
       gestureActive,
       size: data.length,
       screenWidth: dimensions.width,
       currentIndex,
-      onSnap: onIndexChange,
     });
 
     const animatedIndicatorsContainerPosition = useDerivedValue(() => {
@@ -112,6 +110,8 @@ const PaperOnboardingComponent = forwardRef<
     });
 
     // Gesture
+    const screenWidth = dimensions.width;
+    const dataLength = data.length;
     const panGesture = Gesture.Pan()
       .onStart(() => {
         'worklet';
@@ -124,9 +124,39 @@ const PaperOnboardingComponent = forwardRef<
         velocityValue.value =
           direction === 'horizontal' ? event.velocityX : event.velocityY;
       })
-      .onEnd(() => {
+      .onEnd((event) => {
         'worklet';
+        const translation =
+          direction === 'horizontal' ? event.translationX : event.translationY;
+        const velocity =
+          direction === 'horizontal' ? event.velocityX : event.velocityY;
+        const normalizedDrag = I18nManager.isRTL
+          ? translation / screenWidth
+          : -translation / screenWidth;
+        const normalizedVelocity = I18nManager.isRTL
+          ? velocity / (screenWidth * 2)
+          : -velocity / (screenWidth * 2);
+
+        const idx = currentIndex.value;
+        const combined =
+          Math.abs(normalizedDrag) + Math.abs(normalizedVelocity);
+
+        let targetIndex = idx;
+        if (combined > 0.5) {
+          const swipeDirection = normalizedDrag + normalizedVelocity;
+          if (swipeDirection > 0 && idx < dataLength - 1) {
+            targetIndex = idx + 1;
+          } else if (swipeDirection < 0 && idx > 0) {
+            targetIndex = idx - 1;
+          }
+        }
+
+        translationValue.value = 0;
+        velocityValue.value = 0;
         gestureActive.value = false;
+        if (targetIndex !== idx) {
+          currentIndex.value = targetIndex;
+        }
       })
       .onFinalize(() => {
         'worklet';
