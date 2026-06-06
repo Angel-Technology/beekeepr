@@ -73,7 +73,7 @@ export const BuzzScreen = () => {
         // 'membership' for ~500ms before snapping to 'welcome' once
         // `isPro` resolves.
         return (
-          <View className="flex-1 items-center justify-center py-24">
+          <View className="flex-1 items-center justify-center py-80">
             <BounceLoader colorClassName="bg-text-default" />
           </View>
         );

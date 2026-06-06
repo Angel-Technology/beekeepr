@@ -1,3 +1,4 @@
+import { appleAuth } from '@src/lib/auth/apple';
 import { googleAuth } from '@src/lib/auth/google';
 import { tokenStorage } from '@src/lib/auth/tokenStorage';
 import { authRepository } from '../repository/authRepository';
@@ -68,6 +69,33 @@ export const authService = {
     return {
       session: payload.signInWithGoogle.session,
       user: payload.signInWithGoogle.user,
+    };
+  },
+
+  async signInWithApple(): Promise<AuthCredentials> {
+    const { identityToken, displayName } = await appleAuth.signIn();
+    const payload = await authRepository.signInWithApple({
+      idToken: identityToken,
+      displayName,
+    });
+
+    if (payload.signInWithApple.error) {
+      throw new Error(payload.signInWithApple.error);
+    }
+
+    if (!payload.signInWithApple.session) {
+      throw new Error('Apple sign-in succeeded but no session was returned.');
+    }
+
+    if (!payload.signInWithApple.user) {
+      throw new Error('Apple sign-in succeeded but no user was returned.');
+    }
+
+    await tokenStorage.setToken(payload.signInWithApple.session.token);
+
+    return {
+      session: payload.signInWithApple.session,
+      user: payload.signInWithApple.user,
     };
   },
 

@@ -87,9 +87,7 @@ export const MenuDrawerContent = ({
             {
               label: 'Want to be a partner?',
               onPress: () =>
-                closeDrawerThen(() =>
-                  openInAppBrowser(environmentConfig.partnershipsURL),
-                ),
+                openInAppBrowser(environmentConfig.partnershipsURL),
             },
           ]}
         />

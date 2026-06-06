@@ -148,10 +148,24 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
   const shouldUseRevenueCat =
     isRevenueCatConfigured && isRevenueCatNativeModuleAvailable;
 
-  const [isReady, setIsReady] = useState(!shouldUseRevenueCat);
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
+  // Tracks which auth user the current `customerInfo` was loaded for.
+  // `undefined` = never loaded, `null` = loaded for an anonymous user,
+  // `string` = loaded for that signed-in user id. We derive `isReady` from
+  // `customerInfoUserId === (user?.id ?? null)` *during render* — so the
+  // moment auth flips `user.id`, the mismatch is visible synchronously and
+  // consumers see `isResolving: true` on the very same render. No effect
+  // lag means no stale 'membership' flash during sign-in.
+  const [customerInfoUserId, setCustomerInfoUserId] = useState<
+    string | null | undefined
+  >(undefined);
   const [subscriptionPackage, setSubscriptionPackage] =
     useState<PurchasesPackage | null>(null);
+
+  const expectedUserId = user?.id ?? null;
+  const isReady =
+    !shouldUseRevenueCat ||
+    (customerInfoUserId !== undefined && customerInfoUserId === expectedUserId);
 
   useEffect(() => {
     // Wait for the auth session to resolve before configuring RC. Otherwise
@@ -164,16 +178,19 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
       return;
     }
 
+    if (!shouldUseRevenueCat) {
+      if (isRevenueCatConfigured && !isRevenueCatNativeModuleAvailable) {
+        console.warn(REVENUECAT_NATIVE_MODULE_ERROR);
+      }
+      // Stamp the loaded user so the derived `isReady` flips to `true` even
+      // on the non-RC path.
+      setCustomerInfoUserId(user?.id ?? null);
+      return;
+    }
+
     let isMounted = true;
 
     const initialize = async () => {
-      if (!shouldUseRevenueCat) {
-        if (isRevenueCatConfigured && !isRevenueCatNativeModuleAvailable) {
-          console.warn(REVENUECAT_NATIVE_MODULE_ERROR);
-        }
-        return;
-      }
-
       try {
         await Purchases.setLogLevel(__DEV__ ? LOG_LEVEL.DEBUG : LOG_LEVEL.INFO);
 
@@ -185,6 +202,27 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
           });
         }
 
+        // Force RC's identity to match the current auth user before we
+        // touch customerInfo. `Purchases.configure` is a no-op once RC was
+        // configured earlier in the session, so we have to explicitly
+        // logIn/logOut to switch users.
+        if (user?.id) {
+          await Purchases.logIn(user.id);
+        } else if (!(await Purchases.isAnonymous())) {
+          await Purchases.logOut();
+        }
+        if (!isMounted) {
+          return;
+        }
+
+        // `logIn`/`getCustomerInfo` can return RC's locally-cached
+        // CustomerInfo while a background server refresh is still in
+        // flight — for a pro user that briefly reports `isPro: false`
+        // before the listener fires with the real value. Invalidating
+        // forces the next read to hit the network so what we commit is
+        // server-authoritative.
+        await Purchases.invalidateCustomerInfoCache();
+
         const [offerings, info] = await Promise.all([
           Purchases.getOfferings(),
           Purchases.getCustomerInfo(),
@@ -194,23 +232,13 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
           return;
         }
 
-        // We use RevenueCat's standard `monthly` package slot; product IDs
-        // are configured in the RC dashboard, not hardcoded here.
         setSubscriptionPackage(offerings.current?.monthly ?? null);
         setCustomerInfo(info);
+        setCustomerInfoUserId(user?.id ?? null);
       } catch (error) {
         console.error('RevenueCat initialization failed', error);
-      } finally {
-        if (isMounted) {
-          setIsReady(true);
-        }
       }
     };
-
-    if (!shouldUseRevenueCat) {
-      setIsReady(true);
-      return;
-    }
 
     const handleCustomerInfoUpdated = (info: CustomerInfo) => {
       if (isMounted) {
@@ -226,39 +254,6 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
       Purchases.removeCustomerInfoUpdateListener(handleCustomerInfoUpdated);
     };
   }, [shouldUseRevenueCat, user?.id, isUserPending]);
-
-  // Re-identify with RevenueCat whenever the app user changes. RC ties
-  // entitlement state to its own user ID, so this keeps purchase history
-  // aligned with the signed-in account across login/logout.
-  useEffect(() => {
-    if (!shouldUseRevenueCat || !isReady) {
-      return;
-    }
-
-    const syncIdentity = async () => {
-      try {
-        if (user?.id) {
-          const result = await Purchases.logIn(user.id);
-          setCustomerInfo(result.customerInfo);
-          return;
-        }
-
-        // RC starts anonymous on first launch; calling logOut in that state
-        // throws "Called logOut but the current user is anonymous." We only
-        // need to log out when transitioning away from a signed-in user.
-        if (await Purchases.isAnonymous()) {
-          return;
-        }
-
-        const info = await Purchases.logOut();
-        setCustomerInfo(info);
-      } catch (error) {
-        console.error('RevenueCat identity sync failed', error);
-      }
-    };
-
-    syncIdentity();
-  }, [isReady, shouldUseRevenueCat, user?.id]);
 
   /**
    * Triggers the platform purchase sheet for the single subscription
@@ -344,10 +339,12 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
 
   const value = useMemo<RevenueCatContextValue>(() => {
     const { isOnTrial, trialDaysRemaining } = getTrialState(customerInfo);
+    // Gate the entitlement booleans on `isReady` so a stale customerInfo
+    // from a previous user never leaks through during identity transitions.
     return {
       isReady,
-      isPro: hasActiveEntitlement(customerInfo),
-      isLapsed: hasLapsedEntitlement(customerInfo),
+      isPro: isReady && hasActiveEntitlement(customerInfo),
+      isLapsed: isReady && hasLapsedEntitlement(customerInfo),
       isOnTrial,
       trialDaysRemaining,
       subscriptionPriceString: subscriptionPackage?.product.priceString ?? null,

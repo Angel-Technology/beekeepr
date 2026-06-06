@@ -6240,6 +6240,7 @@ __metadata:
     eslint-plugin-react: ^7.37.5
     eslint-plugin-react-hooks: ^7.0.1
     expo: ^55
+    expo-apple-authentication: ~55.0.13
     expo-blur: ~55.0.14
     expo-constants: ~55.0.13
     expo-image: ~55.0.8
@@ -8145,6 +8146,16 @@ __metadata:
     jest-message-util: ^29.7.0
     jest-util: ^29.7.0
   checksum: 9257f10288e149b81254a0fda8ffe8d54a7061cd61d7515779998b012579d2b8c22354b0eb901daf0145f347403da582f75f359f4810c007182ad3fb318b5c0c
+  languageName: node
+  linkType: hard
+
+"expo-apple-authentication@npm:~55.0.13":
+  version: 55.0.13
+  resolution: "expo-apple-authentication@npm:55.0.13"
+  peerDependencies:
+    expo: "*"
+    react-native: "*"
+  checksum: a9892daeff4f2da371229c9f124ac05d16b5022baf967e571166167fba98a53009ad220489e4e5022aaf6c1ce86c78e88468864f92bd2c6da6cd0c50a985155e
   languageName: node
   linkType: hard
 

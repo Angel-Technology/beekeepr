@@ -1,0 +1,11 @@
+mutation SignInWithApple($input: SignInWithAppleInput!) {
+  signInWithApple(input: $input) {
+    session {
+      ...AuthSessionFields
+    }
+    user {
+      ...AuthUserFields
+    }
+    error
+  }
+}

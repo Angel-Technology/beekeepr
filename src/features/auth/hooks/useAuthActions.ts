@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { isAppleSignInCancelled } from '@src/lib/auth/apple';
 import { isGoogleSignInCancelled } from '@src/lib/auth/google';
 import { useErrorModal } from '@src/lib/error-modal';
 import { authQueryKeys } from '../models/authQueryKeys';
@@ -38,6 +39,19 @@ export const useAuthActions = () => {
     },
   });
 
+  const signInWithApple = useMutation({
+    mutationFn: authService.signInWithApple,
+    onSuccess: ({ user }) => {
+      queryClient.setQueryData(authQueryKeys.session(), user);
+    },
+    onError: (error) => {
+      if (isAppleSignInCancelled(error)) {
+        return;
+      }
+      showFromError(error, 'Apple Sign-In Failed');
+    },
+  });
+
   const signOut = useMutation({
     mutationFn: authService.signOut,
     onSuccess: () => {
@@ -59,6 +73,7 @@ export const useAuthActions = () => {
     requestEmailSignIn,
     verifyEmailSignIn,
     signInWithGoogle,
+    signInWithApple,
     signOut,
     acceptTerms,
   };

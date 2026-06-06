@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 
+import AppleIcon from '@assets/svg/AppleIcon';
 import GoogleIcon from '@assets/svg/GoogleIcon';
 import IllustrationLetsdothis from '@assets/svg/IllustrationLetsdothis';
 import { Button, Container, VerticalSpacer } from '@components';
@@ -9,7 +10,7 @@ import { AuthBrandHeader } from '@src/features/auth/presentation/components/Auth
 
 export const OnboardingCreateAccountScreen = () => {
   const router = useRouter();
-  const { signInWithGoogle } = useAuthActions();
+  const { signInWithGoogle, signInWithApple } = useAuthActions();
 
   return (
     <Container
@@ -26,6 +27,17 @@ export const OnboardingCreateAccountScreen = () => {
       <VerticalSpacer size="2xl" />
 
       <View className="w-full gap-4 pb-4">
+        {Platform.OS === 'ios' ? (
+          <Button
+            label="Continue with Apple"
+            variant="outline"
+            iconLeft={<AppleIcon />}
+            loading={signInWithApple.isPending}
+            onPress={() => {
+              signInWithApple.mutate();
+            }}
+          />
+        ) : null}
         <Button
           label="Continue with Google"
           variant="outline"
