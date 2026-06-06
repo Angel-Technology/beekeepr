@@ -32,7 +32,7 @@ export const BottomTabBar = ({
     >
       <BlurView
         intensity={90}
-        tint="regular"
+        tint="light"
         style={[StyleSheet.absoluteFill, { opacity: 1 }]}
       />
       <View
