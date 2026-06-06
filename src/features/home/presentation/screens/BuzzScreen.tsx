@@ -65,6 +65,60 @@ export const BuzzScreen = () => {
     },
   });
 
+  const renderFlow = () => {
+    switch (flow) {
+      case null:
+        // Wait for the auth session + RevenueCat customer info to land
+        // before picking a flow — otherwise we flash 'verify' or
+        // 'membership' for ~500ms before snapping to 'welcome' once
+        // `isPro` resolves.
+        return (
+          <View className="flex-1 items-center justify-center py-24">
+            <BounceLoader colorClassName="bg-text-default" />
+          </View>
+        );
+      case 'denied':
+        return (
+          <>
+            <BuzzScreeningDeniedCard
+              onAppealDecision={() =>
+                openInAppBrowser(environmentConfig.supportURL)
+              }
+            />
+            <BuzzVerifyFlow
+              ctaLabel={ctaLabel}
+              onGetStarted={onGetStarted}
+              onLearnMore={onLearnMore}
+              flow={flow}
+            />
+          </>
+        );
+      case 'verify':
+        return (
+          <BuzzVerifyFlow
+            ctaLabel={ctaLabel}
+            onGetStarted={onGetStarted}
+            onLearnMore={onLearnMore}
+            flow={flow}
+          />
+        );
+      case 'membership':
+        return <BuzzMembershipFlow {...membershipProps} />;
+      case 'renewal':
+        return <BuzzRenewalFlow {...renewalProps} />;
+      case 'welcome':
+        return <BuzzWelcomeFlow {...welcomeProps} />;
+      case 'active':
+        return (
+          <BuzzActiveFlow
+            onReviewSubmittedInfo={() => {
+              resetSubmittedBackgroundCheck();
+            }}
+          />
+        );
+    }
+  };
+
   const headerAnimatedStyle = useAnimatedStyle(() => {
     const progress = interpolate(
       scrollY.value,
@@ -94,49 +148,7 @@ export const BuzzScreen = () => {
         keyboardShouldPersistTaps="handled"
         bottomOffset={24}
       >
-        {flow === null ? (
-          // Wait for the auth session + RevenueCat customer info to land
-          // before picking a flow — otherwise we flash 'verify' or
-          // 'membership' for ~500ms before snapping to 'welcome' once
-          // `isPro` resolves.
-          <View className="flex-1 items-center justify-center py-24">
-            <BounceLoader colorClassName="bg-text-default" />
-          </View>
-        ) : null}
-
-        {flow === 'denied' ? (
-          <BuzzScreeningDeniedCard
-            // TODO: wire to the appeal-decision flow when it lands.
-            onAppealDecision={() =>
-              openInAppBrowser(environmentConfig.supportURL)
-            }
-          />
-        ) : null}
-
-        {flow === 'verify' || flow === 'denied' ? (
-          <BuzzVerifyFlow
-            ctaLabel={ctaLabel}
-            onGetStarted={onGetStarted}
-            onLearnMore={onLearnMore}
-            flow={flow}
-          />
-        ) : null}
-
-        {flow === 'membership' ? (
-          <BuzzMembershipFlow {...membershipProps} />
-        ) : null}
-
-        {flow === 'renewal' ? <BuzzRenewalFlow {...renewalProps} /> : null}
-
-        {flow === 'welcome' ? <BuzzWelcomeFlow {...welcomeProps} /> : null}
-
-        {flow === 'active' ? (
-          <BuzzActiveFlow
-            onReviewSubmittedInfo={() => {
-              resetSubmittedBackgroundCheck();
-            }}
-          />
-        ) : null}
+        {renderFlow()}
       </AnimatedKeyboardAwareScrollView>
 
       {flow === 'membership' ? (

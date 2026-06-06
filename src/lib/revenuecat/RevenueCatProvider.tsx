@@ -144,7 +144,7 @@ const getTrialState = (
 };
 
 export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
-  const { data: user } = useAuthSession();
+  const { data: user, isPending: isUserPending } = useAuthSession();
   const shouldUseRevenueCat =
     isRevenueCatConfigured && isRevenueCatNativeModuleAvailable;
 
@@ -154,6 +154,16 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
     useState<PurchasesPackage | null>(null);
 
   useEffect(() => {
+    // Wait for the auth session to resolve before configuring RC. Otherwise
+    // we configure anonymously, flip `isReady=true` with `isPro=false`, and
+    // only later (after the identity-sync effect logs the user in) does
+    // `isPro` flip to the real value. Consumers like `useBuzzTab` derive
+    // their flow off `isReady && isPro`, so that intermediate state flashes
+    // a wrong screen (e.g. 'membership' before snapping to 'welcome').
+    if (isUserPending) {
+      return;
+    }
+
     let isMounted = true;
 
     const initialize = async () => {
@@ -215,7 +225,7 @@ export const RevenueCatProvider = ({ children }: PropsWithChildren) => {
       isMounted = false;
       Purchases.removeCustomerInfoUpdateListener(handleCustomerInfoUpdated);
     };
-  }, [shouldUseRevenueCat, user?.id]);
+  }, [shouldUseRevenueCat, user?.id, isUserPending]);
 
   // Re-identify with RevenueCat whenever the app user changes. RC ties
   // entitlement state to its own user ID, so this keeps purchase history
