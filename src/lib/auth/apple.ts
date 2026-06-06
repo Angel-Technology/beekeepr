@@ -46,7 +46,10 @@ export const appleAuth = {
     return AppleAuthentication.isAvailableAsync();
   },
 
-  async signIn(): Promise<{ identityToken: string; displayName: string | null }> {
+  async signIn(): Promise<{
+    identityToken: string;
+    displayName: string | null;
+  }> {
     let credential: AppleAuthentication.AppleAuthenticationCredential;
     try {
       credential = await AppleAuthentication.signInAsync({

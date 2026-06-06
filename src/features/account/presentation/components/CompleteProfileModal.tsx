@@ -85,7 +85,7 @@ export const CompleteProfileModal = ({
           </View>
         </View>
 
-        <Text className="text-text-tertiary font-lexend-regular text-xs leading-[18px]">
+        <Text className="font-lexend-regular text-xs leading-[18px] text-text-tertiary">
           You can edit this anytime in the &ldquo;Menu&rdquo; above.
         </Text>
       </View>

@@ -23,7 +23,7 @@ export const BottomActionBar = ({
   return (
     <View
       className={clsx(
-        'shadow-bottom-bar w-full gap-3 bg-bg-default px-6 pt-4',
+        'w-full gap-3 bg-bg-default px-6 pt-4 shadow-bottom-bar',
         className,
       )}
       style={{

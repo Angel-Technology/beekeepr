@@ -20,7 +20,7 @@ const SearchTabsPill = ({ active }: { active: SearchTab }) => {
             key={tab.id}
             className={clsx(
               'min-h-[44px] flex-1 items-center justify-center rounded-round px-4',
-              isActive ? 'shadow-small bg-white' : null,
+              isActive ? 'bg-white shadow-small' : null,
             )}
           >
             <Text
