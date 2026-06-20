@@ -125,7 +125,7 @@ export const OtpInput = ({
             className={clsx(
               'h-[50px] w-[50px] rounded-3 bg-bg-default text-center font-lexend-regular text-base leading-tight text-text-default',
               isActive
-                ? 'border-2 border-text-default'
+                ? 'border border-text-default'
                 : 'border border-border-weak',
               disabled && 'opacity-60',
             )}

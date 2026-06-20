@@ -21,7 +21,7 @@ type MenuSectionProps = {
 const DEFAULT_ICON = <ChevronRight size={MENU_ICON_SIZE} color="#000000" />;
 
 export const MenuSection = ({ items }: MenuSectionProps) => (
-  <View className="w-full overflow-hidden rounded-5 border border-secondary bg-bg-default">
+  <View className="w-full self-stretch overflow-hidden rounded-lg border border-border-weak">
     {items.map((item, index) => {
       const isLast = index === items.length - 1;
 
@@ -31,19 +31,23 @@ export const MenuSection = ({ items }: MenuSectionProps) => (
           accessibilityRole="button"
           accessibilityLabel={item.accessibilityLabel ?? item.label}
           onPress={item.onPress}
-          className={clsx(
-            'w-full flex-row items-center bg-bg-default py-4 pl-6 pr-4',
-            !isLast && 'border-b border-secondary',
-          )}
+          className="w-full self-stretch px-6"
         >
-          <Text
-            className="flex-1 font-lexend-regular text-base leading-6 text-text-default"
-            style={[{ letterSpacing: -0.3 }, item.labelStyle]}
+          <View
+            className={clsx(
+              'w-full flex-row items-center gap-4 py-4',
+              !isLast && 'border-b border-border-weak',
+            )}
           >
-            {item.label}
-          </Text>
-          <View className="h-6 w-6 items-center justify-center">
-            {item.icon ?? DEFAULT_ICON}
+            <Text
+              className="flex-1 font-lexend-regular text-base leading-6 text-text-default"
+              style={[{ letterSpacing: -0.3 }, item.labelStyle]}
+            >
+              {item.label}
+            </Text>
+            <View className="h-6 w-6 items-center justify-center">
+              {item.icon ?? DEFAULT_ICON}
+            </View>
           </View>
         </Pressable>
       );

@@ -1,6 +1,7 @@
 import { Keyboard, Text, TouchableWithoutFeedback, View } from 'react-native';
 
 import {
+  BrandMark,
   Button,
   Container,
   FormCard,
@@ -8,7 +9,6 @@ import {
   VerticalSpacer,
 } from '@components';
 import { useCreateAccountEmailForm } from '../../hooks/useCreateAccountEmailForm';
-import { AuthBrandHeader } from '../components/AuthBrandHeader';
 
 export const CreateAccountEmailScreen = () => {
   const {
@@ -32,16 +32,16 @@ export const CreateAccountEmailScreen = () => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View className="flex-1 self-stretch">
           <VerticalSpacer size="lg" />
-          <AuthBrandHeader />
+          <BrandMark />
           <VerticalSpacer size="2xl" />
 
           <View className="flex-1 justify-start gap-7 self-stretch ">
             <View className="gap-4 self-stretch">
-              <Text className="text-center font-poppins-semiBold text-2xl leading-tight text-text-default">
+              <Text className="text-center font-poppins-semiBold text-2xl text-text-default">
                 Enter email
               </Text>
               <Text
-                className="text-center font-lexend-regular text-base leading-6 text-text-default"
+                className="text-center font-lexend-regular text-base text-text-default"
                 style={{ letterSpacing: -0.3 }}
               >
                 We’ll send you a{' '}
@@ -82,6 +82,7 @@ export const CreateAccountEmailScreen = () => {
                 label="Go Back"
                 variant="outline"
                 onPress={handleGoBack}
+                textClassName="text-action-neutral-text-default"
               />
             </View>
             <View className="flex-1">

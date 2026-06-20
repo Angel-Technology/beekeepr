@@ -16,6 +16,7 @@ export type EnvironmentConfig = {
   revenueCatEntitlementId: string;
   revenueCatIosApiKey: string;
   privacyPolicyURL: string;
+  childrenPrivacyURL: string;
   personaEnvironment: 'sandbox' | 'production';
   personaTemplateId: string;
   partnershipsURL: string;
@@ -66,6 +67,7 @@ export const environmentConfig: EnvironmentConfig = {
     process.env.EXPO_PUBLIC_REVENUECAT_ENTITLEMENT_ID ?? 'Buzzkeepr Pro',
   revenueCatIosApiKey: process.env.EXPO_PUBLIC_REVENUECAT_API_KEY_IOS ?? '',
   privacyPolicyURL: process.env.EXPO_PUBLIC_PRIVACY_POLICY_URL ?? '',
+  childrenPrivacyURL: process.env.EXPO_PUBLIC_CHILDREN_PRIVACY_URL ?? '',
   personaEnvironment:
     process.env.EXPO_PUBLIC_PERSONA_ENVIRONMENT === 'production'
       ? 'production'

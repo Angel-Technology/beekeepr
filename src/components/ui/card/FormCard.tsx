@@ -10,7 +10,10 @@ type FormCardProps = {
 export const FormCard = ({ children, className }: FormCardProps) => {
   return (
     <View
-      className={clsx('gap-4 self-stretch rounded-5 bg-bg-weak p-6', className)}
+      className={clsx(
+        'bor gap-6 self-stretch rounded-5 border border-secondary bg-transparent p-6',
+        className,
+      )}
     >
       {children}
     </View>

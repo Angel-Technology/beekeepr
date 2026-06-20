@@ -69,7 +69,7 @@ export const Button = ({
       disabled={isDisabled}
       onPress={onPress}
       className={clsx(
-        'min-h-[56px] flex-row items-center gap-3 self-stretch rounded-round px-4 py-2',
+        'min-h-[56px] flex-row items-center justify-center gap-4 self-stretch rounded-round px-4 py-2',
         isOutline && 'border border-border-faint',
         isDisabled
           ? 'bg-bg-disabled'

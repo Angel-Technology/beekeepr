@@ -4,9 +4,8 @@ import { Platform, View } from 'react-native';
 import AppleIcon from '@assets/svg/AppleIcon';
 import GoogleIcon from '@assets/svg/GoogleIcon';
 import IllustrationLetsdothis from '@assets/svg/IllustrationLetsdothis';
-import { Button, Container, VerticalSpacer } from '@components';
+import { BrandMark, Button, Container, VerticalSpacer } from '@components';
 import { useAuthActions } from '@features/auth';
-import { AuthBrandHeader } from '@src/features/auth/presentation/components/AuthBrandHeader';
 
 export const OnboardingCreateAccountScreen = () => {
   const router = useRouter();
@@ -19,7 +18,7 @@ export const OnboardingCreateAccountScreen = () => {
       className="flex-1 bg-bg-default"
     >
       <VerticalSpacer size="lg" />
-      <AuthBrandHeader />
+      <BrandMark />
 
       <View className="flex-1 items-center justify-end self-stretch">
         <IllustrationLetsdothis width={345} height={295} />

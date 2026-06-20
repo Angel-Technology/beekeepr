@@ -1,20 +1,13 @@
-import {
-  Keyboard,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { Keyboard, Text, TouchableWithoutFeedback, View } from 'react-native';
 
 import {
+  BrandMark,
   Button,
   Container,
-  FormCard,
   OtpInput,
   VerticalSpacer,
 } from '@components';
 import { useCreateAccountCodeForm } from '../../hooks/useCreateAccountCodeForm';
-import { AuthBrandHeader } from '../components/AuthBrandHeader';
 
 export const CreateAccountCodeScreen = () => {
   const {
@@ -24,9 +17,7 @@ export const CreateAccountCodeScreen = () => {
     codeLength,
     isComplete,
     isPending,
-    isResending,
     handleSubmit,
-    handleResend,
     handleGoBack,
   } = useCreateAccountCodeForm();
 
@@ -43,44 +34,26 @@ export const CreateAccountCodeScreen = () => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View className="flex-1 self-stretch">
           <VerticalSpacer size="lg" />
-          <AuthBrandHeader />
+          <BrandMark />
           <VerticalSpacer size="lg" />
 
           <View className="flex-1 gap-6 self-stretch pt-7">
             <View className="gap-4 self-stretch">
-              <Text className="text-center font-poppins-semiBold text-2xl leading-tight text-text-default">
+              <Text className="text-center font-poppins-semiBold text-2xl text-text-default">
                 Enter verification code
               </Text>
-              <Text
-                className="text-center font-lexend-regular text-base leading-6 text-text-default"
-                // style={{ letterSpacing: -0.3 }}
-              >
+              <Text className="text-center font-lexend-regular text-base text-text-default">
                 We sent a verification code to your email{' '}
                 <Text className="font-lexend-regular">{email}</Text>.
               </Text>
             </View>
 
-            <FormCard className="py-6">
-              <OtpInput
-                value={code}
-                onChange={setCode}
-                length={codeLength}
-                autoFocus
-              />
-            </FormCard>
-
-            <TouchableOpacity
-              accessibilityRole="button"
-              disabled={isResending}
-              onPress={() => {
-                void handleResend();
-              }}
-              className="self-center"
-            >
-              <Text className="font-lexend-semiBold text-base text-text-default underline">
-                {isResending ? 'Sending…' : 'Resend code'}
-              </Text>
-            </TouchableOpacity>
+            <OtpInput
+              value={code}
+              onChange={setCode}
+              length={codeLength}
+              autoFocus
+            />
           </View>
 
           <View className="w-full flex-row gap-2 pb-4 pt-6">
@@ -88,6 +61,7 @@ export const CreateAccountCodeScreen = () => {
               <Button
                 label="Go Back"
                 variant="outline"
+                textClassName="text-action-neutral-text-default"
                 onPress={handleGoBack}
               />
             </View>

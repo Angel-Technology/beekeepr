@@ -22,8 +22,7 @@ const CANVAS_HONEY = '#FCD216';
 const CANVAS_LIME = '#EDF903';
 
 const BODY_CLASS_NAME =
-  'text-center font-lexend-regular text-base leading-6 text-text-default';
-const BODY_TEXT_STYLE = { letterSpacing: -0.3 } as const;
+  'text-center font-lexend-regular text-base text-text-default -tracking-[0.3px]';
 
 type IllustrationFrameProps = {
   source: number;
@@ -65,15 +64,10 @@ export const OnboardingWhatWeDoScreen = () => {
             }
             title="Welcome!"
             body={
-              <>
-                <Text className={BODY_CLASS_NAME} style={BODY_TEXT_STYLE}>
-                  Buzzkeepr™ gives you the tools to verify, protect, and
-                  connect.
-                </Text>
-                <Text className={BODY_CLASS_NAME} style={BODY_TEXT_STYLE}>
-                  Your all in one platform for dating safety.
-                </Text>
-              </>
+              <Text className={BODY_CLASS_NAME}>
+                Buzzkeepr™ is your all-in-one platform to help you feel
+                confident dating.
+              </Text>
             }
           />
         ),
@@ -83,8 +77,6 @@ export const OnboardingWhatWeDoScreen = () => {
         icon: ShieldCheck,
         content: () => (
           <WhatWeDoSlide
-            pillLabel="ID verified / No criminal records found"
-            pillIcon={<ShieldCheck size={16} color="#000000" />}
             illustration={
               <View
                 className="items-center justify-center self-stretch"
@@ -95,7 +87,7 @@ export const OnboardingWhatWeDoScreen = () => {
             }
             title="Stand out!"
             body={
-              <Text className={BODY_CLASS_NAME} style={BODY_TEXT_STYLE}>
+              <Text className={BODY_CLASS_NAME}>
                 Verify who you are, so your date knows you’re real, invested,
                 and worth their time.
               </Text>
@@ -115,11 +107,10 @@ export const OnboardingWhatWeDoScreen = () => {
                 height={293}
               />
             }
-            title="New match??"
+            title="Trust is the new flex!"
             body={
-              <Text className={BODY_CLASS_NAME} style={BODY_TEXT_STYLE}>
-                Search our criminal database for their records with our reverse
-                phone lookup.
+              <Text className={BODY_CLASS_NAME}>
+                Get ready for more confidence and more matches.{' '}
               </Text>
             }
             cta={

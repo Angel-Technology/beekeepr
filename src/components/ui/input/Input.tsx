@@ -65,21 +65,19 @@ export const Input = ({
   const hasError = Boolean(error);
 
   return (
-    <View className={clsx('gap-2 self-stretch', className)}>
+    <View className={clsx('gap- self-stretch', className)}>
       {label ? (
-        <Text className="font-lexend-regular text-sm leading-5 text-text-secondary">
+        <Text className="font-lexend-regular text-xs text-text-secondary">
           {label}
         </Text>
       ) : null}
 
       <View
         className={clsx(
-          'min-h-[44px] flex-row items-center self-stretch rounded-round bg-bg-default pl-4 pr-3',
-          hasError
-            ? 'border-2 border-text-critical'
-            : isFocused
-              ? 'border-2 border-brand-highlight'
-              : 'border border-border-weak',
+          'min-h-[44px] flex-row items-center self-stretch bg-transparent',
+          hasError && isFocused
+            ? 'border-b-2 border-text-critical'
+            : 'border-b border-border-weak',
           disabled && 'opacity-60',
         )}
       >

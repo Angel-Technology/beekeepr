@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import type { DrawerContentComponentProps } from '@react-navigation/drawer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArchiveRestore, CreditCard, LogOut, Trash } from 'lucide-react-native';
-import { AppHeader } from '@components';
+import { AppHeader, BrandMark } from '@components';
 import { useAuthActions } from '@features/auth';
 import { openInAppBrowser } from '@src/lib/browser';
 import { useErrorModal } from '@src/lib/error-modal';
@@ -27,6 +27,14 @@ export const MenuDrawerContent = ({
   const hasSubscriptionHistory = isPro || isLapsed;
 
   const closeDrawerThen = useCallback(
+    (action: () => void) => {
+      navigation.closeDrawer();
+      action();
+    },
+    [navigation],
+  );
+
+  const openThenCloseDrawer = useCallback(
     (action: () => void) => {
       action();
       navigation.closeDrawer();
@@ -57,7 +65,12 @@ export const MenuDrawerContent = ({
   }, [restorePurchases, showError, showFromError]);
 
   return (
-    <View className="flex-1 bg-bg-default">
+    <View
+      className="flex-1"
+      style={{
+        paddingBottom: insets.bottom + 24,
+      }}
+    >
       <AppHeader
         topInset={insets.top}
         center={
@@ -67,88 +80,98 @@ export const MenuDrawerContent = ({
         }
       />
       <View
-        className="flex-1 gap-4 px-6"
+        className="flex-1 px-6 pt-6"
         style={{
-          paddingTop: 24,
-          paddingBottom: insets.bottom + 32,
+          paddingBottom: insets.bottom + 24,
         }}
       >
-        <MenuSection
-          items={[
-            {
-              label: 'My Profile',
-              onPress: () => closeDrawerThen(() => router.push('/profile')),
-            },
-          ]}
-        />
+        <View className="gap-5">
+          <MenuSection
+            items={[
+              {
+                label: 'My Profile',
+                onPress: () =>
+                  openThenCloseDrawer(() => router.push('/profile')),
+              },
+            ]}
+          />
 
-        <MenuSection
-          items={[
-            {
-              label: 'Want to be a partner?',
-              onPress: () =>
-                openInAppBrowser(environmentConfig.partnershipsURL),
-            },
-          ]}
-        />
+          <MenuSection
+            items={[
+              {
+                label: 'Want to be a partner?',
+                onPress: () =>
+                  openInAppBrowser(environmentConfig.partnershipsURL),
+              },
+            ]}
+          />
 
-        <MenuSection
-          items={[
-            {
-              label: 'Support',
-              onPress: () => openInAppBrowser(environmentConfig.supportURL),
-            },
-            {
-              label: 'Privacy Policy',
-              onPress: () =>
-                openInAppBrowser(environmentConfig.privacyPolicyURL),
-            },
-            {
-              label: 'Terms of Use',
-              onPress: () => openInAppBrowser(environmentConfig.termsOfUseURL),
-            },
-          ]}
-        />
+          <MenuSection
+            items={[
+              {
+                label: 'Support',
+                onPress: () => openInAppBrowser(environmentConfig.supportURL),
+              },
+              {
+                label: 'Privacy Policy',
+                onPress: () =>
+                  openInAppBrowser(environmentConfig.privacyPolicyURL),
+              },
+              {
+                label: 'Terms of Use',
+                onPress: () =>
+                  openInAppBrowser(environmentConfig.termsOfUseURL),
+              },
+            ]}
+          />
 
-        <MenuSection
-          items={[
-            {
-              label: 'Logout',
-              icon: <LogOut size={MENU_ICON_SIZE} color="#000000" />,
-              onPress: () => closeDrawerThen(() => signOut.mutate()),
-            },
-            {
-              label: 'Restore Purchase',
-              icon: <ArchiveRestore size={MENU_ICON_SIZE} color="#000000" />,
-              onPress: () =>
-                closeDrawerThen(() => {
-                  void handleRestorePurchases();
-                }),
-            },
-            ...(hasSubscriptionHistory
-              ? [
-                  {
-                    label: 'Manage Subscription',
-                    icon: <CreditCard size={MENU_ICON_SIZE} color="#000000" />,
-                    onPress: () =>
-                      closeDrawerThen(() => {
-                        void handleManageSubscription();
-                      }),
-                  },
-                ]
-              : []),
-            {
-              label: 'Delete Account',
-              icon: (
-                <Trash size={MENU_ICON_SIZE} color={DELETE_ACCOUNT_COLOR} />
-              ),
-              labelStyle: { color: DELETE_ACCOUNT_COLOR },
-              onPress: () =>
-                closeDrawerThen(() => router.push('/delete-account')),
-            },
-          ]}
-        />
+          <MenuSection
+            items={[
+              {
+                label: 'Logout',
+                icon: <LogOut size={MENU_ICON_SIZE} color="#000000" />,
+                onPress: () => closeDrawerThen(() => signOut.mutate()),
+              },
+              {
+                label: 'Restore Purchase',
+                icon: <ArchiveRestore size={MENU_ICON_SIZE} color="#000000" />,
+                onPress: () =>
+                  closeDrawerThen(() => {
+                    void handleRestorePurchases();
+                  }),
+              },
+              ...(hasSubscriptionHistory
+                ? [
+                    {
+                      label: 'Manage Subscription',
+                      icon: (
+                        <CreditCard size={MENU_ICON_SIZE} color="#000000" />
+                      ),
+                      onPress: () =>
+                        closeDrawerThen(() => {
+                          void handleManageSubscription();
+                        }),
+                    },
+                  ]
+                : []),
+              {
+                label: 'Delete Account',
+                icon: (
+                  <Trash size={MENU_ICON_SIZE} color={DELETE_ACCOUNT_COLOR} />
+                ),
+                labelStyle: { color: DELETE_ACCOUNT_COLOR },
+                onPress: () =>
+                  openThenCloseDrawer(() => router.push('/delete-account')),
+              },
+            ]}
+          />
+        </View>
       </View>
+      <BrandMark
+        linePosition="bottom"
+        logoWidth={257.085}
+        logoHeight={56.734}
+      />
     </View>
   );
 };
