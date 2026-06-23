@@ -123,10 +123,10 @@ export const OtpInput = ({
             editable={!disabled}
             selectTextOnFocus
             className={clsx(
-              'h-[50px] w-[50px] rounded-3 bg-bg-default text-center font-lexend-regular text-base leading-tight text-text-default',
+              'h-[50px] w-[50px] rounded-3 bg-tk-bg-primary text-center font-lexend-regular text-base leading-tight text-tk-text-primary',
               isActive
-                ? 'border border-text-default'
-                : 'border border-border-weak',
+                ? 'border border-tk-text-primary'
+                : 'border border-tk-border-secondary',
               disabled && 'opacity-60',
             )}
             style={{ letterSpacing: -0.3 }}

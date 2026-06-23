@@ -27,7 +27,7 @@ export const CreateAccountEmailScreen = () => {
     <Container
       safeArea
       safeAreaEdges={['top', 'bottom']}
-      className="flex-1 bg-bg-default"
+      className="bg-tk-bg-primary flex-1"
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View className="flex-1 self-stretch">
@@ -37,11 +37,11 @@ export const CreateAccountEmailScreen = () => {
 
           <View className="flex-1 justify-start gap-7 self-stretch ">
             <View className="gap-4 self-stretch">
-              <Text className="text-center font-poppins-semiBold text-2xl text-text-default">
+              <Text className="text-tk-text-primary text-center font-poppins-semiBold text-2xl">
                 Enter email
               </Text>
               <Text
-                className="text-center font-lexend-regular text-base text-text-default"
+                className="text-tk-text-primary text-center font-lexend-regular text-base"
                 style={{ letterSpacing: -0.3 }}
               >
                 We’ll send you a{' '}
@@ -70,7 +70,7 @@ export const CreateAccountEmailScreen = () => {
             </FormCard>
 
             {serverError ? (
-              <Text className="font-lexend-regular text-sm text-text-critical">
+              <Text className="text-tk-alerts-danger font-lexend-regular text-sm">
                 {serverError}
               </Text>
             ) : null}
@@ -82,7 +82,7 @@ export const CreateAccountEmailScreen = () => {
                 label="Go Back"
                 variant="outline"
                 onPress={handleGoBack}
-                textClassName="text-action-neutral-text-default"
+                textClassName="text-tk-actions-neutral-text-default"
               />
             </View>
             <View className="flex-1">

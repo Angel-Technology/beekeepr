@@ -29,7 +29,7 @@ export const CreateAccountCodeScreen = () => {
     <Container
       safeArea
       safeAreaEdges={['top', 'bottom']}
-      className="flex-1 bg-bg-default"
+      className="flex-1 bg-tk-bg-primary"
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View className="flex-1 self-stretch">
@@ -39,10 +39,10 @@ export const CreateAccountCodeScreen = () => {
 
           <View className="flex-1 gap-6 self-stretch pt-7">
             <View className="gap-4 self-stretch">
-              <Text className="text-center font-poppins-semiBold text-2xl text-text-default">
+              <Text className="text-center font-poppins-semiBold text-2xl text-tk-text-primary">
                 Enter verification code
               </Text>
-              <Text className="text-center font-lexend-regular text-base text-text-default">
+              <Text className="text-center font-lexend-regular text-base text-tk-text-primary">
                 We sent a verification code to your email{' '}
                 <Text className="font-lexend-regular">{email}</Text>.
               </Text>
@@ -61,7 +61,7 @@ export const CreateAccountCodeScreen = () => {
               <Button
                 label="Go Back"
                 variant="outline"
-                textClassName="text-action-neutral-text-default"
+                textClassName="text-tk-actions-neutral-text-default"
                 onPress={handleGoBack}
               />
             </View>
