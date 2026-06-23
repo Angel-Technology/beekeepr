@@ -1,6 +1,7 @@
 import type {
   AuthSessionFieldsFragment,
   AuthUserFieldsFragment,
+  CreateUserInput as CreateUserInputGenerated,
   RequestEmailSignInInput,
   SignInWithAppleInput,
   SignInWithGoogleInput,
@@ -23,6 +24,7 @@ export type EmailVerificationRequestInput = RequestEmailSignInInput;
 export type VerifyEmailCodeInput = VerifyEmailSignInInput;
 export type GoogleSignInInput = SignInWithGoogleInput;
 export type AppleSignInInput = SignInWithAppleInput;
+export type CreateUserInput = CreateUserInputGenerated;
 export {
   BackgroundCheckBadge,
   IdentityVerificationStatus,

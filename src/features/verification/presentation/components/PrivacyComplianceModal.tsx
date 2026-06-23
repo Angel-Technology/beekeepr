@@ -10,9 +10,9 @@ type PrivacyComplianceModalProps = {
 
 const Paragraph = ({ lead, body }: { lead: string; body: string }) => {
   return (
-    <Text className="font-lexend-regular text-sm leading-[20px] text-text-default">
+    <Text className="font-lexend-regular text-sm leading-[20px] text-tk-text-primary">
       <Text className="font-lexend-semiBold leading-none">{lead}</Text>
-      <Text className="text-text-tertiary"> {body}</Text>
+      <Text className="text-tk-text-tertiary"> {body}</Text>
     </Text>
   );
 };
@@ -37,7 +37,7 @@ export const PrivacyComplianceModal = ({
       dismissOnBackdropPress
     >
       <View className="gap-4">
-        <Text className="font-poppins-semiBold text-title-4 text-text-default">
+        <Text className="font-poppins-semiBold text-title-4 text-tk-text-primary">
           Privacy and Compliance
         </Text>
 
@@ -54,7 +54,7 @@ export const PrivacyComplianceModal = ({
             lead="Sharing your badge or screening results is entirely at your discretion."
             body="You are not required to share your results, and these results should not be used to determine eligibility for access or qualification for any features or services on this platform or on any platform you choose to display your badge on."
           />
-          <Text className="font-lexend-regular text-sm leading-[20px] text-text-default">
+          <Text className="font-lexend-regular text-sm leading-[20px] text-tk-text-primary">
             For more information see our{' '}
             <Text
               accessibilityRole="link"

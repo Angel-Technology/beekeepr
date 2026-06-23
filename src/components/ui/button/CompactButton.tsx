@@ -19,21 +19,22 @@ type CompactButtonProps = {
 };
 
 const SURFACE_BY_VARIANT: Record<CompactButtonVariant, string> = {
-  solid: 'bg-text-default',
-  outline: 'bg-bg-default border border-border-default',
-  tinted: 'bg-black/[0.08]',
+  solid: 'bg-tk-actions-neutral-background-solid',
+  outline:
+    'bg-tk-bg-elevated-primary border border-tk-actions-neutral-border-default',
+  tinted: 'bg-tk-actions-neutral-background-tinted',
 };
 
 const TEXT_BY_VARIANT: Record<CompactButtonVariant, string> = {
-  solid: 'text-text-inverse',
-  outline: 'text-text-secondary',
-  tinted: 'text-text-secondary',
+  solid: 'text-tk-actions-neutral-text-on-action',
+  outline: 'text-tk-actions-neutral-text-default',
+  tinted: 'text-tk-actions-neutral-text-default',
 };
 
 const LOADER_BY_VARIANT: Record<CompactButtonVariant, string> = {
-  solid: 'bg-text-inverse',
-  outline: 'bg-text-default',
-  tinted: 'bg-text-default',
+  solid: 'bg-tk-actions-neutral-text-on-action',
+  outline: 'bg-tk-actions-neutral-text-hover',
+  tinted: 'bg-tk-actions-neutral-text-hover',
 };
 
 export const CompactButton = ({
@@ -57,7 +58,9 @@ export const CompactButton = ({
       onPress={onPress}
       className={clsx(
         'min-h-[44px] flex-row items-center justify-center gap-2 self-stretch rounded-round px-4 py-3',
-        isDisabled ? 'bg-bg-disabled' : SURFACE_BY_VARIANT[variant],
+        isDisabled
+          ? 'bg-tk-actions-disabled-background'
+          : SURFACE_BY_VARIANT[variant],
         className,
       )}
     >
@@ -70,7 +73,9 @@ export const CompactButton = ({
           ellipsizeMode="tail"
           className={clsx(
             'font-lexend-semiBold text-base leading-tight',
-            isDisabled ? 'text-text-disabled' : TEXT_BY_VARIANT[variant],
+            isDisabled
+              ? 'text-tk-actions-disabled-text'
+              : TEXT_BY_VARIANT[variant],
             textClassName,
           )}
         >

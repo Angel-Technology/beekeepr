@@ -45,22 +45,22 @@ export const CompleteProfileModal = ({
   return (
     <BaseModal
       visible={visible}
-      contentClassName="max-w-[360px] rounded-4 bg-bg-default p-6 gap-4"
+      contentClassName="max-w-[360px] rounded-4 bg-tk-bg-elevated-primary p-6 gap-4"
     >
-      <Text className="w-full font-poppins-semiBold text-xl leading-tight text-text-default">
+      <Text className="text-tk-text-primary w-full font-poppins-semiBold text-xl leading-tight">
         Create a profile to start
       </Text>
 
       <View className="w-full gap-4">
-        <Text className="font-lexend-regular text-base leading-6 text-text-secondary">
+        <Text className="text-tk-text-secondary font-lexend-regular text-base leading-6">
           First, create a nickname and an unique handle. This is how
           you&rsquo;ll search for each other.
         </Text>
-        <Text className="font-lexend-regular text-base leading-6 text-text-secondary">
+        <Text className="text-tk-text-secondary font-lexend-regular text-base leading-6">
           This is what people will see.
         </Text>
 
-        <View className="w-full gap-4 rounded-5 bg-bg-weak p-6">
+        <View className="bg-tk-bg-secondary w-full gap-4 rounded-5 p-6">
           <Input
             label="Nickname"
             value={nickname}
@@ -80,14 +80,14 @@ export const CompleteProfileModal = ({
               rightAccessory={<FieldStatusIcon status={handleStatus} />}
             />
             {handleStatus === 'error' && handleReason ? (
-              <Text className="font-lexend-regular text-xs leading-[18px] text-text-critical">
+              <Text className="text-tk-alerts-danger font-lexend-regular text-xs leading-[18px]">
                 {handleReason}
               </Text>
             ) : null}
           </View>
         </View>
 
-        <Text className="font-lexend-regular text-xs leading-[18px] text-text-tertiary">
+        <Text className="text-tk-text-tertiary font-lexend-regular text-xs leading-[18px]">
           You can edit this anytime in the &ldquo;Menu&rdquo; above.
         </Text>
       </View>

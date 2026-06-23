@@ -45,7 +45,7 @@ export const CustomCheckbox = ({
       {typeof label === 'string' ? (
         <Text
           className={clsx(
-            'flex-1 font-sourceSans-regular text-base leading-[20.8px] text-text-default',
+            'text-tk-text-primary flex-1 font-sourceSans-regular text-base leading-[20.8px]',
             labelClassName,
           )}
         >

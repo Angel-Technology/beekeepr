@@ -33,6 +33,16 @@ const wrapUnknownAsNetwork = (e: unknown): never => {
 export const authService = {
   async requestEmailSignIn(input: EmailVerificationRequestInput) {
     try {
+      // Upsert the user account before sending the code. The new backend
+      // splits sign-up (`createUser`) and verification (`requestEmailSignIn`)
+      // into two mutations — for new accounts createUser provisions the
+      // user, for returning accounts the backend reports "already exists"
+      // which we deliberately ignore: only `requestEmailSignIn` decides
+      // whether the code actually goes out. A transport-level failure here
+      // (network, server) escalates via the outer catch as a friendly
+      // network error.
+      await authRepository.createUser({ email: input.email });
+
       const payload = await authRepository.requestEmailSignIn(input);
 
       if (!payload.requestEmailSignIn.success) {
