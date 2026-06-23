@@ -22,7 +22,7 @@ const CANVAS_HONEY = '#FCD216';
 const CANVAS_LIME = '#EDF903';
 
 const BODY_CLASS_NAME =
-  'text-center font-lexend-regular text-base text-text-default -tracking-[0.3px]';
+  'text-center font-lexend-regular text-base text-tk-gray-black -tracking-[0.3px]';
 
 type IllustrationFrameProps = {
   source: number;
@@ -102,9 +102,9 @@ export const OnboardingWhatWeDoScreen = () => {
           <WhatWeDoSlide
             illustration={
               <IllustrationFrame
-                source={appImages.newMatchBee}
-                width={236}
-                height={293}
+                source={appImages.illustrationOnboarding3}
+                width={344}
+                height={334}
               />
             }
             title="Trust is the new flex!"

@@ -158,11 +158,29 @@ export const useProfileForm = (user: AuthUser | null) => {
     [setStatus, updateMutation],
   );
 
+  const deriveStatus = (field: ProfileField): FieldStatus => {
+    const explicit = fieldStatus[field];
+    if (explicit !== 'idle') {
+      return explicit;
+    }
+    const current = normalize(wireValueForField(field, state.values));
+    const baseline = normalize(wireValueForField(field, state.baseline));
+    if (current.length > 0 && current === baseline) {
+      return 'success';
+    }
+    return 'idle';
+  };
+
+  const derivedFieldStatus: Record<ProfileField, FieldStatus> = {
+    nickname: deriveStatus('nickname'),
+    handle: deriveStatus('handle'),
+  };
+
   return {
     values: state.values,
     setField,
     submitField,
     fieldLabel: FIELD_LABEL,
-    fieldStatus,
+    fieldStatus: derivedFieldStatus,
   } as const;
 };

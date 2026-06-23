@@ -4,10 +4,7 @@ import { authQueryKeys, useAuthSession, type AuthUser } from '@features/auth';
 import { accountService } from '../services/accountService';
 import type { ProfileUser, UpdateProfilePatch } from '../models/account.types';
 import { useCheckHandleAvailability } from './useCheckHandleAvailability';
-import {
-  formatHandleForDisplay,
-  stripHandlePrefix,
-} from './profileFormReducer';
+import { stripHandlePrefix } from './profileFormReducer';
 
 type UseCompleteProfileOptions = {
   /**
@@ -26,7 +23,7 @@ type FormState = {
 
 const seedFromUser = (user: AuthUser | null | undefined): FormState => ({
   nickname: user?.nickname ?? user?.displayName ?? '',
-  handle: formatHandleForDisplay(user?.handle),
+  handle: stripHandlePrefix(user?.handle ?? ''),
   seedUserId: user?.id ?? null,
 });
 
@@ -60,7 +57,7 @@ export const useCompleteProfile = ({
   };
 
   const setHandle = (next: string) => {
-    setState((prev) => ({ ...prev, handle: formatHandleForDisplay(next) }));
+    setState((prev) => ({ ...prev, handle: stripHandlePrefix(next) }));
   };
 
   const mergeIntoSession = (updated: ProfileUser) => {

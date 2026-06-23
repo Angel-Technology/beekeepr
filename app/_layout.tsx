@@ -6,6 +6,7 @@ import {
   KeyboardToolbar,
 } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { colorScheme } from 'nativewind';
 import { useAuthSession } from '@features/auth';
 
 import '../global.css';
@@ -16,6 +17,13 @@ import { GlobalLoaderProvider, GlobalLoaderOverlay } from '@src/lib/loader';
 import { ErrorModalProvider } from '@src/lib/error-modal';
 import { RootErrorBoundary } from '@src/lib/error-boundary';
 import { initSentry, wrapRootComponent } from '@src/lib/sentry';
+
+// Follow the OS color scheme. With `darkMode: 'class'` in tailwind.config.js,
+// NativeWind defaults the scheme to 'light' — without this call the dark-mode
+// tokens defined under `.dark:root` in global.css never engage on a
+// dark-themed device. Set at module load so the right palette is in place
+// before any view paints (avoids a light→dark flash on first frame).
+colorScheme.set('system');
 
 // Fire at module load — before any provider mounts — so the SDK is ready to
 // receive `captureException` calls from `RootErrorBoundary` on first render.

@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { View } from 'react-native';
 
+import { themedColors, useThemedColor } from '@common';
 import AppHeaderLineBuzz from '@src/assets/svg/AppHeaderLineBuzz';
 import LogoBuzzkeepr from '@src/assets/svg/LogoBuzzkeepr';
 
@@ -20,6 +21,8 @@ export const BrandMark = ({
 }: BrandMarkProps) => {
   const isBottom = linePosition === 'bottom';
 
+  const themedColor = useThemedColor(themedColors.text.primary);
+
   return (
     <View
       className={clsx(
@@ -29,10 +32,14 @@ export const BrandMark = ({
       style={{ height: LINE_HEIGHT + LINE_TOP_OFFSET }}
     >
       <View className="absolute top-5">
-        <AppHeaderLineBuzz />
+        <AppHeaderLineBuzz color={themedColor} />
       </View>
       <View>
-        <LogoBuzzkeepr width={logoWidth} height={logoHeight} />
+        <LogoBuzzkeepr
+          width={logoWidth}
+          height={logoHeight}
+          color={themedColor}
+        />
       </View>
     </View>
   );

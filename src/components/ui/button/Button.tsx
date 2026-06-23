@@ -23,12 +23,21 @@ type ButtonProps = {
 
 // Tone-driven text color kept off the className override path so callers don't
 // fight NativeWind's class precedence rules when picking a destructive label.
+// Solid = neutral action (black bg light, white bg dark) so the label uses
+// `on-action` (white light, black dark). Outline = surface label, follows
+// `text.primary` (black light, white dark).
 const TONE_TEXT_CLASSNAME: Record<
   ButtonTone,
   { solid: string; outline: string }
 > = {
-  default: { solid: 'text-text-inverse', outline: 'text-text-default' },
-  critical: { solid: 'text-text-inverse', outline: 'text-text-critical' },
+  default: {
+    solid: 'text-tk-actions-neutral-text-on-action',
+    outline: 'text-tk-text-primary',
+  },
+  critical: {
+    solid: 'text-tk-actions-neutral-text-on-action',
+    outline: 'text-tk-alerts-danger',
+  },
 };
 
 const IconSlot = ({ children }: { children?: ReactNode }) => (
@@ -55,8 +64,8 @@ export const Button = ({
   const isOutline = variant === 'outline';
   const isDisabled = disabled || loading;
   const loaderColorClassName = isOutline
-    ? 'bg-text-default'
-    : 'bg-text-inverse';
+    ? 'bg-tk-text-primary'
+    : 'bg-tk-actions-neutral-text-on-action';
   const hasIcon = Boolean(iconLeft || iconRight);
   const toneTextClassName = isOutline
     ? TONE_TEXT_CLASSNAME[tone].outline
@@ -70,12 +79,12 @@ export const Button = ({
       onPress={onPress}
       className={clsx(
         'min-h-[56px] flex-row items-center justify-center gap-4 self-stretch rounded-round px-4 py-2',
-        isOutline && 'border border-border-faint',
+        isOutline && 'border-tk-border-secondary border',
         isDisabled
-          ? 'bg-bg-disabled'
+          ? 'bg-tk-actions-disabled-background'
           : isOutline
-            ? 'bg-bg-default'
-            : 'bg-text-default',
+            ? 'bg-tk-bg-elevated-primary'
+            : 'bg-tk-actions-neutral-background-solid',
         className,
       )}
     >
@@ -90,7 +99,7 @@ export const Button = ({
           ellipsizeMode="tail"
           className={clsx(
             'flex-1 text-center font-lexend-semiBold text-xl',
-            isDisabled ? 'text-text-disabled' : toneTextClassName,
+            isDisabled ? 'text-tk-actions-disabled-text' : toneTextClassName,
             textClassName,
           )}
         >

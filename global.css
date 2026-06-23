@@ -1,3 +1,196 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Design token CSS variables — light + dark
+ *
+ * Mirrors the Figma token JSON (Light Mode.tokens.json / Dark Mode.tokens.json)
+ * exactly. Each variable holds the fully-resolved color value (incl. alpha),
+ * so utilities like `bg-tk-bg-primary` just reference `var(--tk-bg-primary)`.
+ *
+ * `.dark:root` is what NativeWind looks at when `darkMode: 'class'` is set in
+ * tailwind.config.js — it switches the whole sheet at runtime via
+ * `useColorScheme()`. See `app/_layout.tsx` for the system-follow wiring.
+ *
+ * Token aliases from the JSON (e.g. text.primary-reversed → gray.white) are
+ * pre-resolved to their concrete value per mode.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+@layer base {
+  :root {
+    /* Brand */
+    --tk-brand-primary: #fdd301;
+    --tk-brand-lighter: #fffad9;
+    --tk-brand-darker: #e5ac03;
+    --tk-brand-accent: #000000;
+
+    /* Text */
+    --tk-text-primary: #000000;
+    --tk-text-secondary: rgba(0, 0, 0, 0.7);
+    --tk-text-tertiary: rgba(0, 0, 0, 0.5);
+    --tk-text-quaternary: rgba(0, 0, 0, 0.3);
+    --tk-text-primary-reversed: #ffffff; /* alias → gray.white */
+    --tk-text-action: #e5ac03; /* alias → brand.darker */
+    --tk-text-action-emphasis: #e5ac03; /* alias → brand.darker */
+
+    /* Background — gray (default surface family) */
+    --tk-bg-primary: #ffffff;
+    --tk-bg-secondary: #eeeeee;
+    --tk-bg-tertiary: #dddddd;
+
+    /* Background — elevated */
+    --tk-bg-elevated-primary: #ffffff;
+    --tk-bg-elevated-secondary: #eeeeee;
+    --tk-bg-elevated-tertiary: #dddddd;
+
+    /* Background — purple/warm family */
+    --tk-bg-purple-primary: #ffffff;
+    --tk-bg-purple-secondary: #fff8cb;
+    --tk-bg-purple-tertiary: #f7e6a7;
+    --tk-bg-purple-elevated-primary: #ffffff;
+    --tk-bg-purple-elevated-secondary: #fff8cb;
+    --tk-bg-purple-elevated-tertiary: #f7e6a7;
+
+    /* Border */
+    --tk-border-primary: rgba(0, 0, 0, 0.32);
+    --tk-border-secondary: rgba(0, 0, 0, 0.16);
+    --tk-border-tertiary: rgba(0, 0, 0, 0.08);
+
+    /* Gray primitives */
+    --tk-gray-black: #000000;
+    --tk-gray-white: #ffffff;
+
+    /* Alerts */
+    --tk-alerts-success: #00a93e;
+    --tk-alerts-warning: #ffbf00;
+    --tk-alerts-danger: #ff0000;
+
+    /* Actions — brand (solid CTA, "Buzz") */
+    --tk-actions-brand-text-default: #000000; /* alias → text.primary */
+    --tk-actions-brand-text-hover: rgba(0, 0, 0, 0.5); /* alias → text.tertiary */
+    --tk-actions-brand-text-on-action: #ffffff; /* alias → gray.white */
+    --tk-actions-brand-bg-solid: #fdd301; /* alias → brand.primary */
+    --tk-actions-brand-bg-solid-hover: #e5ac03; /* alias → brand.darker */
+    --tk-actions-brand-bg-tinted: #fff8cb;
+    --tk-actions-brand-bg-tinted-hover: #f7e6a7;
+    --tk-actions-brand-border-default: rgba(0, 0, 0, 0.16); /* alias → border.secondary */
+    --tk-actions-brand-border-hover: rgba(0, 0, 0, 0.32); /* alias → border.primary */
+
+    /* Actions — brand dynamic (alt brand treatment) */
+    --tk-actions-brand-dynamic-text-default: #000000; /* alias → text.primary */
+    --tk-actions-brand-dynamic-text-hover: rgba(0, 0, 0, 0.7); /* alias → text.secondary */
+    --tk-actions-brand-dynamic-text-on-action: #ffffff;
+    --tk-actions-brand-dynamic-bg-solid: #fdd301; /* alias → brand.primary */
+    --tk-actions-brand-dynamic-bg-solid-hover: #e5ac03; /* alias → brand.darker */
+    --tk-actions-brand-dynamic-bg-tinted: #fff8cb;
+    --tk-actions-brand-dynamic-bg-tinted-hover: #f7e6a7;
+    --tk-actions-brand-dynamic-border-default: #f7e6a7; /* alias → bg.purple.elevated.tertiary */
+    --tk-actions-brand-dynamic-border-hover: #f7e6a7;
+
+    /* Actions — neutral (secondary controls) */
+    --tk-actions-neutral-text-default: rgba(0, 0, 0, 0.7); /* alias → text.secondary */
+    --tk-actions-neutral-text-hover: #000000; /* alias → text.primary */
+    --tk-actions-neutral-text-on-action: #ffffff; /* alias → gray.white */
+    --tk-actions-neutral-bg-solid: #000000; /* alias → text.primary */
+    --tk-actions-neutral-bg-solid-hover: rgba(0, 0, 0, 0.7); /* alias → text.secondary */
+    --tk-actions-neutral-bg-tinted: rgba(0, 0, 0, 0.08);
+    --tk-actions-neutral-bg-tinted-hover: rgba(0, 0, 0, 0.16);
+    --tk-actions-neutral-border-default: rgba(0, 0, 0, 0.3);
+    --tk-actions-neutral-border-hover: #000000; /* alias → gray.black */
+
+    /* Actions — disabled (shared) */
+    --tk-actions-disabled-text: rgba(0, 0, 0, 0.35);
+    --tk-actions-disabled-background: rgba(0, 0, 0, 0.08);
+    --tk-actions-disabled-border: rgba(0, 0, 0, 0.2);
+  }
+
+  .dark:root {
+    /* Brand */
+    --tk-brand-primary: #ffd400;
+    --tk-brand-lighter: #ffffff;
+    --tk-brand-darker: #ffd400;
+    --tk-brand-accent: #dffd00;
+
+    /* Text */
+    --tk-text-primary: #ffffff;
+    --tk-text-secondary: rgba(255, 255, 255, 0.7);
+    --tk-text-tertiary: rgba(255, 255, 255, 0.5);
+    --tk-text-quaternary: rgba(255, 255, 255, 0.3);
+    --tk-text-primary-reversed: #000000; /* alias → gray.black */
+    --tk-text-action: #ffd400; /* alias → brand.primary */
+    --tk-text-action-emphasis: #ffffff; /* alias → gray.white */
+
+    /* Background — gray (default surface family) */
+    --tk-bg-primary: #000000;
+    --tk-bg-secondary: #111111;
+    --tk-bg-tertiary: #19191a;
+
+    /* Background — elevated */
+    --tk-bg-elevated-primary: #19191a;
+    --tk-bg-elevated-secondary: #222222;
+    --tk-bg-elevated-tertiary: #323234;
+
+    /* Background — purple/warm family */
+    --tk-bg-purple-primary: #000000;
+    --tk-bg-purple-secondary: #2b2a27;
+    --tk-bg-purple-tertiary: #403f3b;
+    --tk-bg-purple-elevated-primary: #403f3b;
+    --tk-bg-purple-elevated-secondary: #56544e;
+    --tk-bg-purple-elevated-tertiary: #807e76;
+
+    /* Border */
+    --tk-border-primary: rgba(255, 255, 255, 0.4);
+    --tk-border-secondary: rgba(255, 255, 255, 0.24);
+    --tk-border-tertiary: rgba(255, 255, 255, 0.16);
+
+    /* Gray primitives */
+    --tk-gray-black: #000000;
+    --tk-gray-white: #ffffff;
+
+    /* Alerts */
+    --tk-alerts-success: #00ff35;
+    --tk-alerts-warning: #ffff00;
+    --tk-alerts-danger: #ff0000;
+
+    /* Actions — brand (solid CTA, "Buzz") */
+    --tk-actions-brand-text-default: #ffd400; /* alias → brand.darker */
+    --tk-actions-brand-text-hover: #ffd400; /* alias → brand.primary */
+    --tk-actions-brand-text-on-action: #ffffff;
+    --tk-actions-brand-bg-solid: #ffd400; /* alias → brand.primary */
+    --tk-actions-brand-bg-solid-hover: #ffd400; /* alias → brand.darker */
+    --tk-actions-brand-bg-tinted: rgba(255, 255, 0, 0.3);
+    --tk-actions-brand-bg-tinted-hover: rgba(255, 255, 0, 0.15);
+    --tk-actions-brand-border-default: rgba(211, 131, 243, 0.5);
+    --tk-actions-brand-border-hover: #ffd400; /* alias → brand.primary */
+
+    /* Actions — brand dynamic (alt brand treatment) — aliased to neutral in dark */
+    --tk-actions-brand-dynamic-text-default: rgba(255, 255, 255, 0.7);
+    --tk-actions-brand-dynamic-text-hover: #ffffff;
+    --tk-actions-brand-dynamic-text-on-action: #ffd400; /* alias → brand.primary */
+    --tk-actions-brand-dynamic-bg-solid: #ffffff; /* alias → text.primary */
+    --tk-actions-brand-dynamic-bg-solid-hover: rgba(255, 255, 255, 0.7);
+    --tk-actions-brand-dynamic-bg-tinted: rgba(255, 255, 255, 0.08);
+    --tk-actions-brand-dynamic-bg-tinted-hover: rgba(255, 255, 255, 0.16);
+    --tk-actions-brand-dynamic-border-default: rgba(255, 255, 255, 0.3);
+    --tk-actions-brand-dynamic-border-hover: #ffffff;
+
+    /* Actions — neutral (secondary controls) */
+    --tk-actions-neutral-text-default: rgba(255, 255, 255, 0.7); /* alias → text.secondary */
+    --tk-actions-neutral-text-hover: #ffffff; /* alias → text.primary */
+    --tk-actions-neutral-text-on-action: #000000; /* alias → gray.black */
+    --tk-actions-neutral-bg-solid: #ffffff; /* alias → text.primary */
+    --tk-actions-neutral-bg-solid-hover: rgba(255, 255, 255, 0.7); /* alias → text.secondary */
+    --tk-actions-neutral-bg-tinted: rgba(255, 255, 255, 0.08);
+    --tk-actions-neutral-bg-tinted-hover: rgba(255, 255, 255, 0.16);
+    --tk-actions-neutral-border-default: rgba(255, 255, 255, 0.3);
+    --tk-actions-neutral-border-hover: #ffffff; /* alias → gray.white */
+
+    /* Actions — disabled (shared) */
+    --tk-actions-disabled-text: rgba(255, 255, 255, 0.35);
+    --tk-actions-disabled-background: rgba(255, 255, 255, 0.08);
+    --tk-actions-disabled-border: rgba(255, 255, 255, 0.2);
+  }
+}

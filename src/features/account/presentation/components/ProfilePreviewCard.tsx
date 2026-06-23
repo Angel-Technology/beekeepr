@@ -1,15 +1,13 @@
-import { Image } from 'expo-image';
-import { Text, View } from 'react-native';
-import { User } from 'lucide-react-native';
+import { Pressable, Text, View } from 'react-native';
+import { ChevronRight, UserRound } from 'lucide-react-native';
+
+const AVATAR_BG = '#1489E6';
 
 type ProfilePreviewCardProps = {
   nickname: string;
   handle: string;
-  imageUrl?: string | null;
-  joinedDate?: string;
+  onPress?: () => void;
 };
-
-const AVATAR_SIZE = 44;
 
 const formatHandle = (handle: string) => {
   const trimmed = handle.trim();
@@ -19,77 +17,43 @@ const formatHandle = (handle: string) => {
   return trimmed.startsWith('@') ? trimmed : `@${trimmed}`;
 };
 
-/**
- * Pull the first grapheme cluster from the nickname so multi-codepoint
- * emoji (ZWJ sequences, flags, skin tone) render as one glyph instead of
- * being chopped mid-codepoint. Falls back to the first character of the
- * trimmed string when `Intl.Segmenter` isn't available on the engine.
- */
-const firstGrapheme = (value: string): string => {
-  const trimmed = value.trim();
-  if (trimmed.length === 0) {
-    return '';
-  }
-  const Segmenter =
-    typeof Intl !== 'undefined'
-      ? (Intl as { Segmenter?: typeof Intl.Segmenter }).Segmenter
-      : undefined;
-  if (Segmenter) {
-    const segmenter = new Segmenter(undefined, { granularity: 'grapheme' });
-    const iterator = segmenter.segment(trimmed)[Symbol.iterator]();
-    const next = iterator.next();
-    if (!next.done) {
-      return next.value.segment;
-    }
-  }
-  return Array.from(trimmed)[0] ?? '';
-};
-
 export const ProfilePreviewCard = ({
   nickname,
   handle,
-  imageUrl,
+  onPress,
 }: ProfilePreviewCardProps) => {
   const displayedHandle = formatHandle(handle);
-  const fallbackGrapheme = firstGrapheme(nickname);
+  const Container = onPress ? Pressable : View;
 
   return (
-    <View className="w-full flex-row items-center gap-5 rounded-5 border border-border-weak bg-bg-default p-5">
-      <View className="size-[44px] items-center justify-center overflow-hidden rounded-round bg-brand-primary">
-        {imageUrl ? (
-          <Image
-            source={{ uri: imageUrl }}
-            style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
-          />
-        ) : fallbackGrapheme.length > 0 ? (
-          <Text
-            className="font-lexend-semiBold text-base leading-6 text-text-default"
-            allowFontScaling={false}
-          >
-            {fallbackGrapheme}
-          </Text>
-        ) : (
-          <User size={22} color="#000000" />
-        )}
+    <Container
+      onPress={onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
+      className="w-full flex-row items-center gap-3 rounded-5 border border-border-weak bg-bg-default p-4"
+    >
+      <View
+        className="size-[44px] items-center justify-center rounded-round"
+        style={{ backgroundColor: AVATAR_BG }}
+      >
+        <UserRound size={24} color="#FFFFFF" />
       </View>
-      <View className="min-w-0 flex-1 flex-row items-center gap-3">
-        <View className="min-w-0 flex-1">
+      <View className="min-w-0 flex-1">
+        <Text
+          className="font-lexend-semiBold text-base text-text-default"
+          numberOfLines={1}
+        >
+          {nickname || ''}
+        </Text>
+        {displayedHandle ? (
           <Text
-            className="font-lexend-semiBold text-base leading-6 text-text-default"
+            className="font-lexend-regular text-footnote text-text-secondary"
             numberOfLines={1}
           >
-            {nickname || ''}
+            {displayedHandle}
           </Text>
-          {displayedHandle ? (
-            <Text
-              className="font-lexend-regular text-footnote leading-200 text-text-secondary"
-              numberOfLines={1}
-            >
-              {displayedHandle}
-            </Text>
-          ) : null}
-        </View>
+        ) : null}
       </View>
-    </View>
+      {onPress ? <ChevronRight size={24} color="#000000" /> : null}
+    </Container>
   );
 };

@@ -11,4 +11,5 @@ export * from './paper-onboarding';
 export * from './pill';
 export * from './spacing';
 export * from './stepper';
+export * from './switch';
 export * from './tab-bar';

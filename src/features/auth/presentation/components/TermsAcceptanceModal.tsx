@@ -22,20 +22,16 @@ export const TermsAcceptanceModal = ({
   const [isAgeConfirmed, setIsAgeConfirmed] = useState(false);
   const [isTermsConfirmed, setIsTermsConfirmed] = useState(false);
   const [isPrivacyConfirmed, setIsPrivacyConfirmed] = useState(false);
-  const [isChildrenPrivacyConfirmed, setIsChildrenPrivacyConfirmed] =
-    useState(false);
+  const [isCsaeConfirmed, setIsCsaeConfirmed] = useState(false);
 
   const allConfirmed =
-    isAgeConfirmed &&
-    isTermsConfirmed &&
-    isPrivacyConfirmed &&
-    isChildrenPrivacyConfirmed;
+    isAgeConfirmed && isTermsConfirmed && isPrivacyConfirmed && isCsaeConfirmed;
 
   const legalLinks = useMemo(
     () => ({
       terms: environmentConfig.termsOfUseURL.trim(),
       privacy: environmentConfig.privacyPolicyURL.trim(),
-      childrenPrivacy: environmentConfig.childrenPrivacyURL.trim(),
+      csae: environmentConfig.childrenPrivacyURL.trim(),
     }),
     [],
   );
@@ -50,114 +46,117 @@ export const TermsAcceptanceModal = ({
     <BaseModal
       visible={visible}
       dismissOnBackdropPress={false}
-      contentClassName="gap-5"
+      contentClassName="gap-4 rounded-4"
     >
-      <Text className="border-b border-border-weak pb-5 font-poppins-semiBold text-xl leading-tight text-text-default">
-        Terms of Use & Privacy Policy
+      <Text className="border-b border-border-weak pb-4 font-poppins-semiBold text-xl leading-tight text-text-default">
+        User Compliance Agreement
       </Text>
 
-      <View className="gap-5">
-        <Text className="font-lexend-regular text-base leading-6 text-text-secondary">
-          Buzzkeepr is not a Consumer Reporting Agency (CRA) as defined by the
-          Fair Credit Reporting Act (FCRA).{' '}
-          <Text className="font-lexend-semiBold text-text-default">
-            The information we provide cannot be used for employment, credit or
-            tenant screening, or related purpose.
-          </Text>
+      <Text className="font-lexend-regular text-sm leading-5 text-text-secondary">
+        Buzzkeepr™ is not a Consumer Reporting Agency (CRA) as defined by the
+        Fair Credit Reporting Act (FCRA).{' '}
+        <Text className="font-lexend-semiBold text-text-default">
+          The information we provide cannot be used for employment, credit or
+          tenant screening, or related purpose.
         </Text>
+      </Text>
 
-        <View className="gap-4">
-          <CustomCheckbox
-            checked={isAgeConfirmed}
-            onChange={() => setIsAgeConfirmed((current) => !current)}
-            checkedFill="#000000"
-            uncheckedStroke="#000000"
-            label={
-              <Text className="font-lexend-regular text-base leading-6 text-text-default">
-                I am 18 years old (or older)
-              </Text>
-            }
-          />
-
-          <CustomCheckbox
-            checked={isTermsConfirmed}
-            onChange={() => setIsTermsConfirmed((current) => !current)}
-            checkedFill="#000000"
-            uncheckedStroke="#000000"
-            label={
-              <Text className="font-lexend-regular text-base leading-6 text-text-default">
-                I have read & agree to the{' '}
-                <Text
-                  className="font-lexend-regular text-base text-text-informational underline"
-                  onPress={() => {
-                    openLegalLink(legalLinks.terms);
-                  }}
-                >
-                  Terms of Use
-                </Text>
-              </Text>
-            }
-          />
-
-          <CustomCheckbox
-            checked={isPrivacyConfirmed}
-            onChange={() => setIsPrivacyConfirmed((current) => !current)}
-            checkedFill="#000000"
-            uncheckedStroke="#000000"
-            label={
-              <Text className="font-lexend-regular text-base leading-6 text-text-default">
-                I have read & agree to the{' '}
-                <Text
-                  className="font-lexend-regular text-base text-text-informational underline"
-                  onPress={() => {
-                    openLegalLink(legalLinks.privacy);
-                  }}
-                >
-                  Privacy Policy
-                </Text>
-              </Text>
-            }
-          />
-
-          <CustomCheckbox
-            checked={isChildrenPrivacyConfirmed}
-            onChange={() =>
-              setIsChildrenPrivacyConfirmed((current) => !current)
-            }
-            checkedFill="#000000"
-            uncheckedStroke="#000000"
-            label={
-              <Text className="font-lexend-regular text-base leading-6 text-text-default">
-                I have read & agree to the{' '}
-                <Text
-                  className="font-lexend-regular text-base text-text-informational underline"
-                  onPress={() => {
-                    openLegalLink(legalLinks.childrenPrivacy);
-                  }}
-                >
-                  Children&apos;s Privacy Policy
-                </Text>
-              </Text>
-            }
-          />
-        </View>
-
-        <Text className="font-lexend-regular text-xs leading-[18px] text-text-tertiary">
-          By selecting the boxes above, you&apos;re confirming that you&apos;re
-          at least 18 years of age and you&apos;re agreeing to our Terms of Use,
-          Privacy Policy, and Children&apos;s Privacy Policy.
+      <Text className="font-lexend-regular text-sm leading-5 text-text-secondary">
+        We require age verification to use our services.{' '}
+        <Text className="font-lexend-semiBold text-text-default">
+          We strictly prohibit any predatory behavior towards children.
         </Text>
+      </Text>
+
+      <View className="gap-4">
+        <CustomCheckbox
+          checked={isAgeConfirmed}
+          onChange={() => setIsAgeConfirmed((current) => !current)}
+          checkedFill="#000000"
+          uncheckedStroke="#000000"
+          label={
+            <Text className="font-lexend-regular text-sm leading-5 text-text-default">
+              I am 18+ years old
+            </Text>
+          }
+        />
+
+        <CustomCheckbox
+          checked={isTermsConfirmed}
+          onChange={() => setIsTermsConfirmed((current) => !current)}
+          checkedFill="#000000"
+          uncheckedStroke="#000000"
+          label={
+            <Text className="font-lexend-regular text-sm leading-5 text-text-default">
+              I have read & agree to the{' '}
+              <Text
+                className="font-lexend-regular text-sm text-text-informational"
+                onPress={() => {
+                  openLegalLink(legalLinks.terms);
+                }}
+              >
+                Terms of Use
+              </Text>
+            </Text>
+          }
+        />
+
+        <CustomCheckbox
+          checked={isPrivacyConfirmed}
+          onChange={() => setIsPrivacyConfirmed((current) => !current)}
+          checkedFill="#000000"
+          uncheckedStroke="#000000"
+          label={
+            <Text className="font-lexend-regular text-sm leading-5 text-text-default">
+              I have read & agree to the{' '}
+              <Text
+                className="font-lexend-regular text-sm text-text-informational"
+                onPress={() => {
+                  openLegalLink(legalLinks.privacy);
+                }}
+              >
+                Privacy Policy
+              </Text>
+            </Text>
+          }
+        />
+
+        <CustomCheckbox
+          checked={isCsaeConfirmed}
+          onChange={() => setIsCsaeConfirmed((current) => !current)}
+          checkedFill="#000000"
+          uncheckedStroke="#000000"
+          label={
+            <Text className="font-lexend-regular text-sm leading-5 text-text-default">
+              I have read & agree to the{' '}
+              <Text
+                className="font-lexend-regular text-sm text-text-informational"
+                onPress={() => {
+                  openLegalLink(legalLinks.csae);
+                }}
+              >
+                Child Sexual Abuse &amp; Exploitation (CSAE) Policy
+              </Text>
+            </Text>
+          }
+        />
       </View>
 
-      <View className="w-full flex-col gap-2">
+      <Text className="font-lexend-regular text-footnote leading-[18px] text-text-tertiary">
+        By selecting the boxes above, you&apos;re confirming that you&apos;re at
+        least 18 years of age and you&apos;re agreeing to our Terms of Use &amp;
+        Privacy Policy.
+      </Text>
+
+      <View className="w-full flex-col gap-2 pt-2">
         <CompactButton
-          label="Agree & Continue"
+          label="I agree & continue"
           disabled={!allConfirmed}
           loading={isAccepting}
           onPress={onAccept}
         />
         <CompactButton
-          label="I Disagree"
+          label="I disagree"
           variant="outline"
           disabled={isDeclining}
           loading={isDeclining}

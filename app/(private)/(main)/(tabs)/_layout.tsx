@@ -32,7 +32,7 @@ export default function PrivateTabsLayout() {
       <Tabs.Screen
         name="search-records"
         options={{
-          title: 'Criminal Search',
+          title: 'Search',
           tabBarIcon: ({ color }) => <Search size={ICON_SIZE} color={color} />,
         }}
       />

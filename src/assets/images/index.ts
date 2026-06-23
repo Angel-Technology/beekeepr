@@ -16,6 +16,8 @@ export type AppImages = {
   readonly welcomeBee: ImageRequireSource;
   readonly standoutBee: ImageRequireSource;
   readonly newMatchBee: ImageRequireSource;
+  readonly illustrationOnboarding3: ImageRequireSource;
+  readonly illustrationLetsdothis: ImageRequireSource;
   readonly partnerships: ImageRequireSource;
   readonly location: ImageRequireSource;
   readonly congrats: ImageRequireSource;
@@ -35,6 +37,8 @@ export const appImages: AppImages = {
   welcomeBee: require('./welcome-bee.png'),
   standoutBee: require('./standout-bee.png'),
   newMatchBee: require('./new-match-bee.png'),
+  illustrationOnboarding3: require('./Illustration-Onboarding-3.png'),
+  illustrationLetsdothis: require('./Illustration-Letsdothis.png'),
   partnerships: require('./partnerships.png'),
   location: require('./location.png'),
   congrats: require('./congrats.png'),

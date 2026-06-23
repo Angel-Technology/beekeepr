@@ -18,30 +18,12 @@ export type ProfileFormAction =
   | { type: 'saveFailed' }
   | { type: 'fieldRevertedToBaseline'; field: ProfileField };
 
-const HANDLE_PREFIX = '@';
-
-/**
- * Enforce the leading `@` invariant on whatever the user typed. Collapses
- * accidental `@@…`, re-adds the prefix if they erased it, and tolerates a
- * bare value coming back from the server.
- */
-export const formatHandleForDisplay = (
-  raw: string | null | undefined,
-): string => {
-  const value = (raw ?? '').trim();
-  if (value.length === 0) {
-    return HANDLE_PREFIX;
-  }
-  const withoutPrefix = value.replace(/^@+/, '');
-  return `${HANDLE_PREFIX}${withoutPrefix}`;
-};
-
 export const stripHandlePrefix = (value: string): string =>
   value.replace(/^@+/, '').trim();
 
 export const seedFromUser = (user: AuthUser | null): ProfileFormValues => ({
   nickname: user?.nickname ?? user?.displayName ?? '',
-  handle: formatHandleForDisplay(user?.handle),
+  handle: stripHandlePrefix(user?.handle ?? ''),
 });
 
 /**
@@ -74,7 +56,7 @@ export const profileFormReducer = (
     case 'fieldChanged': {
       const next =
         action.field === 'handle'
-          ? formatHandleForDisplay(action.value)
+          ? stripHandlePrefix(action.value)
           : action.value;
       return {
         ...state,
@@ -87,7 +69,7 @@ export const profileFormReducer = (
           action.updated.nickname ??
           action.updated.displayName ??
           state.baseline.nickname,
-        handle: formatHandleForDisplay(
+        handle: stripHandlePrefix(
           action.updated.handle ?? state.baseline.handle,
         ),
       };

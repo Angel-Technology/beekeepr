@@ -7,7 +7,6 @@ import type {
   FieldStatus,
   UserSearchResult,
 } from '@features/account/models/account.types';
-import { formatJoinedDate } from '@features/account/models/formatJoinedDate';
 import IllustrationBuzzBadge from '@src/assets/svg/IllustrationBuzzBadge';
 import { useRevenueCat } from '@src/lib/revenuecat';
 import { BuzzTrialCountdownCard } from './BuzzTrialCountdownCard';
@@ -107,8 +106,6 @@ export const BuzzWelcomeFlow = ({
                 key={result.id}
                 nickname={result.nickname ?? ''}
                 handle={result.handle ?? ''}
-                imageUrl={result.imageUrl}
-                joinedDate={formatJoinedDate(result.createdAtUtc)}
               />
             ))}
           </View>

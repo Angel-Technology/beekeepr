@@ -1,4 +1,6 @@
 export { MenuDrawerContent } from './presentation/components/MenuDrawerContent';
+export { ProfileDrawerContent } from './presentation/components/ProfileDrawerContent';
+export { InfoSection } from './presentation/components/InfoSection';
 export { MenuSection } from './presentation/components/MenuSection';
 export type { MenuItem } from './presentation/components/MenuSection';
 export { DeleteAccountScreen } from './presentation/screens/DeleteAccountScreen';

@@ -27,7 +27,7 @@ export const WhatWeDoSlide = ({
           <VerificationStatusPill
             label={pillLabel}
             size="sm"
-            className="bg-bg-default px-3.5"
+            className="bg-tk-gray-white px-3.5"
             icon={pillIcon}
           />
         ) : null}
@@ -35,7 +35,7 @@ export const WhatWeDoSlide = ({
       </View>
 
       <View className="w-full items-center gap-4">
-        <Text className="w-full text-center font-poppins-semiBold text-2xl leading-tight text-text-default">
+        <Text className="text-tk-gray-black w-full text-center font-poppins-semiBold text-2xl leading-tight">
           {title}
         </Text>
         <View className="w-full items-center">{body}</View>

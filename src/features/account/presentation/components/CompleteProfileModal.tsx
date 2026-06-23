@@ -1,4 +1,5 @@
 import { Text, View } from 'react-native';
+import { AtSign } from 'lucide-react-native';
 import { BaseModal, CompactButton, Input } from '@components';
 import type { FieldStatus } from '../../models/account.types';
 import { FieldStatusIcon } from './FieldStatusIcon';
@@ -72,9 +73,10 @@ export const CompleteProfileModal = ({
               label="Handle"
               value={handle}
               onChangeText={onChangeHandle}
-              placeholder="@yourhandle"
+              placeholder="yourhandle"
               autoCapitalize="none"
               autoCorrect={false}
+              leftAccessory={<AtSign size={16} />}
               rightAccessory={<FieldStatusIcon status={handleStatus} />}
             />
             {handleStatus === 'error' && handleReason ? (
