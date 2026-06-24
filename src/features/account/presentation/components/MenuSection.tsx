@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import { ChevronRight } from 'lucide-react-native';
 import type { TextStyle } from 'react-native';
-import { Pressable, Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import { themedColors, useThemedColor } from '@common';
 
@@ -29,7 +29,7 @@ export const MenuSection = ({ items }: MenuSectionProps) => {
         const isLast = index === items.length - 1;
 
         return (
-          <Pressable
+          <TouchableOpacity
             key={item.label}
             accessibilityRole="button"
             accessibilityLabel={item.accessibilityLabel ?? item.label}
@@ -54,7 +54,7 @@ export const MenuSection = ({ items }: MenuSectionProps) => {
                 )}
               </View>
             </View>
-          </Pressable>
+          </TouchableOpacity>
         );
       })}
     </View>

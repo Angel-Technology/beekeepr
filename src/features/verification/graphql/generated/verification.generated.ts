@@ -437,6 +437,7 @@ export type UserGraph = {
   __typename?: 'UserGraph';
   backgroundCheckBadge: BackgroundCheckBadge;
   backgroundCheckBadgeExpiresAtUtc?: Maybe<Scalars['DateTime']['output']>;
+  checkrLastCheckAtUtc?: Maybe<Scalars['DateTime']['output']>;
   contactVisibility: ContactVisibility;
   createdAtUtc: Scalars['DateTime']['output'];
   deletedAtUtc?: Maybe<Scalars['DateTime']['output']>;
@@ -638,6 +639,8 @@ export type UserQueriesUserByIdArgs = {
 export type UserSearchResultDto = {
   __typename?: 'UserSearchResultDto';
   backgroundCheckBadge: BackgroundCheckBadge;
+  backgroundCheckBadgeExpiresAtUtc?: Maybe<Scalars['DateTime']['output']>;
+  checkrLastCheckAtUtc?: Maybe<Scalars['DateTime']['output']>;
   createdAtUtc: Scalars['DateTime']['output'];
   displayName?: Maybe<Scalars['String']['output']>;
   handle?: Maybe<Scalars['String']['output']>;

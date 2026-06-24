@@ -1,4 +1,4 @@
-import { Pressable, Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { SvgUri } from 'react-native-svg';
 import { ChevronRight, UserRound } from 'lucide-react-native';
 
@@ -7,12 +7,6 @@ import { themedColors, useThemedColor } from '@common';
 type ProfilePreviewCardProps = {
   nickname: string;
   handle: string;
-  /**
-   * Selected avatar URL (DiceBear SVG). Rendered as an inline SVG inside
-   * the 44×44 avatar circle when set; otherwise the muted UserRound
-   * placeholder shows. Pass `null` / `undefined` to render the
-   * placeholder.
-   */
   imageUrl?: string | null;
   onPress?: () => void;
 };
@@ -34,15 +28,15 @@ export const ProfilePreviewCard = ({
   onPress,
 }: ProfilePreviewCardProps) => {
   const displayedHandle = formatHandle(handle);
-  const Container = onPress ? Pressable : View;
   const avatarIconColor = useThemedColor(themedColors.text.tertiary);
   const chevronColor = useThemedColor(themedColors.text.primary);
   const hasAvatar = Boolean(imageUrl && imageUrl.length > 0);
+  const isPressable = Boolean(onPress);
+  const Container = isPressable ? TouchableOpacity : View;
 
   return (
     <Container
       onPress={onPress}
-      accessibilityRole={onPress ? 'button' : undefined}
       className="border-tk-border-secondary bg-tk-bg-primary w-full flex-row items-center gap-3 rounded-5 border p-4"
     >
       <View className="bg-tk-bg-elevated-secondary size-[44px] items-center justify-center overflow-hidden rounded-round">

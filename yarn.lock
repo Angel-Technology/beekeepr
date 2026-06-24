@@ -6278,6 +6278,7 @@ __metadata:
     react-native-worklets: 0.7.2
     react-test-renderer: ^19.2.3
     storybook: ^10.3.5
+    tailwind-merge: ^3.6.0
     tailwindcss: ^3.4.17
     typescript: latest
   languageName: unknown
@@ -14677,6 +14678,13 @@ __metadata:
   dependencies:
     "@pkgr/core": ^0.2.9
   checksum: a53fb563d01ba8912a111b883fc3c701e267896ff8273e7aba9001f5f74711e125888f4039e93060795cd416122cf492ae419eb10a6a3e3b00e830917669d2cf
+  languageName: node
+  linkType: hard
+
+"tailwind-merge@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "tailwind-merge@npm:3.6.0"
+  checksum: 617e86a01d99f17e02706cc2219bd203d1910b95a05f41fe1e5548b58a7975043ce5b6ef86d4cdcf10fa3c8362b796b9822de2f62024c69d5479e96d6e5be63f
   languageName: node
   linkType: hard
 

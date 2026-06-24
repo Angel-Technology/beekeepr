@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useNavigation, useRouter } from 'expo-router';
 import { DrawerActions } from '@react-navigation/native';
@@ -29,6 +29,7 @@ import { FieldStatusIcon } from '../components/FieldStatusIcon';
 import { InfoSection } from '../components/InfoSection';
 import { PrivacyOptionRow } from '../components/PrivacyOptionRow';
 import { ProfilePreviewCard } from '../components/ProfilePreviewCard';
+import { ProfilePreviewHiddenCard } from '../components/ProfilePreviewHiddenCard';
 import { TipCard } from '../components/TipCard';
 
 const PROFILE_DESCRIPTION =
@@ -80,6 +81,17 @@ export const ProfileScreen = () => {
     contactVisibility === ContactVisibility.Public ||
     contactVisibility === ContactVisibility.ConnectionsOnly;
   const everyoneOn = contactVisibility === ContactVisibility.Public;
+
+  // Nothing to share = nothing to toggle. The share-with switches need at
+  // least one contact field filled in, otherwise turning them on would
+  // make an empty contact set visible to others.
+  const hasContactInfo =
+    contactValues.phoneNumber.trim().length > 0 ||
+    contactValues.googleVoicePhone.trim().length > 0 ||
+    contactValues.whatsAppPhone.trim().length > 0 ||
+    contactValues.instagramHandle.trim().length > 0 ||
+    contactValues.telegramHandle.trim().length > 0 ||
+    contactValues.signalPhone.trim().length > 0;
 
   const handleProfileSharedChange = (next: boolean) => {
     setProfileVisibility(
@@ -174,17 +186,21 @@ export const ProfileScreen = () => {
         keyboardShouldPersistTaps="handled"
       >
         <InfoSection title="Preview">
-          <ProfilePreviewCard
-            nickname={values.nickname}
-            handle={values.handle}
-            imageUrl={user?.imageUrl ?? null}
-            onPress={openProfileDrawer}
-          />
+          {profileShared ? (
+            <ProfilePreviewCard
+              nickname={values.nickname}
+              handle={values.handle}
+              imageUrl={user?.imageUrl ?? null}
+              onPress={openProfileDrawer}
+            />
+          ) : (
+            <ProfilePreviewHiddenCard />
+          )}
         </InfoSection>
 
         <InfoSection title="Profile" description={PROFILE_DESCRIPTION}>
           <FormCard>
-            <Pressable
+            <TouchableOpacity
               accessibilityRole="button"
               accessibilityLabel="Select avatar"
               onPress={openAvatarPicker}
@@ -200,7 +216,7 @@ export const ProfileScreen = () => {
                 <CircleCheck size={24} color="#00A93E" />
               ) : null}
               <ChevronRight size={24} color={chevronColor} />
-            </Pressable>
+            </TouchableOpacity>
 
             <Input
               label="Nickname"
@@ -395,6 +411,7 @@ export const ProfileScreen = () => {
                   description="Only share with my connections in the Buzz Badge Community."
                   value={connectionsOn}
                   onChange={handleConnectionsChange}
+                  disabled={!hasContactInfo}
                 />
                 <Divider />
                 <PrivacyOptionRow
@@ -404,6 +421,7 @@ export const ProfileScreen = () => {
                   description="Toggle on to share your contact information with anyone in the Buzz Badge Community."
                   value={everyoneOn}
                   onChange={handleEveryoneChange}
+                  disabled={!hasContactInfo}
                 />
               </View>
             </View>

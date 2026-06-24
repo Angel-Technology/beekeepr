@@ -1,12 +1,23 @@
-import { Image } from 'expo-image';
-import { Pressable, Text, View } from 'react-native';
+import type { ReactNode } from 'react';
+import { useCallback } from 'react';
+import { Linking, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { SvgUri } from 'react-native-svg';
 import type { DrawerContentComponentProps } from '@react-navigation/drawer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Flag, ShieldAlert, Trash2, User } from 'lucide-react-native';
-import { AppHeader, Divider } from '@components';
-import { useAuthSession } from '@features/auth';
+import { Phone, ShieldAlert, UserRound } from 'lucide-react-native';
+import { AppHeader, Divider, FormCard } from '@components';
+import { themedColors, useThemedColor } from '@common';
+import { ContactVisibility, useAuthSession } from '@features/auth';
+import { useErrorModal } from '@src/lib/error-modal';
+import BuzzBadge from '@assets/svg/BuzzBadge';
+import GoogleVoiceIcon from '@assets/svg/GoogleVoiceIcon';
+import InstagramIcon from '@assets/svg/InstagramIcon';
+import SignalIcon from '@assets/svg/SignalIcon';
+import TelegramIcon from '@assets/svg/TelegramIcon';
+import WhatsAppIcon from '@assets/svg/WhatsAppIcon';
 import { formatJoinedDate } from '../../models/formatJoinedDate';
+import { InfoSection } from './InfoSection';
 
 const AVATAR_SIZE = 64;
 
@@ -21,20 +32,173 @@ const formatHandle = (handle: string | null | undefined) => {
   return trimmed.startsWith('@') ? trimmed : `@${trimmed}`;
 };
 
+const onlyDigits = (value: string): string => value.replace(/\D+/g, '');
+
+const stripHandle = (value: string): string => value.trim().replace(/^@+/, '');
+
+const formatPhoneDisplay = (raw: string): string => {
+  const digits = onlyDigits(raw);
+  if (digits.length !== 10) {
+    return raw;
+  }
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+};
+
+const phoneTelUrl = (raw: string): string | null => {
+  const digits = onlyDigits(raw);
+  if (digits.length === 0) {
+    return null;
+  }
+  return `tel:+${digits.length === 10 ? `1${digits}` : digits}`;
+};
+
+const whatsAppUrl = (raw: string): string | null => {
+  const digits = onlyDigits(raw);
+  if (digits.length === 0) {
+    return null;
+  }
+  return `https://wa.me/${digits.length === 10 ? `1${digits}` : digits}`;
+};
+
+const instagramUrl = (handle: string): string | null => {
+  const bare = stripHandle(handle);
+  return bare ? `https://instagram.com/${bare}` : null;
+};
+
+const telegramUrl = (handle: string): string | null => {
+  const bare = stripHandle(handle);
+  return bare ? `https://t.me/${bare}` : null;
+};
+
+const signalUrl = (value: string): string | null => {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+  if (trimmed.startsWith('http')) {
+    return trimmed;
+  }
+  const digits = onlyDigits(trimmed);
+  if (digits.length === 0) {
+    return null;
+  }
+  return `https://signal.me/#p/+${digits.length === 10 ? `1${digits}` : digits}`;
+};
+
+const isNonEmpty = (value: string | null | undefined): value is string =>
+  typeof value === 'string' && value.trim().length > 0;
+
+type ContactRow = {
+  readonly key: string;
+  readonly label: string;
+  readonly display: string;
+  readonly url: string | null;
+  readonly icon: ReactNode;
+  /**
+   * Signal stores a profile URL, not a typeable handle. Render as a
+   * pill-shaped "Profile link" button per Figma rather than raw text.
+   */
+  readonly showAsPill?: boolean;
+};
+
 export const ProfileDrawerContent = (_props: DrawerContentComponentProps) => {
   const insets = useSafeAreaInsets();
   const { data: user } = useAuthSession();
+  const errorModal = useErrorModal();
+  const phoneIconColor = useThemedColor(themedColors.text.primary);
+  const avatarIconColor = useThemedColor(themedColors.text.tertiary);
+  const dangerColor = useThemedColor(themedColors.alerts.danger);
 
   const displayName = user?.nickname?.trim() || 'Member';
   const displayHandle = formatHandle(user?.handle);
   const memberSince = formatJoinedDate(user?.createdAtUtc);
+  const lastScreenedAt = formatJoinedDate(user?.checkrLastCheckAtUtc);
+  const nextScreeningAt = formatJoinedDate(
+    user?.backgroundCheckBadgeExpiresAtUtc,
+  );
+
+  const openUrl = useCallback(
+    async (url: string | null) => {
+      if (!url) {
+        return;
+      }
+      try {
+        await Linking.openURL(url);
+      } catch (error) {
+        errorModal.showFromError(error, 'Could not open link');
+      }
+    },
+    [errorModal],
+  );
+
+  const contactRows: ContactRow[] = [];
+  if (isNonEmpty(user?.phoneNumber)) {
+    contactRows.push({
+      key: 'phone',
+      label: 'Phone Number',
+      display: formatPhoneDisplay(user.phoneNumber),
+      url: phoneTelUrl(user.phoneNumber),
+      icon: <Phone size={16} color={phoneIconColor} />,
+    });
+  }
+  if (isNonEmpty(user?.googleVoicePhone)) {
+    contactRows.push({
+      key: 'gvoice',
+      label: 'Google Voice',
+      display: formatPhoneDisplay(user.googleVoicePhone),
+      url: phoneTelUrl(user.googleVoicePhone),
+      icon: <GoogleVoiceIcon />,
+    });
+  }
+  if (isNonEmpty(user?.whatsAppPhone)) {
+    contactRows.push({
+      key: 'whatsapp',
+      label: 'WhatsApp',
+      display: formatPhoneDisplay(user.whatsAppPhone),
+      url: whatsAppUrl(user.whatsAppPhone),
+      icon: <WhatsAppIcon />,
+    });
+  }
+  if (isNonEmpty(user?.instagramHandle)) {
+    contactRows.push({
+      key: 'instagram',
+      label: 'Instagram',
+      display: `@${stripHandle(user.instagramHandle)}`,
+      url: instagramUrl(user.instagramHandle),
+      icon: <InstagramIcon />,
+    });
+  }
+  if (isNonEmpty(user?.telegramHandle)) {
+    contactRows.push({
+      key: 'telegram',
+      label: 'Telegram',
+      display: `@${stripHandle(user.telegramHandle)}`,
+      url: telegramUrl(user.telegramHandle),
+      icon: <TelegramIcon />,
+    });
+  }
+  if (isNonEmpty(user?.signalPhone)) {
+    contactRows.push({
+      key: 'signal',
+      label: 'Signal',
+      display: 'Profile link',
+      url: signalUrl(user.signalPhone),
+      icon: <SignalIcon />,
+      showAsPill: true,
+    });
+  }
+
+  const contactSharingOn =
+    user?.contactVisibility === ContactVisibility.ConnectionsOnly ||
+    user?.contactVisibility === ContactVisibility.Public;
+  const showContactCard = contactSharingOn && contactRows.length > 0;
 
   return (
-    <View className="flex-1 bg-bg-default">
+    <View className="bg-tk-bg-primary flex-1">
       <AppHeader
         topInset={insets.top}
         center={
-          <Text className="font-poppins-semiBold text-base text-text-default">
+          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
             Preview
           </Text>
         }
@@ -48,46 +212,47 @@ export const ProfileDrawerContent = (_props: DrawerContentComponentProps) => {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <View className="items-center bg-bg-success px-4 py-2">
-          <Text className="font-lexend-regular text-base text-text-inverse">
+        <View className="bg-tk-alerts-success items-center px-4 py-2">
+          <Text className="text-tk-text-primary-reversed font-lexend-regular text-base">
             This is how others see you.
           </Text>
         </View>
 
         <View className="flex-row items-center gap-3 px-6">
-          <View className="size-[64px] items-center justify-center overflow-hidden rounded-round bg-brand-primary">
+          <View className="bg-tk-bg-elevated-secondary size-[64px] items-center justify-center overflow-hidden rounded-round">
             {user?.imageUrl ? (
-              <Image
-                source={{ uri: user.imageUrl }}
-                style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
+              <SvgUri
+                uri={user.imageUrl}
+                width={AVATAR_SIZE}
+                height={AVATAR_SIZE}
               />
             ) : (
-              <User size={30} color="#FFFFFF" />
+              <UserRound size={30} color={avatarIconColor} />
             )}
           </View>
           <View className="flex-1">
             <Text
-              className="font-poppins-semiBold text-2xl leading-tight text-text-default"
+              className="text-tk-text-primary font-poppins-semiBold text-2xl leading-tight"
               numberOfLines={1}
             >
               {displayName}
             </Text>
             {displayHandle ? (
               <Text
-                className="font-lexend-regular text-footnote leading-[18px] text-text-default"
+                className="text-tk-text-primary font-lexend-regular text-footnote leading-[18px]"
                 numberOfLines={1}
               >
                 {displayHandle}
               </Text>
             ) : null}
             {memberSince ? (
-              <Text className="font-lexend-regular text-footnote leading-[18px] text-text-tertiary">
+              <Text className="text-tk-text-tertiary font-lexend-regular text-footnote leading-[18px]">
                 member since: {memberSince}
               </Text>
             ) : null}
           </View>
         </View>
-
+        {/* 
         <View className="flex-row gap-2 px-6">
           <Pressable
             accessibilityRole="button"
@@ -107,58 +272,105 @@ export const ProfileDrawerContent = (_props: DrawerContentComponentProps) => {
               Remove
             </Text>
           </Pressable>
-        </View>
+        </View> */}
 
-        <View className="mx-6 gap-4 rounded-5 border border-border-weak p-4">
-          <View className="flex-row items-center gap-2">
-            <Text className="flex-1 font-lexend-semiBold text-base text-text-default">
-              Buzz Badge
-              <Text className="font-lexend-regular text-caption leading-4 text-text-secondary">
-                {'  '}(status updated every 6 months)
+        <View className="bg-tk-bg-primary border-tk-border-secondary mx-6 gap-4 rounded-5 border p-4">
+          <View className="w-full flex-row items-start justify-center gap-3">
+            <BuzzBadge width={35.875} height={41} />
+            <View className="flex-1 justify-center">
+              <Text className="text-tk-text-primary font-lexend-semiBold text-base leading-6">
+                Buzz Badge
               </Text>
-            </Text>
+              <Text className="text-tk-text-secondary font-lexend-regular text-caption leading-4">
+                (status updated every 6 months)
+              </Text>
+            </View>
           </View>
           <View className="gap-1">
-            <View className="flex-row justify-between rounded-1 bg-bg-weak px-1 py-1.5">
-              <Text className="font-lexend-regular text-footnote leading-none text-text-secondary">
+            <View className="bg-tk-bg-elevated-secondary flex-row gap-2 rounded-1 px-1 pb-1.5 pt-1">
+              <Text className="text-tk-text-secondary flex-1 font-lexend-regular text-footnote leading-none">
                 Last screened
               </Text>
-              <Text className="font-lexend-regular text-footnote leading-none text-text-default">
-                —
+              <Text className="text-tk-text-primary font-lexend-regular text-footnote leading-none">
+                {lastScreenedAt ?? '—'}
               </Text>
             </View>
-            <View className="flex-row justify-between rounded-1 px-1 py-1.5">
-              <Text className="font-lexend-regular text-footnote leading-none text-text-secondary">
+            <View className="bg-tk-bg-primary flex-row gap-2 rounded-1 px-1 pb-1.5 pt-1">
+              <Text className="text-tk-text-secondary flex-1 font-lexend-regular text-footnote leading-none">
                 Next screening
               </Text>
-              <Text className="font-lexend-regular text-footnote leading-none text-text-default">
-                —
+              <Text className="text-tk-text-primary font-lexend-regular text-footnote leading-none">
+                {nextScreeningAt ?? '—'}
               </Text>
             </View>
           </View>
         </View>
 
-        <View className="mx-6 gap-2 rounded-5 bg-bg-weak p-4">
+        {showContactCard ? (
+          <View className="px-6">
+            <InfoSection title="CONTACT INFORMATION">
+              <FormCard className="flex gap-4 p-5">
+                {contactRows.map((row) => (
+                  <TouchableOpacity
+                    key={row.key}
+                    accessibilityRole="link"
+                    accessibilityLabel={`Open ${row.label}`}
+                    onPress={() => openUrl(row.url)}
+                    disabled={row.url === null}
+                    activeOpacity={0.6}
+                    className="w-full flex-row items-center gap-3"
+                  >
+                    <View className="size-5 items-center justify-center">
+                      {row.icon}
+                    </View>
+                    <Text className="text-tk-text-secondary flex-1 font-lexend-regular text-footnote leading-[18px]">
+                      {row.label}
+                    </Text>
+                    {row.showAsPill ? (
+                      <View className="bg-tk-bg-elevated-primary border-tk-actions-neutral-border-default min-h-[24px] flex-row items-center justify-center rounded-round border px-3 py-1.5">
+                        <Text className="text-tk-actions-neutral-text-default font-lexend-semiBold text-xs">
+                          {row.display}
+                        </Text>
+                      </View>
+                    ) : (
+                      <Text
+                        className="text-tk-text-primary text-right font-lexend-regular text-footnote leading-[18px]"
+                        numberOfLines={1}
+                      >
+                        {row.display}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                ))}
+              </FormCard>
+            </InfoSection>
+          </View>
+        ) : null}
+
+        <View className="bg-tk-bg-secondary mx-6 gap-2 rounded-5 p-4">
           <View className="flex-row items-center gap-2">
-            <View className="items-center justify-center rounded-round border-2 border-text-critical p-2">
-              <ShieldAlert size={20} />
+            <View
+              className="items-center justify-center rounded-round border-2 p-2"
+              style={{ borderColor: dangerColor }}
+            >
+              <ShieldAlert size={20} color={dangerColor} />
             </View>
-            <Text className="flex-1 font-lexend-semiBold text-base text-text-default">
+            <Text className="text-tk-text-primary flex-1 font-lexend-semiBold text-base">
               Safety is not a guarantee!
             </Text>
           </View>
-          <Text className="font-lexend-regular text-footnote leading-[18px] text-text-default">
+          <Text className="text-tk-text-primary font-lexend-regular text-footnote leading-[18px]">
             <Text className="font-lexend-regular">
               The Buzz Badge is not a guarantee of safety!{' '}
             </Text>
             It’s a meaningful signal from someone who chose to be accountable.
           </Text>
-          <Text className="font-lexend-regular text-footnote leading-[18px] text-text-default">
+          <Text className="text-tk-text-primary font-lexend-regular text-footnote leading-[18px]">
             Always use discernment and recommended safety practices when meeting
             anyone new.
           </Text>
           <Divider className="my-2" />
-          <Text className="font-lexend-regular text-caption leading-4 text-text-secondary">
+          <Text className="text-tk-text-secondary font-lexend-regular text-caption leading-4">
             {SAFETY_DISCLAIMER}
           </Text>
         </View>

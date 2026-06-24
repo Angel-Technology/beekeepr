@@ -18,6 +18,7 @@ fragment AuthUserFields on UserGraph {
   imageUrl
   backgroundCheckBadge
   backgroundCheckBadgeExpiresAtUtc
+  checkrLastCheckAtUtc
   termsAcceptedAtUtc
   profileVisibility
   contactVisibility

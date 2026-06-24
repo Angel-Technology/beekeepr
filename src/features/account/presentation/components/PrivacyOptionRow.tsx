@@ -13,6 +13,7 @@ type PrivacyOptionRowProps = {
    * use it; the contact-sharing rows in the Figma render without it.
    */
   showBadge?: boolean;
+  disabled?: boolean;
 };
 
 export const PrivacyOptionRow = ({
@@ -22,8 +23,11 @@ export const PrivacyOptionRow = ({
   value,
   onChange,
   showBadge = true,
+  disabled = false,
 }: PrivacyOptionRowProps) => (
-  <View className="flex-row items-start gap-4">
+  <View
+    className={clsx('flex-row items-start gap-4', disabled && 'opacity-50')}
+  >
     <View className="flex-1 gap-1">
       {showBadge ? (
         <View
@@ -57,7 +61,12 @@ export const PrivacyOptionRow = ({
       ) : null}
     </View>
     <View className="pt-6">
-      <Switch value={value} onChange={onChange} accessibilityLabel={title} />
+      <Switch
+        value={value}
+        onChange={onChange}
+        disabled={disabled}
+        accessibilityLabel={title}
+      />
     </View>
   </View>
 );
