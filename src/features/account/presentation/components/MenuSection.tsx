@@ -4,6 +4,8 @@ import { ChevronRight } from 'lucide-react-native';
 import type { TextStyle } from 'react-native';
 import { Pressable, Text, View } from 'react-native';
 
+import { themedColors, useThemedColor } from '@common';
+
 const MENU_ICON_SIZE = 20;
 
 export type MenuItem = {
@@ -18,39 +20,43 @@ type MenuSectionProps = {
   items: readonly MenuItem[];
 };
 
-const DEFAULT_ICON = <ChevronRight size={MENU_ICON_SIZE} color="#000000" />;
+export const MenuSection = ({ items }: MenuSectionProps) => {
+  const chevronColor = useThemedColor(themedColors.text.primary);
 
-export const MenuSection = ({ items }: MenuSectionProps) => (
-  <View className="w-full self-stretch overflow-hidden rounded-lg border border-border-weak">
-    {items.map((item, index) => {
-      const isLast = index === items.length - 1;
+  return (
+    <View className="border-tk-border-secondary w-full self-stretch overflow-hidden rounded-lg border">
+      {items.map((item, index) => {
+        const isLast = index === items.length - 1;
 
-      return (
-        <Pressable
-          key={item.label}
-          accessibilityRole="button"
-          accessibilityLabel={item.accessibilityLabel ?? item.label}
-          onPress={item.onPress}
-          className="w-full self-stretch px-6"
-        >
-          <View
-            className={clsx(
-              'w-full flex-row items-center gap-4 py-4',
-              !isLast && 'border-b border-border-weak',
-            )}
+        return (
+          <Pressable
+            key={item.label}
+            accessibilityRole="button"
+            accessibilityLabel={item.accessibilityLabel ?? item.label}
+            onPress={item.onPress}
+            className="w-full self-stretch px-6"
           >
-            <Text
-              className="flex-1 font-lexend-regular text-base leading-6 text-text-default"
-              style={[{ letterSpacing: -0.3 }, item.labelStyle]}
+            <View
+              className={clsx(
+                'w-full flex-row items-center gap-4 py-4',
+                !isLast && 'border-tk-border-secondary border-b',
+              )}
             >
-              {item.label}
-            </Text>
-            <View className="h-6 w-6 items-center justify-center">
-              {item.icon ?? DEFAULT_ICON}
+              <Text
+                className="text-tk-text-primary flex-1 font-lexend-regular text-base leading-6"
+                style={[{ letterSpacing: -0.3 }, item.labelStyle]}
+              >
+                {item.label}
+              </Text>
+              <View className="h-6 w-6 items-center justify-center">
+                {item.icon ?? (
+                  <ChevronRight size={MENU_ICON_SIZE} color={chevronColor} />
+                )}
+              </View>
             </View>
-          </View>
-        </Pressable>
-      );
-    })}
-  </View>
-);
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+};

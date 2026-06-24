@@ -1,10 +1,12 @@
 import { useCallback } from 'react';
 import { Text, View } from 'react-native';
+import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import type { DrawerContentComponentProps } from '@react-navigation/drawer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArchiveRestore, CreditCard, LogOut, Trash } from 'lucide-react-native';
 import { AppHeader, BrandMark } from '@components';
+import { themedColors, useThemedColor } from '@common';
 import { useAuthActions } from '@features/auth';
 import { openInAppBrowser } from '@src/lib/browser';
 import { useErrorModal } from '@src/lib/error-modal';
@@ -14,6 +16,7 @@ import { MenuSection } from './MenuSection';
 
 const DELETE_ACCOUNT_COLOR = '#FF0000';
 const MENU_ICON_SIZE = 20;
+const APP_VERSION = Constants.expoConfig?.version ?? '1.0.0';
 
 export const MenuDrawerContent = ({
   navigation,
@@ -25,6 +28,7 @@ export const MenuDrawerContent = ({
     useRevenueCat();
   const { showError, showFromError } = useErrorModal();
   const hasSubscriptionHistory = isPro || isLapsed;
+  const menuIconColor = useThemedColor(themedColors.text.primary);
 
   const closeDrawerThen = useCallback(
     (action: () => void) => {
@@ -66,7 +70,7 @@ export const MenuDrawerContent = ({
 
   return (
     <View
-      className="flex-1"
+      className="flex-1 bg-tk-bg-primary"
       style={{
         paddingBottom: insets.bottom + 24,
       }}
@@ -74,7 +78,7 @@ export const MenuDrawerContent = ({
       <AppHeader
         topInset={insets.top}
         center={
-          <Text className="font-poppins-semiBold text-base text-text-default">
+          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
             Menu
           </Text>
         }
@@ -122,6 +126,11 @@ export const MenuDrawerContent = ({
                 onPress: () =>
                   openInAppBrowser(environmentConfig.termsOfUseURL),
               },
+              {
+                label: 'CSAE Policy',
+                onPress: () =>
+                  openInAppBrowser(environmentConfig.childrenPrivacyURL),
+              },
             ]}
           />
 
@@ -129,12 +138,14 @@ export const MenuDrawerContent = ({
             items={[
               {
                 label: 'Logout',
-                icon: <LogOut size={MENU_ICON_SIZE} color="#000000" />,
+                icon: <LogOut size={MENU_ICON_SIZE} color={menuIconColor} />,
                 onPress: () => closeDrawerThen(() => signOut.mutate()),
               },
               {
                 label: 'Restore Purchase',
-                icon: <ArchiveRestore size={MENU_ICON_SIZE} color="#000000" />,
+                icon: (
+                  <ArchiveRestore size={MENU_ICON_SIZE} color={menuIconColor} />
+                ),
                 onPress: () =>
                   closeDrawerThen(() => {
                     void handleRestorePurchases();
@@ -145,7 +156,10 @@ export const MenuDrawerContent = ({
                     {
                       label: 'Manage Subscription',
                       icon: (
-                        <CreditCard size={MENU_ICON_SIZE} color="#000000" />
+                        <CreditCard
+                          size={MENU_ICON_SIZE}
+                          color={menuIconColor}
+                        />
                       ),
                       onPress: () =>
                         closeDrawerThen(() => {
@@ -165,6 +179,10 @@ export const MenuDrawerContent = ({
               },
             ]}
           />
+
+          <Text className="text-tk-text-tertiary w-full text-center font-lexend-regular text-caption leading-4">
+            Version {APP_VERSION}
+          </Text>
         </View>
       </View>
       <BrandMark
