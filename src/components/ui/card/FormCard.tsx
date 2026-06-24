@@ -11,7 +11,7 @@ export const FormCard = ({ children, className }: FormCardProps) => {
   return (
     <View
       className={clsx(
-        'gap-6 self-stretch rounded-5 border border-tk-border-secondary bg-tk-bg-elevated-primary p-6',
+        'border-tk-border-secondary bg-tk-bg-primary gap-6 self-stretch rounded-5 border p-6',
         className,
       )}
     >

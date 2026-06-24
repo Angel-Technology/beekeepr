@@ -1,13 +1,23 @@
 import { Pressable, Text, View } from 'react-native';
+import { SvgUri } from 'react-native-svg';
 import { ChevronRight, UserRound } from 'lucide-react-native';
 
-const AVATAR_BG = '#1489E6';
+import { themedColors, useThemedColor } from '@common';
 
 type ProfilePreviewCardProps = {
   nickname: string;
   handle: string;
+  /**
+   * Selected avatar URL (DiceBear SVG). Rendered as an inline SVG inside
+   * the 44×44 avatar circle when set; otherwise the muted UserRound
+   * placeholder shows. Pass `null` / `undefined` to render the
+   * placeholder.
+   */
+  imageUrl?: string | null;
   onPress?: () => void;
 };
+
+const AVATAR_SIZE = 44;
 
 const formatHandle = (handle: string) => {
   const trimmed = handle.trim();
@@ -20,40 +30,45 @@ const formatHandle = (handle: string) => {
 export const ProfilePreviewCard = ({
   nickname,
   handle,
+  imageUrl,
   onPress,
 }: ProfilePreviewCardProps) => {
   const displayedHandle = formatHandle(handle);
   const Container = onPress ? Pressable : View;
+  const avatarIconColor = useThemedColor(themedColors.text.tertiary);
+  const chevronColor = useThemedColor(themedColors.text.primary);
+  const hasAvatar = Boolean(imageUrl && imageUrl.length > 0);
 
   return (
     <Container
       onPress={onPress}
       accessibilityRole={onPress ? 'button' : undefined}
-      className="w-full flex-row items-center gap-3 rounded-5 border border-border-weak bg-bg-default p-4"
+      className="border-tk-border-secondary bg-tk-bg-primary w-full flex-row items-center gap-3 rounded-5 border p-4"
     >
-      <View
-        className="size-[44px] items-center justify-center rounded-round"
-        style={{ backgroundColor: AVATAR_BG }}
-      >
-        <UserRound size={24} color="#FFFFFF" />
+      <View className="bg-tk-bg-elevated-secondary size-[44px] items-center justify-center overflow-hidden rounded-round">
+        {hasAvatar && imageUrl ? (
+          <SvgUri uri={imageUrl} width={AVATAR_SIZE} height={AVATAR_SIZE} />
+        ) : (
+          <UserRound size={24} color={avatarIconColor} />
+        )}
       </View>
       <View className="min-w-0 flex-1">
         <Text
-          className="font-lexend-semiBold text-base text-text-default"
+          className="text-tk-text-primary font-lexend-semiBold text-base"
           numberOfLines={1}
         >
           {nickname || ''}
         </Text>
         {displayedHandle ? (
           <Text
-            className="font-lexend-regular text-footnote text-text-secondary"
+            className="text-tk-text-secondary font-lexend-regular text-footnote"
             numberOfLines={1}
           >
             {displayedHandle}
           </Text>
         ) : null}
       </View>
-      {onPress ? <ChevronRight size={24} color="#000000" /> : null}
+      {onPress ? <ChevronRight size={24} color={chevronColor} /> : null}
     </Container>
   );
 };

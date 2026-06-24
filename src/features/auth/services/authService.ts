@@ -165,10 +165,13 @@ export const authService = {
 
   async signInWithApple(): Promise<AuthCredentials> {
     try {
-      const { identityToken, displayName } = await appleAuth.signIn();
+      // We no longer surface `displayName` anywhere in the app — the backend
+      // also ignores client-forwarded values per the PR2 changelog — so only
+      // the identity token goes through. Apple still hands us the user's
+      // full name on first sign-in; we let that drop on the floor.
+      const { identityToken } = await appleAuth.signIn();
       const payload = await authRepository.signInWithApple({
         idToken: identityToken,
-        displayName,
       });
 
       if (payload.signInWithApple.error) {

@@ -83,8 +83,13 @@ export type CancelFriendRequestPayload = {
   success: Scalars['Boolean']['output'];
 };
 
+export enum ContactVisibility {
+  ConnectionsOnly = 'CONNECTIONS_ONLY',
+  Private = 'PRIVATE',
+  Public = 'PUBLIC'
+}
+
 export type CreateUserInput = {
-  displayName?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
 };
 
@@ -225,6 +230,11 @@ export enum PersonaInquiryStatus {
   Failed = 'FAILED',
   NeedsReview = 'NEEDS_REVIEW',
   Pending = 'PENDING'
+}
+
+export enum ProfileVisibility {
+  Private = 'PRIVATE',
+  Public = 'PUBLIC'
 }
 
 export type RedeemPromoCodeInput = {
@@ -391,8 +401,18 @@ export type UnblockUserPayload = {
 };
 
 export type UpdateProfileInput = {
+  contactVisibility?: InputMaybe<ContactVisibility>;
+  displayName?: InputMaybe<Scalars['String']['input']>;
+  googleVoicePhone?: InputMaybe<Scalars['String']['input']>;
   handle?: InputMaybe<Scalars['String']['input']>;
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  instagramHandle?: InputMaybe<Scalars['String']['input']>;
   nickname?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber?: InputMaybe<Scalars['String']['input']>;
+  profileVisibility?: InputMaybe<ProfileVisibility>;
+  signalPhone?: InputMaybe<Scalars['String']['input']>;
+  telegramHandle?: InputMaybe<Scalars['String']['input']>;
+  whatsAppPhone?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateProfilePayload = {
@@ -417,27 +437,34 @@ export type UserGraph = {
   __typename?: 'UserGraph';
   backgroundCheckBadge: BackgroundCheckBadge;
   backgroundCheckBadgeExpiresAtUtc?: Maybe<Scalars['DateTime']['output']>;
+  contactVisibility: ContactVisibility;
   createdAtUtc: Scalars['DateTime']['output'];
   deletedAtUtc?: Maybe<Scalars['DateTime']['output']>;
   displayName?: Maybe<Scalars['String']['output']>;
   email: Scalars['String']['output'];
   emailVerified: Scalars['Boolean']['output'];
+  googleVoicePhone?: Maybe<Scalars['String']['output']>;
   handle?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   identityVerificationStatus: IdentityVerificationStatus;
   imageUrl?: Maybe<Scalars['String']['output']>;
+  instagramHandle?: Maybe<Scalars['String']['output']>;
   nickname?: Maybe<Scalars['String']['output']>;
   personaInquiryId?: Maybe<Scalars['String']['output']>;
   personaInquiryStatus?: Maybe<PersonaInquiryStatus>;
   personaVerifiedAtUtc?: Maybe<Scalars['DateTime']['output']>;
   phoneNumber?: Maybe<Scalars['String']['output']>;
+  profileVisibility: ProfileVisibility;
+  signalPhone?: Maybe<Scalars['String']['output']>;
   subscription: SubscriptionDto;
+  telegramHandle?: Maybe<Scalars['String']['output']>;
   termsAcceptedAtUtc?: Maybe<Scalars['DateTime']['output']>;
   verifiedBirthdate?: Maybe<Scalars['String']['output']>;
   verifiedFirstName?: Maybe<Scalars['String']['output']>;
   verifiedLastName?: Maybe<Scalars['String']['output']>;
   verifiedLicenseState?: Maybe<Scalars['String']['output']>;
   verifiedMiddleName?: Maybe<Scalars['String']['output']>;
+  whatsAppPhone?: Maybe<Scalars['String']['output']>;
 };
 
 export type UserMutations = {

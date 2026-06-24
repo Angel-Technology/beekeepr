@@ -1,11 +1,5 @@
 import type { JSX } from 'react';
-import Svg, {
-  Defs,
-  G,
-  LinearGradient,
-  Path,
-  Stop,
-} from 'react-native-svg';
+import Svg, { Defs, G, LinearGradient, Path, Stop } from 'react-native-svg';
 
 type WhatsAppIconProps = {
   width?: number | string;

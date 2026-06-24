@@ -83,8 +83,13 @@ export type CancelFriendRequestPayload = {
   success: Scalars['Boolean']['output'];
 };
 
+export enum ContactVisibility {
+  ConnectionsOnly = 'CONNECTIONS_ONLY',
+  Private = 'PRIVATE',
+  Public = 'PUBLIC'
+}
+
 export type CreateUserInput = {
-  displayName?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
 };
 
@@ -225,6 +230,11 @@ export enum PersonaInquiryStatus {
   Failed = 'FAILED',
   NeedsReview = 'NEEDS_REVIEW',
   Pending = 'PENDING'
+}
+
+export enum ProfileVisibility {
+  Private = 'PRIVATE',
+  Public = 'PUBLIC'
 }
 
 export type RedeemPromoCodeInput = {
@@ -391,8 +401,18 @@ export type UnblockUserPayload = {
 };
 
 export type UpdateProfileInput = {
+  contactVisibility?: InputMaybe<ContactVisibility>;
+  displayName?: InputMaybe<Scalars['String']['input']>;
+  googleVoicePhone?: InputMaybe<Scalars['String']['input']>;
   handle?: InputMaybe<Scalars['String']['input']>;
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  instagramHandle?: InputMaybe<Scalars['String']['input']>;
   nickname?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber?: InputMaybe<Scalars['String']['input']>;
+  profileVisibility?: InputMaybe<ProfileVisibility>;
+  signalPhone?: InputMaybe<Scalars['String']['input']>;
+  telegramHandle?: InputMaybe<Scalars['String']['input']>;
+  whatsAppPhone?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateProfilePayload = {
@@ -417,27 +437,34 @@ export type UserGraph = {
   __typename?: 'UserGraph';
   backgroundCheckBadge: BackgroundCheckBadge;
   backgroundCheckBadgeExpiresAtUtc?: Maybe<Scalars['DateTime']['output']>;
+  contactVisibility: ContactVisibility;
   createdAtUtc: Scalars['DateTime']['output'];
   deletedAtUtc?: Maybe<Scalars['DateTime']['output']>;
   displayName?: Maybe<Scalars['String']['output']>;
   email: Scalars['String']['output'];
   emailVerified: Scalars['Boolean']['output'];
+  googleVoicePhone?: Maybe<Scalars['String']['output']>;
   handle?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   identityVerificationStatus: IdentityVerificationStatus;
   imageUrl?: Maybe<Scalars['String']['output']>;
+  instagramHandle?: Maybe<Scalars['String']['output']>;
   nickname?: Maybe<Scalars['String']['output']>;
   personaInquiryId?: Maybe<Scalars['String']['output']>;
   personaInquiryStatus?: Maybe<PersonaInquiryStatus>;
   personaVerifiedAtUtc?: Maybe<Scalars['DateTime']['output']>;
   phoneNumber?: Maybe<Scalars['String']['output']>;
+  profileVisibility: ProfileVisibility;
+  signalPhone?: Maybe<Scalars['String']['output']>;
   subscription: SubscriptionDto;
+  telegramHandle?: Maybe<Scalars['String']['output']>;
   termsAcceptedAtUtc?: Maybe<Scalars['DateTime']['output']>;
   verifiedBirthdate?: Maybe<Scalars['String']['output']>;
   verifiedFirstName?: Maybe<Scalars['String']['output']>;
   verifiedLastName?: Maybe<Scalars['String']['output']>;
   verifiedLicenseState?: Maybe<Scalars['String']['output']>;
   verifiedMiddleName?: Maybe<Scalars['String']['output']>;
+  whatsAppPhone?: Maybe<Scalars['String']['output']>;
 };
 
 export type UserMutations = {
@@ -639,7 +666,7 @@ export enum ViewerFriendshipState {
   RequestSent = 'REQUEST_SENT'
 }
 
-export type ProfileFieldsFragment = { __typename?: 'UserGraph', id: string, email: string, displayName?: string | null, nickname?: string | null, handle?: string | null, imageUrl?: string | null };
+export type ProfileFieldsFragment = { __typename?: 'UserGraph', id: string, email: string, nickname?: string | null, handle?: string | null, imageUrl?: string | null, phoneNumber?: string | null, googleVoicePhone?: string | null, whatsAppPhone?: string | null, instagramHandle?: string | null, telegramHandle?: string | null, signalPhone?: string | null, profileVisibility: ProfileVisibility, contactVisibility: ContactVisibility };
 
 export type UserSearchResultFieldsFragment = { __typename?: 'UserSearchResultDto', id: string, nickname?: string | null, handle?: string | null, imageUrl?: string | null, backgroundCheckBadge: BackgroundCheckBadge, createdAtUtc: string };
 
@@ -665,7 +692,7 @@ export type UpdateProfileMutationVariables = Exact<{
 }>;
 
 
-export type UpdateProfileMutation = { __typename?: 'UserMutations', updateProfile: { __typename?: 'UpdateProfilePayload', error?: string | null, user?: { __typename?: 'UserGraph', id: string, email: string, displayName?: string | null, nickname?: string | null, handle?: string | null, imageUrl?: string | null } | null } };
+export type UpdateProfileMutation = { __typename?: 'UserMutations', updateProfile: { __typename?: 'UpdateProfilePayload', error?: string | null, user?: { __typename?: 'UserGraph', id: string, email: string, nickname?: string | null, handle?: string | null, imageUrl?: string | null, phoneNumber?: string | null, googleVoicePhone?: string | null, whatsAppPhone?: string | null, instagramHandle?: string | null, telegramHandle?: string | null, signalPhone?: string | null, profileVisibility: ProfileVisibility, contactVisibility: ContactVisibility } | null } };
 
 export type CheckHandleAvailabilityQueryVariables = Exact<{
   handle: Scalars['String']['input'];
@@ -682,11 +709,11 @@ export type SearchUsersQueryVariables = Exact<{
 
 export type SearchUsersQuery = { __typename?: 'UserQueries', searchUsers?: { __typename?: 'SearchUsersConnection', nodes?: Array<{ __typename?: 'UserSearchResultDto', id: string, nickname?: string | null, handle?: string | null, imageUrl?: string | null, backgroundCheckBadge: BackgroundCheckBadge, createdAtUtc: string }> | null } | null };
 
-export const ProfileFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProfileFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}}]}}]} as unknown as DocumentNode<ProfileFieldsFragment, unknown>;
+export const ProfileFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProfileFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"phoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"googleVoicePhone"}},{"kind":"Field","name":{"kind":"Name","value":"whatsAppPhone"}},{"kind":"Field","name":{"kind":"Name","value":"instagramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"telegramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"signalPhone"}},{"kind":"Field","name":{"kind":"Name","value":"profileVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"contactVisibility"}}]}}]} as unknown as DocumentNode<ProfileFieldsFragment, unknown>;
 export const UserSearchResultFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"UserSearchResultFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserSearchResultDto"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadge"}},{"kind":"Field","name":{"kind":"Name","value":"createdAtUtc"}}]}}]} as unknown as DocumentNode<UserSearchResultFieldsFragment, unknown>;
 export const CancelAccountDeletionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CancelAccountDeletion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cancelAccountDeletion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"deletedAtUtc"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<CancelAccountDeletionMutation, CancelAccountDeletionMutationVariables>;
 export const RedeemPromoCodeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RedeemPromoCode"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RedeemPromoCodeInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"redeemPromoCode"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<RedeemPromoCodeMutation, RedeemPromoCodeMutationVariables>;
 export const RequestAccountDeletionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RequestAccountDeletion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"requestAccountDeletion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"deletedAtUtc"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<RequestAccountDeletionMutation, RequestAccountDeletionMutationVariables>;
-export const UpdateProfileDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateProfile"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateProfileInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateProfile"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProfileFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProfileFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}}]}}]} as unknown as DocumentNode<UpdateProfileMutation, UpdateProfileMutationVariables>;
+export const UpdateProfileDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateProfile"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateProfileInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateProfile"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProfileFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProfileFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"phoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"googleVoicePhone"}},{"kind":"Field","name":{"kind":"Name","value":"whatsAppPhone"}},{"kind":"Field","name":{"kind":"Name","value":"instagramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"telegramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"signalPhone"}},{"kind":"Field","name":{"kind":"Name","value":"profileVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"contactVisibility"}}]}}]} as unknown as DocumentNode<UpdateProfileMutation, UpdateProfileMutationVariables>;
 export const CheckHandleAvailabilityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CheckHandleAvailability"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"handle"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"checkHandleAvailability"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"handle"},"value":{"kind":"Variable","name":{"kind":"Name","value":"handle"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"available"}},{"kind":"Field","name":{"kind":"Name","value":"reason"}}]}}]}}]} as unknown as DocumentNode<CheckHandleAvailabilityQuery, CheckHandleAvailabilityQueryVariables>;
 export const SearchUsersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"SearchUsers"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"searchUsers"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"UserSearchResultFields"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"UserSearchResultFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserSearchResultDto"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadge"}},{"kind":"Field","name":{"kind":"Name","value":"createdAtUtc"}}]}}]} as unknown as DocumentNode<SearchUsersQuery, SearchUsersQueryVariables>;

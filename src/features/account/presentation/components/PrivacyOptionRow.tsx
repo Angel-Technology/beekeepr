@@ -8,6 +8,11 @@ type PrivacyOptionRowProps = {
   description?: string;
   value: boolean;
   onChange: (next: boolean) => void;
+  /**
+   * Show the small status badge above the title. Profile-visibility rows
+   * use it; the contact-sharing rows in the Figma render without it.
+   */
+  showBadge?: boolean;
 };
 
 export const PrivacyOptionRow = ({
@@ -16,29 +21,26 @@ export const PrivacyOptionRow = ({
   description,
   value,
   onChange,
+  showBadge = true,
 }: PrivacyOptionRowProps) => (
   <View className="flex-row items-start gap-4">
     <View className="flex-1 gap-1">
-      <View
-        className={clsx(
-          'self-start rounded-1 px-0.5 pb-0.5',
-          value ? 'bg-bg-success' : 'bg-bg-weak',
-        )}
-      >
-        <Text
+      {showBadge ? (
+        <View
           className={clsx(
-            'font-lexend-regular text-caption',
-            value ? 'text-text-inverse' : 'text-text-secondary',
+            'self-start rounded-1 px-0.5 pb-0.5',
+            value
+              ? 'bg-tk-alerts-success'
+              : 'bg-tk-actions-neutral-background-solid-hover',
           )}
         >
-          {badgeLabel}
-        </Text>
-      </View>
+          <Text className="text-tk-text-primary-reversed font-lexend-regular text-caption">
+            {badgeLabel}
+          </Text>
+        </View>
+      ) : null}
       <Text
-        className={clsx(
-          'font-lexend-regular text-base',
-          value ? 'text-text-default' : 'text-text-secondary',
-        )}
+        className="text-tk-text-primary font-lexend-regular text-base"
         style={{ letterSpacing: -0.3 }}
       >
         {title}
@@ -47,7 +49,7 @@ export const PrivacyOptionRow = ({
         <Text
           className={clsx(
             'font-lexend-regular text-caption',
-            value ? 'text-text-default' : 'text-text-tertiary',
+            value ? 'text-tk-text-primary' : 'text-tk-text-tertiary',
           )}
         >
           {description}

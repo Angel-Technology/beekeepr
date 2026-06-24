@@ -1,7 +1,6 @@
 fragment AuthUserFields on UserGraph {
   id
   email
-  displayName
   nickname
   handle
   emailVerified
@@ -20,4 +19,11 @@ fragment AuthUserFields on UserGraph {
   backgroundCheckBadge
   backgroundCheckBadgeExpiresAtUtc
   termsAcceptedAtUtc
+  profileVisibility
+  contactVisibility
+  googleVoicePhone
+  whatsAppPhone
+  instagramHandle
+  telegramHandle
+  signalPhone
 }

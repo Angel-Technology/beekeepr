@@ -22,7 +22,7 @@ type FormState = {
 };
 
 const seedFromUser = (user: AuthUser | null | undefined): FormState => ({
-  nickname: user?.nickname ?? user?.displayName ?? '',
+  nickname: user?.nickname ?? '',
   handle: stripHandlePrefix(user?.handle ?? ''),
   seedUserId: user?.id ?? null,
 });
@@ -67,7 +67,6 @@ export const useCompleteProfile = ({
         previous
           ? {
               ...previous,
-              displayName: updated.displayName ?? previous.displayName,
               nickname: updated.nickname ?? previous.nickname,
               handle: updated.handle ?? previous.handle,
               imageUrl: updated.imageUrl ?? previous.imageUrl,

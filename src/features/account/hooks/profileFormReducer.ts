@@ -22,7 +22,7 @@ export const stripHandlePrefix = (value: string): string =>
   value.replace(/^@+/, '').trim();
 
 export const seedFromUser = (user: AuthUser | null): ProfileFormValues => ({
-  nickname: user?.nickname ?? user?.displayName ?? '',
+  nickname: user?.nickname ?? '',
   handle: stripHandlePrefix(user?.handle ?? ''),
 });
 
@@ -65,10 +65,7 @@ export const profileFormReducer = (
     }
     case 'saveSucceeded': {
       const baseline: ProfileFormValues = {
-        nickname:
-          action.updated.nickname ??
-          action.updated.displayName ??
-          state.baseline.nickname,
+        nickname: action.updated.nickname ?? state.baseline.nickname,
         handle: stripHandlePrefix(
           action.updated.handle ?? state.baseline.handle,
         ),

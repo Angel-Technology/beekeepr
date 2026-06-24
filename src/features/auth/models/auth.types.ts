@@ -9,8 +9,10 @@ import type {
 } from '../graphql/generated/auth.generated';
 import {
   BackgroundCheckBadge,
+  ContactVisibility,
   IdentityVerificationStatus,
   PersonaInquiryStatus,
+  ProfileVisibility,
 } from '../graphql/generated/auth.generated';
 
 export type AuthUser = AuthUserFieldsFragment;
@@ -27,6 +29,8 @@ export type AppleSignInInput = SignInWithAppleInput;
 export type CreateUserInput = CreateUserInputGenerated;
 export {
   BackgroundCheckBadge,
+  ContactVisibility,
   IdentityVerificationStatus,
   PersonaInquiryStatus,
+  ProfileVisibility,
 };

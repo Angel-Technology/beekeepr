@@ -25,7 +25,7 @@ export const ProfileDrawerContent = (_props: DrawerContentComponentProps) => {
   const insets = useSafeAreaInsets();
   const { data: user } = useAuthSession();
 
-  const displayName = user?.nickname?.trim() || user?.displayName || 'Member';
+  const displayName = user?.nickname?.trim() || 'Member';
   const displayHandle = formatHandle(user?.handle);
   const memberSince = formatJoinedDate(user?.createdAtUtc);
 

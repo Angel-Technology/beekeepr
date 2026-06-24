@@ -1,8 +1,15 @@
 fragment ProfileFields on UserGraph {
   id
   email
-  displayName
   nickname
   handle
   imageUrl
+  phoneNumber
+  googleVoicePhone
+  whatsAppPhone
+  instagramHandle
+  telegramHandle
+  signalPhone
+  profileVisibility
+  contactVisibility
 }
