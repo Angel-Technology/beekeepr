@@ -42,10 +42,10 @@ export const DeniedSection = ({
         showsVerticalScrollIndicator={false}
       >
         <View className="w-full gap-1">
-          <Text className="font-poppins-semiBold text-title-3 leading-tight text-text-default">
+          <Text className="text-tk-text-primary font-poppins-semiBold text-title-3 leading-tight">
             Oh no! Something went wrong.
           </Text>
-          <Text className="font-lexend-regular text-lg text-text-tertiary">
+          <Text className="text-tk-text-tertiary font-lexend-regular text-lg">
             Looks like we weren&rsquo;t able to get you into TheBuzz Community
             at this time.
           </Text>
