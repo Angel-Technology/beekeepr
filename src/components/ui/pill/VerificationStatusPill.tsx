@@ -86,12 +86,12 @@ export const VerificationStatusPill = ({
         <IntroBeeIcon
           width={sizeStyles.iconWidth}
           height={sizeStyles.iconHeight}
-          color={iconColor}
+          color={iconColor ?? '#000000'}
         />
       )}
       <Text
         className={clsx(
-          'font-sourceSans-semiBold text-text-default',
+          'text-tk-gray-black font-sourceSans-semiBold',
           textClassName ? null : sizeStyles.text,
           textClassName,
         )}

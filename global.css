@@ -54,6 +54,10 @@
     --tk-bg-purple-elevated-secondary: #fff8cb;
     --tk-bg-purple-elevated-tertiary: #f7e6a7;
 
+    /* Background — callout (brand-tinted surface that resolves to a
+       neutral elevated surface in dark mode). */
+    --tk-bg-callout: #fff8cb;
+
     /* Border */
     --tk-border-primary: rgba(0, 0, 0, 0.32);
     --tk-border-secondary: rgba(0, 0, 0, 0.16);
@@ -140,6 +144,9 @@
     --tk-bg-purple-elevated-primary: #403f3b;
     --tk-bg-purple-elevated-secondary: #56544e;
     --tk-bg-purple-elevated-tertiary: #807e76;
+
+    /* Background — callout */
+    --tk-bg-callout: #222222;
 
     /* Border */
     --tk-border-primary: rgba(255, 255, 255, 0.4);

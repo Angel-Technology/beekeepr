@@ -102,6 +102,7 @@ module.exports = {
             primary: 'var(--tk-bg-primary)',
             secondary: 'var(--tk-bg-secondary)',
             tertiary: 'var(--tk-bg-tertiary)',
+            callout: 'var(--tk-bg-callout)',
             elevated: {
               primary: 'var(--tk-bg-elevated-primary)',
               secondary: 'var(--tk-bg-elevated-secondary)',

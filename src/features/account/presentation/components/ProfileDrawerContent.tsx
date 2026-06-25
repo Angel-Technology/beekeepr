@@ -5,8 +5,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { SvgUri } from 'react-native-svg';
 import type { DrawerContentComponentProps } from '@react-navigation/drawer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Phone, ShieldAlert, UserRound } from 'lucide-react-native';
-import { AppHeader, Divider, FormCard } from '@components';
+import { Phone, UserRound } from 'lucide-react-native';
+import { AppHeader, FormCard, SafetyDisclaimerCard } from '@components';
 import { themedColors, useThemedColor } from '@common';
 import { ContactVisibility, useAuthSession } from '@features/auth';
 import { useErrorModal } from '@src/lib/error-modal';
@@ -20,9 +20,6 @@ import { formatJoinedDate } from '../../models/formatJoinedDate';
 import { InfoSection } from './InfoSection';
 
 const AVATAR_SIZE = 64;
-
-const SAFETY_DISCLAIMER =
-  'BUZZKEEPR™ DOES NOT CLAIM THAT PEOPLE ARE SAFE! We can only find records if they exist and we have access to them. If we don’t find records, this doesn’t mean they didn’t commit a crime.';
 
 const formatHandle = (handle: string | null | undefined) => {
   if (!handle) {
@@ -107,7 +104,6 @@ export const ProfileDrawerContent = (_props: DrawerContentComponentProps) => {
   const errorModal = useErrorModal();
   const phoneIconColor = useThemedColor(themedColors.text.primary);
   const avatarIconColor = useThemedColor(themedColors.text.tertiary);
-  const dangerColor = useThemedColor(themedColors.alerts.danger);
 
   const displayName = user?.nickname?.trim() || 'Member';
   const displayHandle = formatHandle(user?.handle);
@@ -347,32 +343,8 @@ export const ProfileDrawerContent = (_props: DrawerContentComponentProps) => {
           </View>
         ) : null}
 
-        <View className="bg-tk-bg-secondary mx-6 gap-2 rounded-5 p-4">
-          <View className="flex-row items-center gap-2">
-            <View
-              className="items-center justify-center rounded-round border-2 p-2"
-              style={{ borderColor: dangerColor }}
-            >
-              <ShieldAlert size={20} color={dangerColor} />
-            </View>
-            <Text className="text-tk-text-primary flex-1 font-lexend-semiBold text-base">
-              Safety is not a guarantee!
-            </Text>
-          </View>
-          <Text className="text-tk-text-primary font-lexend-regular text-footnote leading-[18px]">
-            <Text className="font-lexend-regular">
-              The Buzz Badge is not a guarantee of safety!{' '}
-            </Text>
-            It’s a meaningful signal from someone who chose to be accountable.
-          </Text>
-          <Text className="text-tk-text-primary font-lexend-regular text-footnote leading-[18px]">
-            Always use discernment and recommended safety practices when meeting
-            anyone new.
-          </Text>
-          <Divider className="my-2" />
-          <Text className="text-tk-text-secondary font-lexend-regular text-caption leading-4">
-            {SAFETY_DISCLAIMER}
-          </Text>
+        <View className="px-6">
+          <SafetyDisclaimerCard />
         </View>
       </ScrollView>
     </View>

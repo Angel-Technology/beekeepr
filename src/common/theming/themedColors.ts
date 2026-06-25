@@ -34,6 +34,7 @@ export const themedColors = {
     primary: themed('#FFFFFF', '#000000'),
     secondary: themed('#EEEEEE', '#111111'),
     tertiary: themed('#DDDDDD', '#19191A'),
+    callout: themed('#FFF8CB', '#222222'),
     elevatedPrimary: themed('#FFFFFF', '#19191A'),
     elevatedSecondary: themed('#EEEEEE', '#222222'),
     elevatedTertiary: themed('#DDDDDD', '#323234'),

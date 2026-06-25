@@ -19,6 +19,7 @@ import {
   BounceLoader,
   IconButton,
 } from '@components';
+import { themedColors, useThemedColor } from '@common';
 import { PromoCodeModal } from '@features/account/presentation/components/PromoCodeModal';
 import { appAnimations } from '@src/assets/animations';
 import { openInAppBrowser } from '@src/lib/browser';
@@ -65,6 +66,8 @@ export const BuzzScreen = () => {
     },
   });
 
+  const menuIconColor = useThemedColor(themedColors.text.primary);
+
   const renderFlow = () => {
     switch (flow) {
       case null:
@@ -74,7 +77,7 @@ export const BuzzScreen = () => {
         // `isPro` resolves.
         return (
           <View className="flex-1 items-center justify-center py-80">
-            <BounceLoader colorClassName="bg-text-default" />
+            <BounceLoader colorClassName="bg-tk-text-primary" />
           </View>
         );
       case 'denied':
@@ -133,7 +136,7 @@ export const BuzzScreen = () => {
   });
 
   return (
-    <View className="flex-1 bg-bg-default">
+    <View className="bg-tk-bg-primary flex-1">
       <AnimatedKeyboardAwareScrollView
         className="flex-1"
         contentContainerStyle={{
@@ -173,21 +176,16 @@ export const BuzzScreen = () => {
         topMaskHeight={topMaskHeight}
         center={
           <View className="flex-row items-start justify-center gap-1">
-            <Text className="font-poppins-semiBold text-base text-text-default">
+            <Text className="text-tk-text-primary font-poppins-semiBold text-base">
               Buzz Badge
             </Text>
-            <View className="items-center justify-center rounded bg-brand-highlight px-[3px] py-[1px]">
-              <Text className="font-sourceSans-semiBold text-[7px] text-text-default">
-                BETA
-              </Text>
-            </View>
           </View>
         }
         right={
           <IconButton
             accessibilityLabel="Open menu"
             className="border-none bg-transparent"
-            icon={<Menu size={24} />}
+            icon={<Menu size={24} color={menuIconColor} />}
             onPress={() => {
               navigation.dispatch(DrawerActions.toggleDrawer());
             }}

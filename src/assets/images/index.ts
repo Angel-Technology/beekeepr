@@ -21,6 +21,12 @@ export type AppImages = {
   readonly partnerships: ImageRequireSource;
   readonly location: ImageRequireSource;
   readonly congrats: ImageRequireSource;
+  readonly buzzBadgePage1: ImageRequireSource;
+  readonly buzzBadgePage2: ImageRequireSource;
+  readonly buzzBadgePage3: ImageRequireSource;
+  readonly buzzBadgePage4: ImageRequireSource;
+  readonly buzzBadgePage5: ImageRequireSource;
+  readonly buzzBadgePage6: ImageRequireSource;
 };
 
 export const appImages: AppImages = {
@@ -35,13 +41,19 @@ export const appImages: AppImages = {
   awkwardSadBee: require('./awkward-sad-bee.png'),
   splashIcon: require('./splash-icon.png'),
   welcomeBee: require('./welcome-bee.png'),
-  standoutBee: require('./standout-bee.png'),
+  standoutBee: require('./StandOutBee.png'),
   newMatchBee: require('./new-match-bee.png'),
   illustrationOnboarding3: require('./Illustration-Onboarding-3.png'),
   illustrationLetsdothis: require('./Illustration-Letsdothis.png'),
   partnerships: require('./partnerships.png'),
   location: require('./location.png'),
   congrats: require('./congrats.png'),
+  buzzBadgePage1: require('./buzzBadgePageImg1.png'),
+  buzzBadgePage2: require('./buzzBadgePageImg2.png'),
+  buzzBadgePage3: require('./buzzBadgePageImg3.png'),
+  buzzBadgePage4: require('./buzzBadgePageImg4.png'),
+  buzzBadgePage5: require('./buzzBadgePageImg5.png'),
+  buzzBadgePage6: require('./buzzBadgePageImg6.png'),
 };
 
 export type AppImageKey = keyof typeof appImages;

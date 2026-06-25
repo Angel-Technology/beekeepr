@@ -70,7 +70,7 @@ export const MenuDrawerContent = ({
 
   return (
     <View
-      className="flex-1 bg-tk-bg-primary"
+      className="bg-tk-bg-primary flex-1"
       style={{
         paddingBottom: insets.bottom + 24,
       }}
