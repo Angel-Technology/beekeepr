@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useCompleteProfile } from '@features/account/hooks/useCompleteProfile';
 import { useRedeemPromoCode } from '@features/account/hooks/useRedeemPromoCode';
 import { useSearchUsers } from '@features/account/hooks/useSearchUsers';
@@ -34,8 +34,6 @@ const formatLongDate = (value: Date) =>
  *
  * Flow derivation:
  * - `'denied'`: terminal Persona-declined or Checkr-denied user.
- * - `'active'`: transient state right after submitting the criminal-check
- *   form, before the cache re-derives.
  * - `'welcome'`: badge approved AND user has an active subscription
  *   (`isPro`) — the search community body.
  * - `'verify'`: everything else — either the user hasn't completed
@@ -79,8 +77,6 @@ export const useBuzzTab = () => {
   const promoCodeForm = useRedeemPromoCode({
     onRedeemed: () => setShowPromoModal(false),
   });
-  const params = useLocalSearchParams<{ backgroundCheck?: string }>();
-  const hasSubmittedBackgroundCheck = params.backgroundCheck === 'submitted';
   const badge = user?.backgroundCheckBadge ?? BackgroundCheckBadge.None;
   const isDenied = isVerificationDenied(user);
   const isApproved = badge === BackgroundCheckBadge.Approved;
@@ -100,14 +96,8 @@ export const useBuzzTab = () => {
     if (isResolving) {
       return null;
     }
-    // Denied (Persona Declined or Checkr Denied) trumps the post-submit
-    // celebration — we don't want to flash a welcome screen before the
-    // denied screen lands.
     if (isDenied) {
       return 'denied';
-    }
-    if (hasSubmittedBackgroundCheck) {
-      return 'active';
     }
     if (isApproved && isPro) {
       return 'welcome';
@@ -128,7 +118,6 @@ export const useBuzzTab = () => {
     isApproved,
     isPro,
     isDenied,
-    hasSubmittedBackgroundCheck,
     needsMembership,
     needsRenewal,
   ]);
@@ -220,9 +209,6 @@ export const useBuzzTab = () => {
         isSaving: profileForm.isSaving,
         onSave: profileForm.save,
       },
-    },
-    resetSubmittedBackgroundCheck: () => {
-      router.replace('/');
     },
   };
 };

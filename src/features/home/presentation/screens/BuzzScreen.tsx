@@ -26,7 +26,6 @@ import { openInAppBrowser } from '@src/lib/browser';
 import { environmentConfig } from '@src/lib/config/environment';
 import { useBuzzTab } from '../../hooks/useBuzzTab';
 import {
-  BuzzActiveFlow,
   BuzzMembershipFlow,
   BuzzRenewalFlow,
   BuzzScreeningDeniedCard,
@@ -56,7 +55,6 @@ export const BuzzScreen = () => {
     renewalProps,
     welcomeProps,
     promoModalProps,
-    resetSubmittedBackgroundCheck,
   } = useBuzzTab();
 
   const scrollY = useSharedValue(0);
@@ -111,14 +109,6 @@ export const BuzzScreen = () => {
         return <BuzzRenewalFlow {...renewalProps} />;
       case 'welcome':
         return <BuzzWelcomeFlow {...welcomeProps} />;
-      case 'active':
-        return (
-          <BuzzActiveFlow
-            onReviewSubmittedInfo={() => {
-              resetSubmittedBackgroundCheck();
-            }}
-          />
-        );
     }
   };
 
