@@ -20,8 +20,7 @@ type CompactButtonProps = {
 
 const SURFACE_BY_VARIANT: Record<CompactButtonVariant, string> = {
   solid: 'bg-tk-actions-neutral-background-solid',
-  outline:
-    'bg-tk-bg-elevated-primary border border-tk-actions-neutral-border-default',
+  outline: 'bg-tk-bg-primary border border-tk-actions-neutral-border-default',
   tinted: 'bg-tk-actions-neutral-background-tinted',
 };
 

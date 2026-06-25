@@ -26,6 +26,7 @@ export const TermsAcceptanceModal = ({
   const [isCsaeConfirmed, setIsCsaeConfirmed] = useState(false);
 
   const checkboxColor = useThemedColor(themedColors.text.primary);
+  const checkmarkColor = useThemedColor(themedColors.text.primaryReversed);
 
   const allConfirmed =
     isAgeConfirmed && isTermsConfirmed && isPrivacyConfirmed && isCsaeConfirmed;
@@ -76,6 +77,7 @@ export const TermsAcceptanceModal = ({
           checked={isAgeConfirmed}
           onChange={() => setIsAgeConfirmed((current) => !current)}
           checkedFill={checkboxColor}
+          checkmarkStroke={checkmarkColor}
           uncheckedStroke={checkboxColor}
           label={
             <Text className="text-tk-text-primary font-lexend-regular text-sm leading-5">
@@ -88,6 +90,7 @@ export const TermsAcceptanceModal = ({
           checked={isTermsConfirmed}
           onChange={() => setIsTermsConfirmed((current) => !current)}
           checkedFill={checkboxColor}
+          checkmarkStroke={checkmarkColor}
           uncheckedStroke={checkboxColor}
           label={
             <Text className="text-tk-text-primary font-lexend-regular text-sm leading-5">
@@ -108,6 +111,7 @@ export const TermsAcceptanceModal = ({
           checked={isPrivacyConfirmed}
           onChange={() => setIsPrivacyConfirmed((current) => !current)}
           checkedFill={checkboxColor}
+          checkmarkStroke={checkmarkColor}
           uncheckedStroke={checkboxColor}
           label={
             <Text className="text-tk-text-primary font-lexend-regular text-sm leading-5">
@@ -128,6 +132,7 @@ export const TermsAcceptanceModal = ({
           checked={isCsaeConfirmed}
           onChange={() => setIsCsaeConfirmed((current) => !current)}
           checkedFill={checkboxColor}
+          checkmarkStroke={checkmarkColor}
           uncheckedStroke={checkboxColor}
           label={
             <Text className="text-tk-text-primary font-lexend-regular text-sm leading-5">

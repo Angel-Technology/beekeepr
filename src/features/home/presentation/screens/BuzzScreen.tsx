@@ -1,6 +1,7 @@
+import { useCallback, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from 'expo-router';
-import { DrawerActions } from '@react-navigation/native';
+import { DrawerActions, useFocusEffect } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import { Menu } from 'lucide-react-native';
 import Animated, {
@@ -19,7 +20,12 @@ import {
   BounceLoader,
   IconButton,
 } from '@components';
-import { themedColors, useThemedColor } from '@common';
+import {
+  storageKeys,
+  themedColors,
+  useDismissibleOnce,
+  useThemedColor,
+} from '@common';
 import { PromoCodeModal } from '@features/account/presentation/components/PromoCodeModal';
 import { appAnimations } from '@src/assets/animations';
 import { openInAppBrowser } from '@src/lib/browser';
@@ -28,6 +34,7 @@ import { useBuzzTab } from '../../hooks/useBuzzTab';
 import {
   BuzzMembershipFlow,
   BuzzRenewalFlow,
+  BuzzSafetyDisclaimerModal,
   BuzzScreeningDeniedCard,
   BuzzVerifyFlow,
   BuzzWelcomeFlow,
@@ -65,6 +72,32 @@ export const BuzzScreen = () => {
   });
 
   const menuIconColor = useThemedColor(themedColors.text.primary);
+
+  const safetyDisclaimer = useDismissibleOnce(storageKeys.safetyDisclaimer);
+  // Per-visit suppression: dismissing without checking "Don't show again"
+  // hides the modal for the current focus session, but the next time the
+  // user lands on this screen it pops again — that's the focus-effect
+  // reset below. Checking the box flips `hasSeen` instead, which sticks.
+  const [safetyDismissedThisVisit, setSafetyDismissedThisVisit] =
+    useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      setSafetyDismissedThisVisit(false);
+    }, []),
+  );
+
+  const showSafetyDisclaimer =
+    flow === 'welcome' &&
+    safetyDisclaimer.hasSeen === false &&
+    !safetyDismissedThisVisit;
+
+  const handleSafetyDismiss = (shouldPersist: boolean) => {
+    setSafetyDismissedThisVisit(true);
+    if (shouldPersist) {
+      safetyDisclaimer.markSeen();
+    }
+  };
 
   const renderFlow = () => {
     switch (flow) {
@@ -157,6 +190,12 @@ export const BuzzScreen = () => {
       ) : null}
 
       <PromoCodeModal {...promoModalProps} />
+
+      <BuzzSafetyDisclaimerModal
+        visible={showSafetyDisclaimer}
+        onClose={handleSafetyDismiss}
+        onLearnMore={() => openInAppBrowser(environmentConfig.supportURL)}
+      />
 
       <AppHeader
         floating
