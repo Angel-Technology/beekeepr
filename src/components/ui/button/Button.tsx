@@ -83,7 +83,7 @@ export const Button = ({
         isDisabled
           ? 'bg-tk-actions-disabled-background'
           : isOutline
-            ? 'bg-tk-bg-elevated-primary'
+            ? 'bg-tk-bg-primary'
             : 'bg-tk-actions-neutral-background-solid',
         className,
       )}

@@ -11,6 +11,7 @@ import {
   DetailCard,
   IconButton,
 } from '@components';
+import { themedColors, useThemedColor } from '@common';
 import { environmentConfig } from '@src/lib/config/environment';
 import { useErrorModal } from '@src/lib/error-modal';
 import { useRevenueCat } from '@src/lib/revenuecat';
@@ -44,6 +45,8 @@ export const DeleteAccountScreen = () => {
   const { showFromError } = useErrorModal();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const hasSubscriptionHistory = isPro || isLapsed;
+  const chevronColor = useThemedColor(themedColors.text.primary);
+  const cardIconColor = useThemedColor(themedColors.text.primary);
 
   const handleManageSubscription = async () => {
     try {
@@ -66,19 +69,21 @@ export const DeleteAccountScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-bg-default">
+    <View className="bg-tk-bg-primary flex-1">
       <AppHeader
         topInset={insets.top}
         left={
           <IconButton
             accessibilityLabel="Go back"
             className="border-none bg-transparent"
-            icon={<ChevronLeft size={24} strokeWidth={2.2} color="#000000" />}
+            icon={
+              <ChevronLeft size={24} strokeWidth={2.2} color={chevronColor} />
+            }
             onPress={() => router.back()}
           />
         }
         center={
-          <Text className="font-poppins-semiBold text-base text-text-default">
+          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
             Delete Account
           </Text>
         }
@@ -95,11 +100,11 @@ export const DeleteAccountScreen = () => {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Text className="font-lexend-semiBold text-base leading-6 text-text-default">
+        <Text className="text-tk-text-primary font-lexend-semiBold text-base leading-6">
           Are you sure you want to delete your account?
         </Text>
 
-        <Text className="font-lexend-regular text-sm leading-5 text-text-secondary">
+        <Text className="text-tk-text-secondary font-lexend-regular text-sm leading-5">
           Your account will be scheduled for deletion and deactivated
           immediately. You will have 72 hours to restore your account if you
           change your mind. After 72 hours, your account and associated data
@@ -119,11 +124,12 @@ export const DeleteAccountScreen = () => {
           tone="neutral"
           title="What happens if you delete your account:"
           items={[...CONSEQUENCES]}
-          titleClassName="font-lexend-semiBold text-sm leading-tight text-text-secondary"
-          itemTextClassName="font-lexend-regular text-xs leading-[18px] text-text-secondary"
+          className="bg-tk-bg-secondary"
+          titleClassName="font-lexend-semiBold text-sm leading-tight text-tk-text-secondary"
+          itemTextClassName="font-lexend-regular text-xs leading-[18px] text-tk-text-secondary"
         />
 
-        <Text className="font-lexend-regular text-sm leading-5 text-text-secondary">
+        <Text className="text-tk-text-secondary font-lexend-regular text-sm leading-5">
           If you log back in within 72 hours, your account will be restored.
         </Text>
 
@@ -131,7 +137,9 @@ export const DeleteAccountScreen = () => {
           <Button
             label="Manage Subscription"
             variant="outline"
-            iconLeft={<CreditCard size={20} color="#000000" strokeWidth={2} />}
+            iconLeft={
+              <CreditCard size={20} color={cardIconColor} strokeWidth={2} />
+            }
             disabled={isDeleting}
             onPress={() => {
               void handleManageSubscription();
