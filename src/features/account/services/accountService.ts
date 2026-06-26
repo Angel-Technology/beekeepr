@@ -4,7 +4,6 @@ import type {
   HandleAvailability,
   ProfileUser,
   UpdateProfilePatch,
-  UserSearchResult,
 } from '../models/account.types';
 
 export const accountService = {
@@ -134,17 +133,4 @@ export const accountService = {
     };
   },
 
-  async searchUsers(query: string, limit = 10): Promise<UserSearchResult[]> {
-    const trimmed = query.trim();
-    if (trimmed.length === 0) {
-      return [];
-    }
-
-    const payload = await accountRepository.searchUsers({
-      query: trimmed,
-      first: limit,
-    });
-
-    return payload.searchUsers?.nodes ?? [];
-  },
 };

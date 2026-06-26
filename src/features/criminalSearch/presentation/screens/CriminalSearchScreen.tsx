@@ -4,11 +4,7 @@ import { DrawerActions } from '@react-navigation/native';
 import { Menu } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppHeader, BOTTOM_TAB_BAR_HEIGHT, IconButton } from '@components';
-import {
-  ComingSoonOverlay,
-  PhoneSearchMock,
-  WhatYoullFindCard,
-} from '../components';
+import { ComingSoonOverlay, WhatYoullFindCard } from '../components';
 
 export const CriminalSearchScreen = () => {
   const navigation = useNavigation();
@@ -41,10 +37,6 @@ export const CriminalSearchScreen = () => {
           paddingBottom: BOTTOM_TAB_BAR_HEIGHT + insets.bottom + 16,
         }}
       >
-        <View className="opacity-50">
-          <PhoneSearchMock />
-        </View>
-
         <View className="flex-1 justify-end gap-3">
           <ComingSoonOverlay />
           <WhatYoullFindCard />

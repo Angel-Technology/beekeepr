@@ -1,0 +1,7 @@
+query OutgoingInvites($first: Int) {
+  outgoingFriendRequests(first: $first) {
+    nodes {
+      ...UserConnectionFields
+    }
+  }
+}

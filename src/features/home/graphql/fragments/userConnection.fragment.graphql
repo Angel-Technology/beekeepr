@@ -1,0 +1,8 @@
+fragment UserConnectionFields on UserConnectionDto {
+  id
+  nickname
+  handle
+  imageUrl
+  backgroundCheckBadge
+  connectionCreatedAtUtc
+}

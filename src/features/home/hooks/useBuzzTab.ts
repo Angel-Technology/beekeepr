@@ -1,8 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useRouter } from 'expo-router';
-import { useCompleteProfile } from '@features/account/hooks/useCompleteProfile';
 import { useRedeemPromoCode } from '@features/account/hooks/useRedeemPromoCode';
-import { useSearchUsers } from '@features/account/hooks/useSearchUsers';
 import { BackgroundCheckBadge, useAuthSession } from '@features/auth';
 import {
   hasResumableVerification,
@@ -10,7 +8,15 @@ import {
 } from '@features/verification';
 import { useTrialPurchase } from '@features/verification/hooks/useTrialPurchase';
 import { useRevenueCat } from '@src/lib/revenuecat';
+import type { ConnectionTab } from '../presentation/components/connections';
 import type { BuzzFlow } from '../models/buzzFlow.types';
+import { useBlockedUsers } from './useBlockedUsers';
+import { useCancelInvite } from './useCancelInvite';
+import { useConnections } from './useConnections';
+import { useIncomingInvites } from './useIncomingInvites';
+import { useOutgoingInvites } from './useOutgoingInvites';
+import { useRespondToInvite } from './useRespondToInvite';
+import { useUnblockUser } from './useUnblockUser';
 
 const TRIAL_LENGTH_DAYS = 30;
 const REMINDER_LEAD_DAYS = 5;
@@ -35,7 +41,7 @@ const formatLongDate = (value: Date) =>
  * Flow derivation:
  * - `'denied'`: terminal Persona-declined or Checkr-denied user.
  * - `'welcome'`: badge approved AND user has an active subscription
- *   (`isPro`) — the search community body.
+ *   (`isPro`) — the connections home.
  * - `'verify'`: everything else — either the user hasn't completed
  *   verification, or they're approved but haven't started / have lapsed
  *   their membership. CTA copy + destination shift based on which sub-case
@@ -50,24 +56,31 @@ const formatLongDate = (value: Date) =>
 export const useBuzzTab = () => {
   const router = useRouter();
   const { data: user, isPending: isUserPending } = useAuthSession();
-  const { isReady: isRevenueCatReady, isPro, isLapsed } = useRevenueCat();
-  const { isPurchasing, startTrial } = useTrialPurchase();
-
-  const [searchQuery, setSearchQuery] = useState('');
   const {
-    debouncedQuery: searchDebouncedQuery,
-    results: searchResults,
-    isFetching: isSearchFetching,
-  } = useSearchUsers(searchQuery);
+    isReady: isRevenueCatReady,
+    isPro,
+    isLapsed,
+    isOnTrial,
+    trialDaysRemaining,
+  } = useRevenueCat();
+  const { isPurchasing, startTrial } = useTrialPurchase();
+  const { data: connections } = useConnections();
+  const { data: invites } = useIncomingInvites();
+  const { data: sentInvites } = useOutgoingInvites();
+  const { data: blockedUsers } = useBlockedUsers();
+  const {
+    accept: acceptInvite,
+    decline: declineInvite,
+    acceptPendingId,
+    declinePendingId,
+  } = useRespondToInvite();
+  const { cancel: cancelInvite, cancelPendingId } = useCancelInvite();
+  const { unblock: unblockUser, unblockPendingId } = useUnblockUser();
 
-  // "Create a profile" modal visibility + form state. Lives here so the
-  // presentation layer stays dumb and so `useCompleteProfile.onSaved` can
-  // close the modal directly when the mutation resolves (cleaner than
-  // letting the parent infer dismissal from `isProfileIncomplete`).
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const profileForm = useCompleteProfile({
-    onSaved: () => setShowProfileModal(false),
-  });
+  // Pill state is owned at the orchestration layer so the active tab can
+  // be reset alongside other welcome-flow state if/when we ever need to.
+  const [activeConnectionTab, setActiveConnectionTab] =
+    useState<ConnectionTab>('connections');
 
   // Promo-code modal is shared by membership + renewal CTAs. The flow on
   // success: hook refreshes RC → `isPro` flips → flow derivation drops
@@ -186,29 +199,22 @@ export const useBuzzTab = () => {
       },
     },
     welcomeProps: {
-      searchQuery,
-      searchDebouncedQuery,
-      searchResults,
-      isSearchFetching,
-      onChangeSearchQuery: setSearchQuery,
-      // Subscribed users without nickname/handle can't be found by others
-      // in the search — surface the soft-nag modal until they fill it in
-      // (or explicitly dismiss).
-      isProfileIncomplete: !user?.nickname || !user?.handle,
-      showProfileModal,
-      onOpenProfileModal: () => setShowProfileModal(true),
-      profileForm: {
-        nickname: profileForm.nickname,
-        handle: profileForm.handle,
-        onChangeNickname: profileForm.setNickname,
-        onChangeHandle: profileForm.setHandle,
-        nicknameStatus: profileForm.nicknameStatus,
-        handleStatus: profileForm.handleStatus,
-        handleReason: profileForm.handleReason,
-        isValid: profileForm.isValid,
-        isSaving: profileForm.isSaving,
-        onSave: profileForm.save,
-      },
+      connections: connections ?? [],
+      invites: invites ?? [],
+      sentInvites: sentInvites ?? [],
+      blockedUsers: blockedUsers ?? [],
+      isOnTrial,
+      trialDaysRemaining,
+      activeTab: activeConnectionTab,
+      onChangeTab: setActiveConnectionTab,
+      onAcceptInvite: acceptInvite,
+      onDeclineInvite: declineInvite,
+      onCancelInvite: cancelInvite,
+      onUnblockUser: unblockUser,
+      acceptPendingId,
+      declinePendingId,
+      cancelPendingId,
+      unblockPendingId,
     },
   };
 };

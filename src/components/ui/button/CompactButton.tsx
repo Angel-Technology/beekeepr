@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
-import clsx from 'clsx';
 import { Text, TouchableOpacity } from 'react-native';
 
+import { cn } from '@common';
 import { BounceLoader } from '../loader/BounceLoader';
 
 type CompactButtonVariant = 'solid' | 'outline' | 'tinted';
@@ -55,7 +55,7 @@ export const CompactButton = ({
       accessibilityState={{ disabled: isDisabled, busy: loading }}
       disabled={isDisabled}
       onPress={onPress}
-      className={clsx(
+      className={cn(
         'min-h-[44px] flex-row items-center justify-center gap-2 self-stretch rounded-round px-4 py-3',
         isDisabled
           ? 'bg-tk-actions-disabled-background'
@@ -70,7 +70,7 @@ export const CompactButton = ({
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
-          className={clsx(
+          className={cn(
             'font-lexend-semiBold text-base leading-tight',
             isDisabled
               ? 'text-tk-actions-disabled-text'

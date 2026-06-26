@@ -1,0 +1,8 @@
+mutation AcceptInvite($input: RespondToFriendRequestInput!) {
+  acceptFriendRequest(input: $input) {
+    error
+    friendship {
+      id
+    }
+  }
+}
