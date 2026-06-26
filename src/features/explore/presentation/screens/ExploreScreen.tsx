@@ -15,20 +15,20 @@ import {
   AppHeader,
   BOTTOM_TAB_BAR_HEIGHT,
   IconButton,
+  SafetyDisclaimerCard,
   VerticalSpacer,
 } from '@components';
-import {
-  DatingAppsExploreCard,
-  PartnershipExploreCard,
-  STIScreeningExploreCard,
-  SurvivorSupportExploreCard,
-} from '../components';
+import { themedColors, useThemedColor } from '@common';
+import { DATING_ADVICE } from '../../models/datingAdvice';
+import { DatingAdviceCard } from '../components/DatingAdviceCard';
 
 export const ExploreScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const headerOffset = APP_HEADER_HEIGHT + insets.top;
   const topMaskHeight = headerOffset + 8;
+
+  const menuIconColor = useThemedColor(themedColors.text.primary);
 
   const scrollY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler({
@@ -51,23 +51,29 @@ export const ExploreScreen = () => {
   });
 
   return (
-    <View className="flex-1 bg-bg-default">
+    <View className="bg-tk-bg-primary flex-1">
       <Animated.ScrollView
         className="flex-1"
         contentContainerStyle={{
           paddingHorizontal: 24,
           paddingTop: headerOffset + 8,
           paddingBottom: BOTTOM_TAB_BAR_HEIGHT + insets.bottom + 16,
-          gap: 16,
+          gap: 24,
         }}
         onScroll={scrollHandler}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
       >
-        <PartnershipExploreCard />
-        <DatingAppsExploreCard />
-        <STIScreeningExploreCard />
-        <SurvivorSupportExploreCard />
+        <SafetyDisclaimerCard />
+        {DATING_ADVICE.map((item) => (
+          <DatingAdviceCard
+            key={item.id}
+            title={item.title}
+            statistic={item.statistic}
+            source={item.source}
+            advice={item.advice}
+          />
+        ))}
         <VerticalSpacer size="3xl" />
       </Animated.ScrollView>
 
@@ -78,7 +84,7 @@ export const ExploreScreen = () => {
         showTopMask
         topMaskHeight={topMaskHeight}
         center={
-          <Text className="font-poppins-semiBold text-base text-text-default">
+          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
             Explore
           </Text>
         }
@@ -86,7 +92,7 @@ export const ExploreScreen = () => {
           <IconButton
             accessibilityLabel="Open menu"
             className="border-none bg-transparent"
-            icon={<Menu size={24} color="#000000" />}
+            icon={<Menu size={24} color={menuIconColor} />}
             onPress={() => {
               navigation.dispatch(DrawerActions.toggleDrawer());
             }}
