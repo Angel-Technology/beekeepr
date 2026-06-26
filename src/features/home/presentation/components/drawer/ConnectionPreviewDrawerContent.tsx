@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { View } from 'react-native';
 import type { DrawerContentComponentProps } from '@react-navigation/drawer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -53,6 +53,11 @@ export const ConnectionPreviewDrawerContent = ({
   const insets = useSafeAreaInsets();
   const iconColor = useThemedColor(themedColors.text.primary);
   const [isActionsMenuOpen, setIsActionsMenuOpen] = useState(false);
+  // Tracks whether the outer touch-capture handler just closed the menu
+  // on the same gesture that's about to hit the kebab. Lets the kebab
+  // skip its open-handler so we don't re-open the menu the user is
+  // trying to close.
+  const dismissedByOutsideTouchRef = useRef(false);
 
   const { remove: removeFriend } = useRemoveFriend();
   const { accept: acceptInvite, decline: declineInvite } = useRespondToInvite();
@@ -69,7 +74,26 @@ export const ConnectionPreviewDrawerContent = ({
   };
 
   return (
-    <View className="bg-tk-bg-primary flex-1">
+    <View
+      className="bg-tk-bg-primary flex-1"
+      // Outer capture: when the menu is open, ANY touch start anywhere
+      // in the drawer closes it. Returning `false` releases the
+      // responder so the underlying element (kebab, menu item, scroll,
+      // header button) still receives its own touch and fires its
+      // handler normally.
+      onStartShouldSetResponderCapture={() => {
+        if (isActionsMenuOpen) {
+          dismissedByOutsideTouchRef.current = true;
+          setIsActionsMenuOpen(false);
+        } else {
+          // Menu is already closed → this is a fresh gesture. Clear
+          // any leftover "skip" signal from a previous close that
+          // didn't land on the kebab.
+          dismissedByOutsideTouchRef.current = false;
+        }
+        return false;
+      }}
+    >
       <AppHeader
         topInset={insets.top}
         left={
@@ -106,18 +130,28 @@ export const ConnectionPreviewDrawerContent = ({
                   color={iconColor}
                 />
               }
-              onPress={() => setIsActionsMenuOpen(true)}
+              onPress={() => {
+                if (dismissedByOutsideTouchRef.current) {
+                  // Outer capture just closed the menu on this same
+                  // gesture; don't re-open from the kebab tap.
+                  dismissedByOutsideTouchRef.current = false;
+                  return;
+                }
+                setIsActionsMenuOpen(true);
+              }}
             />
           </View>
         }
       />
       <VerticalSpacer />
 
-      <ProfilePreviewBody user={user} />
+      <ProfilePreviewBody
+        user={user}
+        onScrollBeginDrag={() => setIsActionsMenuOpen(false)}
+      />
 
       <ProfileActionsMenu
         visible={isActionsMenuOpen}
-        onDismiss={() => setIsActionsMenuOpen(false)}
         onBlock={runAndClose(blockUser)}
         onFlag={runAndClose(flagUser)}
       />

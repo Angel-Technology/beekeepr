@@ -101,6 +101,10 @@ type ContactRow = {
 
 type ProfilePreviewBodyProps = {
   user: ProfilePreviewUser;
+  // Fires on the inner ScrollView's `onScrollBeginDrag`. Connection
+  // preview wires this to its actions-menu close so scrolling the body
+  // also closes the kebab dropdown.
+  onScrollBeginDrag?: () => void;
 };
 
 /**
@@ -110,7 +114,10 @@ type ProfilePreviewBodyProps = {
  * because they vary per use case; this component owns everything below
  * the header.
  */
-export const ProfilePreviewBody = ({ user }: ProfilePreviewBodyProps) => {
+export const ProfilePreviewBody = ({
+  user,
+  onScrollBeginDrag,
+}: ProfilePreviewBodyProps) => {
   const insets = useSafeAreaInsets();
   const errorModal = useErrorModal();
   const phoneIconColor = useThemedColor(themedColors.text.primary);
@@ -209,6 +216,7 @@ export const ProfilePreviewBody = ({ user }: ProfilePreviewBodyProps) => {
         gap: 24,
       }}
       showsVerticalScrollIndicator={false}
+      onScrollBeginDrag={onScrollBeginDrag}
     >
       <View className="flex-row items-center gap-3 px-6">
         <View className="bg-tk-bg-elevated-secondary size-[64px] items-center justify-center overflow-hidden rounded-round">
