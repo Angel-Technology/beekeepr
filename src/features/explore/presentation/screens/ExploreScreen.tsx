@@ -74,7 +74,7 @@ export const ExploreScreen = () => {
             advice={item.advice}
           />
         ))}
-        <VerticalSpacer size="3xl" />
+        <VerticalSpacer size="md" />
       </Animated.ScrollView>
 
       <AppHeader

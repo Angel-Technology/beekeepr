@@ -1,0 +1,8 @@
+mutation SendInvite($input: SendFriendRequestInput!) {
+  sendFriendRequest(input: $input) {
+    error
+    friendship {
+      id
+    }
+  }
+}

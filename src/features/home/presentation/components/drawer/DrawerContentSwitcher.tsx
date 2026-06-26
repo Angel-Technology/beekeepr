@@ -4,6 +4,7 @@ import { useAnimatedReaction } from 'react-native-reanimated';
 import { MenuDrawerContent } from '@features/account';
 import {
   clearDrawerPreview,
+  useDrawerPreviewFriendshipState,
   useDrawerPreviewSource,
   useDrawerPreviewUser,
 } from '../../../state/drawerPreviewStore';
@@ -33,6 +34,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 export const DrawerContentSwitcher = (props: DrawerContentComponentProps) => {
   const previewUser = useDrawerPreviewUser();
   const previewSource = useDrawerPreviewSource();
+  const previewFriendshipState = useDrawerPreviewFriendshipState();
   const progress = useDrawerProgress();
 
   useAnimatedReaction(
@@ -52,6 +54,7 @@ export const DrawerContentSwitcher = (props: DrawerContentComponentProps) => {
         {...props}
         user={previewUser}
         source={previewSource}
+        friendshipState={previewFriendshipState}
       />
     );
   }

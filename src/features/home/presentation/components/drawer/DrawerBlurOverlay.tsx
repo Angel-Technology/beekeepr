@@ -25,8 +25,8 @@ export const DrawerBlurOverlay = () => {
       style={[StyleSheet.absoluteFill, animatedStyle]}
     >
       <BlurView
-        intensity={30}
-        tint={isDark ? 'dark' : 'light'}
+        intensity={!isDark ? 80 : 10}
+        tint={!isDark ? 'dark' : 'light'}
         style={StyleSheet.absoluteFill}
       />
     </Animated.View>

@@ -213,6 +213,7 @@ export const ProfilePreviewBody = ({
       className="flex-1"
       contentContainerStyle={{
         paddingBottom: insets.bottom + 32,
+        paddingTop: 24,
         gap: 24,
       }}
       showsVerticalScrollIndicator={false}

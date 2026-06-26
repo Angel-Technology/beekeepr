@@ -88,6 +88,22 @@ export const homeService = {
   },
 
   /**
+   * Sends a friend request to `targetUserId`. Throws on server error;
+   * resolves to `void` otherwise. The mutation also returns the new
+   * `FriendshipGraph.id` but callers don't need it — the relevant state
+   * (the search row's `viewerFriendshipState`) flips to `REQUEST_SENT`
+   * on the next refetch.
+   */
+  async sendInvite(targetUserId: string): Promise<void> {
+    const payload = await homeRepository.sendInvite({
+      input: { targetUserId },
+    });
+    if (payload.sendFriendRequest.error) {
+      throw new Error(payload.sendFriendRequest.error);
+    }
+  },
+
+  /**
    * Removes the block the user placed on `targetUserId`. Throws on server
    * error; resolves to `void` otherwise.
    */

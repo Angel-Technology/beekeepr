@@ -5,7 +5,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   AppHeader,
   ProfilePreviewBody,
-  VerticalSpacer,
   type ProfilePreviewUser,
 } from '@components';
 import { useAuthSession } from '@features/auth';
@@ -50,7 +49,6 @@ export const ProfileDrawerContent = (_props: DrawerContentComponentProps) => {
           This is how others see you.
         </Text>
       </View>
-      <VerticalSpacer />
 
       {previewUser ? <ProfilePreviewBody user={previewUser} /> : null}
     </View>

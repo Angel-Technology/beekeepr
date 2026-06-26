@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Drawer } from 'expo-router/drawer';
 import { useDrawerStatus } from '@react-navigation/drawer';
 import { ProfileDrawerContent } from '@features/account';
+import { themedColors, useThemedColor } from '@common';
 
 /**
  * Drawer status → `swipeEnabled` binding. Lives inside `drawerContent`
@@ -28,6 +29,9 @@ const SwipeBinding = ({
 
 export default function ProfileDrawerLayout() {
   const [swipeEnabled, setSwipeEnabled] = useState(false);
+  // Theme-aware to avoid a white slab flashing through the slide
+  // animation in dark mode. Mirrors the (main) drawer's sceneStyle.
+  const sceneBg = useThemedColor(themedColors.bg.primary);
 
   return (
     <Drawer
@@ -47,7 +51,7 @@ export default function ProfileDrawerLayout() {
           width: '88%',
         },
         sceneStyle: {
-          backgroundColor: '#FFFFFF',
+          backgroundColor: sceneBg,
         },
       }}
     >

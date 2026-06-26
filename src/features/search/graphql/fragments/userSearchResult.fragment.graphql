@@ -1,0 +1,20 @@
+fragment UserSearchResultFields on UserSearchResultDto {
+  id
+  nickname
+  displayName
+  handle
+  imageUrl
+  backgroundCheckBadge
+  backgroundCheckBadgeExpiresAtUtc
+  checkrLastCheckAtUtc
+  createdAtUtc
+  profileVisibility
+  contactVisibility
+  phoneNumber
+  googleVoicePhone
+  whatsAppPhone
+  instagramHandle
+  telegramHandle
+  signalPhone
+  viewerFriendshipState
+}

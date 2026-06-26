@@ -105,12 +105,6 @@ export const accountService = {
   },
 
   /**
-   * Searches the user directory for matches against a nickname / handle /
-   * pin. Returns up to `limit` results (default 10). Empty or
-   * whitespace-only queries short-circuit to an empty list so we don't
-   * waste a round-trip.
-   */
-  /**
    * Checks whether a handle is free to claim. Backend authoritatively
    * decides — this just normalises (strip `@`, trim, lowercase) before
    * sending. Callers should already have run local format validation;

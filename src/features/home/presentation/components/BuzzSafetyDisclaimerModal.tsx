@@ -10,13 +10,11 @@ type BuzzSafetyDisclaimerModalProps = {
   // the moment of dismissal. Learn more is informational and does not
   // dismiss the modal, so it has no persistence side effect.
   onClose: (shouldPersist: boolean) => void;
-  onLearnMore: () => void;
 };
 
 export const BuzzSafetyDisclaimerModal = ({
   visible,
   onClose,
-  onLearnMore,
 }: BuzzSafetyDisclaimerModalProps) => {
   // Default to checked so the steady-state behavior matches the "show once"
   // intent — a user who taps Got it! without touching the checkbox never
@@ -97,12 +95,6 @@ export const BuzzSafetyDisclaimerModal = ({
           />
 
           <View className="w-full flex-row gap-3">
-            <CompactButton
-              label="Learn more"
-              variant="outline"
-              className="flex-1"
-              onPress={onLearnMore}
-            />
             <CompactButton
               label="Got it!"
               variant="solid"

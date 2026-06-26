@@ -4,7 +4,6 @@ import {
   CheckHandleAvailabilityDocument,
   RedeemPromoCodeDocument,
   RequestAccountDeletionDocument,
-  SearchUsersDocument,
   UpdateProfileDocument,
   type CancelAccountDeletionMutation,
   type CancelAccountDeletionMutationVariables,
@@ -14,8 +13,6 @@ import {
   type RedeemPromoCodeMutationVariables,
   type RequestAccountDeletionMutation,
   type RequestAccountDeletionMutationVariables,
-  type SearchUsersQuery,
-  type SearchUsersQueryVariables,
   type UpdateProfileMutation,
   type UpdateProfileMutationVariables,
 } from '../graphql/generated/account.generated';
@@ -53,12 +50,6 @@ export const accountRepository = {
       RedeemPromoCodeMutationVariables
     >({
       document: RedeemPromoCodeDocument,
-      variables,
-    });
-  },
-  searchUsers(variables: SearchUsersQueryVariables) {
-    return executeGraphQL<SearchUsersQuery, SearchUsersQueryVariables>({
-      document: SearchUsersDocument,
       variables,
     });
   },

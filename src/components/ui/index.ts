@@ -1,4 +1,5 @@
 export * from './action-bar';
+export * from './bottom-sheet';
 export * from './brand-mark';
 export * from './button';
 export * from './card';

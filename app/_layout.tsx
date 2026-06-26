@@ -7,6 +7,7 @@ import {
 } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { colorScheme } from 'nativewind';
+import { themedColors, useThemedColor } from '@common';
 import { useAuthSession } from '@features/auth';
 
 import '../global.css';
@@ -41,6 +42,9 @@ if (storybookEnabled) {
 
 function RootNavigator() {
   const { data: user, isPending } = useAuthSession();
+  // Theme-aware screen container so push/pop transitions don't expose
+  // the Stack's default white background mid-animation.
+  const screenBg = useThemedColor(themedColors.bg.primary);
 
   // Hold the native splash until the auth session has resolved. Hiding
   // unconditionally on mount drops us into the `isPending` `return null`
@@ -60,7 +64,7 @@ function RootNavigator() {
   const isAuthenticated = Boolean(user);
 
   return (
-    <Stack>
+    <Stack screenOptions={{ contentStyle: { backgroundColor: screenBg } }}>
       <Stack.Protected guard={!isAuthenticated}>
         <Stack.Screen
           name="(public)"

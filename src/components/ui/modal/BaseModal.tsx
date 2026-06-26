@@ -25,7 +25,7 @@ export const BaseModal = ({
   dismissOnBackdropPress = false,
   onRequestClose,
   contentClassName,
-  backdropBlur = false,
+  backdropBlur = true,
 }: BaseModalProps) => {
   const isDark = useColorScheme() === 'dark';
 
@@ -48,8 +48,8 @@ export const BaseModal = ({
       <View style={{ flex: 1 }}>
         {backdropBlur ? (
           <BlurView
-            intensity={10}
-            tint={isDark ? 'dark' : 'light'}
+            intensity={40}
+            tint={!isDark ? 'dark' : 'light'}
             style={StyleSheet.absoluteFill}
           />
         ) : null}
@@ -71,7 +71,7 @@ export const BaseModal = ({
           />
           <View
             className={clsx(
-              'bg-tk-bg-elevated-primary w-full max-w-[360px] rounded-5 p-lg',
+              'bg-tk-bg-primary w-full max-w-[360px] rounded-5 p-lg',
               contentClassName,
             )}
           >

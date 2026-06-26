@@ -195,7 +195,6 @@ export const BuzzScreen = () => {
       <BuzzSafetyDisclaimerModal
         visible={showSafetyDisclaimer}
         onClose={handleSafetyDismiss}
-        onLearnMore={() => openInAppBrowser(environmentConfig.supportURL)}
       />
 
       <AppHeader
@@ -205,14 +204,16 @@ export const BuzzScreen = () => {
         showTopMask
         topMaskHeight={topMaskHeight}
         left={
-          <IconButton
-            accessibilityLabel="Open profile"
-            className="bg-tk-bg-primary border-tk-border-secondary size-[30px] rounded-round border"
-            icon={
-              <UserRound size={18} strokeWidth={2.2} color={menuIconColor} />
-            }
-            onPress={() => router.push('/profile')}
-          />
+          <View className="pl-5">
+            <IconButton
+              accessibilityLabel="Open profile"
+              className="bg-tk-bg-primary border-tk-border-secondary size-[30px] rounded-round border"
+              icon={
+                <UserRound size={18} strokeWidth={2.2} color={menuIconColor} />
+              }
+              onPress={() => router.push('/profile')}
+            />
+          </View>
         }
         center={
           <View className="flex-row items-start justify-center gap-1">

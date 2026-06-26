@@ -6,6 +6,7 @@ import {
   Check,
   ChevronLeft,
   EllipsisVertical,
+  Send,
   Trash,
   X,
 } from 'lucide-react-native';
@@ -14,7 +15,6 @@ import {
   CompactButton,
   IconButton,
   ProfilePreviewBody,
-  VerticalSpacer,
   type ProfilePreviewUser,
 } from '@components';
 import { cn, themedColors, useThemedColor } from '@common';
@@ -23,13 +23,18 @@ import { useCancelInvite } from '../../../hooks/useCancelInvite';
 import { useFlagUser } from '../../../hooks/useFlagUser';
 import { useRemoveFriend } from '../../../hooks/useRemoveFriend';
 import { useRespondToInvite } from '../../../hooks/useRespondToInvite';
+import { useSendInvite } from '../../../hooks/useSendInvite';
 import { useUnblockUser } from '../../../hooks/useUnblockUser';
-import type { PreviewSource } from '../../../state/drawerPreviewStore';
+import type {
+  PreviewFriendshipState,
+  PreviewSource,
+} from '../../../state/drawerPreviewStore';
 import { ProfileActionsMenu } from './ProfileActionsMenu';
 
 type ConnectionPreviewDrawerContentProps = DrawerContentComponentProps & {
   user: ProfilePreviewUser;
   source: PreviewSource | null;
+  friendshipState: PreviewFriendshipState | null;
 };
 
 /**
@@ -40,6 +45,9 @@ type ConnectionPreviewDrawerContentProps = DrawerContentComponentProps & {
  * - `invite` → Decline + Approve
  * - `sent-invite` → Unsend
  * - `blocked` → Unblock
+ * - `search` → Invite (NONE) or Unsend (REQUEST_SENT), with Block /
+ *   Flag still in the kebab so the affordance set matches every other
+ *   source rather than gaining a one-off inline pair.
  *
  * The kebab dropdown (Block / Flag) is available on every source. Each
  * action dismisses the drawer once the mutation kicks off — the
@@ -49,9 +57,13 @@ export const ConnectionPreviewDrawerContent = ({
   navigation,
   user,
   source,
+  friendshipState,
 }: ConnectionPreviewDrawerContentProps) => {
   const insets = useSafeAreaInsets();
   const iconColor = useThemedColor(themedColors.text.primary);
+  // Matches the `text-tk-actions-neutral-text-on-action` class CompactButton
+  // uses for solid-variant labels — white in light mode, black in dark mode.
+  const onActionIconColor = useThemedColor(themedColors.text.primaryReversed);
   const [isActionsMenuOpen, setIsActionsMenuOpen] = useState(false);
   // Tracks whether the outer touch-capture handler just closed the menu
   // on the same gesture that's about to hit the kebab. Lets the kebab
@@ -62,6 +74,7 @@ export const ConnectionPreviewDrawerContent = ({
   const { remove: removeFriend } = useRemoveFriend();
   const { accept: acceptInvite, decline: declineInvite } = useRespondToInvite();
   const { cancel: cancelInvite } = useCancelInvite();
+  const { send: sendInvite } = useSendInvite();
   const { unblock: unblockUser } = useUnblockUser();
   const { block: blockUser } = useBlockUser();
   const { flag: flagUser } = useFlagUser();
@@ -75,7 +88,7 @@ export const ConnectionPreviewDrawerContent = ({
 
   return (
     <View
-      className="bg-tk-bg-primary flex-1"
+      className="flex-1 bg-tk-bg-primary"
       // Outer capture: when the menu is open, ANY touch start anywhere
       // in the drawer closes it. Returning `false` releases the
       // responder so the underlying element (kebab, menu item, scroll,
@@ -108,12 +121,15 @@ export const ConnectionPreviewDrawerContent = ({
           <View className="flex-row items-center gap-2 pr-1">
             <SourceActions
               source={source}
+              friendshipState={friendshipState}
               iconColor={iconColor}
+              onActionIconColor={onActionIconColor}
               onRemove={runAndClose(removeFriend)}
               onAccept={runAndClose(acceptInvite)}
               onDecline={runAndClose(declineInvite)}
               onUnsend={runAndClose(cancelInvite)}
               onUnblock={runAndClose(unblockUser)}
+              onSendInvite={runAndClose(sendInvite)}
             />
             <IconButton
               accessibilityLabel="More actions"
@@ -143,7 +159,6 @@ export const ConnectionPreviewDrawerContent = ({
           </View>
         }
       />
-      <VerticalSpacer />
 
       <ProfilePreviewBody
         user={user}
@@ -161,76 +176,104 @@ export const ConnectionPreviewDrawerContent = ({
 
 type SourceActionsProps = {
   source: PreviewSource | null;
+  friendshipState: PreviewFriendshipState | null;
   iconColor: string;
+  onActionIconColor: string;
   onRemove: () => void;
   onAccept: () => void;
   onDecline: () => void;
   onUnsend: () => void;
   onUnblock: () => void;
+  onSendInvite: () => void;
 };
 
 const SourceActions = ({
   source,
+  friendshipState,
   iconColor,
+  onActionIconColor,
   onRemove,
   onAccept,
   onDecline,
   onUnsend,
   onUnblock,
+  onSendInvite,
 }: SourceActionsProps) => {
-  if (source === 'invite') {
-    return (
-      <>
+  switch (source) {
+    case 'invite':
+      return (
+        <>
+          <CompactButton
+            label="Decline"
+            variant="outline"
+            onPress={onDecline}
+            className="min-h-0 self-auto px-3 py-2"
+            textClassName="text-sm"
+          />
+          <CompactButton
+            label="Approve"
+            variant="solid"
+            onPress={onAccept}
+            className="min-h-0 self-auto px-3 py-2"
+            textClassName="text-sm"
+          />
+        </>
+      );
+    case 'sent-invite':
+      return (
         <CompactButton
-          label="Decline"
+          label="Unsend"
           variant="outline"
-          onPress={onDecline}
+          iconLeft={<X size={16} strokeWidth={2.2} color={iconColor} />}
+          onPress={onUnsend}
           className="min-h-0 self-auto px-3 py-2"
           textClassName="text-sm"
         />
+      );
+    case 'blocked':
+      return (
         <CompactButton
-          label="Approve"
-          variant="solid"
-          onPress={onAccept}
+          label="Unblock"
+          variant="outline"
+          iconLeft={<Check size={16} strokeWidth={2.2} color={iconColor} />}
+          onPress={onUnblock}
           className="min-h-0 self-auto px-3 py-2"
           textClassName="text-sm"
         />
-      </>
-    );
+      );
+    case 'search':
+      return friendshipState === 'REQUEST_SENT' ? (
+        <CompactButton
+          label="Unsend"
+          variant="outline"
+          iconLeft={<X size={16} strokeWidth={2.2} color={iconColor} />}
+          onPress={onUnsend}
+          className="min-h-0 self-auto px-3 py-2"
+          textClassName="text-sm"
+        />
+      ) : (
+        <CompactButton
+          label="Invite"
+          variant="solid"
+          iconLeft={
+            <Send size={16} strokeWidth={2.2} color={onActionIconColor} />
+          }
+          onPress={onSendInvite}
+          className="min-h-0 self-auto px-3 py-2"
+          textClassName="text-sm"
+        />
+      );
+    // Default + 'connection' both render the Remove button.
+    default:
+      return (
+        <CompactButton
+          label="Remove"
+          variant="outline"
+          iconLeft={<Trash size={16} strokeWidth={2.2} color={iconColor} />}
+          onPress={onRemove}
+          className="min-h-0 self-auto px-3 py-2"
+          textClassName="text-sm"
+        />
+      );
   }
-  if (source === 'sent-invite') {
-    return (
-      <CompactButton
-        label="Unsend"
-        variant="outline"
-        iconLeft={<X size={16} strokeWidth={2.2} color={iconColor} />}
-        onPress={onUnsend}
-        className="min-h-0 self-auto px-3 py-2"
-        textClassName="text-sm"
-      />
-    );
-  }
-  if (source === 'blocked') {
-    return (
-      <CompactButton
-        label="Unblock"
-        variant="outline"
-        iconLeft={<Check size={16} strokeWidth={2.2} color={iconColor} />}
-        onPress={onUnblock}
-        className="min-h-0 self-auto px-3 py-2"
-        textClassName="text-sm"
-      />
-    );
-  }
-  // Default + 'connection' both render the Remove button.
-  return (
-    <CompactButton
-      label="Remove"
-      variant="outline"
-      iconLeft={<Trash size={16} strokeWidth={2.2} color={iconColor} />}
-      onPress={onRemove}
-      className="min-h-0 self-auto px-3 py-2"
-      textClassName="text-sm"
-    />
-  );
 };

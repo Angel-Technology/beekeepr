@@ -7,7 +7,9 @@ import { BounceLoader } from '../loader/BounceLoader';
 type CompactButtonVariant = 'solid' | 'outline' | 'tinted';
 
 type CompactButtonProps = {
-  label: string;
+  // Optional so icon-only pills can reuse the same surface + tone
+  // styling without a hidden text node skewing layout.
+  label?: string;
   onPress?: () => void;
   variant?: CompactButtonVariant;
   disabled?: boolean;
@@ -16,6 +18,7 @@ type CompactButtonProps = {
   iconRight?: ReactNode;
   className?: string;
   textClassName?: string;
+  accessibilityLabel?: string;
 };
 
 const SURFACE_BY_VARIANT: Record<CompactButtonVariant, string> = {
@@ -46,12 +49,14 @@ export const CompactButton = ({
   iconRight,
   className,
   textClassName,
+  accessibilityLabel,
 }: CompactButtonProps) => {
   const isDisabled = disabled || loading;
 
   return (
     <TouchableOpacity
       accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel ?? label}
       accessibilityState={{ disabled: isDisabled, busy: loading }}
       disabled={isDisabled}
       onPress={onPress}
@@ -66,7 +71,7 @@ export const CompactButton = ({
       {iconLeft && !loading ? iconLeft : null}
       {loading ? (
         <BounceLoader colorClassName={LOADER_BY_VARIANT[variant]} />
-      ) : (
+      ) : label ? (
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
@@ -80,7 +85,7 @@ export const CompactButton = ({
         >
           {label}
         </Text>
-      )}
+      ) : null}
       {iconRight && !loading ? iconRight : null}
     </TouchableOpacity>
   );

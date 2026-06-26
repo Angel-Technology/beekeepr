@@ -10,6 +10,7 @@ import {
   IncomingInvitesDocument,
   OutgoingInvitesDocument,
   RemoveFriendDocument,
+  SendInviteDocument,
   UnblockUserDocument,
   type AcceptInviteMutation,
   type AcceptInviteMutationVariables,
@@ -31,6 +32,8 @@ import {
   type OutgoingInvitesQueryVariables,
   type RemoveFriendMutation,
   type RemoveFriendMutationVariables,
+  type SendInviteMutation,
+  type SendInviteMutationVariables,
   type UnblockUserMutation,
   type UnblockUserMutationVariables,
 } from '../graphql/generated/home.generated';
@@ -75,6 +78,12 @@ export const homeRepository = {
   cancelInvite(variables: CancelInviteMutationVariables) {
     return executeGraphQL<CancelInviteMutation, CancelInviteMutationVariables>({
       document: CancelInviteDocument,
+      variables,
+    });
+  },
+  sendInvite(variables: SendInviteMutationVariables) {
+    return executeGraphQL<SendInviteMutation, SendInviteMutationVariables>({
+      document: SendInviteDocument,
       variables,
     });
   },
