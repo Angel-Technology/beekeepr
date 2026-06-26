@@ -8,12 +8,14 @@ import { BuzzConnectionRow } from '../connections/BuzzConnectionRow';
 type BuzzBlockedUsersCardProps = {
   blockedUsers: readonly BlockedUser[];
   onUnblock: (targetUserId: string) => void;
+  onPressBlockedUser?: (user: BlockedUser) => void;
   unblockPendingId: string | null;
 };
 
 export const BuzzBlockedUsersCard = ({
   blockedUsers,
   onUnblock,
+  onPressBlockedUser,
   unblockPendingId,
 }: BuzzBlockedUsersCardProps) => {
   // No empty state — when nobody is blocked, the whole section
@@ -34,6 +36,11 @@ export const BuzzBlockedUsersCard = ({
               nickname={user.nickname ?? ''}
               handle={user.handle ?? ''}
               imageUrl={user.imageUrl}
+              onPress={
+                onPressBlockedUser
+                  ? () => onPressBlockedUser(user)
+                  : undefined
+              }
               trailing={
                 <CompactButton
                   label="Unblock"

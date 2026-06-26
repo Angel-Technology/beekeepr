@@ -18,10 +18,10 @@ export const SafetyDisclaimerCard = () => {
     <View className="bg-tk-bg-secondary w-full gap-3 rounded-5 p-4">
       <View className="w-full flex-row items-center gap-3">
         <View
-          className="items-center justify-center rounded-round border-2 p-3"
+          className="items-center justify-center rounded-round border-2 p-2"
           style={{ borderColor: dangerColor }}
         >
-          <ShieldAlert size={20} color={textPrimary} />
+          <ShieldAlert size={24} color={textPrimary} />
         </View>
         <Text className="text-tk-text-primary flex-1 font-lexend-semiBold text-base leading-6">
           Safety is not a guarantee!

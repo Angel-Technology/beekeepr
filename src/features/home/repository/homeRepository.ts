@@ -1,27 +1,36 @@
 import { executeGraphQL } from '@src/lib/graphql/client';
 import {
   AcceptInviteDocument,
+  BlockUserDocument,
   BlockedUsersDocument,
   CancelInviteDocument,
   DeclineInviteDocument,
+  FlagUserDocument,
   FriendsDocument,
   IncomingInvitesDocument,
   OutgoingInvitesDocument,
+  RemoveFriendDocument,
   UnblockUserDocument,
   type AcceptInviteMutation,
   type AcceptInviteMutationVariables,
+  type BlockUserMutation,
+  type BlockUserMutationVariables,
   type BlockedUsersQuery,
   type BlockedUsersQueryVariables,
   type CancelInviteMutation,
   type CancelInviteMutationVariables,
   type DeclineInviteMutation,
   type DeclineInviteMutationVariables,
+  type FlagUserMutation,
+  type FlagUserMutationVariables,
   type FriendsQuery,
   type FriendsQueryVariables,
   type IncomingInvitesQuery,
   type IncomingInvitesQueryVariables,
   type OutgoingInvitesQuery,
   type OutgoingInvitesQueryVariables,
+  type RemoveFriendMutation,
+  type RemoveFriendMutationVariables,
   type UnblockUserMutation,
   type UnblockUserMutationVariables,
 } from '../graphql/generated/home.generated';
@@ -72,6 +81,24 @@ export const homeRepository = {
   unblockUser(variables: UnblockUserMutationVariables) {
     return executeGraphQL<UnblockUserMutation, UnblockUserMutationVariables>({
       document: UnblockUserDocument,
+      variables,
+    });
+  },
+  blockUser(variables: BlockUserMutationVariables) {
+    return executeGraphQL<BlockUserMutation, BlockUserMutationVariables>({
+      document: BlockUserDocument,
+      variables,
+    });
+  },
+  flagUser(variables: FlagUserMutationVariables) {
+    return executeGraphQL<FlagUserMutation, FlagUserMutationVariables>({
+      document: FlagUserDocument,
+      variables,
+    });
+  },
+  removeFriend(variables: RemoveFriendMutationVariables) {
+    return executeGraphQL<RemoveFriendMutation, RemoveFriendMutationVariables>({
+      document: RemoveFriendDocument,
       variables,
     });
   },

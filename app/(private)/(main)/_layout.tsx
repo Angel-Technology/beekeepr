@@ -1,10 +1,10 @@
 import { Drawer } from 'expo-router/drawer';
-import { MenuDrawerContent } from '@features/account';
+import { DrawerContentSwitcher } from '@features/home/presentation/components/drawer/DrawerContentSwitcher';
 
 export default function PrivateDrawerLayout() {
   return (
     <Drawer
-      drawerContent={(props) => <MenuDrawerContent {...props} />}
+      drawerContent={(props) => <DrawerContentSwitcher {...props} />}
       screenOptions={{
         headerShown: false,
         drawerType: 'slide',

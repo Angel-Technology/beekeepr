@@ -10,10 +10,12 @@ import { BuzzConnectionRow } from './BuzzConnectionRow';
 
 type BuzzConnectionsCardProps = {
   connections: readonly Connection[];
+  onPressConnection?: (connection: Connection) => void;
 };
 
 export const BuzzConnectionsCard = ({
   connections,
+  onPressConnection,
 }: BuzzConnectionsCardProps) => {
   const mutedBadgeColor = useThemedColor(themedColors.text.tertiary);
   const isEmpty = connections.length === 0;
@@ -46,6 +48,11 @@ export const BuzzConnectionsCard = ({
                 handle={connection.handle ?? ''}
                 imageUrl={connection.imageUrl}
                 trailing={<BuzzBadge width={21} height={24} />}
+                onPress={
+                  onPressConnection
+                    ? () => onPressConnection(connection)
+                    : undefined
+                }
                 className="rounded-none border-0 bg-transparent py-5"
               />
             </Fragment>

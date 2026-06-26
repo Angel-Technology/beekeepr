@@ -10,10 +10,12 @@ import { useTrialPurchase } from '@features/verification/hooks/useTrialPurchase'
 import { useRevenueCat } from '@src/lib/revenuecat';
 import type { ConnectionTab } from '../presentation/components/connections';
 import type { BuzzFlow } from '../models/buzzFlow.types';
+import type { BlockedUser, Connection, Invite } from '../models/home.types';
 import { useBlockedUsers } from './useBlockedUsers';
 import { useCancelInvite } from './useCancelInvite';
 import { useConnections } from './useConnections';
 import { useIncomingInvites } from './useIncomingInvites';
+import { useOpenProfilePreview } from './useOpenProfilePreview';
 import { useOutgoingInvites } from './useOutgoingInvites';
 import { useRespondToInvite } from './useRespondToInvite';
 import { useUnblockUser } from './useUnblockUser';
@@ -76,6 +78,19 @@ export const useBuzzTab = () => {
   } = useRespondToInvite();
   const { cancel: cancelInvite, cancelPendingId } = useCancelInvite();
   const { unblock: unblockUser, unblockPendingId } = useUnblockUser();
+  const openProfilePreview = useOpenProfilePreview();
+
+  // Bound preview-opener per source so cards can stay dumb (don't have
+  // to know what `PreviewSource` is). Each variant just calls the right
+  // string on the way through.
+  const onPressConnection = (connection: Connection) =>
+    openProfilePreview(connection, 'connection');
+  const onPressInvite = (invite: Invite) =>
+    openProfilePreview(invite, 'invite');
+  const onPressSentInvite = (invite: Invite) =>
+    openProfilePreview(invite, 'sent-invite');
+  const onPressBlockedUser = (blockedUser: BlockedUser) =>
+    openProfilePreview(blockedUser, 'blocked');
 
   // Pill state is owned at the orchestration layer so the active tab can
   // be reset alongside other welcome-flow state if/when we ever need to.
@@ -211,6 +226,10 @@ export const useBuzzTab = () => {
       onDeclineInvite: declineInvite,
       onCancelInvite: cancelInvite,
       onUnblockUser: unblockUser,
+      onPressConnection,
+      onPressInvite,
+      onPressSentInvite,
+      onPressBlockedUser,
       acceptPendingId,
       declinePendingId,
       cancelPendingId,

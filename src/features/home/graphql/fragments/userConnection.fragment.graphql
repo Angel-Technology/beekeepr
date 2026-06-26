@@ -1,8 +1,20 @@
 fragment UserConnectionFields on UserConnectionDto {
   id
   nickname
+  displayName
   handle
   imageUrl
   backgroundCheckBadge
+  backgroundCheckBadgeExpiresAtUtc
+  checkrLastCheckAtUtc
   connectionCreatedAtUtc
+  userCreatedAtUtc
+  profileVisibility
+  contactVisibility
+  phoneNumber
+  googleVoicePhone
+  whatsAppPhone
+  instagramHandle
+  telegramHandle
+  signalPhone
 }

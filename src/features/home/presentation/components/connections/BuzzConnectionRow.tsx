@@ -20,7 +20,7 @@ type BuzzConnectionRowProps = {
   className?: string;
 };
 
-const AVATAR_SIZE = 44;
+const AVATAR_SIZE = 48;
 
 const formatHandle = (handle: string) => {
   const trimmed = handle.trim();

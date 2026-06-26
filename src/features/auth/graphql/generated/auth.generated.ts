@@ -424,13 +424,23 @@ export type UpdateProfilePayload = {
 export type UserConnectionDto = {
   __typename?: 'UserConnectionDto';
   backgroundCheckBadge: BackgroundCheckBadge;
+  backgroundCheckBadgeExpiresAtUtc?: Maybe<Scalars['DateTime']['output']>;
+  checkrLastCheckAtUtc?: Maybe<Scalars['DateTime']['output']>;
   connectionCreatedAtUtc: Scalars['DateTime']['output'];
+  contactVisibility: ContactVisibility;
   displayName?: Maybe<Scalars['String']['output']>;
+  googleVoicePhone?: Maybe<Scalars['String']['output']>;
   handle?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   imageUrl?: Maybe<Scalars['String']['output']>;
+  instagramHandle?: Maybe<Scalars['String']['output']>;
   nickname?: Maybe<Scalars['String']['output']>;
+  phoneNumber?: Maybe<Scalars['String']['output']>;
+  profileVisibility: ProfileVisibility;
+  signalPhone?: Maybe<Scalars['String']['output']>;
+  telegramHandle?: Maybe<Scalars['String']['output']>;
   userCreatedAtUtc: Scalars['DateTime']['output'];
+  whatsAppPhone?: Maybe<Scalars['String']['output']>;
 };
 
 export type UserGraph = {
@@ -641,13 +651,21 @@ export type UserSearchResultDto = {
   backgroundCheckBadge: BackgroundCheckBadge;
   backgroundCheckBadgeExpiresAtUtc?: Maybe<Scalars['DateTime']['output']>;
   checkrLastCheckAtUtc?: Maybe<Scalars['DateTime']['output']>;
+  contactVisibility: ContactVisibility;
   createdAtUtc: Scalars['DateTime']['output'];
   displayName?: Maybe<Scalars['String']['output']>;
+  googleVoicePhone?: Maybe<Scalars['String']['output']>;
   handle?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   imageUrl?: Maybe<Scalars['String']['output']>;
+  instagramHandle?: Maybe<Scalars['String']['output']>;
   nickname?: Maybe<Scalars['String']['output']>;
+  phoneNumber?: Maybe<Scalars['String']['output']>;
+  profileVisibility: ProfileVisibility;
+  signalPhone?: Maybe<Scalars['String']['output']>;
+  telegramHandle?: Maybe<Scalars['String']['output']>;
   viewerFriendshipState: ViewerFriendshipState;
+  whatsAppPhone?: Maybe<Scalars['String']['output']>;
 };
 
 export type VerifyEmailSignInInput = {

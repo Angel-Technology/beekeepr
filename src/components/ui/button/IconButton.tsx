@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import clsx from 'clsx';
 import { TouchableOpacity } from 'react-native';
+import { cn } from '@src/common';
 
 type IconButtonProps = {
   icon: ReactNode;
@@ -26,7 +26,7 @@ export const IconButton = ({
       accessibilityState={{ disabled }}
       accessibilityLabel={accessibilityLabel}
       accessibilityRole="button"
-      className={clsx(
+      className={cn(
         'h-[44px] w-[44px] items-center justify-center rounded-full p-3',
         isOutline
           ? 'border border-action-neutral-border-default bg-bg-default'

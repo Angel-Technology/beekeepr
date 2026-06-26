@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useNavigation } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import { DrawerActions, useFocusEffect } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
-import { Menu } from 'lucide-react-native';
+import { Menu, UserRound } from 'lucide-react-native';
 import Animated, {
   Extrapolation,
   interpolate,
@@ -49,6 +49,7 @@ const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(
 
 export const BuzzScreen = () => {
   const navigation = useNavigation();
+  const router = useRouter();
   const insets = useSafeAreaInsets();
   const headerOffset = APP_HEADER_HEIGHT + insets.top;
   const topMaskHeight = headerOffset + 8;
@@ -203,6 +204,16 @@ export const BuzzScreen = () => {
         animatedStyle={headerAnimatedStyle}
         showTopMask
         topMaskHeight={topMaskHeight}
+        left={
+          <IconButton
+            accessibilityLabel="Open profile"
+            className="bg-tk-bg-primary border-tk-border-secondary size-[30px] rounded-round border"
+            icon={
+              <UserRound size={18} strokeWidth={2.2} color={menuIconColor} />
+            }
+            onPress={() => router.push('/profile')}
+          />
+        }
         center={
           <View className="flex-row items-start justify-center gap-1">
             <Text className="text-tk-text-primary font-poppins-semiBold text-base">

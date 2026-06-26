@@ -99,4 +99,42 @@ export const homeService = {
       throw new Error(payload.unblockUser.error);
     }
   },
+
+  /**
+   * Blocks `targetUserId`. The backend removes any friendship that
+   * existed and adds `targetUserId` to the viewer's blocked list.
+   * Throws on server error.
+   */
+  async blockUser(targetUserId: string): Promise<void> {
+    const payload = await homeRepository.blockUser({
+      input: { targetUserId },
+    });
+    if (payload.blockUser.error) {
+      throw new Error(payload.blockUser.error);
+    }
+  },
+
+  /**
+   * Flags `targetUserId` for moderation review. Throws on server error.
+   */
+  async flagUser(targetUserId: string): Promise<void> {
+    const payload = await homeRepository.flagUser({
+      input: { targetUserId },
+    });
+    if (payload.flagUser.error) {
+      throw new Error(payload.flagUser.error);
+    }
+  },
+
+  /**
+   * Removes the friendship with `otherUserId`. Throws on server error.
+   */
+  async removeFriend(otherUserId: string): Promise<void> {
+    const payload = await homeRepository.removeFriend({
+      input: { otherUserId },
+    });
+    if (payload.removeFriend.error) {
+      throw new Error(payload.removeFriend.error);
+    }
+  },
 };

@@ -9,6 +9,7 @@ type BuzzInvitesCardProps = {
   invites: readonly Invite[];
   onAccept: (otherUserId: string) => void;
   onDecline: (otherUserId: string) => void;
+  onPressInvite?: (invite: Invite) => void;
   acceptPendingId: string | null;
   declinePendingId: string | null;
 };
@@ -62,6 +63,7 @@ export const BuzzInvitesCard = ({
   invites,
   onAccept,
   onDecline,
+  onPressInvite,
   acceptPendingId,
   declinePendingId,
 }: BuzzInvitesCardProps) => {
@@ -101,6 +103,9 @@ export const BuzzInvitesCard = ({
                 nickname={invite.nickname ?? ''}
                 handle={invite.handle ?? ''}
                 imageUrl={invite.imageUrl}
+                onPress={
+                  onPressInvite ? () => onPressInvite(invite) : undefined
+                }
                 trailing={
                   <InviteRowActions
                     isAcceptPending={acceptPendingId === invite.id}

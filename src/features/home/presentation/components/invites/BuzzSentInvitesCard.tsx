@@ -8,12 +8,14 @@ import { BuzzConnectionRow } from '../connections/BuzzConnectionRow';
 type BuzzSentInvitesCardProps = {
   invites: readonly Invite[];
   onCancel: (otherUserId: string) => void;
+  onPressInvite?: (invite: Invite) => void;
   cancelPendingId: string | null;
 };
 
 export const BuzzSentInvitesCard = ({
   invites,
   onCancel,
+  onPressInvite,
   cancelPendingId,
 }: BuzzSentInvitesCardProps) => {
   // No empty state — when the user has no sent invites the whole section
@@ -35,6 +37,7 @@ export const BuzzSentInvitesCard = ({
               nickname={invite.nickname ?? ''}
               handle={invite.handle ?? ''}
               imageUrl={invite.imageUrl}
+              onPress={onPressInvite ? () => onPressInvite(invite) : undefined}
               trailing={
                 <CompactButton
                   label="Unsend"

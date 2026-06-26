@@ -30,6 +30,10 @@ type BuzzWelcomeFlowProps = {
   onDeclineInvite: (otherUserId: string) => void;
   onCancelInvite: (otherUserId: string) => void;
   onUnblockUser: (targetUserId: string) => void;
+  onPressConnection: (connection: Connection) => void;
+  onPressInvite: (invite: Invite) => void;
+  onPressSentInvite: (invite: Invite) => void;
+  onPressBlockedUser: (blockedUser: BlockedUser) => void;
   acceptPendingId: string | null;
   declinePendingId: string | null;
   cancelPendingId: string | null;
@@ -52,6 +56,10 @@ export const BuzzWelcomeFlow = ({
   onDeclineInvite,
   onCancelInvite,
   onUnblockUser,
+  onPressConnection,
+  onPressInvite,
+  onPressSentInvite,
+  onPressBlockedUser,
   acceptPendingId,
   declinePendingId,
   cancelPendingId,
@@ -72,7 +80,10 @@ export const BuzzWelcomeFlow = ({
           exiting={EXIT}
           className="w-full gap-7"
         >
-          <BuzzConnectionsCard connections={connections} />
+          <BuzzConnectionsCard
+            connections={connections}
+            onPressConnection={onPressConnection}
+          />
         </Animated.View>
       ) : (
         <Animated.View
@@ -85,17 +96,20 @@ export const BuzzWelcomeFlow = ({
             invites={invites}
             onAccept={onAcceptInvite}
             onDecline={onDeclineInvite}
+            onPressInvite={onPressInvite}
             acceptPendingId={acceptPendingId}
             declinePendingId={declinePendingId}
           />
           <BuzzSentInvitesCard
             invites={sentInvites}
             onCancel={onCancelInvite}
+            onPressInvite={onPressSentInvite}
             cancelPendingId={cancelPendingId}
           />
           <BuzzBlockedUsersCard
             blockedUsers={blockedUsers}
             onUnblock={onUnblockUser}
+            onPressBlockedUser={onPressBlockedUser}
             unblockPendingId={unblockPendingId}
           />
         </Animated.View>

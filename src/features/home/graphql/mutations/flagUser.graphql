@@ -1,0 +1,6 @@
+mutation FlagUser($input: FlagUserInput!) {
+  flagUser(input: $input) {
+    error
+    success
+  }
+}
