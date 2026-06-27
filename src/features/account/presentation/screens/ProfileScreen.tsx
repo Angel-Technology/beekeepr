@@ -5,7 +5,7 @@ import { useNavigation, useRouter } from 'expo-router';
 import { DrawerActions } from '@react-navigation/native';
 import { ChevronLeft, ChevronRight, CircleCheck } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppHeader, Divider, FormCard, IconButton, Input } from '@components';
+import { AppHeader, FormCard, IconButton, Input } from '@components';
 import { themedColors, useThemedColor } from '@common';
 import {
   ContactVisibility,
@@ -77,10 +77,10 @@ export const ProfileScreen = () => {
   const emptyIconColor = useThemedColor(themedColors.text.quaternary);
 
   const profileShared = profileVisibility === ProfileVisibility.Public;
-  const connectionsOn =
-    contactVisibility === ContactVisibility.Public ||
-    contactVisibility === ContactVisibility.ConnectionsOnly;
-  const everyoneOn = contactVisibility === ContactVisibility.Public;
+  // Connections is now the only contact-share switch — the "Everyone"
+  // public option was dropped per product and the enum value with it.
+  // Off → `Private`, on → `ConnectionsOnly`.
+  const connectionsOn = contactVisibility === ContactVisibility.ConnectionsOnly;
 
   // Nothing to share = nothing to toggle. The share-with switches need at
   // least one contact field filled in, otherwise turning them on would
@@ -100,23 +100,8 @@ export const ProfileScreen = () => {
   };
 
   const handleConnectionsChange = (next: boolean) => {
-    // Off → always PRIVATE (forces Everyone off too).
-    if (!next) {
-      setContactVisibility(ContactVisibility.Private);
-      return;
-    }
-    // On — bump to CONNECTIONS_ONLY unless Everyone is already on.
-    if (contactVisibility === ContactVisibility.Private) {
-      setContactVisibility(ContactVisibility.ConnectionsOnly);
-    }
-  };
-
-  const handleEveryoneChange = (next: boolean) => {
-    // On → PUBLIC implicitly turns Connections on too.
-    // Off → drop one rung to CONNECTIONS_ONLY, preserving the Connections
-    // switch position the user just had.
     setContactVisibility(
-      next ? ContactVisibility.Public : ContactVisibility.ConnectionsOnly,
+      next ? ContactVisibility.ConnectionsOnly : ContactVisibility.Private,
     );
   };
 
@@ -403,27 +388,23 @@ export const ProfileScreen = () => {
               <Text className="text-tk-text-secondary font-lexend-regular text-footnote uppercase leading-[18px]">
                 Privacy Settings
               </Text>
-              <View className="gap-3">
-                <PrivacyOptionRow
-                  showBadge={false}
-                  badgeLabel="connections only"
-                  title="Share with connections"
-                  description="Only share with my connections in the Buzz Badge Community."
-                  value={connectionsOn}
-                  onChange={handleConnectionsChange}
-                  disabled={!hasContactInfo}
-                />
-                <Divider />
-                <PrivacyOptionRow
-                  showBadge={false}
-                  badgeLabel="public"
-                  title="Share with everyone"
-                  description="Toggle on to share your contact information with anyone in the Buzz Badge Community."
-                  value={everyoneOn}
-                  onChange={handleEveryoneChange}
-                  disabled={!hasContactInfo}
-                />
-              </View>
+
+              <PrivacyOptionRow
+                badgeLabel={connectionsOn ? 'connections only' : 'private'}
+                title={
+                  connectionsOn
+                    ? 'Share with connections'
+                    : 'Contact info hidden'
+                }
+                description={
+                  connectionsOn
+                    ? 'Share my contact information with my connections in the Buzz Badge Community.'
+                    : 'Toggle on to share your contact information with your connections in the Buzz Badge Community.'
+                }
+                value={connectionsOn}
+                onChange={handleConnectionsChange}
+                disabled={!hasContactInfo}
+              />
             </View>
           </FormCard>
         </InfoSection>
@@ -433,6 +414,7 @@ export const ProfileScreen = () => {
         visible={avatarPickerOpen}
         onClose={() => setAvatarPickerOpen(false)}
         onSelect={handleAvatarSelected}
+        currentImageUrl={user?.imageUrl ?? null}
       />
     </View>
   );

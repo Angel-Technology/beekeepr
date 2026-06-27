@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
 import { DrawerActions, useFocusEffect } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
@@ -13,11 +13,11 @@ import Animated, {
 } from 'react-native-reanimated';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SvgUri } from 'react-native-svg';
 import {
   APP_HEADER_HEIGHT,
   AppHeader,
   BOTTOM_TAB_BAR_HEIGHT,
-  BounceLoader,
   IconButton,
 } from '@components';
 import {
@@ -27,6 +27,7 @@ import {
   useThemedColor,
 } from '@common';
 import { PromoCodeModal } from '@features/account/presentation/components/PromoCodeModal';
+import { useAuthSession } from '@features/auth';
 import { appAnimations } from '@src/assets/animations';
 import { openInAppBrowser } from '@src/lib/browser';
 import { environmentConfig } from '@src/lib/config/environment';
@@ -36,6 +37,7 @@ import {
   BuzzRenewalFlow,
   BuzzSafetyDisclaimerModal,
   BuzzScreeningDeniedCard,
+  BuzzScreenSkeleton,
   BuzzVerifyFlow,
   BuzzWelcomeFlow,
 } from '../components';
@@ -63,7 +65,11 @@ export const BuzzScreen = () => {
     renewalProps,
     welcomeProps,
     promoModalProps,
+    isRefreshing,
+    onRefresh,
   } = useBuzzTab();
+  const { data: user } = useAuthSession();
+  const profileImageUrl = user?.imageUrl ?? null;
 
   const scrollY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler({
@@ -106,12 +112,10 @@ export const BuzzScreen = () => {
         // Wait for the auth session + RevenueCat customer info to land
         // before picking a flow — otherwise we flash 'verify' or
         // 'membership' for ~500ms before snapping to 'welcome' once
-        // `isPro` resolves.
-        return (
-          <View className="flex-1 items-center justify-center py-80">
-            <BounceLoader colorClassName="bg-tk-text-primary" />
-          </View>
-        );
+        // `isPro` resolves. The skeleton mirrors the dominant-case
+        // `welcome` layout so we don't shift content as the real flow
+        // takes over.
+        return <BuzzScreenSkeleton />;
       case 'denied':
         return (
           <>
@@ -174,6 +178,14 @@ export const BuzzScreen = () => {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         bottomOffset={24}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={onRefresh}
+            tintColor={menuIconColor}
+            progressViewOffset={headerOffset}
+          />
+        }
       >
         {renderFlow()}
       </AnimatedKeyboardAwareScrollView>
@@ -207,9 +219,17 @@ export const BuzzScreen = () => {
           <View className="pl-5">
             <IconButton
               accessibilityLabel="Open profile"
-              className="bg-tk-bg-primary border-tk-border-secondary size-[30px] rounded-round border"
+              className="bg-tk-bg-primary border-tk-border-secondary size-[30px] overflow-hidden rounded-round border p-0"
               icon={
-                <UserRound size={18} strokeWidth={2.2} color={menuIconColor} />
+                profileImageUrl ? (
+                  <SvgUri uri={profileImageUrl} width={28} height={28} />
+                ) : (
+                  <UserRound
+                    size={18}
+                    strokeWidth={2.2}
+                    color={menuIconColor}
+                  />
+                )
               }
               onPress={() => router.push('/profile')}
             />

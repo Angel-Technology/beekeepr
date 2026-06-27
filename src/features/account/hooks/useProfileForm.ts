@@ -204,17 +204,12 @@ export const useProfileForm = (user: AuthUser | null) => {
   );
 
   /**
-   * Source of truth for the two contact-sharing switches. The Figma's two
-   * toggles ("Share with connections" / "Share with everyone") map onto a
-   * single 3-state enum on the backend:
+   * Source of truth for the contact-sharing switch. The "Share with
+   * everyone" / `PUBLIC` rung was dropped — both from the UI and from
+   * the backend's `ContactVisibility` enum — so the only writes are:
    *
-   *   PRIVATE          → both off
-   *   CONNECTIONS_ONLY → connections on, everyone off
-   *   PUBLIC           → both on (turning Everyone on implicitly turns
-   *                      Connections on; turning Connections off forces
-   *                      Everyone off)
-   *
-   * The auto-link rule is enforced here so screens don't have to repeat it.
+   *   PRIVATE          → toggle off
+   *   CONNECTIONS_ONLY → toggle on
    */
   const setContactVisibility = useCallback(
     (next: ContactVisibility) => {

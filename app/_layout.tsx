@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   KeyboardProvider,
@@ -115,8 +116,10 @@ function RootLayout() {
               <RevenueCatProvider>
                 <ErrorModalProvider>
                   <GlobalLoaderProvider>
-                    <RootNavigator />
-                    <GlobalLoaderOverlay />
+                    <BottomSheetModalProvider>
+                      <RootNavigator />
+                      <GlobalLoaderOverlay />
+                    </BottomSheetModalProvider>
                   </GlobalLoaderProvider>
                 </ErrorModalProvider>
               </RevenueCatProvider>

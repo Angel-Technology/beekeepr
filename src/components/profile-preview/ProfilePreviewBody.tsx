@@ -204,8 +204,7 @@ export const ProfilePreviewBody = ({
   }
 
   const contactSharingOn =
-    user.contactVisibility === ContactVisibility.ConnectionsOnly ||
-    user.contactVisibility === ContactVisibility.Public;
+    user.contactVisibility === ContactVisibility.ConnectionsOnly;
   const showContactCard = contactSharingOn && contactRows.length > 0;
 
   return (

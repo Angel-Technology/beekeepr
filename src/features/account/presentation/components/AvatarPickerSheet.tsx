@@ -69,6 +69,12 @@ type AvatarPickerSheetProps = {
    * it (typically via `useProfileForm.setImageUrl`) and closes the sheet.
    */
   onSelect: (avatarUrl: string) => void;
+  /**
+   * The signed-in user's current avatar URL. Surfaces as the preview
+   * image until they tap a tile, so the sheet opens with their existing
+   * avatar rather than a blank placeholder.
+   */
+  currentImageUrl?: string | null;
 };
 
 /**
@@ -89,6 +95,7 @@ export const AvatarPickerSheet = ({
   visible,
   onClose,
   onSelect,
+  currentImageUrl,
 }: AvatarPickerSheetProps) => {
   const insets = useSafeAreaInsets();
   const placeholderIconColor = useThemedColor(themedColors.text.tertiary);
@@ -113,25 +120,39 @@ export const AvatarPickerSheet = ({
     onSelect(buildAvatarUrl(style, selectedSeed));
   };
 
+  // Clear the in-flight selection whenever the sheet dismisses so the
+  // next open shows the user's actual avatar in the preview slot,
+  // not the seed they tapped-and-walked-away-from. Wrapping the
+  // caller's `onClose` covers every dismiss path (X tap, swipe-down,
+  // backdrop tap, post-save).
+  const handleClose = () => {
+    setSelectedSeed(null);
+    onClose();
+  };
+
   const avatarUrls = useMemo(
     () => seeds.map((seed) => ({ seed, url: buildAvatarUrl(style, seed) })),
     [seeds, style],
   );
 
-  const previewUrl = selectedSeed ? buildAvatarUrl(style, selectedSeed) : null;
+  // Preview priority: the seed the user just tapped → their existing
+  // profile avatar → `UserRound` placeholder. The middle step matters
+  // most on open: the sheet should feel like an edit, not a reset.
+  const previewUrl = selectedSeed
+    ? buildAvatarUrl(style, selectedSeed)
+    : currentImageUrl && currentImageUrl.length > 0
+      ? currentImageUrl
+      : null;
 
   return (
     <BaseBottomSheet
       visible={visible}
-      onClose={onClose}
+      onClose={handleClose}
       title="Choose Avatar"
       snapPoints={['90%']}
     >
-      <View className="flex-1 gap-4 px-6 pt-2">
-        {/* Big preview of the currently-selected avatar. Empty state
-            shows a neutral placeholder so the slot doesn't collapse
-            before the user taps. */}
-        <View className="items-center">
+      <View className="flex-1 gap-6 pt-2">
+        <View className="items-center px-6">
           <View
             className="bg-tk-bg-elevated-secondary items-center justify-center overflow-hidden rounded-round"
             style={{ width: PREVIEW_SIZE, height: PREVIEW_SIZE }}
@@ -148,12 +169,10 @@ export const AvatarPickerSheet = ({
           </View>
         </View>
 
-        {/* Style strip. Horizontal so the expanded list scrolls rather
-            than overflows on the narrowest device. */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 8 }}
+          contentContainerStyle={{ gap: 8, paddingHorizontal: 24 }}
         >
           {STYLES.map((s) => {
             const isActive = s.id === style;
@@ -185,12 +204,9 @@ export const AvatarPickerSheet = ({
           })}
         </ScrollView>
 
-        {/* Avatar grid — `BottomSheetScrollView` so vertical drag
-            inside the grid still bubbles to the sheet handle for
-            swipe-to-close. */}
         <BottomSheetScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={{ paddingBottom: 8 }}
+          contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 8 }}
           showsVerticalScrollIndicator={false}
         >
           <View className="flex-row flex-wrap justify-between gap-y-3">

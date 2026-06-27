@@ -1,10 +1,6 @@
 import { View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import type {
-  BlockedUser,
-  Connection,
-  Invite,
-} from '../../models/home.types';
+import type { BlockedUser, Connection, Invite } from '../../models/home.types';
 import {
   BuzzConnectionPill,
   BuzzConnectionsCard,

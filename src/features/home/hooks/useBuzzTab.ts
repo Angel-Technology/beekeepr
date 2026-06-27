@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useRedeemPromoCode } from '@features/account/hooks/useRedeemPromoCode';
-import { BackgroundCheckBadge, useAuthSession } from '@features/auth';
+import { authQueryKeys, BackgroundCheckBadge, useAuthSession } from '@features/auth';
 import {
   hasResumableVerification,
   isVerificationDenied,
@@ -10,6 +11,7 @@ import { useTrialPurchase } from '@features/verification/hooks/useTrialPurchase'
 import { useRevenueCat } from '@src/lib/revenuecat';
 import type { ConnectionTab } from '../presentation/components/connections';
 import type { BuzzFlow } from '../models/buzzFlow.types';
+import { homeQueryKeys } from '../models/homeQueryKeys';
 import type { BlockedUser, Connection, Invite } from '../models/home.types';
 import { useBlockedUsers } from './useBlockedUsers';
 import { useCancelInvite } from './useCancelInvite';
@@ -57,6 +59,7 @@ const formatLongDate = (value: Date) =>
  */
 export const useBuzzTab = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: user, isPending: isUserPending } = useAuthSession();
   const {
     isReady: isRevenueCatReady,
@@ -96,6 +99,33 @@ export const useBuzzTab = () => {
   // be reset alongside other welcome-flow state if/when we ever need to.
   const [activeConnectionTab, setActiveConnectionTab] =
     useState<ConnectionTab>('connections');
+
+  // Pull-to-refresh on the Buzz tab. Invalidates every cache the screen
+  // reads off so the badge crest, connections, both invite directions,
+  // and the blocked list all round-trip. Returns a Promise that
+  // resolves when every refetch lands so `RefreshControl` can drop the
+  // spinner at the right moment.
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const onRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: authQueryKeys.session() }),
+        queryClient.invalidateQueries({ queryKey: homeQueryKeys.connections() }),
+        queryClient.invalidateQueries({
+          queryKey: homeQueryKeys.incomingInvites(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: homeQueryKeys.outgoingInvites(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: homeQueryKeys.blockedUsers(),
+        }),
+      ]);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [queryClient]);
 
   // Promo-code modal is shared by membership + renewal CTAs. The flow on
   // success: hook refreshes RC → `isPro` flips → flow derivation drops
@@ -184,6 +214,8 @@ export const useBuzzTab = () => {
     ctaLabel,
     onGetStarted,
     onLearnMore,
+    isRefreshing,
+    onRefresh,
     membershipProps: {
       isPurchasing,
       reminderLabel: `In ${TRIAL_LENGTH_DAYS - REMINDER_LEAD_DAYS} days`,

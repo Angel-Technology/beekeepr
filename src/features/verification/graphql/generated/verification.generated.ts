@@ -85,8 +85,7 @@ export type CancelFriendRequestPayload = {
 
 export enum ContactVisibility {
   ConnectionsOnly = 'CONNECTIONS_ONLY',
-  Private = 'PRIVATE',
-  Public = 'PUBLIC'
+  Private = 'PRIVATE'
 }
 
 export type CreateUserInput = {
