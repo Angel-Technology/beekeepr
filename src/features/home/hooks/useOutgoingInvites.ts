@@ -6,5 +6,6 @@ export const useOutgoingInvites = () => {
   return useQuery({
     queryKey: homeQueryKeys.outgoingInvites(),
     queryFn: () => homeService.listOutgoingInvites(),
+    refetchOnWindowFocus: true,
   });
 };

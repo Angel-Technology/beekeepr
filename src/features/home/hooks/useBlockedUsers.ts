@@ -6,5 +6,6 @@ export const useBlockedUsers = () => {
   return useQuery({
     queryKey: homeQueryKeys.blockedUsers(),
     queryFn: () => homeService.listBlockedUsers(),
+    refetchOnWindowFocus: true,
   });
 };
