@@ -20,10 +20,19 @@ const useDebouncedValue = <T>(value: T, delay: number): T => {
  * empty list with no network hop. `isLoading` is gated on `enabled` so
  * callers can render an empty pane (not a spinner) before anything is
  * typed.
+ *
+ * The "still debouncing" frame is folded into `isLoading` too, because
+ * otherwise the moment the user types the third character we have:
+ * `trimmedQuery.length >= MIN`, `debouncedQuery.length < MIN`, query
+ * `enabled` false, `result.isFetching` false → `results = []` → callers
+ * flash "No members found" for ~250ms before the fetch even kicks off.
  */
 export const useSearchUsers = (query: string) => {
-  const debouncedQuery = useDebouncedValue(query.trim(), DEBOUNCE_MS);
+  const trimmedQuery = query.trim();
+  const debouncedQuery = useDebouncedValue(trimmedQuery, DEBOUNCE_MS);
+  const meetsMinLength = trimmedQuery.length >= MIN_QUERY_LENGTH;
   const enabled = debouncedQuery.length >= MIN_QUERY_LENGTH;
+  const isDebouncing = trimmedQuery !== debouncedQuery;
   const result = useQuery({
     queryKey: searchQueryKeys.users(debouncedQuery),
     queryFn: () => searchService.searchUsers(debouncedQuery),
@@ -31,7 +40,9 @@ export const useSearchUsers = (query: string) => {
   });
   return {
     results: result.data ?? [],
-    isLoading: enabled && result.isFetching && result.data === undefined,
+    isLoading:
+      (meetsMinLength && isDebouncing) ||
+      (enabled && result.isFetching && result.data === undefined),
     debouncedQuery,
   };
 };

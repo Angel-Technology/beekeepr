@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 import { MIN_QUERY_LENGTH } from '../../models/searchConstants';
 import type { SearchResultUser } from '../../models/search.types';
 import { SearchResultRow } from './SearchResultRow';
+import { SearchResultsSkeleton } from './SearchResultsSkeleton';
 
 type SearchResultsListProps = {
   query: string;
@@ -28,13 +29,14 @@ export const SearchResultsList = ({
   if (query.trim().length < MIN_QUERY_LENGTH) {
     return null;
   }
+
   if (isLoading) {
-    return null;
+    return <SearchResultsSkeleton />;
   }
   if (results.length === 0) {
     return (
       <View className="px-1">
-        <Text className="font-lexend-regular text-footnote text-tk-text-secondary">
+        <Text className="text-tk-text-secondary font-lexend-regular text-footnote">
           No members found.
         </Text>
       </View>
@@ -45,7 +47,7 @@ export const SearchResultsList = ({
       {results.map((user, index) => (
         <Fragment key={user.id}>
           {index > 0 ? (
-            <View className="h-px w-full bg-tk-border-secondary" />
+            <View className="bg-tk-border-secondary h-px w-full" />
           ) : null}
           <SearchResultRow
             user={user}

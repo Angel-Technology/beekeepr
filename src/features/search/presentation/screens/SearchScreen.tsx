@@ -18,6 +18,7 @@ import { BuzzScreeningDeniedCard } from '@features/home/presentation/components'
 import { themedColors, useThemedColor } from '@common';
 import { useSearchTab, type SearchGateState } from '../../hooks/useSearchTab';
 import { SearchResultsList } from '../components/SearchResultsList';
+import { SearchScreenSkeleton } from '../components/SearchScreenSkeleton';
 
 const GATE_COPY: Record<Exclude<SearchGateState, null>, string> = {
   profile:
@@ -37,6 +38,7 @@ export const SearchScreen = () => {
   const placeholderColor = useThemedColor(themedColors.text.tertiary);
   const [query, setQuery] = useState('');
   const {
+    isResolving,
     isDenied,
     gateState,
     isSearchDisabled,
@@ -79,57 +81,65 @@ export const SearchScreen = () => {
           gap: 24,
         }}
       >
-        {isDenied ? (
-          <BuzzScreeningDeniedCard onAppealDecision={onAppealDecision} />
-        ) : null}
-        <InfoSection title="BUZZ BADGE COMMUNITY">
-          <FormCard>
-            <Input
-              label="Search members"
-              placeholder="@handle123, Nickname 123"
-              value={query}
-              onChangeText={setQuery}
-              disabled={isSearchDisabled}
-              autoCapitalize="none"
-              autoCorrect={false}
-              leftAccessory={<SearchIcon size={20} color={placeholderColor} />}
-              rightAccessory={
-                !isSearchDisabled && query.length > 0 ? (
-                  <TouchableOpacity
-                    accessibilityLabel="Clear search"
-                    onPress={() => setQuery('')}
-                    hitSlop={8}
-                  >
-                    <X size={20} color={iconColor} />
-                  </TouchableOpacity>
-                ) : undefined
-              }
-            />
-            {gateState ? (
-              <>
-                <Text
-                  className="text-tk-text-secondary font-lexend-regular text-base leading-6"
-                  style={{ letterSpacing: -0.3 }}
-                >
-                  {GATE_COPY[gateState]}
-                </Text>
-                <CompactButton
-                  label={GATE_CTA[gateState]}
-                  onPress={onGatePress}
-                />
-              </>
+        {isResolving ? (
+          <SearchScreenSkeleton />
+        ) : (
+          <>
+            {isDenied ? (
+              <BuzzScreeningDeniedCard onAppealDecision={onAppealDecision} />
             ) : null}
-          </FormCard>
-        </InfoSection>
-        {isSearchDisabled ? null : (
-          <SearchResultsList
-            query={query}
-            results={results}
-            isLoading={isLoading}
-            cancelPendingId={cancelPendingId}
-            onPressUser={onPressUser}
-            onUnsendInvite={onUnsendInvite}
-          />
+            <InfoSection title="BUZZ BADGE COMMUNITY">
+              <FormCard>
+                <Input
+                  label="Search members"
+                  placeholder="@handle123, Nickname 123"
+                  value={query}
+                  onChangeText={setQuery}
+                  disabled={isSearchDisabled}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  leftAccessory={
+                    <SearchIcon size={20} color={placeholderColor} />
+                  }
+                  rightAccessory={
+                    !isSearchDisabled && query.length > 0 ? (
+                      <TouchableOpacity
+                        accessibilityLabel="Clear search"
+                        onPress={() => setQuery('')}
+                        hitSlop={8}
+                      >
+                        <X size={20} color={iconColor} />
+                      </TouchableOpacity>
+                    ) : undefined
+                  }
+                />
+                {gateState ? (
+                  <>
+                    <Text
+                      className="text-tk-text-secondary font-lexend-regular text-base leading-6"
+                      style={{ letterSpacing: -0.3 }}
+                    >
+                      {GATE_COPY[gateState]}
+                    </Text>
+                    <CompactButton
+                      label={GATE_CTA[gateState]}
+                      onPress={onGatePress}
+                    />
+                  </>
+                ) : null}
+              </FormCard>
+            </InfoSection>
+            {isSearchDisabled ? null : (
+              <SearchResultsList
+                query={query}
+                results={results}
+                isLoading={isLoading}
+                cancelPendingId={cancelPendingId}
+                onPressUser={onPressUser}
+                onUnsendInvite={onUnsendInvite}
+              />
+            )}
+          </>
         )}
       </ScrollView>
     </View>

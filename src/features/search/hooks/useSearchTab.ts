@@ -46,10 +46,17 @@ const toPreviewUser = (user: SearchResultUser): ProfilePreviewUser => ({
  */
 export const useSearchTab = (query: string) => {
   const router = useRouter();
-  const { data: user } = useAuthSession();
-  const { isPro } = useRevenueCat();
+  const { data: user, isPending: isUserPending } = useAuthSession();
+  const { isReady: isRevenueCatReady, isPro } = useRevenueCat();
   const openPreview = useOpenProfilePreview();
   const { cancel: cancelInvite, cancelPendingId } = useCancelInvite();
+
+  // Until BOTH the auth session and RevenueCat customer info land,
+  // `isPro` and the badge state are stale defaults — `gateState` would
+  // briefly point at 'member' even for paying users, flashing a
+  // "Become a member" CTA before snapping back. Mirror the
+  // `useBuzzTab` resolve flag and let callers render a skeleton.
+  const isResolving = isUserPending || !isRevenueCatReady;
 
   const isDenied = isVerificationDenied(user);
   // Heuristic until a dedicated `isProfileComplete` lands: a member has a
@@ -90,6 +97,7 @@ export const useSearchTab = (query: string) => {
   };
 
   return {
+    isResolving,
     isDenied,
     gateState,
     isSearchDisabled,
