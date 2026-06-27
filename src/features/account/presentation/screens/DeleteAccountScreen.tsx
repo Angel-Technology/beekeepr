@@ -52,7 +52,7 @@ export const DeleteAccountScreen = () => {
     try {
       await openManageSubscription();
     } catch (error) {
-      showFromError(error, 'Unable to open subscription settings');
+      showFromError(error, "Couldn't open settings");
     }
   };
 

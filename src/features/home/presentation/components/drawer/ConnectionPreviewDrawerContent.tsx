@@ -3,7 +3,6 @@ import { View } from 'react-native';
 import type { DrawerContentComponentProps } from '@react-navigation/drawer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
-  Check,
   ChevronLeft,
   EllipsisVertical,
   Send,
@@ -13,6 +12,7 @@ import {
 import {
   AppHeader,
   CompactButton,
+  ConfirmDestructiveModal,
   IconButton,
   ProfilePreviewBody,
   type ProfilePreviewUser,
@@ -37,6 +37,32 @@ type ConnectionPreviewDrawerContentProps = DrawerContentComponentProps & {
   friendshipState: PreviewFriendshipState | null;
 };
 
+type ConfirmKind = 'block' | 'flag' | 'remove';
+
+const CONFIRM_COPY: Record<
+  ConfirmKind,
+  { title: string; description: string; confirmLabel: string }
+> = {
+  block: {
+    title: 'Block user?',
+    description:
+      "They won't be able to send invites or see your profile. You can unblock them from your settings later.",
+    confirmLabel: 'Block',
+  },
+  flag: {
+    title: 'Flag user?',
+    description:
+      "Our team will review their account. We won't share that you flagged them.",
+    confirmLabel: 'Flag',
+  },
+  remove: {
+    title: 'Remove connections?',
+    description:
+      "They'll lose access to your shared contact info. You can re-invite them later.",
+    confirmLabel: 'Remove',
+  },
+};
+
 /**
  * Right-side drawer content rendered when a card row is tapped. Body is
  * the shared `ProfilePreviewBody`; the header actions vary by source:
@@ -49,9 +75,11 @@ type ConnectionPreviewDrawerContentProps = DrawerContentComponentProps & {
  *   Flag still in the kebab so the affordance set matches every other
  *   source rather than gaining a one-off inline pair.
  *
- * The kebab dropdown (Block / Flag) is available on every source. Each
- * action dismisses the drawer once the mutation kicks off — the
- * invalidation in the hook drops the row from the underlying list.
+ * The kebab dropdown (Block / Flag) is available on every source. The
+ * destructive trio (Block / Flag / Remove) routes through a single
+ * `ConfirmDestructiveModal` instead of firing immediately — copy swaps
+ * based on which action was tapped. Reversible actions (Decline,
+ * Unsend, Unblock, Invite, Approve) still fire-and-close like before.
  */
 export const ConnectionPreviewDrawerContent = ({
   navigation,
@@ -79,6 +107,13 @@ export const ConnectionPreviewDrawerContent = ({
   const { block: blockUser } = useBlockUser();
   const { flag: flagUser } = useFlagUser();
 
+  // Single piece of "which destructive action is pending confirmation"
+  // state. `null` while the modal is hidden; switches the modal copy
+  // and the action that fires on confirm.
+  const [pendingConfirm, setPendingConfirm] = useState<ConfirmKind | null>(
+    null,
+  );
+
   const closeDrawer = () => navigation.closeDrawer();
 
   const runAndClose = (action: (id: string) => void) => () => {
@@ -86,9 +121,31 @@ export const ConnectionPreviewDrawerContent = ({
     closeDrawer();
   };
 
+  // Open the confirm modal rather than firing immediately. Also close
+  // the kebab dropdown if that's where the user came from.
+  const requestConfirm = (kind: ConfirmKind) => () => {
+    setIsActionsMenuOpen(false);
+    setPendingConfirm(kind);
+  };
+
+  const handleConfirm = () => {
+    if (pendingConfirm === null) {
+      return;
+    }
+    const action =
+      pendingConfirm === 'block'
+        ? blockUser
+        : pendingConfirm === 'flag'
+          ? flagUser
+          : removeFriend;
+    action(user.id);
+    setPendingConfirm(null);
+    closeDrawer();
+  };
+
   return (
     <View
-      className="flex-1 bg-tk-bg-primary"
+      className="bg-tk-bg-primary flex-1"
       // Outer capture: when the menu is open, ANY touch start anywhere
       // in the drawer closes it. Returning `false` releases the
       // responder so the underlying element (kebab, menu item, scroll,
@@ -124,7 +181,7 @@ export const ConnectionPreviewDrawerContent = ({
               friendshipState={friendshipState}
               iconColor={iconColor}
               onActionIconColor={onActionIconColor}
-              onRemove={runAndClose(removeFriend)}
+              onRemove={requestConfirm('remove')}
               onAccept={runAndClose(acceptInvite)}
               onDecline={runAndClose(declineInvite)}
               onUnsend={runAndClose(cancelInvite)}
@@ -167,8 +224,21 @@ export const ConnectionPreviewDrawerContent = ({
 
       <ProfileActionsMenu
         visible={isActionsMenuOpen}
-        onBlock={runAndClose(blockUser)}
-        onFlag={runAndClose(flagUser)}
+        onBlock={requestConfirm('block')}
+        onFlag={requestConfirm('flag')}
+      />
+
+      <ConfirmDestructiveModal
+        visible={pendingConfirm !== null}
+        title={pendingConfirm ? CONFIRM_COPY[pendingConfirm].title : ''}
+        description={
+          pendingConfirm ? CONFIRM_COPY[pendingConfirm].description : ''
+        }
+        confirmLabel={
+          pendingConfirm ? CONFIRM_COPY[pendingConfirm].confirmLabel : ''
+        }
+        onConfirm={handleConfirm}
+        onCancel={() => setPendingConfirm(null)}
       />
     </View>
   );
@@ -235,7 +305,6 @@ const SourceActions = ({
         <CompactButton
           label="Unblock"
           variant="outline"
-          iconLeft={<Check size={16} strokeWidth={2.2} color={iconColor} />}
           onPress={onUnblock}
           className="min-h-0 self-auto px-3 py-2"
           textClassName="text-sm"
@@ -253,7 +322,7 @@ const SourceActions = ({
         />
       ) : (
         <CompactButton
-          label="Invite"
+          label="Send Invite"
           variant="solid"
           iconLeft={
             <Send size={16} strokeWidth={2.2} color={onActionIconColor} />
