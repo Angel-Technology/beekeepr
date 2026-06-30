@@ -10,6 +10,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { colorScheme } from 'nativewind';
 import { themedColors, useThemedColor } from '@common';
 import { useAuthSession } from '@features/auth';
+import { PushNotificationsProvider } from '@src/lib/push-notifications';
 
 import '../global.css';
 import { useEffect, type ComponentType } from 'react';
@@ -117,7 +118,13 @@ function RootLayout() {
                 <ErrorModalProvider>
                   <GlobalLoaderProvider>
                     <BottomSheetModalProvider>
-                      <RootNavigator />
+                      {/* Push provider sits inside the auth-aware
+                          tree (so `useAuthSession` inside it lights
+                          up) and above the navigator (so any
+                          tap-to-route can drive navigation). */}
+                      <PushNotificationsProvider>
+                        <RootNavigator />
+                      </PushNotificationsProvider>
                       <GlobalLoaderOverlay />
                     </BottomSheetModalProvider>
                   </GlobalLoaderProvider>

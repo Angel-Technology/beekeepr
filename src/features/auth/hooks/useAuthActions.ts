@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { isAppleSignInCancelled } from '@src/lib/auth/apple';
 import { isGoogleSignInCancelled } from '@src/lib/auth/google';
 import { useErrorModal } from '@src/lib/error-modal';
+import { unregisterPushToken } from '@src/lib/push-notifications';
 import { authQueryKeys } from '../models/authQueryKeys';
 import { authService } from '../services/authService';
 
@@ -53,7 +54,15 @@ export const useAuthActions = () => {
   });
 
   const signOut = useMutation({
-    mutationFn: authService.signOut,
+    // Drop the push token BEFORE the backend sign-out clears the auth
+    // session. The unregister mutation needs the auth token, and
+    // `authService.signOut` wipes it via `tokenStorage.clearToken()`
+    // in step 2 of its sequence. Best-effort — failure is swallowed
+    // inside `unregisterPushToken`, so sign-out always proceeds.
+    mutationFn: async () => {
+      await unregisterPushToken();
+      return authService.signOut();
+    },
     onSuccess: () => {
       queryClient.setQueryData(authQueryKeys.session(), null);
     },

@@ -236,6 +236,11 @@ export enum ProfileVisibility {
   Public = 'PUBLIC'
 }
 
+export enum PushPlatform {
+  Android = 'ANDROID',
+  IOs = 'I_OS'
+}
+
 export type RedeemPromoCodeInput = {
   code: Scalars['String']['input'];
 };
@@ -244,6 +249,17 @@ export type RedeemPromoCodePayload = {
   __typename?: 'RedeemPromoCodePayload';
   error?: Maybe<Scalars['String']['output']>;
   subscription?: Maybe<SubscriptionDto>;
+};
+
+export type RegisterPushTokenInput = {
+  platform: PushPlatform;
+  token: Scalars['String']['input'];
+};
+
+export type RegisterPushTokenPayload = {
+  __typename?: 'RegisterPushTokenPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type RemoveFriendInput = {
@@ -399,6 +415,16 @@ export type UnblockUserPayload = {
   success: Scalars['Boolean']['output'];
 };
 
+export type UnregisterPushTokenInput = {
+  token: Scalars['String']['input'];
+};
+
+export type UnregisterPushTokenPayload = {
+  __typename?: 'UnregisterPushTokenPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type UpdateProfileInput = {
   contactVisibility?: InputMaybe<ContactVisibility>;
   displayName?: InputMaybe<Scalars['String']['input']>;
@@ -488,6 +514,7 @@ export type UserMutations = {
   declineFriendRequest: DeclineFriendRequestPayload;
   flagUser: FlagUserPayload;
   redeemPromoCode: RedeemPromoCodePayload;
+  registerPushToken: RegisterPushTokenPayload;
   removeFriend: RemoveFriendPayload;
   requestAccountDeletion: RequestAccountDeletionPayload;
   requestEmailSignIn: RequestEmailSignInPayload;
@@ -498,6 +525,7 @@ export type UserMutations = {
   startInstantCriminalCheck: StartInstantCriminalCheckPayload;
   startPersonaInquiry: StartPersonaInquiryPayload;
   unblockUser: UnblockUserPayload;
+  unregisterPushToken: UnregisterPushTokenPayload;
   updateProfile: UpdateProfilePayload;
   verifyEmailSignIn: VerifyEmailSignInPayload;
 };
@@ -538,6 +566,11 @@ export type UserMutationsRedeemPromoCodeArgs = {
 };
 
 
+export type UserMutationsRegisterPushTokenArgs = {
+  input: RegisterPushTokenInput;
+};
+
+
 export type UserMutationsRemoveFriendArgs = {
   input: RemoveFriendInput;
 };
@@ -570,6 +603,11 @@ export type UserMutationsStartInstantCriminalCheckArgs = {
 
 export type UserMutationsUnblockUserArgs = {
   input: UnblockUserInput;
+};
+
+
+export type UserMutationsUnregisterPushTokenArgs = {
+  input: UnregisterPushTokenInput;
 };
 
 
@@ -700,10 +738,24 @@ export type RedeemPromoCodeMutationVariables = Exact<{
 
 export type RedeemPromoCodeMutation = { __typename?: 'UserMutations', redeemPromoCode: { __typename?: 'RedeemPromoCodePayload', error?: string | null } };
 
+export type RegisterPushTokenMutationVariables = Exact<{
+  input: RegisterPushTokenInput;
+}>;
+
+
+export type RegisterPushTokenMutation = { __typename?: 'UserMutations', registerPushToken: { __typename?: 'RegisterPushTokenPayload', error?: string | null, success: boolean } };
+
 export type RequestAccountDeletionMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type RequestAccountDeletionMutation = { __typename?: 'UserMutations', requestAccountDeletion: { __typename?: 'RequestAccountDeletionPayload', error?: string | null, user?: { __typename?: 'UserGraph', id: string, deletedAtUtc?: string | null } | null } };
+
+export type UnregisterPushTokenMutationVariables = Exact<{
+  input: UnregisterPushTokenInput;
+}>;
+
+
+export type UnregisterPushTokenMutation = { __typename?: 'UserMutations', unregisterPushToken: { __typename?: 'UnregisterPushTokenPayload', error?: string | null, success: boolean } };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: UpdateProfileInput;
@@ -722,6 +774,8 @@ export type CheckHandleAvailabilityQuery = { __typename?: 'UserQueries', checkHa
 export const ProfileFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProfileFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"phoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"googleVoicePhone"}},{"kind":"Field","name":{"kind":"Name","value":"whatsAppPhone"}},{"kind":"Field","name":{"kind":"Name","value":"instagramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"telegramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"signalPhone"}},{"kind":"Field","name":{"kind":"Name","value":"profileVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"contactVisibility"}}]}}]} as unknown as DocumentNode<ProfileFieldsFragment, unknown>;
 export const CancelAccountDeletionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CancelAccountDeletion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cancelAccountDeletion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"deletedAtUtc"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<CancelAccountDeletionMutation, CancelAccountDeletionMutationVariables>;
 export const RedeemPromoCodeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RedeemPromoCode"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RedeemPromoCodeInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"redeemPromoCode"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<RedeemPromoCodeMutation, RedeemPromoCodeMutationVariables>;
+export const RegisterPushTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RegisterPushToken"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RegisterPushTokenInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"registerPushToken"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"success"}}]}}]}}]} as unknown as DocumentNode<RegisterPushTokenMutation, RegisterPushTokenMutationVariables>;
 export const RequestAccountDeletionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RequestAccountDeletion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"requestAccountDeletion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"deletedAtUtc"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<RequestAccountDeletionMutation, RequestAccountDeletionMutationVariables>;
+export const UnregisterPushTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UnregisterPushToken"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UnregisterPushTokenInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unregisterPushToken"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"success"}}]}}]}}]} as unknown as DocumentNode<UnregisterPushTokenMutation, UnregisterPushTokenMutationVariables>;
 export const UpdateProfileDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateProfile"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateProfileInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateProfile"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProfileFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProfileFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"phoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"googleVoicePhone"}},{"kind":"Field","name":{"kind":"Name","value":"whatsAppPhone"}},{"kind":"Field","name":{"kind":"Name","value":"instagramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"telegramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"signalPhone"}},{"kind":"Field","name":{"kind":"Name","value":"profileVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"contactVisibility"}}]}}]} as unknown as DocumentNode<UpdateProfileMutation, UpdateProfileMutationVariables>;
 export const CheckHandleAvailabilityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CheckHandleAvailability"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"handle"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"checkHandleAvailability"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"handle"},"value":{"kind":"Variable","name":{"kind":"Name","value":"handle"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"available"}},{"kind":"Field","name":{"kind":"Name","value":"reason"}}]}}]}}]} as unknown as DocumentNode<CheckHandleAvailabilityQuery, CheckHandleAvailabilityQueryVariables>;

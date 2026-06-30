@@ -1,0 +1,6 @@
+mutation UnregisterPushToken($input: UnregisterPushTokenInput!) {
+  unregisterPushToken(input: $input) {
+    error
+    success
+  }
+}

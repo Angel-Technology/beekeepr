@@ -3,7 +3,9 @@ import {
   CancelAccountDeletionDocument,
   CheckHandleAvailabilityDocument,
   RedeemPromoCodeDocument,
+  RegisterPushTokenDocument,
   RequestAccountDeletionDocument,
+  UnregisterPushTokenDocument,
   UpdateProfileDocument,
   type CancelAccountDeletionMutation,
   type CancelAccountDeletionMutationVariables,
@@ -11,8 +13,12 @@ import {
   type CheckHandleAvailabilityQueryVariables,
   type RedeemPromoCodeMutation,
   type RedeemPromoCodeMutationVariables,
+  type RegisterPushTokenMutation,
+  type RegisterPushTokenMutationVariables,
   type RequestAccountDeletionMutation,
   type RequestAccountDeletionMutationVariables,
+  type UnregisterPushTokenMutation,
+  type UnregisterPushTokenMutationVariables,
   type UpdateProfileMutation,
   type UpdateProfileMutationVariables,
 } from '../graphql/generated/account.generated';
@@ -59,6 +65,24 @@ export const accountRepository = {
       CheckHandleAvailabilityQueryVariables
     >({
       document: CheckHandleAvailabilityDocument,
+      variables,
+    });
+  },
+  registerPushToken(variables: RegisterPushTokenMutationVariables) {
+    return executeGraphQL<
+      RegisterPushTokenMutation,
+      RegisterPushTokenMutationVariables
+    >({
+      document: RegisterPushTokenDocument,
+      variables,
+    });
+  },
+  unregisterPushToken(variables: UnregisterPushTokenMutationVariables) {
+    return executeGraphQL<
+      UnregisterPushTokenMutation,
+      UnregisterPushTokenMutationVariables
+    >({
+      document: UnregisterPushTokenDocument,
       variables,
     });
   },

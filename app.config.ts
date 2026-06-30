@@ -47,12 +47,20 @@ const ciVersionCode = Number.parseInt(
 const androidVersionCode =
   Number.isFinite(ciVersionCode) && ciVersionCode > 0 ? ciVersionCode : 1;
 
+// EAS project ID. `eas init` can't write this back into a dynamic
+// config (function-export `app.config.ts`), so we own it here. Sync
+// with the project's `eas init`/dashboard if it ever changes.
+const EAS_PROJECT_ID = '0cba096a-e51e-4ae3-89e8-1c29bacbed90';
+
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
 
     name: APP.name,
     slug: APP.slug,
+    // EAS account that owns the project (`eas init` writes this; we
+    // own it here because the dynamic config can't be auto-mutated).
+    owner: 'wemsamuel',
     version: config.version ?? '0.0.1',
     orientation: 'portrait',
     scheme: APP.scheme,
@@ -60,6 +68,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 
     // Fallback icon (Expo requires this; use your preferred default)
     icon: APP.icon,
+
+    extra: {
+      ...config.extra,
+      eas: {
+        ...(config.extra?.eas ?? {}),
+        projectId: EAS_PROJECT_ID,
+      },
+    },
 
     ios: {
       ...config.ios,
@@ -83,6 +99,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             CFBundleURLSchemes: [APP.scheme],
           },
         ],
+        // Lets the OS wake the app for silent / background pushes
+        // (e.g. invalidating a TanStack cache from a `data-only`
+        // notification). Without this, only foreground / tap delivery
+        // works.
+        UIBackgroundModes: ['remote-notification'],
         NSCameraUsageDescription:
           "Buzzkeepr uses the camera to capture your driver's license and selfie for identity verification.",
         NSFaceIDUsageDescription:
@@ -116,6 +137,17 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       'expo-web-browser',
       '@react-native-community/datetimepicker',
       '@sentry/react-native/expo',
+      [
+        // Writes the iOS push entitlement to the generated .entitlements
+        // file on `expo prebuild`. `color` sets the Android tint for the
+        // notification small icon. Add an `icon` entry pointing at a
+        // 96×96 monochrome PNG when we have a dedicated asset; for now
+        // Android falls back to the app icon.
+        'expo-notifications',
+        {
+          color: '#FFD400',
+        },
+      ],
       [
         'expo-splash-screen',
         {

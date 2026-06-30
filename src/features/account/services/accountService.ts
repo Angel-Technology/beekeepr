@@ -1,4 +1,5 @@
 import { accountRepository } from '../repository/accountRepository';
+import { PushPlatform } from '../graphql/generated/account.generated';
 import type {
   AccountDeletionState,
   HandleAvailability,
@@ -127,4 +128,38 @@ export const accountService = {
     };
   },
 
+  /**
+   * Persists the device's push token against the signed-in user so the
+   * backend can target them. Idempotent on the server side — re-posting
+   * the same token is a no-op and refreshes `last_seen_at`.
+   *
+   * `platform` is the `react-native` `Platform.OS` string; we map to
+   * the backend's `PushPlatform` enum here so callers don't see the
+   * `I_OS` codegen quirk.
+   */
+  async registerPushToken(token: string, platform: 'ios' | 'android'): Promise<void> {
+    const payload = await accountRepository.registerPushToken({
+      input: {
+        token,
+        platform: platform === 'ios' ? PushPlatform.IOs : PushPlatform.Android,
+      },
+    });
+    if (payload.registerPushToken.error) {
+      throw new Error(payload.registerPushToken.error);
+    }
+  },
+
+  /**
+   * Drops a device token from the signed-in user. Call on sign-out so
+   * the backend doesn't push to a device that no longer belongs to the
+   * account.
+   */
+  async unregisterPushToken(token: string): Promise<void> {
+    const payload = await accountRepository.unregisterPushToken({
+      input: { token },
+    });
+    if (payload.unregisterPushToken.error) {
+      throw new Error(payload.unregisterPushToken.error);
+    }
+  },
 };

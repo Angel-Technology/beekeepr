@@ -236,6 +236,11 @@ export enum ProfileVisibility {
   Public = 'PUBLIC'
 }
 
+export enum PushPlatform {
+  Android = 'ANDROID',
+  IOs = 'I_OS'
+}
+
 export type RedeemPromoCodeInput = {
   code: Scalars['String']['input'];
 };
@@ -244,6 +249,17 @@ export type RedeemPromoCodePayload = {
   __typename?: 'RedeemPromoCodePayload';
   error?: Maybe<Scalars['String']['output']>;
   subscription?: Maybe<SubscriptionDto>;
+};
+
+export type RegisterPushTokenInput = {
+  platform: PushPlatform;
+  token: Scalars['String']['input'];
+};
+
+export type RegisterPushTokenPayload = {
+  __typename?: 'RegisterPushTokenPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type RemoveFriendInput = {
@@ -399,6 +415,16 @@ export type UnblockUserPayload = {
   success: Scalars['Boolean']['output'];
 };
 
+export type UnregisterPushTokenInput = {
+  token: Scalars['String']['input'];
+};
+
+export type UnregisterPushTokenPayload = {
+  __typename?: 'UnregisterPushTokenPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type UpdateProfileInput = {
   contactVisibility?: InputMaybe<ContactVisibility>;
   displayName?: InputMaybe<Scalars['String']['input']>;
@@ -488,6 +514,7 @@ export type UserMutations = {
   declineFriendRequest: DeclineFriendRequestPayload;
   flagUser: FlagUserPayload;
   redeemPromoCode: RedeemPromoCodePayload;
+  registerPushToken: RegisterPushTokenPayload;
   removeFriend: RemoveFriendPayload;
   requestAccountDeletion: RequestAccountDeletionPayload;
   requestEmailSignIn: RequestEmailSignInPayload;
@@ -498,6 +525,7 @@ export type UserMutations = {
   startInstantCriminalCheck: StartInstantCriminalCheckPayload;
   startPersonaInquiry: StartPersonaInquiryPayload;
   unblockUser: UnblockUserPayload;
+  unregisterPushToken: UnregisterPushTokenPayload;
   updateProfile: UpdateProfilePayload;
   verifyEmailSignIn: VerifyEmailSignInPayload;
 };
@@ -538,6 +566,11 @@ export type UserMutationsRedeemPromoCodeArgs = {
 };
 
 
+export type UserMutationsRegisterPushTokenArgs = {
+  input: RegisterPushTokenInput;
+};
+
+
 export type UserMutationsRemoveFriendArgs = {
   input: RemoveFriendInput;
 };
@@ -570,6 +603,11 @@ export type UserMutationsStartInstantCriminalCheckArgs = {
 
 export type UserMutationsUnblockUserArgs = {
   input: UnblockUserInput;
+};
+
+
+export type UserMutationsUnregisterPushTokenArgs = {
+  input: UnregisterPushTokenInput;
 };
 
 
