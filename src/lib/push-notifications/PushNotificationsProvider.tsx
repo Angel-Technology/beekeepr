@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import { useAuthSession } from '@features/auth';
+import { useAuthSession } from '@features/auth/hooks/useAuthSession';
 import './notificationHandler';
 import { useRegisterPushToken } from './useRegisterPushToken';
 

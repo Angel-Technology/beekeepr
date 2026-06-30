@@ -45,7 +45,7 @@ export const VerificationTrialStepper = ({
           connectorClassName,
           description: 'You pay nothing.',
           content: (
-            <Text className="text-tk-text-tertiary font-poppins-regular text-xs leading-[1.3]">
+            <Text className="font-poppins-regular text-xs leading-[1.3] text-tk-text-tertiary">
               After you pass our screening, your 30-day free trial begins.
             </Text>
           ),

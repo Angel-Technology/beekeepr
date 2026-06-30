@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { isAppleSignInCancelled } from '@src/lib/auth/apple';
 import { isGoogleSignInCancelled } from '@src/lib/auth/google';
-import { useErrorModal } from '@src/lib/error-modal';
-import { unregisterPushToken } from '@src/lib/push-notifications';
+import { useErrorModal } from '@src/lib/error-modal/ErrorModalProvider';
+import { unregisterPushToken } from '@src/lib/push-notifications/unregisterPushToken';
 import { authQueryKeys } from '../models/authQueryKeys';
 import { authService } from '../services/authService';
 

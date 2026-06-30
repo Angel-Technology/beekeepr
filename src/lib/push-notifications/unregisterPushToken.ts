@@ -1,6 +1,6 @@
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { accountService } from '@features/account';
+import { accountService } from '@features/account/services/accountService';
 
 /**
  * Drops the device's push token from the signed-in user's backend

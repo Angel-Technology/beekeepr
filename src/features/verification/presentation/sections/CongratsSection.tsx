@@ -30,10 +30,10 @@ export const CongratsSection = ({
       }}
     >
       <View className="w-full gap-1 px-2">
-        <Text className="font-poppins-semiBold text-title-3 leading-tight text-text-default">
+        <Text className="font-poppins-semiBold text-title-3 leading-tight text-tk-text-primary">
           Congrats, You&rsquo;re in!
         </Text>
-        <Text className="font-lexend-regular text-lg leading-5 text-text-tertiary">
+        <Text className="font-lexend-regular text-lg leading-5 text-tk-text-tertiary">
           You can proudly display your Buzz badge on any dating app we&rsquo;re
           partnered with.
         </Text>
@@ -46,9 +46,9 @@ export const CongratsSection = ({
       <DetailCard
         title="What’s included"
         className="gap-5 rounded-5 p-4"
-        titleClassName="font-lexend-semiBold text-base text-text-default"
+        titleClassName="font-lexend-semiBold text-base text-tk-text-primary"
         itemsClassName="gap-5 flex-start justify-center item-center"
-        itemTextClassName="font-lexend-regular text-subhead leading-5 text-text-secondary"
+        itemTextClassName="font-lexend-regular text-subhead leading-5 text-tk-text-secondary"
         items={[
           {
             id: 'buzz-badge',

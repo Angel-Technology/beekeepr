@@ -1,12 +1,12 @@
 import { Text, View } from 'react-native';
 import { Image } from 'expo-image';
 import { ArrowRight, X } from 'lucide-react-native';
+import { appImages } from '@assets/images';
 import { Button, Container, IconButton, VerticalSpacer } from '@components';
 import { themedColors, useThemedColor } from '@common';
 import { useVerificationLearnMore } from '../../hooks/useVerificationLearnMore';
 import { VerificationTrialStepper } from '../components/VerificationTrialStepper';
 
-const STAND_OUT_BEE = require('@src/assets/images/StandOutBee.png');
 // Figma-spec dimensions for the hero bee.
 const BEE_WIDTH = 123;
 const BEE_HEIGHT = 180.795;
@@ -26,7 +26,7 @@ export const VerificationLearnMoreScreen = () => {
       <View className="w-full">
         <View className="w-full flex-row items-start gap-3">
           <Image
-            source={STAND_OUT_BEE}
+            source={appImages.standoutBee}
             contentFit="contain"
             style={{
               width: BEE_WIDTH,
@@ -45,18 +45,18 @@ export const VerificationLearnMoreScreen = () => {
 
             <View className="flex-1 flex-col items-center gap-2">
               <View>
-                <Text className="text-tk-text-primary text-center font-poppins-semiBold text-800 leading-tight">
+                <Text className="text-center font-poppins-semiBold text-800 leading-tight text-tk-text-primary">
                   30-Day
                 </Text>
-                <Text className="text-tk-text-primary text-center font-poppins-semiBold text-800 leading-tight">
+                <Text className="text-center font-poppins-semiBold text-800 leading-tight text-tk-text-primary">
                   Free Trial
                 </Text>
               </View>
               <View>
-                <Text className="text-tk-text-tertiary text-center font-sourceSans-regular text-base">
+                <Text className="text-center font-sourceSans-regular text-base text-tk-text-tertiary">
                   Try 30 days for free,
                 </Text>
-                <Text className="text-tk-text-tertiary text-center font-sourceSans-regular text-base">
+                <Text className="text-center font-sourceSans-regular text-base text-tk-text-tertiary">
                   then $9.99/month.
                 </Text>
               </View>
@@ -68,7 +68,7 @@ export const VerificationLearnMoreScreen = () => {
       <VerticalSpacer />
 
       <View className="w-full flex-1 gap-6 rounded-6 p-4">
-        <Text className="text-tk-text-primary font-poppins-semiBold text-xl">
+        <Text className="font-poppins-semiBold text-xl text-tk-text-primary">
           How your trial works
         </Text>
 

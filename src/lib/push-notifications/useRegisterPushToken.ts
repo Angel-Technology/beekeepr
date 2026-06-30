@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { accountService } from '@features/account';
+import { accountService } from '@features/account/services/accountService';
 
 /**
  * Registers the device for remote pushes after auth resolves. Runs the

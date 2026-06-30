@@ -104,7 +104,7 @@ export const VerificationFlowBody = ({
       <Container
         safeArea
         safeAreaEdges={['top']}
-        className={clsx('bg-bg-default px-2')}
+        className={clsx('bg-tk-bg-primary px-2')}
       >
         <View className="-mx-5 self-stretch">
           <VerificationTopNav

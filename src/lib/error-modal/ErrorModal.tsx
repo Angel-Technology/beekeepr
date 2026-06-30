@@ -1,6 +1,7 @@
 import { Text, TouchableOpacity, View } from 'react-native';
 import { X } from 'lucide-react-native';
-import { BaseModal, CompactButton } from '@components';
+import { BaseModal } from '@components/ui/modal/BaseModal';
+import { CompactButton } from '@components/ui/button/CompactButton';
 import { themedColors, useThemedColor } from '@common';
 
 type ErrorModalProps = {
@@ -28,10 +29,14 @@ export const ErrorModal = ({
   const closeIconColor = useThemedColor(themedColors.text.secondary);
 
   return (
-    <BaseModal visible={visible} onRequestClose={onClose} dismissOnBackdropPress>
+    <BaseModal
+      visible={visible}
+      onRequestClose={onClose}
+      dismissOnBackdropPress
+    >
       <View className="gap-4">
         <View className="w-full flex-row items-center justify-between">
-          <Text className="font-poppins-semiBold text-title-4 text-tk-text-primary">
+          <Text className="text-tk-text-primary font-poppins-semiBold text-title-4">
             {title}
           </Text>
           <TouchableOpacity
@@ -44,7 +49,7 @@ export const ErrorModal = ({
           </TouchableOpacity>
         </View>
 
-        <Text className="font-lexend-regular text-base leading-[24px] -tracking-[0.3px] text-tk-text-secondary">
+        <Text className="text-tk-text-secondary font-lexend-regular text-base leading-[24px] -tracking-[0.3px]">
           {message}
         </Text>
 
