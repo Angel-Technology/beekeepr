@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, View } from 'react-native';
 import type { DrawerContentComponentProps } from '@react-navigation/drawer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -10,11 +10,12 @@ import {
   X,
 } from 'lucide-react-native';
 import {
+  APP_HEADER_HEIGHT,
   AppHeader,
   CompactButton,
-  ConfirmDestructiveModal,
   IconButton,
   ProfilePreviewBody,
+  useConfirmDestructive,
   type ProfilePreviewUser,
 } from '@components';
 import { cn, themedColors, useThemedColor } from '@common';
@@ -37,31 +38,26 @@ type ConnectionPreviewDrawerContentProps = DrawerContentComponentProps & {
   friendshipState: PreviewFriendshipState | null;
 };
 
-type ConfirmKind = 'block' | 'flag' | 'remove';
+const CONFIRM_BLOCK = {
+  title: 'Block user?',
+  description:
+    "They won't be able to send invites or see your profile. You can unblock them from your settings later.",
+  confirmLabel: 'Block',
+} as const;
 
-const CONFIRM_COPY: Record<
-  ConfirmKind,
-  { title: string; description: string; confirmLabel: string }
-> = {
-  block: {
-    title: 'Block user?',
-    description:
-      "They won't be able to send invites or see your profile. You can unblock them from your settings later.",
-    confirmLabel: 'Block',
-  },
-  flag: {
-    title: 'Flag user?',
-    description:
-      "Our team will review their account. We won't share that you flagged them.",
-    confirmLabel: 'Flag',
-  },
-  remove: {
-    title: 'Remove connections?',
-    description:
-      "They'll lose access to your shared contact info. You can re-invite them later.",
-    confirmLabel: 'Remove',
-  },
-};
+const CONFIRM_FLAG = {
+  title: 'Flag user?',
+  description:
+    "Our team will review their account. We won't share that you flagged them.",
+  confirmLabel: 'Flag',
+} as const;
+
+const CONFIRM_REMOVE = {
+  title: 'Remove connection?',
+  description:
+    "They'll lose access to your shared contact info. You can re-invite them later.",
+  confirmLabel: 'Remove',
+} as const;
 
 /**
  * Right-side drawer content rendered when a card row is tapped. Body is
@@ -93,11 +89,6 @@ export const ConnectionPreviewDrawerContent = ({
   // uses for solid-variant labels — white in light mode, black in dark mode.
   const onActionIconColor = useThemedColor(themedColors.text.primaryReversed);
   const [isActionsMenuOpen, setIsActionsMenuOpen] = useState(false);
-  // Tracks whether the outer touch-capture handler just closed the menu
-  // on the same gesture that's about to hit the kebab. Lets the kebab
-  // skip its open-handler so we don't re-open the menu the user is
-  // trying to close.
-  const dismissedByOutsideTouchRef = useRef(false);
 
   const { remove: removeFriend } = useRemoveFriend();
   const { accept: acceptInvite, decline: declineInvite } = useRespondToInvite();
@@ -106,13 +97,7 @@ export const ConnectionPreviewDrawerContent = ({
   const { unblock: unblockUser } = useUnblockUser();
   const { block: blockUser } = useBlockUser();
   const { flag: flagUser } = useFlagUser();
-
-  // Single piece of "which destructive action is pending confirmation"
-  // state. `null` while the modal is hidden; switches the modal copy
-  // and the action that fires on confirm.
-  const [pendingConfirm, setPendingConfirm] = useState<ConfirmKind | null>(
-    null,
-  );
+  const confirm = useConfirmDestructive();
 
   const closeDrawer = () => navigation.closeDrawer();
 
@@ -121,49 +106,26 @@ export const ConnectionPreviewDrawerContent = ({
     closeDrawer();
   };
 
-  // Open the confirm modal rather than firing immediately. Also close
-  // the kebab dropdown if that's where the user came from.
-  const requestConfirm = (kind: ConfirmKind) => () => {
-    setIsActionsMenuOpen(false);
-    setPendingConfirm(kind);
-  };
-
-  const handleConfirm = () => {
-    if (pendingConfirm === null) {
-      return;
-    }
-    const action =
-      pendingConfirm === 'block'
-        ? blockUser
-        : pendingConfirm === 'flag'
-          ? flagUser
-          : removeFriend;
-    action(user.id);
-    setPendingConfirm(null);
-    closeDrawer();
-  };
+  // Wrap a destructive mutation in a confirm-then-fire flow. Closes
+  // the kebab menu (if open), awaits the shared confirm modal, then
+  // runs the action + closes the drawer only if the user confirmed.
+  const confirmAndRun =
+    (
+      prompt: { title: string; description: string; confirmLabel: string },
+      action: (id: string) => void,
+    ) =>
+    async () => {
+      setIsActionsMenuOpen(false);
+      const ok = await confirm(prompt);
+      if (!ok) {
+        return;
+      }
+      action(user.id);
+      closeDrawer();
+    };
 
   return (
-    <View
-      className="bg-tk-bg-primary flex-1"
-      // Outer capture: when the menu is open, ANY touch start anywhere
-      // in the drawer closes it. Returning `false` releases the
-      // responder so the underlying element (kebab, menu item, scroll,
-      // header button) still receives its own touch and fires its
-      // handler normally.
-      onStartShouldSetResponderCapture={() => {
-        if (isActionsMenuOpen) {
-          dismissedByOutsideTouchRef.current = true;
-          setIsActionsMenuOpen(false);
-        } else {
-          // Menu is already closed → this is a fresh gesture. Clear
-          // any leftover "skip" signal from a previous close that
-          // didn't land on the kebab.
-          dismissedByOutsideTouchRef.current = false;
-        }
-        return false;
-      }}
-    >
+    <View className="bg-tk-bg-primary flex-1">
       <AppHeader
         topInset={insets.top}
         left={
@@ -181,7 +143,7 @@ export const ConnectionPreviewDrawerContent = ({
               friendshipState={friendshipState}
               iconColor={iconColor}
               onActionIconColor={onActionIconColor}
-              onRemove={requestConfirm('remove')}
+              onRemove={confirmAndRun(CONFIRM_REMOVE, removeFriend)}
               onAccept={runAndClose(acceptInvite)}
               onDecline={runAndClose(declineInvite)}
               onUnsend={runAndClose(cancelInvite)}
@@ -203,15 +165,7 @@ export const ConnectionPreviewDrawerContent = ({
                   color={iconColor}
                 />
               }
-              onPress={() => {
-                if (dismissedByOutsideTouchRef.current) {
-                  // Outer capture just closed the menu on this same
-                  // gesture; don't re-open from the kebab tap.
-                  dismissedByOutsideTouchRef.current = false;
-                  return;
-                }
-                setIsActionsMenuOpen(true);
-              }}
+              onPress={() => setIsActionsMenuOpen((prev) => !prev)}
             />
           </View>
         }
@@ -222,23 +176,30 @@ export const ConnectionPreviewDrawerContent = ({
         onScrollBeginDrag={() => setIsActionsMenuOpen(false)}
       />
 
+      {/* Outside-tap dismissal. Starts BELOW the header so the kebab
+          stays tappable (toggling the menu off goes through the
+          kebab's own `onPress`, not through this overlay). Rendered
+          BEFORE the menu so the menu sits on top in RN's
+          last-rendered-wins z order. */}
+      {isActionsMenuOpen ? (
+        <Pressable
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+          onPress={() => setIsActionsMenuOpen(false)}
+          style={{
+            position: 'absolute',
+            top: insets.top + APP_HEADER_HEIGHT,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        />
+      ) : null}
+
       <ProfileActionsMenu
         visible={isActionsMenuOpen}
-        onBlock={requestConfirm('block')}
-        onFlag={requestConfirm('flag')}
-      />
-
-      <ConfirmDestructiveModal
-        visible={pendingConfirm !== null}
-        title={pendingConfirm ? CONFIRM_COPY[pendingConfirm].title : ''}
-        description={
-          pendingConfirm ? CONFIRM_COPY[pendingConfirm].description : ''
-        }
-        confirmLabel={
-          pendingConfirm ? CONFIRM_COPY[pendingConfirm].confirmLabel : ''
-        }
-        onConfirm={handleConfirm}
-        onCancel={() => setPendingConfirm(null)}
+        onBlock={confirmAndRun(CONFIRM_BLOCK, blockUser)}
+        onFlag={confirmAndRun(CONFIRM_FLAG, flagUser)}
       />
     </View>
   );

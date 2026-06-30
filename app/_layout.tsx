@@ -1,3 +1,4 @@
+import { AppState, type AppStateStatus } from 'react-native';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
@@ -8,6 +9,7 @@ import {
 } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { colorScheme } from 'nativewind';
+import { ConfirmDestructiveProvider } from '@components';
 import { themedColors, useThemedColor } from '@common';
 import { useAuthSession } from '@features/auth';
 import { PushNotificationsProvider } from '@src/lib/push-notifications';
@@ -27,6 +29,19 @@ import { initSentry, wrapRootComponent } from '@src/lib/sentry';
 // dark-themed device. Set at module load so the right palette is in place
 // before any view paints (avoids a light→dark flash on first frame).
 colorScheme.set('system');
+
+// Re-resolve `system` mode whenever the app foregrounds. iOS's permission
+// alerts (notifications, camera, etc.) toggle the app through
+// inactive → active and can leave NativeWind's `Appearance` listener
+// reading a stale value — usually pinning the scheme to light because
+// the system alert was rendered in its own light context. Forcing a
+// fresh `set('system')` on every active transition is cheap and the
+// only reliable way to keep dark mode sticky across permission prompts.
+const onAppStateChange = (status: AppStateStatus) => {
+  if (status === 'active') {
+    colorScheme.set('system');
+  }
+};
 
 // Fire at module load — before any provider mounts — so the SDK is ready to
 // receive `captureException` calls from `RootErrorBoundary` on first render.
@@ -96,6 +111,18 @@ function RootLayout() {
     }
   }, []);
 
+  // Subscribe `onAppStateChange` once at the root. Resets NativeWind's
+  // `system` mode every time the app foregrounds so iOS permission
+  // alerts (notifications, camera, etc.) can't strand the theme on
+  // light. See the comment above the handler for the why.
+  useEffect(() => {
+    const subscription = AppState.addEventListener(
+      'change',
+      onAppStateChange,
+    );
+    return () => subscription.remove();
+  }, []);
+
   if (storybookEnabled && StorybookUIRoot) {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -118,13 +145,20 @@ function RootLayout() {
                 <ErrorModalProvider>
                   <GlobalLoaderProvider>
                     <BottomSheetModalProvider>
-                      {/* Push provider sits inside the auth-aware
-                          tree (so `useAuthSession` inside it lights
-                          up) and above the navigator (so any
-                          tap-to-route can drive navigation). */}
-                      <PushNotificationsProvider>
-                        <RootNavigator />
-                      </PushNotificationsProvider>
+                      {/* `ConfirmDestructiveProvider` hosts a single
+                          shared modal accessible from every consumer
+                          via `useConfirmDestructive()`. Lives above the
+                          navigator so any screen / drawer can surface
+                          it without remounting state. */}
+                      <ConfirmDestructiveProvider>
+                        {/* Push provider sits inside the auth-aware
+                            tree (so `useAuthSession` inside it lights
+                            up) and above the navigator (so any
+                            tap-to-route can drive navigation). */}
+                        <PushNotificationsProvider>
+                          <RootNavigator />
+                        </PushNotificationsProvider>
+                      </ConfirmDestructiveProvider>
                       <GlobalLoaderOverlay />
                     </BottomSheetModalProvider>
                   </GlobalLoaderProvider>

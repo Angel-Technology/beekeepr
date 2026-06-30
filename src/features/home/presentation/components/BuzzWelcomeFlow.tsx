@@ -1,5 +1,6 @@
 import { View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { useConfirmDestructive } from '@components';
 import type { BlockedUser, Connection, Invite } from '../../models/home.types';
 import {
   BuzzConnectionPill,
@@ -12,6 +13,20 @@ import {
   BuzzSentInvitesCard,
 } from './invites';
 import { BuzzTrialCountdownCard } from './BuzzTrialCountdownCard';
+
+const CONFIRM_UNSEND = {
+  title: 'Unsend invite?',
+  description:
+    "They won't see your invite anymore. You can send a new one later.",
+  confirmLabel: 'Unsend',
+} as const;
+
+const CONFIRM_UNBLOCK = {
+  title: 'Unblock user?',
+  description:
+    "They'll be able to send invites and see your profile again. You can re-block them from the drawer at any time.",
+  confirmLabel: 'Unblock',
+} as const;
 
 type BuzzWelcomeFlowProps = {
   connections: readonly Connection[];
@@ -61,13 +76,40 @@ export const BuzzWelcomeFlow = ({
   cancelPendingId,
   unblockPendingId,
 }: BuzzWelcomeFlowProps) => {
+  const confirm = useConfirmDestructive();
+
+  // Gate the two row-level destructive actions through the shared
+  // confirm modal. Accept / Decline stay immediate — Approve is
+  // constructive and Decline is the user's intended action on a
+  // received invite (re-declining is cheap), so the prompt would just
+  // add friction.
+  const handleCancelInvite = async (otherUserId: string) => {
+    const ok = await confirm(CONFIRM_UNSEND);
+    if (!ok) {
+      return;
+    }
+    onCancelInvite(otherUserId);
+  };
+
+  const handleUnblockUser = async (targetUserId: string) => {
+    const ok = await confirm(CONFIRM_UNBLOCK);
+    if (!ok) {
+      return;
+    }
+    onUnblockUser(targetUserId);
+  };
+
   return (
     <View className="w-full gap-7">
       {isOnTrial && trialDaysRemaining !== null ? (
         <BuzzTrialCountdownCard daysRemaining={trialDaysRemaining} />
       ) : null}
 
-      <BuzzConnectionPill active={activeTab} onChange={onChangeTab} />
+      <BuzzConnectionPill
+        active={activeTab}
+        onChange={onChangeTab}
+        inviteCount={invites.length}
+      />
 
       {activeTab === 'connections' ? (
         <Animated.View
@@ -98,13 +140,13 @@ export const BuzzWelcomeFlow = ({
           />
           <BuzzSentInvitesCard
             invites={sentInvites}
-            onCancel={onCancelInvite}
+            onCancel={handleCancelInvite}
             onPressInvite={onPressSentInvite}
             cancelPendingId={cancelPendingId}
           />
           <BuzzBlockedUsersCard
             blockedUsers={blockedUsers}
-            onUnblock={onUnblockUser}
+            onUnblock={handleUnblockUser}
             onPressBlockedUser={onPressBlockedUser}
             unblockPendingId={unblockPendingId}
           />

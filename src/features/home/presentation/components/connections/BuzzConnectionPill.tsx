@@ -17,13 +17,21 @@ const TABS = [
 type BuzzConnectionPillProps = {
   active: ConnectionTab;
   onChange: (next: ConnectionTab) => void;
+  /**
+   * Pending-invite count surfaced as a red badge inside the Invites
+   * tab. `0` or `undefined` hides the badge; the number is clamped at
+   * "99+" so a buggy / spammy backend can't blow the pill's width.
+   */
+  inviteCount?: number;
 };
 
 const HORIZONTAL_PADDING_PX = 8;
+const MAX_BADGE_COUNT = 99;
 
 export const BuzzConnectionPill = ({
   active,
   onChange,
+  inviteCount = 0,
 }: BuzzConnectionPillProps) => {
   const [containerWidth, setContainerWidth] = useState(0);
 
@@ -71,22 +79,42 @@ export const BuzzConnectionPill = ({
 
         {TABS.map((tab) => {
           const isActive = tab.id === active;
+          const showBadge = tab.id === 'invites' && inviteCount > 0;
+          const badgeLabel =
+            inviteCount > MAX_BADGE_COUNT ? `${MAX_BADGE_COUNT}+` : inviteCount;
           return (
             <TouchableOpacity
               key={tab.id}
               accessibilityRole="button"
               accessibilityState={{ selected: isActive }}
+              accessibilityLabel={
+                showBadge ? `${tab.label}, ${inviteCount} pending` : tab.label
+              }
               onPress={() => onChange(tab.id)}
               className="min-h-[44px] flex-1 items-center justify-center px-4"
             >
-              <Text
-                className={clsx(
-                  'font-lexend-semiBold text-sm',
-                  isActive ? 'text-tk-text-primary' : 'text-tk-text-secondary',
-                )}
-              >
-                {tab.label}
-              </Text>
+              {/* `relative` wrapper so the badge can be absolutely
+                  pinned to the text's corner — sits slightly above and
+                  to the right of the label, superscript-style. */}
+              <View className="relative">
+                <Text
+                  className={clsx(
+                    'font-lexend-semiBold text-sm',
+                    isActive
+                      ? 'text-tk-text-primary'
+                      : 'text-tk-text-secondary',
+                  )}
+                >
+                  {tab.label}
+                </Text>
+                {showBadge ? (
+                  <View className="bg-tk-alerts-danger absolute -right-4 -top-1.5 items-center justify-center rounded-full px-1">
+                    <Text className="font-lexend-semiBold text-xs text-white">
+                      {badgeLabel}
+                    </Text>
+                  </View>
+                ) : null}
+              </View>
             </TouchableOpacity>
           );
         })}
