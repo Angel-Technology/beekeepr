@@ -7,6 +7,7 @@
  */
 export const storageKeys = {
   safetyDisclaimer: 'safety-disclaimer:v1',
+  themePreference: 'theme-preference:v1',
 } as const satisfies Record<string, string>;
 
 export type StorageKey = (typeof storageKeys)[keyof typeof storageKeys];

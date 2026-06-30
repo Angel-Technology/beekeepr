@@ -7,7 +7,13 @@ import Animated, {
 } from 'react-native-reanimated';
 import clsx from 'clsx';
 
-export type ConnectionTab = 'connections' | 'invites';
+import type { ConnectionTab } from '../../../models/connectionTab';
+
+// Re-export so existing presentation-layer consumers (BuzzWelcomeFlow,
+// the connections barrel) keep their imports stable. The type itself
+// lives in `models/` so the hook layer can read it without crossing
+// the presentation lint boundary.
+export type { ConnectionTab };
 
 const TABS = [
   { id: 'connections' as const, label: 'My connections' },

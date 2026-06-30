@@ -64,7 +64,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     version: config.version ?? '0.0.1',
     orientation: 'portrait',
     scheme: APP.scheme,
-    userInterfaceStyle: 'light',
+    // Lets iOS support both appearances at the platform level. The
+    // app's effective theme is driven by NativeWind via
+    // `ThemePreferenceProvider` — the user picks System / Light / Dark
+    // in the menu and the choice is persisted.
+    userInterfaceStyle: 'automatic',
 
     // Fallback icon (Expo requires this; use your preferred default)
     icon: APP.icon,

@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import type { DrawerContentComponentProps } from '@react-navigation/drawer';
@@ -13,6 +13,7 @@ import { useErrorModal } from '@src/lib/error-modal';
 import { useRevenueCat } from '@src/lib/revenuecat';
 import { environmentConfig } from '@src/lib/config/environment';
 import { MenuSection } from './MenuSection';
+import { ThemeMenuRow } from './ThemeMenuRow';
 
 const DELETE_ACCOUNT_COLOR = '#FF0000';
 const MENU_ICON_SIZE = 20;
@@ -69,12 +70,7 @@ export const MenuDrawerContent = ({
   }, [restorePurchases, showError, showFromError]);
 
   return (
-    <View
-      className="bg-tk-bg-primary flex-1"
-      style={{
-        paddingBottom: insets.bottom + 24,
-      }}
-    >
+    <View className="bg-tk-bg-primary flex-1">
       <AppHeader
         topInset={insets.top}
         center={
@@ -83,113 +79,122 @@ export const MenuDrawerContent = ({
           </Text>
         }
       />
-      <View
-        className="flex-1 px-6 pt-6"
-        style={{
+      {/* Scrollable region. AppHeader pins to the top; everything
+          below it — menu sections, theme row, version text, and the
+          `BrandMark` footer — lives inside the scroll so they all
+          move together. */}
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{
+          paddingHorizontal: 24,
+          paddingTop: 24,
           paddingBottom: insets.bottom + 24,
+          gap: 20,
         }}
+        showsVerticalScrollIndicator={false}
       >
-        <View className="gap-5">
-          <MenuSection
-            items={[
-              {
-                label: 'My Profile',
-                onPress: () =>
-                  openThenCloseDrawer(() => router.push('/profile')),
-              },
-            ]}
-          />
+        <MenuSection
+          items={[
+            {
+              label: 'My Profile',
+              onPress: () =>
+                openThenCloseDrawer(() => router.push('/profile')),
+            },
+          ]}
+        />
 
-          <MenuSection
-            items={[
-              {
-                label: 'Want to be a partner?',
-                onPress: () =>
-                  openInAppBrowser(environmentConfig.partnershipsURL),
-              },
-            ]}
-          />
+        <MenuSection
+          items={[
+            {
+              label: 'Want to be a partner?',
+              onPress: () =>
+                openInAppBrowser(environmentConfig.partnershipsURL),
+            },
+          ]}
+        />
 
-          <MenuSection
-            items={[
-              {
-                label: 'Support',
-                onPress: () => openInAppBrowser(environmentConfig.supportURL),
-              },
-              {
-                label: 'Privacy Policy',
-                onPress: () =>
-                  openInAppBrowser(environmentConfig.privacyPolicyURL),
-              },
-              {
-                label: 'Terms of Use',
-                onPress: () =>
-                  openInAppBrowser(environmentConfig.termsOfUseURL),
-              },
-              {
-                label: 'CSAE Policy',
-                onPress: () =>
-                  openInAppBrowser(environmentConfig.childrenPrivacyURL),
-              },
-            ]}
-          />
+        <ThemeMenuRow />
 
-          <MenuSection
-            items={[
-              {
-                label: 'Logout',
-                icon: <LogOut size={MENU_ICON_SIZE} color={menuIconColor} />,
-                onPress: () => closeDrawerThen(() => signOut.mutate()),
-              },
-              {
-                label: 'Restore Purchase',
-                icon: (
-                  <ArchiveRestore size={MENU_ICON_SIZE} color={menuIconColor} />
-                ),
-                onPress: () =>
-                  closeDrawerThen(() => {
-                    void handleRestorePurchases();
-                  }),
-              },
-              ...(hasSubscriptionHistory
-                ? [
-                    {
-                      label: 'Manage Subscription',
-                      icon: (
-                        <CreditCard
-                          size={MENU_ICON_SIZE}
-                          color={menuIconColor}
-                        />
-                      ),
-                      onPress: () =>
-                        closeDrawerThen(() => {
-                          void handleManageSubscription();
-                        }),
-                    },
-                  ]
-                : []),
-              {
-                label: 'Delete Account',
-                icon: (
-                  <Trash size={MENU_ICON_SIZE} color={DELETE_ACCOUNT_COLOR} />
-                ),
-                labelStyle: { color: DELETE_ACCOUNT_COLOR },
-                onPress: () =>
-                  openThenCloseDrawer(() => router.push('/delete-account')),
-              },
-            ]}
-          />
+        <MenuSection
+          items={[
+            {
+              label: 'Support',
+              onPress: () => openInAppBrowser(environmentConfig.supportURL),
+            },
+            {
+              label: 'Privacy Policy',
+              onPress: () =>
+                openInAppBrowser(environmentConfig.privacyPolicyURL),
+            },
+            {
+              label: 'Terms of Use',
+              onPress: () =>
+                openInAppBrowser(environmentConfig.termsOfUseURL),
+            },
+            {
+              label: 'CSAE Policy',
+              onPress: () =>
+                openInAppBrowser(environmentConfig.childrenPrivacyURL),
+            },
+          ]}
+        />
 
-          <Text className="text-tk-text-tertiary w-full text-center font-lexend-regular text-caption leading-4">
-            Version {APP_VERSION}
-          </Text>
-        </View>
-      </View>
-      <BrandMark
-        linePosition="bottom"
-        logoWidth={257.085}
-        logoHeight={56.734}
-      />
+        <MenuSection
+          items={[
+            {
+              label: 'Logout',
+              icon: <LogOut size={MENU_ICON_SIZE} color={menuIconColor} />,
+              onPress: () => closeDrawerThen(() => signOut.mutate()),
+            },
+            {
+              label: 'Restore Purchase',
+              icon: (
+                <ArchiveRestore size={MENU_ICON_SIZE} color={menuIconColor} />
+              ),
+              onPress: () =>
+                closeDrawerThen(() => {
+                  void handleRestorePurchases();
+                }),
+            },
+            ...(hasSubscriptionHistory
+              ? [
+                  {
+                    label: 'Manage Subscription',
+                    icon: (
+                      <CreditCard
+                        size={MENU_ICON_SIZE}
+                        color={menuIconColor}
+                      />
+                    ),
+                    onPress: () =>
+                      closeDrawerThen(() => {
+                        void handleManageSubscription();
+                      }),
+                  },
+                ]
+              : []),
+            {
+              label: 'Delete Account',
+              icon: (
+                <Trash size={MENU_ICON_SIZE} color={DELETE_ACCOUNT_COLOR} />
+              ),
+              labelStyle: { color: DELETE_ACCOUNT_COLOR },
+              onPress: () =>
+                openThenCloseDrawer(() => router.push('/delete-account')),
+            },
+          ]}
+        />
+
+        <Text className="text-tk-text-tertiary w-full text-center font-lexend-regular text-caption leading-4">
+          Version {APP_VERSION}
+        </Text>
+
+        <BrandMark
+          linePosition="bottom"
+          logoWidth={257.085}
+          logoHeight={56.734}
+        />
+      </ScrollView>
     </View>
   );
 };

@@ -2,14 +2,18 @@ import { useCallback, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useRedeemPromoCode } from '@features/account/hooks/useRedeemPromoCode';
-import { authQueryKeys, BackgroundCheckBadge, useAuthSession } from '@features/auth';
+import {
+  authQueryKeys,
+  BackgroundCheckBadge,
+  useAuthSession,
+} from '@features/auth';
 import {
   hasResumableVerification,
   isVerificationDenied,
 } from '@features/verification';
 import { useTrialPurchase } from '@features/verification/hooks/useTrialPurchase';
 import { useRevenueCat } from '@src/lib/revenuecat';
-import type { ConnectionTab } from '../presentation/components/connections';
+import type { ConnectionTab } from '../models/connectionTab';
 import type { BuzzFlow } from '../models/buzzFlow.types';
 import { homeQueryKeys } from '../models/homeQueryKeys';
 import type { BlockedUser, Connection, Invite } from '../models/home.types';
@@ -111,7 +115,9 @@ export const useBuzzTab = () => {
     try {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: authQueryKeys.session() }),
-        queryClient.invalidateQueries({ queryKey: homeQueryKeys.connections() }),
+        queryClient.invalidateQueries({
+          queryKey: homeQueryKeys.connections(),
+        }),
         queryClient.invalidateQueries({
           queryKey: homeQueryKeys.incomingInvites(),
         }),
@@ -171,14 +177,7 @@ export const useBuzzTab = () => {
       return 'membership';
     }
     return 'verify';
-  }, [
-    isResolving,
-    isApproved,
-    isPro,
-    isDenied,
-    needsMembership,
-    needsRenewal,
-  ]);
+  }, [isResolving, isApproved, isPro, isDenied, needsMembership, needsRenewal]);
 
   const ctaLabel = needsRenewal
     ? 'Renew membership'
