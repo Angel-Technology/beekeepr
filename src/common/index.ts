@@ -1,3 +1,4 @@
+export { isRenderableAvatarUrl } from './avatars/isRenderableAvatarUrl';
 export { cn } from './cn';
 export { colors } from './colors';
 export { useDismissibleOnce } from './hooks/useDismissibleOnce';

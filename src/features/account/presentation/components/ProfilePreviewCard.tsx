@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import { SvgUri } from 'react-native-svg';
 import { ChevronRight, UserRound } from 'lucide-react-native';
 
-import { themedColors, useThemedColor } from '@common';
+import { isRenderableAvatarUrl, themedColors, useThemedColor } from '@common';
 
 type ProfilePreviewCardProps = {
   nickname: string;
@@ -30,7 +30,9 @@ export const ProfilePreviewCard = ({
   const displayedHandle = formatHandle(handle);
   const avatarIconColor = useThemedColor(themedColors.text.tertiary);
   const chevronColor = useThemedColor(themedColors.text.primary);
-  const hasAvatar = Boolean(imageUrl && imageUrl.length > 0);
+  // Reject Google / Apple `picture` URLs the backend stores on social
+  // sign-in — those are raster and `SvgUri` crashes on them.
+  const hasAvatar = isRenderableAvatarUrl(imageUrl);
   const isPressable = Boolean(onPress);
   const Container = isPressable ? TouchableOpacity : View;
 
@@ -40,7 +42,7 @@ export const ProfilePreviewCard = ({
       className="border-tk-border-secondary bg-tk-bg-primary w-full flex-row items-center gap-3 rounded-5 border p-4"
     >
       <View className="bg-tk-bg-elevated-secondary size-[44px] items-center justify-center overflow-hidden rounded-round">
-        {hasAvatar && imageUrl ? (
+        {hasAvatar ? (
           <SvgUri uri={imageUrl} width={AVATAR_SIZE} height={AVATAR_SIZE} />
         ) : (
           <UserRound size={24} color={avatarIconColor} />

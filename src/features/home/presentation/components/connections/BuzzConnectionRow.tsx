@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { SvgUri } from 'react-native-svg';
 import { UserRound } from 'lucide-react-native';
-import { cn, themedColors, useThemedColor } from '@common';
+import { cn, isRenderableAvatarUrl, themedColors, useThemedColor } from '@common';
 
 type BuzzConnectionRowProps = {
   nickname: string;
@@ -41,7 +41,9 @@ export const BuzzConnectionRow = ({
 }: BuzzConnectionRowProps) => {
   const displayedHandle = formatHandle(handle);
   const avatarIconColor = useThemedColor(themedColors.text.tertiary);
-  const hasAvatar = Boolean(imageUrl && imageUrl.length > 0);
+  // Drop Google / Apple `picture` URLs the backend stores on social
+  // sign-in — those are raster and crash `SvgUri` mid-render.
+  const hasAvatar = isRenderableAvatarUrl(imageUrl);
   const Container = onPress ? TouchableOpacity : View;
 
   return (
@@ -53,7 +55,7 @@ export const BuzzConnectionRow = ({
       )}
     >
       <View className="bg-tk-bg-elevated-tertiary size-[44px] items-center justify-center overflow-hidden rounded-round">
-        {hasAvatar && imageUrl ? (
+        {hasAvatar ? (
           <SvgUri uri={imageUrl} width={AVATAR_SIZE} height={AVATAR_SIZE} />
         ) : (
           <UserRound size={24} color={avatarIconColor} />

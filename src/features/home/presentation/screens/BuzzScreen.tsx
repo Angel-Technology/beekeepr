@@ -21,6 +21,7 @@ import {
   IconButton,
 } from '@components';
 import {
+  isRenderableAvatarUrl,
   storageKeys,
   themedColors,
   useDismissibleOnce,
@@ -69,7 +70,13 @@ export const BuzzScreen = () => {
     onRefresh,
   } = useBuzzTab();
   const { data: user } = useAuthSession();
-  const profileImageUrl = user?.imageUrl ?? null;
+  // Only render avatars `SvgUri` can actually parse. Backend currently
+  // stores Google / Apple `picture` URLs (raster) on social sign-in,
+  // and `SvgUri` crashes mid-render on those. See
+  // `isRenderableAvatarUrl` for the predicate's why.
+  const profileImageUrl = isRenderableAvatarUrl(user?.imageUrl)
+    ? user.imageUrl
+    : null;
 
   const scrollY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler({

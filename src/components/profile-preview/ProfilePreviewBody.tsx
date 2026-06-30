@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Info, Phone, UserRound } from 'lucide-react-native';
 import { FormCard } from '../ui/card/FormCard';
 import { SafetyDisclaimerCard } from '../ui/card/SafetyDisclaimerCard';
-import { themedColors, useThemedColor } from '@common';
+import { isRenderableAvatarUrl, themedColors, useThemedColor } from '@common';
 import { ContactVisibility } from '@features/auth';
 import { useErrorModal } from '@src/lib/error-modal';
 import { formatJoinedDate } from '@src/features/account/models/formatJoinedDate';
@@ -220,7 +220,7 @@ export const ProfilePreviewBody = ({
     >
       <View className="flex-row items-center gap-3 px-6">
         <View className="bg-tk-bg-elevated-secondary size-[64px] items-center justify-center overflow-hidden rounded-round">
-          {user.imageUrl ? (
+          {isRenderableAvatarUrl(user.imageUrl) ? (
             <SvgUri
               uri={user.imageUrl}
               width={AVATAR_SIZE}
