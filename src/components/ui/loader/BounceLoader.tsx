@@ -21,7 +21,7 @@ const DURATION = 800;
 const STAGGER_DELAY = 150;
 
 export const BounceLoader = ({
-  colorClassName = 'bg-text-inverse',
+  colorClassName = 'bg-tk-text-primary',
   className,
   testID,
 }: BounceLoaderProps) => {

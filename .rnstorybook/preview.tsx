@@ -6,12 +6,12 @@ import '../global.css';
 const preview: Preview = {
   decorators: [
     (Story, context) => (
-      <View className="flex-1 gap-md bg-bg-default p-lg">
+      <View className="flex-1 gap-md bg-tk-bg-primary p-lg">
         <View className="gap-1">
-          <Text className="font-poppins-semiBold text-300 text-text-secondary">
+          <Text className="font-poppins-semiBold text-300 text-tk-text-secondary">
             {context.title}
           </Text>
-          <Text className="font-poppins-semiBold text-500 text-text-default">
+          <Text className="font-poppins-semiBold text-500 text-tk-text-primary">
             {context.name}
           </Text>
         </View>
