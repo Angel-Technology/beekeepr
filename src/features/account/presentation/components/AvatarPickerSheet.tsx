@@ -172,7 +172,8 @@ export const AvatarPickerSheet = ({
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 8, paddingHorizontal: 24 }}
+          style={{ flexGrow: 0 }}
+          contentContainerStyle={{ gap: 8, paddingHorizontal: 0 }}
         >
           {STYLES.map((s) => {
             const isActive = s.id === style;

@@ -66,6 +66,7 @@ export const VerificationFlowScreen = () => {
         isSubmitting={form.isSubmitting}
         canSubmit={form.canSubmit}
         onChangePhoneNumber={form.setPhoneNumber}
+        onChangeLicenseState={form.setLicenseState}
         onValidatePhoneNumber={form.validatePhoneNumber}
         onSubmit={() => {
           void form.handleSubmit();

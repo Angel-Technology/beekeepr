@@ -3,7 +3,6 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
-  BottomSheetView,
   type BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet';
 import { X } from 'lucide-react-native';
@@ -91,6 +90,50 @@ export const BaseBottomSheet = ({
     [backdrop],
   );
 
+  // Custom handle: the drag-pill on top plus (optionally) the title +
+  // close row. Painted here instead of as a child of the modal so the
+  // caller's content can remain the modal's direct child — required for
+  // gorhom scrollables to function.
+  const renderHandle = useCallback(
+    () => (
+      <View
+        style={{
+          backgroundColor: surface,
+          borderTopLeftRadius: 14,
+          borderTopRightRadius: 14,
+        }}
+      >
+        <View
+          style={{
+            alignSelf: 'center',
+            width: 36,
+            height: 4,
+            borderRadius: 4,
+            backgroundColor: handle,
+            marginTop: 10,
+            marginBottom: 6,
+          }}
+        />
+        {title ? (
+          <View className="w-full flex-row items-center justify-between px-6 pb-4 pt-2">
+            <Text className="text-tk-text-primary font-poppins-semiBold text-title-4">
+              {title}
+            </Text>
+            <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel="Close"
+              onPress={onClose}
+              className="p-1"
+            >
+              <X size={24} color={closeColor} />
+            </TouchableOpacity>
+          </View>
+        ) : null}
+      </View>
+    ),
+    [surface, handle, title, closeColor, onClose],
+  );
+
   // Memoize so reference equality keeps the modal from re-mounting its
   // snap container on every parent re-render.
   const snapPointsArray = useMemo(() => [...snapPoints], [snapPoints]);
@@ -108,27 +151,10 @@ export const BaseBottomSheet = ({
       index={0}
       onDismiss={onClose}
       backdropComponent={renderBackdrop}
+      handleComponent={renderHandle}
       backgroundStyle={{ backgroundColor: surface }}
-      handleIndicatorStyle={{ backgroundColor: handle }}
     >
-      <BottomSheetView style={{ flex: 1 }}>
-        {title ? (
-          <View className="w-full flex-row items-center justify-between px-6 pb-4 pt-2">
-            <Text className="text-tk-text-primary font-poppins-semiBold text-title-4">
-              {title}
-            </Text>
-            <TouchableOpacity
-              accessibilityRole="button"
-              accessibilityLabel="Close"
-              onPress={onClose}
-              className="p-1"
-            >
-              <X size={24} color={closeColor} />
-            </TouchableOpacity>
-          </View>
-        ) : null}
-        {children}
-      </BottomSheetView>
+      {children}
     </BottomSheetModal>
   );
 };

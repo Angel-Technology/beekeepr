@@ -3,7 +3,9 @@ import { Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { CircleHelp } from 'lucide-react-native';
 import { Button, Input, VerticalSpacer } from '@components';
+import { themedColors, useThemedColor } from '@common';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatePickerField } from '../components/StatePickerField';
 
 type SectionProps = {
   label: string;
@@ -11,13 +13,14 @@ type SectionProps = {
 };
 
 const FieldGroup = ({ label, children }: SectionProps) => {
+  const helpIconColor = useThemedColor(themedColors.text.tertiary);
   return (
     <View className="w-full">
       <View className="w-full flex-row items-center justify-between px-4 pb-3 pt-6">
         <Text className="text-tk-text-tertiary font-lexend-regular text-200 leading-none">
           {label}
         </Text>
-        <CircleHelp size={16} color="rgba(0,0,0,0.5)" />
+        <CircleHelp size={16} color={helpIconColor} />
       </View>
       <View className="bg-tk-bg-elevated-secondary w-full gap-4 rounded-5 p-6">
         {children}
@@ -37,6 +40,7 @@ type CriminalFormSectionProps = {
   isSubmitting: boolean;
   canSubmit: boolean;
   onChangePhoneNumber: (value: string) => void;
+  onChangeLicenseState: (value: string) => void;
   onValidatePhoneNumber: () => void;
   onSubmit: () => void;
 };
@@ -52,6 +56,7 @@ export const CriminalFormSection = ({
   isSubmitting,
   canSubmit,
   onChangePhoneNumber,
+  onChangeLicenseState,
   onValidatePhoneNumber,
   onSubmit,
 }: CriminalFormSectionProps) => {
@@ -120,13 +125,12 @@ export const CriminalFormSection = ({
       </FieldGroup>
 
       <FieldGroup label="STATE OF RESIDENCE">
-        <Input
-          label="Select State"
-          value={licenseState}
-          onChangeText={() => {}}
-          disabled
-          className="bg-tk-bg-primary rounded-3 p-2"
-        />
+        <View className="bg-tk-bg-primary border-tk-border-secondary w-full rounded-3 border p-2">
+          <StatePickerField
+            value={licenseState}
+            onChange={onChangeLicenseState}
+          />
+        </View>
       </FieldGroup>
       <Button
         label="Submit"

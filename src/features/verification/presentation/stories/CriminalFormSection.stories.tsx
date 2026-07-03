@@ -54,6 +54,7 @@ const meta = {
     // Storybook's action addon replaces these at render time via the
     // `argTypes.action` declarations below — the stubs satisfy TS.
     onChangePhoneNumber: () => {},
+    onChangeLicenseState: () => {},
     onValidatePhoneNumber: () => {},
     onSubmit: () => {},
   },
@@ -68,6 +69,7 @@ const meta = {
     isSubmitting: { control: { type: 'boolean' } },
     canSubmit: { control: { type: 'boolean' } },
     onChangePhoneNumber: { action: 'onChangePhoneNumber' },
+    onChangeLicenseState: { action: 'onChangeLicenseState' },
     onValidatePhoneNumber: { action: 'onValidatePhoneNumber' },
     onSubmit: { action: 'onSubmit' },
   },
