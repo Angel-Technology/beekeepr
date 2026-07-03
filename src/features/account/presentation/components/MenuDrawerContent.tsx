@@ -1,35 +1,41 @@
 import { useCallback } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import type { DrawerContentComponentProps } from '@react-navigation/drawer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ArchiveRestore, CreditCard, LogOut, Trash } from 'lucide-react-native';
-import { AppHeader, BrandMark } from '@components';
+import {
+  ChevronLeft,
+  LogOut,
+  Settings as SettingsIcon,
+} from 'lucide-react-native';
+import { AppHeader, IconButton } from '@components';
 import { themedColors, useThemedColor } from '@common';
 import { useAuthActions } from '@features/auth';
 import { openInAppBrowser } from '@src/lib/browser';
-import { useErrorModal } from '@src/lib/error-modal';
-import { useRevenueCat } from '@src/lib/revenuecat';
 import { environmentConfig } from '@src/lib/config/environment';
 import { MenuSection } from './MenuSection';
-import { ThemeMenuRow } from './ThemeMenuRow';
+import LogoBuzzkeepr from '@src/assets/svg/LogoBuzzkeepr';
 
-const DELETE_ACCOUNT_COLOR = '#FF0000';
 const MENU_ICON_SIZE = 20;
 const APP_VERSION = Constants.expoConfig?.version ?? '1.0.0';
 
+/**
+ * Menu drawer content. The drawer is now the primary navigation
+ * surface — each row is an entry point into a dedicated screen rather
+ * than an inline control. Prefs (theme) live under Settings; account
+ * lifecycle (Restore / Manage / Delete) lives under Account; legal
+ * lives under Legal. Keeps this list scannable and lets each surface
+ * evolve without churning the drawer.
+ */
 export const MenuDrawerContent = ({
   navigation,
 }: DrawerContentComponentProps) => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { signOut } = useAuthActions();
-  const { isPro, isLapsed, restorePurchases, openManageSubscription } =
-    useRevenueCat();
-  const { showError, showFromError } = useErrorModal();
-  const hasSubscriptionHistory = isPro || isLapsed;
   const menuIconColor = useThemedColor(themedColors.text.primary);
+  const settingsIconColor = useThemedColor(themedColors.text.primary);
 
   const closeDrawerThen = useCallback(
     (action: () => void) => {
@@ -47,58 +53,54 @@ export const MenuDrawerContent = ({
     [navigation],
   );
 
-  const handleManageSubscription = useCallback(async () => {
-    try {
-      await openManageSubscription();
-    } catch (error) {
-      showFromError(error, "Couldn't open settings");
-    }
-  }, [openManageSubscription, showFromError]);
-
-  const handleRestorePurchases = useCallback(async () => {
-    try {
-      const restored = await restorePurchases();
-      showError({
-        title: restored ? 'Subscription restored' : 'No purchases found',
-        message: restored
-          ? 'Your subscription is active again.'
-          : 'We couldn’t find any active subscriptions tied to this account.',
-      });
-    } catch (error) {
-      showFromError(error, 'Restore Failed');
-    }
-  }, [restorePurchases, showError, showFromError]);
-
   return (
     <View className="bg-tk-bg-primary flex-1">
       <AppHeader
         topInset={insets.top}
+        left={
+          <IconButton
+            accessibilityLabel="Close menu"
+            className="border-none bg-transparent"
+            icon={
+              <ChevronLeft size={24} strokeWidth={2.2} color={menuIconColor} />
+            }
+            onPress={() => navigation.closeDrawer()}
+          />
+        }
         center={
           <Text className="text-tk-text-primary font-poppins-semiBold text-base">
             Menu
           </Text>
         }
+        right={
+          <IconButton
+            accessibilityLabel="Settings"
+            className="border-none bg-transparent"
+            icon={
+              <SettingsIcon
+                size={24}
+                strokeWidth={2}
+                color={settingsIconColor}
+              />
+            }
+            onPress={() => openThenCloseDrawer(() => router.push('/settings'))}
+          />
+        }
       />
-      {/* Scrollable region. AppHeader pins to the top; everything
-          below it — menu sections, theme row, version text, and the
-          `BrandMark` footer — lives inside the scroll so they all
-          move together. */}
-      <ScrollView
+      <View
         className="flex-1"
-        contentContainerStyle={{
+        style={{
           paddingHorizontal: 24,
           paddingTop: 24,
           paddingBottom: insets.bottom + 24,
           gap: 20,
         }}
-        showsVerticalScrollIndicator={false}
       >
         <MenuSection
           items={[
             {
               label: 'My Profile',
-              onPress: () =>
-                openThenCloseDrawer(() => router.push('/profile')),
+              onPress: () => openThenCloseDrawer(() => router.push('/profile')),
             },
           ]}
         />
@@ -113,28 +115,19 @@ export const MenuDrawerContent = ({
           ]}
         />
 
-        <ThemeMenuRow />
-
         <MenuSection
           items={[
+            {
+              label: 'Account',
+              onPress: () => openThenCloseDrawer(() => router.push('/account')),
+            },
             {
               label: 'Support',
               onPress: () => openInAppBrowser(environmentConfig.supportURL),
             },
             {
-              label: 'Privacy Policy',
-              onPress: () =>
-                openInAppBrowser(environmentConfig.privacyPolicyURL),
-            },
-            {
-              label: 'Terms of Use',
-              onPress: () =>
-                openInAppBrowser(environmentConfig.termsOfUseURL),
-            },
-            {
-              label: 'CSAE Policy',
-              onPress: () =>
-                openInAppBrowser(environmentConfig.childrenPrivacyURL),
+              label: 'Legal',
+              onPress: () => openThenCloseDrawer(() => router.push('/legal')),
             },
           ]}
         />
@@ -146,55 +139,26 @@ export const MenuDrawerContent = ({
               icon: <LogOut size={MENU_ICON_SIZE} color={menuIconColor} />,
               onPress: () => closeDrawerThen(() => signOut.mutate()),
             },
-            {
-              label: 'Restore Purchase',
-              icon: (
-                <ArchiveRestore size={MENU_ICON_SIZE} color={menuIconColor} />
-              ),
-              onPress: () =>
-                closeDrawerThen(() => {
-                  void handleRestorePurchases();
-                }),
-            },
-            ...(hasSubscriptionHistory
-              ? [
-                  {
-                    label: 'Manage Subscription',
-                    icon: (
-                      <CreditCard
-                        size={MENU_ICON_SIZE}
-                        color={menuIconColor}
-                      />
-                    ),
-                    onPress: () =>
-                      closeDrawerThen(() => {
-                        void handleManageSubscription();
-                      }),
-                  },
-                ]
-              : []),
-            {
-              label: 'Delete Account',
-              icon: (
-                <Trash size={MENU_ICON_SIZE} color={DELETE_ACCOUNT_COLOR} />
-              ),
-              labelStyle: { color: DELETE_ACCOUNT_COLOR },
-              onPress: () =>
-                openThenCloseDrawer(() => router.push('/delete-account')),
-            },
           ]}
         />
 
-        <Text className="text-tk-text-tertiary w-full text-center font-lexend-regular text-caption leading-4">
-          Version {APP_VERSION}
-        </Text>
+        <View className="mt-auto items-center gap-2 pt-6">
+          <LogoBuzzkeepr
+            width={257.085}
+            height={56.734}
+            color={menuIconColor}
+          />
 
-        <BrandMark
-          linePosition="bottom"
-          logoWidth={257.085}
-          logoHeight={56.734}
-        />
-      </ScrollView>
+          <View className="w-full items-center">
+            <Text className="text-tk-text-tertiary font-lexend-regular text-caption leading-4">
+              Version {APP_VERSION}
+            </Text>
+            <Text className="text-tk-text-tertiary font-lexend-regular text-caption leading-4">
+              Created with integrity.
+            </Text>
+          </View>
+        </View>
+      </View>
     </View>
   );
 };

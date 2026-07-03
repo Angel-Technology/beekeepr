@@ -34,6 +34,9 @@ export default function PrivateLayout() {
         />
         <Stack.Screen name="profile" />
         <Stack.Screen name="delete-account" />
+        <Stack.Screen name="account" />
+        <Stack.Screen name="legal" />
+        <Stack.Screen name="settings" />
       </Stack>
 
       <TermsAcceptanceModal

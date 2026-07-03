@@ -12,7 +12,6 @@ export type AppImages = {
   readonly appIcon: ImageRequireSource;
   readonly awkwardBee: ImageRequireSource;
   readonly awkwardSadBee: ImageRequireSource;
-  readonly splashIcon: ImageRequireSource;
   readonly welcomeBee: ImageRequireSource;
   readonly standoutBee: ImageRequireSource;
   readonly newMatchBee: ImageRequireSource;
@@ -40,7 +39,6 @@ export const appImages: AppImages = {
   appIcon: require('./app-icon.png'),
   awkwardBee: require('./awkward-bee-4.png'),
   awkwardSadBee: require('./awkward-sad-bee.png'),
-  splashIcon: require('./splash-icon.png'),
   welcomeBee: require('./welcome-bee.png'),
   standoutBee: require('./StandOutBee.png'),
   newMatchBee: require('./new-match-bee.png'),
