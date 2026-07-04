@@ -58,12 +58,12 @@ export const DeniedSection = ({
         <NextStepsCard
           paragraphs={NEXT_STEPS_PARAGRAPHS}
           onPressAppeal={onAppealDecision}
-        />
-
-        <PrivacyComplianceCard
-          bullets={PRIVACY_BULLETS}
-          onPressMoreInfo={onMoreInfo}
-        />
+        >
+          <PrivacyComplianceCard
+            bullets={PRIVACY_BULLETS}
+            onPressMoreInfo={onMoreInfo}
+          />
+        </NextStepsCard>
       </ScrollView>
 
       <View className="w-full px-2 pt-4">

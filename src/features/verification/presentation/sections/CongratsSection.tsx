@@ -1,8 +1,9 @@
 import { Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { ArrowRight, Check } from 'lucide-react-native';
 import { Button, DetailCard } from '@components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Congrats from '@src/assets/svg/Congrats';
+import { appImages } from '@assets/images';
 
 type CongratsSectionProps = {
   isStartingTrial: boolean;
@@ -40,15 +41,15 @@ export const CongratsSection = ({
       </View>
 
       <View className="flex-1 items-center justify-center">
-        <Congrats width={200} height={254} />
+        <Image
+          source={appImages.congrats}
+          contentFit="contain"
+          style={{ width: 200, height: 254 }}
+        />
       </View>
 
       <DetailCard
         title="What’s included"
-        className="gap-5 rounded-5 p-4"
-        titleClassName="font-lexend-semiBold text-base text-tk-text-primary"
-        itemsClassName="gap-5 flex-start justify-center item-center"
-        itemTextClassName="font-lexend-regular text-subhead leading-5 text-tk-text-secondary"
         items={[
           {
             id: 'buzz-badge',

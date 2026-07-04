@@ -63,9 +63,7 @@ export const Button = ({
 }: ButtonProps) => {
   const isOutline = variant === 'outline';
   const isDisabled = disabled || loading;
-  const loaderColorClassName = isOutline
-    ? 'bg-tk-text-primary'
-    : 'bg-tk-actions-neutral-text-on-action';
+
   const hasIcon = Boolean(iconLeft || iconRight);
   const toneTextClassName = isOutline
     ? TONE_TEXT_CLASSNAME[tone].outline
@@ -91,7 +89,7 @@ export const Button = ({
       {hasIcon && !loading ? <IconSlot>{iconLeft}</IconSlot> : null}
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <BounceLoader colorClassName={loaderColorClassName} />
+          <BounceLoader />
         </View>
       ) : (
         <Text

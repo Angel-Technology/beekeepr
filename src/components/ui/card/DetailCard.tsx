@@ -22,12 +22,10 @@ type DetailCardProps = {
   itemTextClassName?: string;
 };
 
-// Surface tokens kept separate from layout so callers can pick a tone without
-// fighting NativeWind's class precedence rules on conflicting `bg-` utilities.
 const SURFACE_BY_TONE: Record<DetailCardTone, string> = {
-  brand: 'rounded-4 bg-brand-secondary p-5',
-  neutral: 'rounded-xl bg-bg-weak p-4',
-  surface: 'rounded-lg bg-white p-4',
+  brand: 'rounded-5 bg-tk-bg-callout p-5',
+  neutral: 'rounded-5 bg-tk-bg-secondary p-5',
+  surface: 'rounded-5 bg-tk-bg-primary p-5',
 };
 
 export const DetailCard = ({
@@ -42,52 +40,44 @@ export const DetailCard = ({
   return (
     <View
       className={clsx(
-        'flex flex-col items-start gap-1 self-stretch',
+        'flex flex-col items-start gap-5 self-stretch',
         SURFACE_BY_TONE[tone],
         className,
       )}
     >
       <Text
         className={clsx(
-          'items-stretch text-400 leading-300 text-text-default',
-          titleClassName ? null : 'font-sourceSans-semiBold',
+          'text-tk-text-primary text-base leading-6',
+          titleClassName ? null : 'font-lexend-semiBold',
           titleClassName,
         )}
       >
         {title}
       </Text>
-      <View
-        className={clsx(
-          'gap-1 self-stretch',
-          itemsClassName ? null : 'pl-sm',
-          itemsClassName,
-        )}
-      >
+      <View className={clsx('gap-5 self-stretch', itemsClassName)}>
         {items.map((item, index) => (
           <View
             key={typeof item === 'string' ? item : (item.id ?? `item-${index}`)}
-            className="flex-row items-start gap-2 self-stretch"
+            className="flex-row items-start gap-3 self-stretch"
           >
             {typeof item === 'string' || !item.icon ? (
               <Text
                 className={clsx(
-                  'shrink-0 text-base text-text-secondary',
-                  itemTextClassName ? null : 'font-sourceSans-regular',
+                  'text-tk-text-secondary shrink-0 text-subhead leading-5',
+                  itemTextClassName ? null : 'font-lexend-regular',
                   itemTextClassName,
                 )}
               >
                 •
               </Text>
             ) : (
-              <View className="mr-1 h-5 w-5 items-center justify-center">
-                {item.icon}
-              </View>
+              <View className="items-center justify-center">{item.icon}</View>
             )}
             {typeof item === 'string' ? (
               <Text
                 className={clsx(
-                  'flex-1 text-base text-text-secondary',
-                  itemTextClassName ? null : 'font-sourceSans-regular',
+                  'text-tk-text-secondary flex-1 text-subhead leading-5',
+                  itemTextClassName ? null : 'font-lexend-regular',
                   itemTextClassName,
                 )}
               >
@@ -96,8 +86,8 @@ export const DetailCard = ({
             ) : typeof item.label === 'string' ? (
               <Text
                 className={clsx(
-                  'flex-1 text-base text-text-secondary',
-                  itemTextClassName ? null : 'font-sourceSans-regular',
+                  'text-tk-text-secondary flex-1 text-subhead leading-5',
+                  itemTextClassName ? null : 'font-lexend-regular',
                   itemTextClassName,
                 )}
               >

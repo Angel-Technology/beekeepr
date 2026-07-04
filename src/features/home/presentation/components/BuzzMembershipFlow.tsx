@@ -1,11 +1,12 @@
 import { Text, View, useWindowDimensions } from 'react-native';
+import { Image } from 'expo-image';
 import { ArrowRight, Check } from 'lucide-react-native';
 import { Button, Card, DetailCard, VerificationStatusPill } from '@components';
 import IllustrationAward from '@src/assets/svg/IllustrationAward';
 import IntroBeeIcon from '@src/assets/svg/IntroBeeIcon';
 import LineBuzz from '@src/assets/svg/LineBuzz';
 import { VerificationTrialStepper } from '@features/verification/presentation/components/VerificationTrialStepper';
-import Congrats from '@src/assets/svg/Congrats';
+import { appImages } from '@assets/images';
 
 type BuzzMembershipFlowProps = {
   isPurchasing: boolean;
@@ -57,7 +58,11 @@ export const BuzzMembershipFlow = ({
       </View>
 
       <View className="items-center">
-        <Congrats width={200} height={254} />
+        <Image
+          source={appImages.congrats}
+          contentFit="contain"
+          style={{ width: 200, height: 254 }}
+        />
       </View>
 
       <View className="w-full gap-4">
@@ -77,10 +82,6 @@ export const BuzzMembershipFlow = ({
 
       <DetailCard
         title="What’s included"
-        className="gap-4 rounded-5 bg-brand-secondary p-4"
-        titleClassName="font-lexend-semiBold text-base leading-6 text-text-default"
-        itemsClassName="gap-4 pl-0"
-        itemTextClassName="font-lexend-regular text-sm leading-5 text-text-secondary"
         items={[
           {
             id: 'buzz-badge',

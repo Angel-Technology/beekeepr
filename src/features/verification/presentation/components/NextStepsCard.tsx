@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { ShieldAlert } from 'lucide-react-native';
 
@@ -20,6 +21,12 @@ type NextStepsCardProps = {
    * Override the action pill copy. Defaults to "Contact Support".
    */
   actionLabel?: string;
+  /**
+   * Extra content rendered below the paragraphs, inside the card's
+   * outer 16px gap. Use for a caller-owned CTA row, disclosure list,
+   * or embedded status pill.
+   */
+  children?: ReactNode;
 };
 
 /**
@@ -36,13 +43,14 @@ export const NextStepsCard = ({
   lead,
   title = 'Next steps',
   actionLabel = 'Contact Support',
+  children,
 }: NextStepsCardProps) => {
   const dangerColor = useThemedColor(themedColors.alerts.danger);
   const textColor = useThemedColor(themedColors.text.primary);
 
   return (
     <View
-      className="w-full gap-4 rounded-5 border-2 bg-tk-bg-primary p-4"
+      className="bg-tk-bg-primary w-full gap-4 rounded-5 border-2 p-4"
       style={{ borderColor: dangerColor }}
     >
       <View className="w-full flex-row items-center gap-3">
@@ -52,7 +60,7 @@ export const NextStepsCard = ({
         >
           <ShieldAlert size={20} color={textColor} />
         </View>
-        <Text className="flex-1 font-poppins-semiBold text-base leading-[1.25] text-tk-text-primary">
+        <Text className="text-tk-text-primary flex-1 font-poppins-semiBold text-base leading-[1.25]">
           {title}
         </Text>
         <TouchableOpacity
@@ -60,9 +68,9 @@ export const NextStepsCard = ({
           accessibilityLabel={actionLabel}
           onPress={onPressAppeal}
           activeOpacity={0.6}
-          className="flex-row items-center justify-center rounded-round border border-tk-actions-neutral-border-default px-4 py-3"
+          className="border-tk-actions-neutral-border-default flex-row items-center justify-center rounded-round border px-4 py-3"
         >
-          <Text className="font-lexend-semiBold text-sm text-tk-text-primary">
+          <Text className="text-tk-text-primary font-lexend-semiBold text-sm">
             {actionLabel}
           </Text>
         </TouchableOpacity>
@@ -70,19 +78,21 @@ export const NextStepsCard = ({
 
       <View className="w-full gap-2">
         {lead ? (
-          <Text className="font-lexend-semiBold text-base leading-6 text-tk-text-primary">
+          <Text className="text-tk-text-primary font-lexend-semiBold text-base leading-6">
             {lead}
           </Text>
         ) : null}
         {paragraphs.map((paragraph) => (
           <Text
             key={paragraph}
-            className="font-lexend-regular text-footnote leading-[18px] text-tk-text-secondary"
+            className="text-tk-text-secondary font-lexend-regular text-footnote leading-[18px]"
           >
             {paragraph}
           </Text>
         ))}
       </View>
+
+      {children}
     </View>
   );
 };
