@@ -41,11 +41,11 @@ const makeUser = (
   userCreatedAtUtc: '2025-06-01T00:00:00Z',
   profileVisibility: ProfileVisibility.Public,
   contactVisibility: ContactVisibility.ConnectionsOnly,
-  phoneNumber: null,
   googleVoicePhone: null,
   whatsAppPhone: null,
   instagramHandle: null,
   telegramHandle: null,
+  snapchatHandle: null,
   signalPhone: null,
   ...overrides,
 });
@@ -128,7 +128,7 @@ export const Verified: Story = {
   args: {
     user: makeUser({
       backgroundCheckBadge: BackgroundCheckBadge.Approved,
-      phoneNumber: '5551234567',
+      snapchatHandle: 'ava',
     }),
   },
   parameters: {
@@ -136,7 +136,7 @@ export const Verified: Story = {
 ## Verified (default)
 
 Approved Buzz Badge with a last-screened and next-screening date. One
-contact channel (phone) is filled, contact sharing is on, so the
+contact channel (Snapchat) is filled, contact sharing is on, so the
 Contact Information card renders below the badge summary.
     `.trim(),
   },
@@ -191,7 +191,7 @@ export const PrivateProfile: Story = {
     user: makeUser({
       profileVisibility: ProfileVisibility.Private,
       contactVisibility: ContactVisibility.Private,
-      phoneNumber: '5551234567',
+      snapchatHandle: 'ava',
       whatsAppPhone: '5559876543',
     }),
   },
@@ -212,16 +212,16 @@ covers the safety net if the body ever gets rendered.
 export const MinimalContact: Story = {
   args: {
     user: makeUser({
-      phoneNumber: '5551234567',
+      snapchatHandle: 'ava',
     }),
   },
   parameters: {
     notes: `
 ## Minimal contact
 
-Sharing is on, one contact method (phone) is filled. The Contact
-Information card renders a single tappable row that opens the dialer
-via the \`tel:\` URL.
+Sharing is on, one contact method (Snapchat) is filled. The Contact
+Information card renders a single tappable row that opens the
+Snapchat add-friend link.
     `.trim(),
   },
 };
@@ -229,11 +229,11 @@ via the \`tel:\` URL.
 export const AllContactMethods: Story = {
   args: {
     user: makeUser({
-      phoneNumber: '5551234567',
       googleVoicePhone: '5559876543',
       whatsAppPhone: '5551112222',
       instagramHandle: 'ava',
       telegramHandle: 'ava_tg',
+      snapchatHandle: 'ava_snap',
       signalPhone: '5553334444',
     }),
   },
@@ -242,9 +242,10 @@ export const AllContactMethods: Story = {
 ## All contact methods
 
 Every contact channel is filled. Rendered in the source-file order:
-phone, Google Voice, WhatsApp, Instagram, Telegram, Signal. Signal
-uses the pill-shaped "Profile link" button per Figma because Signal
-handles are opaque profile URLs, not typeable identifiers.
+Google Voice, WhatsApp, Instagram, Telegram, Snapchat, Signal. Signal
+and Snapchat use the pill-shaped "Profile link" button per Figma
+because those handles resolve to opaque profile URLs, not typeable
+identifiers.
 
 **Try this:** tap any row in the canvas — \`Linking.openURL\` is
 invoked with the corresponding deep link (\`tel:\`, \`https://wa.me/\`,

@@ -11,10 +11,10 @@ fragment UserConnectionFields on UserConnectionDto {
   userCreatedAtUtc
   profileVisibility
   contactVisibility
-  phoneNumber
   googleVoicePhone
   whatsAppPhone
   instagramHandle
   telegramHandle
+  snapchatHandle
   signalPhone
 }

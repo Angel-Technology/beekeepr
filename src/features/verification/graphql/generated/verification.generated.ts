@@ -353,6 +353,7 @@ export type SignOutPayload = {
 };
 
 export type StartInstantCriminalCheckInput = {
+  licenseState?: InputMaybe<Scalars['String']['input']>;
   phoneNumber?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -433,9 +434,9 @@ export type UpdateProfileInput = {
   imageUrl?: InputMaybe<Scalars['String']['input']>;
   instagramHandle?: InputMaybe<Scalars['String']['input']>;
   nickname?: InputMaybe<Scalars['String']['input']>;
-  phoneNumber?: InputMaybe<Scalars['String']['input']>;
   profileVisibility?: InputMaybe<ProfileVisibility>;
   signalPhone?: InputMaybe<Scalars['String']['input']>;
+  snapchatHandle?: InputMaybe<Scalars['String']['input']>;
   telegramHandle?: InputMaybe<Scalars['String']['input']>;
   whatsAppPhone?: InputMaybe<Scalars['String']['input']>;
 };
@@ -460,9 +461,9 @@ export type UserConnectionDto = {
   imageUrl?: Maybe<Scalars['String']['output']>;
   instagramHandle?: Maybe<Scalars['String']['output']>;
   nickname?: Maybe<Scalars['String']['output']>;
-  phoneNumber?: Maybe<Scalars['String']['output']>;
   profileVisibility: ProfileVisibility;
   signalPhone?: Maybe<Scalars['String']['output']>;
+  snapchatHandle?: Maybe<Scalars['String']['output']>;
   telegramHandle?: Maybe<Scalars['String']['output']>;
   userCreatedAtUtc: Scalars['DateTime']['output'];
   whatsAppPhone?: Maybe<Scalars['String']['output']>;
@@ -489,9 +490,9 @@ export type UserGraph = {
   personaInquiryId?: Maybe<Scalars['String']['output']>;
   personaInquiryStatus?: Maybe<PersonaInquiryStatus>;
   personaVerifiedAtUtc?: Maybe<Scalars['DateTime']['output']>;
-  phoneNumber?: Maybe<Scalars['String']['output']>;
   profileVisibility: ProfileVisibility;
   signalPhone?: Maybe<Scalars['String']['output']>;
+  snapchatHandle?: Maybe<Scalars['String']['output']>;
   subscription: SubscriptionDto;
   telegramHandle?: Maybe<Scalars['String']['output']>;
   termsAcceptedAtUtc?: Maybe<Scalars['DateTime']['output']>;
@@ -697,9 +698,9 @@ export type UserSearchResultDto = {
   imageUrl?: Maybe<Scalars['String']['output']>;
   instagramHandle?: Maybe<Scalars['String']['output']>;
   nickname?: Maybe<Scalars['String']['output']>;
-  phoneNumber?: Maybe<Scalars['String']['output']>;
   profileVisibility: ProfileVisibility;
   signalPhone?: Maybe<Scalars['String']['output']>;
+  snapchatHandle?: Maybe<Scalars['String']['output']>;
   telegramHandle?: Maybe<Scalars['String']['output']>;
   viewerFriendshipState: ViewerFriendshipState;
   whatsAppPhone?: Maybe<Scalars['String']['output']>;

@@ -36,11 +36,11 @@ const makePreviewUser = (
   userCreatedAtUtc: '2025-11-15T00:00:00Z',
   profileVisibility: ProfileVisibility.Public,
   contactVisibility: ContactVisibility.ConnectionsOnly,
-  phoneNumber: '5551234567',
   googleVoicePhone: null,
   whatsAppPhone: '5551234567',
   instagramHandle: 'ada.codes',
   telegramHandle: null,
+  snapchatHandle: 'ada.codes',
   signalPhone: null,
   ...overrides,
 });
@@ -102,7 +102,7 @@ export const Default: Story = {
 
 Verified, approved user with a full profile: nickname, handle,
 avatar-fallback, an approved Buzz Badge with both screening dates,
-and a contact card with a phone, WhatsApp, and Instagram. This is
+and a contact card with WhatsApp, Instagram, and Snapchat. This is
 what most signed-in users see when they open their own preview.
     `.trim(),
   },

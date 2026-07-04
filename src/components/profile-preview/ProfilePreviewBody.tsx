@@ -4,7 +4,7 @@ import { Linking, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SvgUri } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Info, Phone, UserRound } from 'lucide-react-native';
+import { Info, UserRound } from 'lucide-react-native';
 import { FormCard } from '../ui/card/FormCard';
 import { SafetyDisclaimerCard } from '../ui/card/SafetyDisclaimerCard';
 import { isRenderableAvatarUrl, themedColors, useThemedColor } from '@common';
@@ -20,6 +20,7 @@ import BuzzBadgeMuted from '@assets/svg/BuzzBadgeMuted';
 import GoogleVoiceIcon from '@assets/svg/GoogleVoiceIcon';
 import InstagramIcon from '@assets/svg/InstagramIcon';
 import SignalIcon from '@assets/svg/SignalIcon';
+import SnapchatIcon from '@assets/svg/SnapchatIcon';
 import TelegramIcon from '@assets/svg/TelegramIcon';
 import WhatsAppIcon from '@assets/svg/WhatsAppIcon';
 import type { ProfilePreviewUser } from './types';
@@ -70,6 +71,11 @@ const instagramUrl = (handle: string): string | null => {
 const telegramUrl = (handle: string): string | null => {
   const bare = stripHandle(handle);
   return bare ? `https://t.me/${bare}` : null;
+};
+
+const snapchatUrl = (handle: string): string | null => {
+  const bare = stripHandle(handle);
+  return bare ? `https://www.snapchat.com/add/${encodeURIComponent(bare)}` : null;
 };
 
 const signalUrl = (value: string): string | null => {
@@ -124,7 +130,6 @@ export const ProfilePreviewBody = ({
 }: ProfilePreviewBodyProps) => {
   const insets = useSafeAreaInsets();
   const errorModal = useErrorModal();
-  const phoneIconColor = useThemedColor(themedColors.text.primary);
   const textSecondary = useThemedColor(themedColors.text.secondary);
   const avatarIconColor = useThemedColor(themedColors.text.tertiary);
   const mutedBadgeColor = useThemedColor(themedColors.text.tertiary);
@@ -155,15 +160,6 @@ export const ProfilePreviewBody = ({
   );
 
   const contactRows: ContactRow[] = [];
-  if (isNonEmpty(user.phoneNumber)) {
-    contactRows.push({
-      key: 'phone',
-      label: 'Phone Number',
-      display: formatPhoneDisplay(user.phoneNumber),
-      url: phoneTelUrl(user.phoneNumber),
-      icon: <Phone size={16} color={phoneIconColor} />,
-    });
-  }
   if (isNonEmpty(user.googleVoicePhone)) {
     contactRows.push({
       key: 'gvoice',
@@ -198,6 +194,16 @@ export const ProfilePreviewBody = ({
       display: `@${stripHandle(user.telegramHandle)}`,
       url: telegramUrl(user.telegramHandle),
       icon: <TelegramIcon />,
+    });
+  }
+  if (isNonEmpty(user.snapchatHandle)) {
+    contactRows.push({
+      key: 'snapchat',
+      label: 'Snapchat',
+      display: 'Profile link',
+      url: snapchatUrl(user.snapchatHandle),
+      icon: <SnapchatIcon />,
+      showAsPill: true,
     });
   }
   if (isNonEmpty(user.signalPhone)) {

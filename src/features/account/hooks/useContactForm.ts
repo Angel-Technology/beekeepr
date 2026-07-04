@@ -21,29 +21,29 @@ import {
 const PHONE_ERROR_MESSAGE = 'Enter a valid 10-digit phone number.';
 
 const CONTACT_FIELDS = [
-  'phoneNumber',
   'googleVoicePhone',
   'whatsAppPhone',
   'instagramHandle',
   'telegramHandle',
+  'snapchatHandle',
   'signalPhone',
 ] as const satisfies ReadonlyArray<ContactField>;
 
 const INITIAL_FIELD_STATUS: Record<ContactField, FieldStatus> = {
-  phoneNumber: 'idle',
   googleVoicePhone: 'idle',
   whatsAppPhone: 'idle',
   instagramHandle: 'idle',
   telegramHandle: 'idle',
+  snapchatHandle: 'idle',
   signalPhone: 'idle',
 };
 
 const INITIAL_FIELD_ERROR: Record<ContactField, string | undefined> = {
-  phoneNumber: undefined,
   googleVoicePhone: undefined,
   whatsAppPhone: undefined,
   instagramHandle: undefined,
   telegramHandle: undefined,
+  snapchatHandle: undefined,
   signalPhone: undefined,
 };
 
@@ -131,7 +131,6 @@ export const useContactForm = (user: AuthUser | null) => {
           previous
             ? {
                 ...previous,
-                phoneNumber: updated.phoneNumber ?? previous.phoneNumber,
                 googleVoicePhone:
                   updated.googleVoicePhone ?? previous.googleVoicePhone,
                 whatsAppPhone: updated.whatsAppPhone ?? previous.whatsAppPhone,
@@ -139,6 +138,8 @@ export const useContactForm = (user: AuthUser | null) => {
                   updated.instagramHandle ?? previous.instagramHandle,
                 telegramHandle:
                   updated.telegramHandle ?? previous.telegramHandle,
+                snapchatHandle:
+                  updated.snapchatHandle ?? previous.snapchatHandle,
                 signalPhone: updated.signalPhone ?? previous.signalPhone,
               }
             : previous,

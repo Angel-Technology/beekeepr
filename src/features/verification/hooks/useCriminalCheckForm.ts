@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuthSession } from '@features/auth';
 import { useErrorModal } from '@src/lib/error-modal';
-import { normalizeState } from '../models/usStates';
+import { normalizeState, toStateCode } from '../models/usStates';
 import { useVerificationActions } from './useVerificationActions';
 
 /**
@@ -69,9 +69,10 @@ export const useCriminalCheckForm = () => {
   const { data: user } = useAuthSession();
   const { startCriminalCheck } = useVerificationActions();
   const { showFromError } = useErrorModal();
-  const [phoneNumber, setPhoneNumberRaw] = useState(
-    formatPhoneForDisplay(user?.phoneNumber ?? ''),
-  );
+  // Phone is no longer part of `UserGraph` — the user enters it fresh on
+  // this form. Checkr still requires it on `StartCriminalCheckInput`, but
+  // there's nothing to seed from the auth session.
+  const [phoneNumber, setPhoneNumberRaw] = useState('');
   // Lazy-touched: don't show the error state on first render — only after
   // the user has interacted (typed + blurred, or attempted submit). Avoids
   // greeting the user with a red error on a field they haven't touched.
@@ -79,14 +80,6 @@ export const useCriminalCheckForm = () => {
   const [licenseState, setLicenseState] = useState<string>(
     normalizeState(user?.verifiedLicenseState),
   );
-
-  useEffect(() => {
-    // Seed once when the user record arrives — don't overwrite further edits.
-    if (user?.phoneNumber && !phoneNumber) {
-      setPhoneNumberRaw(formatPhoneForDisplay(user.phoneNumber));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.phoneNumber]);
 
   useEffect(() => {
     // Seed licenseState too, once the user record lands. Don't overwrite
@@ -120,8 +113,12 @@ export const useCriminalCheckForm = () => {
     try {
       // Backend stores digits-only; the formatting is just a display concern.
       const digitsOnly = phoneNumber.replace(/\D/g, '');
+      // `licenseState` in the picker is stored as the full name (e.g.
+      // `"Arizona"`); Checkr's input expects the 2-char code (`"AZ"`).
+      const stateCode = toStateCode(licenseState);
       await startCriminalCheck.mutateAsync({
         phoneNumber: digitsOnly || undefined,
+        licenseState: stateCode || undefined,
       });
       // No navigation here — the flow re-derives to the `congrats` phase
       // when the badge flips to Approved (or `denied` once that lands).

@@ -22,11 +22,11 @@ const emptyProfileValues = {
 } as const;
 
 const emptyContactValues = {
-  phoneNumber: '',
   googleVoicePhone: '',
   whatsAppPhone: '',
   instagramHandle: '',
   telegramHandle: '',
+  snapchatHandle: '',
   signalPhone: '',
 } as const;
 
@@ -36,20 +36,20 @@ const idleProfileStatus = {
 } as const;
 
 const idleContactStatus = {
-  phoneNumber: 'idle',
   googleVoicePhone: 'idle',
   whatsAppPhone: 'idle',
   instagramHandle: 'idle',
   telegramHandle: 'idle',
+  snapchatHandle: 'idle',
   signalPhone: 'idle',
 } as const;
 
 const noContactErrors = {
-  phoneNumber: undefined,
   googleVoicePhone: undefined,
   whatsAppPhone: undefined,
   instagramHandle: undefined,
   telegramHandle: undefined,
+  snapchatHandle: undefined,
   signalPhone: undefined,
 } as const;
 
@@ -63,11 +63,11 @@ The My Profile surface reached from the account/menu drawer. Renders:
 2. The Profile section — avatar row, nickname + handle inputs with
    inline field-status icons, and the Share Profile privacy toggle.
 3. A tip card asking users what fields they'd want next.
-4. The Contact Information section — six brand-icon inputs (phone,
-   Google Voice, WhatsApp, Instagram, Telegram, Signal) with per-field
-   error text and inline status icons, plus the "Share with connections"
-   privacy toggle. The switch is disabled when the entire contact set is
-   empty.
+4. The Contact Information section — six brand-icon inputs (Google
+   Voice, WhatsApp, Instagram, Telegram, Snapchat, Signal) with
+   per-field error text and inline status icons, plus the "Share with
+   connections" privacy toggle. The switch is disabled when the entire
+   contact set is empty.
 
 ## Form bindings
 
@@ -153,19 +153,19 @@ export const Filled: Story = {
     },
     contactForm: {
       values: {
-        phoneNumber: '(555) 123-4567',
         googleVoicePhone: '',
         whatsAppPhone: '(555) 987-6543',
         instagramHandle: 'janedoe',
         telegramHandle: '',
+        snapchatHandle: 'janedoe',
         signalPhone: '',
       },
       fieldStatus: {
-        phoneNumber: 'success',
         googleVoicePhone: 'idle',
         whatsAppPhone: 'success',
         instagramHandle: 'success',
         telegramHandle: 'idle',
+        snapchatHandle: 'success',
         signalPhone: 'idle',
       },
       fieldError: noContactErrors,
@@ -206,12 +206,12 @@ export const WithFieldError: Story = {
     contactForm: {
       values: {
         ...emptyContactValues,
-        phoneNumber: '(555) 1',
+        googleVoicePhone: '(555) 1',
       },
-      fieldStatus: { ...idleContactStatus, phoneNumber: 'error' },
+      fieldStatus: { ...idleContactStatus, googleVoicePhone: 'error' },
       fieldError: {
         ...noContactErrors,
-        phoneNumber: 'Enter a valid 10-digit phone number.',
+        googleVoicePhone: 'Enter a valid 10-digit phone number.',
       },
       setField: () => {},
       submitField: () => {},
@@ -226,6 +226,117 @@ User blurred a phone-style field with a partial value. The
 renders under the input. In production this comes from
 \`useContactForm\`'s validation branch — the field stays editable so
 the user can correct it.
+    `.trim(),
+  },
+};
+
+export const AllInputsSuccess: Story = {
+  args: {
+    profileForm: {
+      values: { nickname: 'Jane Doe', handle: 'janedoe' },
+      fieldStatus: { nickname: 'success', handle: 'success' },
+      setField: () => {},
+      submitField: () => {},
+    },
+    contactForm: {
+      values: {
+        googleVoicePhone: '(555) 123-4567',
+        whatsAppPhone: '(555) 987-6543',
+        instagramHandle: 'janedoe',
+        telegramHandle: 'janedoe',
+        snapchatHandle: 'janedoe',
+        signalPhone: 'https://signal.me/#eu/abc123',
+      },
+      fieldStatus: {
+        googleVoicePhone: 'success',
+        whatsAppPhone: 'success',
+        instagramHandle: 'success',
+        telegramHandle: 'success',
+        snapchatHandle: 'success',
+        signalPhone: 'success',
+      },
+      fieldError: noContactErrors,
+      setField: () => {},
+      submitField: () => {},
+    },
+    imageUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=jane',
+    profileShared: true,
+    connectionsOn: true,
+  },
+  parameters: {
+    notes: `
+## All inputs success
+
+Every field (nickname, handle, and all 6 contact channels) is filled
+with a valid value and reports \`fieldStatus === 'success'\` — every
+row shows the green \`CircleCheck\`. Both privacy toggles are on and
+allowed because the profile is Public and there's contact info to
+share.
+
+Use this to visually confirm the max-population layout: no cropping,
+no wrapped labels, no gap regressions between rows.
+    `.trim(),
+  },
+};
+
+export const AllInputsError: Story = {
+  args: {
+    profileForm: {
+      values: { nickname: 'Jane Doe', handle: 'janedoe' },
+      // Server rejected both — e.g. handle taken, nickname flagged.
+      fieldStatus: { nickname: 'error', handle: 'error' },
+      setField: () => {},
+      submitField: () => {},
+    },
+    contactForm: {
+      values: {
+        // Phone-style fields: partial digits fail client-side NANP validation.
+        googleVoicePhone: '(555) 1',
+        whatsAppPhone: '(555) 9',
+        // Handle-style fields: server-side rejection (no client validation
+        // for these — \`useContactForm\` only emits inline errors for phone
+        // fields, so \`fieldError\` stays undefined and only the status
+        // icon flips to error).
+        instagramHandle: 'jane doe',
+        telegramHandle: 'jane doe',
+        snapchatHandle: 'jane doe',
+        signalPhone: 'not-a-link',
+      },
+      fieldStatus: {
+        googleVoicePhone: 'error',
+        whatsAppPhone: 'error',
+        instagramHandle: 'error',
+        telegramHandle: 'error',
+        snapchatHandle: 'error',
+        signalPhone: 'error',
+      },
+      fieldError: {
+        ...noContactErrors,
+        googleVoicePhone: 'Enter a valid 10-digit phone number.',
+        whatsAppPhone: 'Enter a valid 10-digit phone number.',
+      },
+      setField: () => {},
+      submitField: () => {},
+    },
+    imageUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=jane',
+    profileShared: true,
+    connectionsOn: true,
+  },
+  parameters: {
+    notes: `
+## All inputs error
+
+Every field is in the \`error\` state. Phone-style fields
+(\`googleVoicePhone\`, \`whatsAppPhone\`) show the inline error message
+under the input because \`useContactForm\` sets one for those. Handle
+fields (\`instagramHandle\`, \`telegramHandle\`, \`snapchatHandle\`,
+\`signalPhone\`) and the profile fields (\`nickname\`, \`handle\`) show
+the error icon only — those errors originate server-side in
+production, so the client doesn't own error copy for them.
+
+Use this to sanity-check that the error icon column doesn't shift the
+input width, and that the inline error text under phone fields doesn't
+collide with the next row.
     `.trim(),
   },
 };

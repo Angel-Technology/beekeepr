@@ -14,7 +14,6 @@ fragment AuthUserFields on UserGraph {
   verifiedLastName
   verifiedBirthdate
   verifiedLicenseState
-  phoneNumber
   imageUrl
   backgroundCheckBadge
   backgroundCheckBadgeExpiresAtUtc
@@ -26,5 +25,6 @@ fragment AuthUserFields on UserGraph {
   whatsAppPhone
   instagramHandle
   telegramHandle
+  snapchatHandle
   signalPhone
 }

@@ -107,7 +107,6 @@ export const useProfileForm = (user: AuthUser | null) => {
                 nickname: updated.nickname ?? previous.nickname,
                 handle: updated.handle ?? previous.handle,
                 imageUrl: updated.imageUrl ?? previous.imageUrl,
-                phoneNumber: updated.phoneNumber ?? previous.phoneNumber,
                 googleVoicePhone:
                   updated.googleVoicePhone ?? previous.googleVoicePhone,
                 whatsAppPhone: updated.whatsAppPhone ?? previous.whatsAppPhone,
@@ -115,6 +114,8 @@ export const useProfileForm = (user: AuthUser | null) => {
                   updated.instagramHandle ?? previous.instagramHandle,
                 telegramHandle:
                   updated.telegramHandle ?? previous.telegramHandle,
+                snapchatHandle:
+                  updated.snapchatHandle ?? previous.snapchatHandle,
                 signalPhone: updated.signalPhone ?? previous.signalPhone,
                 profileVisibility: updated.profileVisibility,
                 contactVisibility: updated.contactVisibility,

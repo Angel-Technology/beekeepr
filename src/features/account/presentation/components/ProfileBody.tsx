@@ -11,6 +11,8 @@ import InstagramIcon from '@assets/svg/InstagramIcon';
 import InstagramIconMono from '@assets/svg/InstagramIconMono';
 import SignalIcon from '@assets/svg/SignalIcon';
 import SignalIconMono from '@assets/svg/SignalIconMono';
+import SnapchatIcon from '@assets/svg/SnapchatIcon';
+import SnapchatIconMono from '@assets/svg/SnapchatIconMono';
 import TelegramIcon from '@assets/svg/TelegramIcon';
 import TelegramIconMono from '@assets/svg/TelegramIconMono';
 import WhatsAppIcon from '@assets/svg/WhatsAppIcon';
@@ -149,11 +151,11 @@ export const ProfileBody = ({
   // would make an empty contact set visible to others.
   const { values: contactValues } = contactForm;
   const hasContactInfo =
-    contactValues.phoneNumber.trim().length > 0 ||
     contactValues.googleVoicePhone.trim().length > 0 ||
     contactValues.whatsAppPhone.trim().length > 0 ||
     contactValues.instagramHandle.trim().length > 0 ||
     contactValues.telegramHandle.trim().length > 0 ||
+    contactValues.snapchatHandle.trim().length > 0 ||
     contactValues.signalPhone.trim().length > 0;
 
   // Avatar-picker sheet is local UI state — opens over the profile
@@ -327,18 +329,6 @@ export const ProfileBody = ({
         >
           <FormCard>
             <Input
-              label="Phone Number"
-              type="phone"
-              value={contactValues.phoneNumber}
-              onChangeText={(next) => setContactField('phoneNumber', next)}
-              onBlur={() => submitContactField('phoneNumber')}
-              placeholder="(123) 456-7890"
-              error={contactFieldError.phoneNumber}
-              rightAccessory={
-                <FieldStatusIcon status={contactFieldStatus.phoneNumber} />
-              }
-            />
-            <Input
               label="Google Voice Number"
               type="phone"
               value={contactValues.googleVoicePhone}
@@ -414,6 +404,26 @@ export const ProfileBody = ({
               )}
               rightAccessory={
                 <FieldStatusIcon status={contactFieldStatus.telegramHandle} />
+              }
+            />
+            <Input
+              label="Snapchat"
+              value={contactValues.snapchatHandle}
+              onChangeText={(next) => setContactField('snapchatHandle', next)}
+              onBlur={() => submitContactField('snapchatHandle')}
+              placeholder="handle"
+              autoCapitalize="none"
+              autoCorrect={false}
+              error={contactFieldError.snapchatHandle}
+              leftAccessory={renderHandleAccessory(
+                isFilled(contactValues.snapchatHandle) ? (
+                  <SnapchatIcon />
+                ) : (
+                  <SnapchatIconMono color={emptyIconColor} />
+                ),
+              )}
+              rightAccessory={
+                <FieldStatusIcon status={contactFieldStatus.snapchatHandle} />
               }
             />
             <Input

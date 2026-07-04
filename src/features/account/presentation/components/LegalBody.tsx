@@ -68,7 +68,7 @@ export const LegalBody = ({
         <MenuSection
           items={[
             { label: 'Privacy Policy', onPress: onOpenPrivacyPolicy },
-            { label: 'Terms of Use', onPress: onOpenTermsOfUse },
+            { label: 'Terms of Service', onPress: onOpenTermsOfUse },
             { label: 'Child Safety Policy', onPress: onOpenChildSafetyPolicy },
           ]}
         />

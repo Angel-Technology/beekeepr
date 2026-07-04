@@ -43,11 +43,11 @@ const makeUser = (
   userCreatedAtUtc: '2025-11-01T00:00:00Z',
   profileVisibility: ProfileVisibility.Public,
   contactVisibility: ContactVisibility.ConnectionsOnly,
-  phoneNumber: '5551234567',
   googleVoicePhone: null,
   whatsAppPhone: '5551234567',
   instagramHandle: 'ava.palmer',
   telegramHandle: null,
+  snapchatHandle: 'ava.palmer',
   signalPhone: null,
 });
 

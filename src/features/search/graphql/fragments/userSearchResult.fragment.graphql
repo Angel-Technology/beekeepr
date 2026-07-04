@@ -10,11 +10,11 @@ fragment UserSearchResultFields on UserSearchResultDto {
   createdAtUtc
   profileVisibility
   contactVisibility
-  phoneNumber
   googleVoicePhone
   whatsAppPhone
   instagramHandle
   telegramHandle
+  snapchatHandle
   signalPhone
   viewerFriendshipState
 }

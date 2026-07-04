@@ -47,11 +47,11 @@ const makeUser = (
   userCreatedAtUtc: '2025-12-01T00:00:00Z',
   profileVisibility: ProfileVisibility.Public,
   contactVisibility: ContactVisibility.ConnectionsOnly,
-  phoneNumber: null,
   googleVoicePhone: null,
   whatsAppPhone: null,
   instagramHandle: null,
   telegramHandle: null,
+  snapchatHandle: null,
   signalPhone: null,
 });
 

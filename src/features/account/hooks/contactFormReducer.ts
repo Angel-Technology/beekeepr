@@ -9,11 +9,11 @@ import { stripHandlePrefix } from './profileFormReducer';
  * `UpdateProfileInput` in the generated types.
  */
 export type ContactField =
-  | 'phoneNumber'
   | 'googleVoicePhone'
   | 'whatsAppPhone'
   | 'instagramHandle'
   | 'telegramHandle'
+  | 'snapchatHandle'
   | 'signalPhone';
 
 export type ContactFormValues = Readonly<Record<ContactField, string>>;
@@ -29,7 +29,6 @@ export type ContactFormValues = Readonly<Record<ContactField, string>>;
  * profile link, so it stays a free-text field.
  */
 export const PHONE_FIELDS = new Set<ContactField>([
-  'phoneNumber',
   'googleVoicePhone',
   'whatsAppPhone',
 ]);
@@ -83,13 +82,14 @@ export type ContactFormAction =
   | { type: 'fieldRevertedToBaseline'; field: ContactField };
 
 /**
- * Instagram and Telegram store canonical handles without a leading `@` —
- * matches `stripHandlePrefix` from `profileFormReducer` so the two flows
- * agree on the rule.
+ * Instagram, Telegram, and Snapchat store canonical handles without a
+ * leading `@` — matches `stripHandlePrefix` from `profileFormReducer` so
+ * the two flows agree on the rule.
  */
 const HANDLE_FIELDS = new Set<ContactField>([
   'instagramHandle',
   'telegramHandle',
+  'snapchatHandle',
 ]);
 
 /**
@@ -112,11 +112,11 @@ export const normalizeContactValue = (
 };
 
 export const seedFromUser = (user: AuthUser | null): ContactFormValues => ({
-  phoneNumber: formatPhoneForDisplay(user?.phoneNumber ?? ''),
   googleVoicePhone: formatPhoneForDisplay(user?.googleVoicePhone ?? ''),
   whatsAppPhone: formatPhoneForDisplay(user?.whatsAppPhone ?? ''),
   instagramHandle: stripHandlePrefix(user?.instagramHandle ?? ''),
   telegramHandle: stripHandlePrefix(user?.telegramHandle ?? ''),
+  snapchatHandle: stripHandlePrefix(user?.snapchatHandle ?? ''),
   signalPhone: user?.signalPhone ?? '',
 });
 
@@ -157,7 +157,6 @@ export const contactFormReducer = (
     }
     case 'saveSucceeded': {
       const baseline: ContactFormValues = {
-        phoneNumber: action.updated.phoneNumber ?? state.baseline.phoneNumber,
         googleVoicePhone:
           action.updated.googleVoicePhone ?? state.baseline.googleVoicePhone,
         whatsAppPhone:
@@ -167,6 +166,9 @@ export const contactFormReducer = (
         ),
         telegramHandle: stripHandlePrefix(
           action.updated.telegramHandle ?? state.baseline.telegramHandle,
+        ),
+        snapchatHandle: stripHandlePrefix(
+          action.updated.snapchatHandle ?? state.baseline.snapchatHandle,
         ),
         signalPhone: action.updated.signalPhone ?? state.baseline.signalPhone,
       };

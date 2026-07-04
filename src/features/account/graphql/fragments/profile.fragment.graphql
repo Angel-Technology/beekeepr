@@ -4,11 +4,11 @@ fragment ProfileFields on UserGraph {
   nickname
   handle
   imageUrl
-  phoneNumber
   googleVoicePhone
   whatsAppPhone
   instagramHandle
   telegramHandle
+  snapchatHandle
   signalPhone
   profileVisibility
   contactVisibility

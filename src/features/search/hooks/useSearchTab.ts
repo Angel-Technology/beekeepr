@@ -26,11 +26,11 @@ const toPreviewUser = (user: SearchResultUser): ProfilePreviewUser => ({
   userCreatedAtUtc: user.createdAtUtc,
   profileVisibility: user.profileVisibility,
   contactVisibility: user.contactVisibility,
-  phoneNumber: user.phoneNumber,
   googleVoicePhone: user.googleVoicePhone,
   whatsAppPhone: user.whatsAppPhone,
   instagramHandle: user.instagramHandle,
   telegramHandle: user.telegramHandle,
+  snapchatHandle: user.snapchatHandle,
   signalPhone: user.signalPhone,
 });
 

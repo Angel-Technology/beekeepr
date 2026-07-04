@@ -28,10 +28,10 @@ export type ProfilePreviewUser = {
   userCreatedAtUtc: string;
   profileVisibility: ProfileVisibility;
   contactVisibility: ContactVisibility;
-  phoneNumber?: string | null;
   googleVoicePhone?: string | null;
   whatsAppPhone?: string | null;
   instagramHandle?: string | null;
   telegramHandle?: string | null;
+  snapchatHandle?: string | null;
   signalPhone?: string | null;
 };

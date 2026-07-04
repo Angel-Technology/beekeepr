@@ -101,7 +101,7 @@ export const TermsAcceptanceModal = ({
                   openLegalLink(legalLinks.terms);
                 }}
               >
-                Terms of Use
+                Terms of Service
               </Text>
             </Text>
           }
