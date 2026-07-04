@@ -15,8 +15,6 @@ import SnapchatIcon from '@assets/svg/SnapchatIcon';
 import SnapchatIconMono from '@assets/svg/SnapchatIconMono';
 import TelegramIcon from '@assets/svg/TelegramIcon';
 import TelegramIconMono from '@assets/svg/TelegramIconMono';
-import WhatsAppIcon from '@assets/svg/WhatsAppIcon';
-import WhatsAppIconMono from '@assets/svg/WhatsAppIconMono';
 import type { FieldStatus } from '../../models/account.types';
 // eslint-disable-next-line no-restricted-imports
 import type {
@@ -200,7 +198,7 @@ export const ProfileBody = ({
   } = contactForm;
 
   return (
-    <View className="flex-1 bg-tk-bg-primary">
+    <View className="bg-tk-bg-primary flex-1">
       <AppHeader
         topInset={insets.top}
         left={
@@ -214,7 +212,7 @@ export const ProfileBody = ({
           />
         }
         center={
-          <Text className="font-poppins-semiBold text-base text-tk-text-primary">
+          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
             My Profile
           </Text>
         }
@@ -251,9 +249,9 @@ export const ProfileBody = ({
               accessibilityRole="button"
               accessibilityLabel="Select avatar"
               onPress={openAvatarPicker}
-              className="w-full flex-row items-center gap-3 rounded-3 border border-tk-border-secondary bg-tk-bg-primary py-4 pl-4 pr-2"
+              className="border-tk-border-secondary bg-tk-bg-primary w-full flex-row items-center gap-3 rounded-3 border py-4 pl-4 pr-2"
             >
-              <Text className="flex-1 font-lexend-semiBold text-sm text-tk-text-primary">
+              <Text className="text-tk-text-primary flex-1 font-lexend-semiBold text-sm">
                 Select Avatar
               </Text>
               {/* CircleCheck reads as the FieldStatusIcon success state, so
@@ -293,12 +291,12 @@ export const ProfileBody = ({
                 <FieldStatusIcon status={profileFieldStatus.handle} />
               }
             />
-            <Text className="px-1 font-lexend-regular text-caption leading-4 text-tk-text-tertiary">
+            <Text className="text-tk-text-tertiary px-1 font-lexend-regular text-caption leading-4">
               {HANDLE_HELPER}
             </Text>
 
-            <View className="gap-6 rounded-5 bg-tk-bg-secondary p-4">
-              <Text className="font-lexend-regular text-footnote uppercase leading-[18px] text-tk-text-secondary">
+            <View className="bg-tk-bg-secondary gap-6 rounded-5 p-4">
+              <Text className="text-tk-text-secondary font-lexend-regular text-footnote uppercase leading-[18px]">
                 Privacy Settings
               </Text>
               {/* Single backend-driven toggle. Per the Figma + product spec
@@ -321,7 +319,10 @@ export const ProfileBody = ({
 
         <TipCard title="What are we missing?">
           {' Tell us what else you’d want to share with others. Send ideas to '}
-          <Text className="text-text-informational">design@buzzkeepr.com</Text>.
+          <Text className="text-tk-text-informational">
+            design@buzzkeepr.com
+          </Text>
+          .
         </TipCard>
 
         <InfoSection
@@ -348,7 +349,7 @@ export const ProfileBody = ({
                 )
               }
             />
-            <Input
+            {/* <Input
               label="WhatsApp Number"
               type="phone"
               value={contactValues.whatsAppPhone}
@@ -366,7 +367,7 @@ export const ProfileBody = ({
                   <WhatsAppIconMono />
                 )
               }
-            />
+            /> */}
             <Input
               label="Instagram Handle"
               value={contactValues.instagramHandle}
@@ -448,16 +449,16 @@ export const ProfileBody = ({
               }
             />
 
-            <Text className="px-1 font-lexend-regular text-caption leading-4 text-tk-text-tertiary">
+            <Text className="text-tk-text-tertiary px-1 font-lexend-regular text-caption leading-4">
               {CONTACT_FOOTER_PROMPT}
-              <Text className="text-text-informational">
+              <Text className="text-tk-text-informational">
                 support@buzzkeepr.com
               </Text>
               .
             </Text>
 
-            <View className="gap-6 rounded-5 bg-tk-bg-secondary p-4">
-              <Text className="font-lexend-regular text-footnote uppercase leading-[18px] text-tk-text-secondary">
+            <View className="bg-tk-bg-secondary gap-6 rounded-5 p-4">
+              <Text className="text-tk-text-secondary font-lexend-regular text-footnote uppercase leading-[18px]">
                 Privacy Settings
               </Text>
 

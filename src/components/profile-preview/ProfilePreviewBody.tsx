@@ -235,7 +235,7 @@ export const ProfilePreviewBody = ({
       onScrollBeginDrag={onScrollBeginDrag}
     >
       <View className="flex-row items-center gap-3 px-6">
-        <View className="size-[64px] items-center justify-center overflow-hidden rounded-round bg-tk-bg-elevated-secondary">
+        <View className="bg-tk-bg-elevated-secondary size-[64px] items-center justify-center overflow-hidden rounded-round">
           {isRenderableAvatarUrl(user.imageUrl) ? (
             <SvgUri
               uri={user.imageUrl}
@@ -248,28 +248,28 @@ export const ProfilePreviewBody = ({
         </View>
         <View className="flex-1">
           <Text
-            className="font-poppins-semiBold text-2xl leading-tight text-tk-text-primary"
+            className="text-tk-text-primary font-poppins-semiBold text-2xl leading-tight"
             numberOfLines={1}
           >
             {displayName}
           </Text>
           {displayHandle ? (
             <Text
-              className="font-lexend-regular text-footnote leading-[18px] text-tk-text-primary"
+              className="text-tk-text-primary font-lexend-regular text-footnote leading-[18px]"
               numberOfLines={1}
             >
               {displayHandle}
             </Text>
           ) : null}
           {memberSince ? (
-            <Text className="font-lexend-regular text-footnote leading-[18px] text-tk-text-tertiary">
+            <Text className="text-tk-text-tertiary font-lexend-regular text-footnote leading-[18px]">
               member since: {memberSince}
             </Text>
           ) : null}
         </View>
       </View>
 
-      <View className="mx-6 gap-4 rounded-5 border border-tk-border-secondary bg-tk-bg-primary p-4">
+      <View className="border-tk-border-secondary bg-tk-bg-primary mx-6 gap-4 rounded-5 border p-4">
         <View className="w-full flex-row items-start justify-center gap-3">
           {isApproved ? (
             <BuzzBadge width={35.875} height={41} />
@@ -281,29 +281,29 @@ export const ProfilePreviewBody = ({
             />
           )}
           <View className="flex-1 justify-center">
-            <Text className="font-lexend-semiBold text-base leading-6 text-tk-text-primary">
+            <Text className="text-tk-text-primary font-lexend-semiBold text-base leading-6">
               Buzz Badge
             </Text>
-            <Text className="font-lexend-regular text-caption leading-4 text-tk-text-secondary">
+            <Text className="text-tk-text-secondary font-lexend-regular text-caption leading-4">
               (status updated every 6 months)
             </Text>
           </View>
           <Info size={20} color={textSecondary} />
         </View>
         <View className="gap-1">
-          <View className="flex-row gap-2 rounded-1 bg-tk-bg-elevated-secondary px-1 pb-1.5 pt-1">
-            <Text className="flex-1 font-lexend-regular text-footnote leading-none text-tk-text-secondary">
+          <View className="bg-tk-bg-elevated-secondary flex-row gap-2 rounded-1 px-1 pb-1.5 pt-1">
+            <Text className="text-tk-text-secondary flex-1 font-lexend-regular text-footnote leading-none">
               Last screened
             </Text>
-            <Text className="font-lexend-regular text-footnote leading-none text-tk-text-primary">
+            <Text className="text-tk-text-primary font-lexend-regular text-footnote leading-none">
               {lastScreenedAt ?? '—'}
             </Text>
           </View>
-          <View className="flex-row gap-2 rounded-1 bg-tk-bg-primary px-1 pb-1.5 pt-1">
-            <Text className="flex-1 font-lexend-regular text-footnote leading-none text-tk-text-secondary">
+          <View className="bg-tk-bg-primary flex-row gap-2 rounded-1 px-1 pb-1.5 pt-1">
+            <Text className="text-tk-text-secondary flex-1 font-lexend-regular text-footnote leading-none">
               Next screening
             </Text>
-            <Text className="font-lexend-regular text-footnote leading-none text-tk-text-primary">
+            <Text className="text-tk-text-primary font-lexend-regular text-footnote leading-none">
               {nextScreeningAt ?? '—'}
             </Text>
           </View>
@@ -327,18 +327,18 @@ export const ProfilePreviewBody = ({
                   <View className="size-5 items-center justify-center">
                     {row.icon}
                   </View>
-                  <Text className="flex-1 font-lexend-regular text-footnote leading-[18px] text-tk-text-secondary">
+                  <Text className="text-tk-text-secondary flex-1 font-lexend-regular text-footnote leading-[18px]">
                     {row.label}
                   </Text>
                   {row.showAsPill ? (
-                    <View className="min-h-[24px] flex-row items-center justify-center rounded-round border border-tk-actions-neutral-border-default bg-tk-bg-elevated-primary px-3 py-1.5">
-                      <Text className="font-lexend-semiBold text-xs text-tk-actions-neutral-text-default">
+                    <View className="border-tk-actions-neutral-border-default bg-tk-bg-elevated-primary min-h-[24px] flex-row items-center justify-center rounded-round border px-3 py-1.5">
+                      <Text className="text-tk-actions-neutral-text-default font-lexend-semiBold text-xs">
                         {row.display}
                       </Text>
                     </View>
                   ) : (
                     <Text
-                      className="text-right font-lexend-regular text-footnote leading-[18px] text-tk-text-primary"
+                      className="text-tk-text-primary text-right font-lexend-regular text-footnote leading-[18px]"
                       numberOfLines={1}
                     >
                       {row.display}

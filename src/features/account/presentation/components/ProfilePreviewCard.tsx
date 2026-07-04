@@ -39,9 +39,9 @@ export const ProfilePreviewCard = ({
   return (
     <Container
       onPress={onPress}
-      className="w-full flex-row items-center gap-3 rounded-5 border border-tk-border-secondary bg-tk-bg-primary p-4"
+      className="border-tk-border-secondary bg-tk-bg-primary w-full flex-row items-center gap-3 rounded-5 border p-4"
     >
-      <View className="size-[44px] items-center justify-center overflow-hidden rounded-round bg-tk-bg-elevated-secondary">
+      <View className="bg-tk-bg-elevated-secondary size-[44px] items-center justify-center overflow-hidden rounded-round">
         {hasAvatar ? (
           <SvgUri uri={imageUrl} width={AVATAR_SIZE} height={AVATAR_SIZE} />
         ) : (
@@ -50,14 +50,14 @@ export const ProfilePreviewCard = ({
       </View>
       <View className="min-w-0 flex-1">
         <Text
-          className="font-lexend-semiBold text-base text-tk-text-primary"
+          className="text-tk-text-primary font-lexend-semiBold text-base"
           numberOfLines={1}
         >
           {nickname || ''}
         </Text>
         {displayedHandle ? (
           <Text
-            className="font-lexend-regular text-footnote text-tk-text-secondary"
+            className="text-tk-text-secondary font-lexend-regular text-footnote"
             numberOfLines={1}
           >
             {displayedHandle}

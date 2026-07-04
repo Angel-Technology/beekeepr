@@ -26,7 +26,7 @@ export const SettingsBody = ({ onGoBack }: SettingsBodyProps) => {
   const chevronColor = useThemedColor(themedColors.text.primary);
 
   return (
-    <View className="flex-1 bg-tk-bg-primary">
+    <View className="flex-1 gap-5 bg-tk-bg-primary">
       <AppHeader
         topInset={insets.top}
         left={

@@ -26,11 +26,11 @@ export const BuzzBlockedUsersCard = ({
 
   return (
     <InfoSection title="BLOCKED">
-      <FormCard className="gap-0 px-6 py-2">
+      <FormCard className="gap-0 px-5 py-2">
         {blockedUsers.map((user, index) => (
           <Fragment key={user.id}>
             {index > 0 ? (
-              <View className="h-px w-full bg-tk-border-secondary" />
+              <View className="bg-tk-border-secondary h-px w-full" />
             ) : null}
             <BuzzConnectionRow
               nickname={user.nickname ?? ''}

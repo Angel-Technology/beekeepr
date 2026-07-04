@@ -28,6 +28,7 @@ export const themedColors = {
     tertiary: themed('rgba(0, 0, 0, 0.5)', 'rgba(255, 255, 255, 0.5)'),
     quaternary: themed('rgba(0, 0, 0, 0.3)', 'rgba(255, 255, 255, 0.3)'),
     primaryReversed: themed('#FFFFFF', '#000000'),
+    informational: themed('#1489E6', '#14A5FF'),
   },
 
   bg: {

@@ -13,8 +13,9 @@ const titleClassName = 'font-poppins-semiBold text-base text-tk-text-primary';
 const descriptionClassName =
   'font-poppins-regular text-sm leading-[20px] text-tk-text-tertiary';
 const outlineIconWrapperClassName =
-  'p-[10px] bg-transparent border border-brand-primary';
-const filledIconWrapperClassName = 'p-[10px] bg-brand-primary';
+  'p-[10px] bg-transparent border-2 border-brand-primary';
+const filledIconWrapperClassName =
+  'p-[10px] bg-brand-primary border-2 border-brand-primary';
 const connectorClassName = 'my-0 bg-brand-primary';
 
 export const VerificationTrialStepper = ({

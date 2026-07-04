@@ -95,6 +95,7 @@ module.exports = {
             'primary-reversed': 'var(--tk-text-primary-reversed)',
             action: 'var(--tk-text-action)',
             'action-emphasis': 'var(--tk-text-action-emphasis)',
+            informational: 'var(--tk-text-informational)',
           },
 
           /** Background — surface colors. Default = `bg gray`; alt families namespaced. */

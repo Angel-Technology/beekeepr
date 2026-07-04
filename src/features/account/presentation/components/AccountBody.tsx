@@ -6,7 +6,7 @@ import {
   Trash,
 } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppHeader, IconButton, Input } from '@components';
+import { AppHeader, IconButton } from '@components';
 import { themedColors, useThemedColor } from '@common';
 import { MenuSection, type MenuItem } from './MenuSection';
 
@@ -49,7 +49,6 @@ type AccountBodyProps = {
  * router in and hands them to this body as props / callbacks.
  */
 export const AccountBody = ({
-  email,
   hasSubscriptionHistory,
   onGoBack,
   onRestorePurchases,
@@ -110,25 +109,6 @@ export const AccountBody = ({
           gap: 16,
         }}
       >
-        <View className="w-full gap-2 px-1">
-          <Text className="font-lexend-regular text-footnote leading-[18px] text-tk-text-secondary">
-            EMAIL ADDRESS
-          </Text>
-          <Text className="font-lexend-regular text-footnote leading-[18px] text-tk-text-secondary">
-            This is the email address being used for your login and email
-            communication.
-          </Text>
-        </View>
-
-        <View className="w-full rounded-lg border border-tk-border-secondary p-4">
-          <Input
-            label="Email address"
-            value={email}
-            onChangeText={() => {}}
-            disabled
-          />
-        </View>
-
         <MenuSection items={subscriptionItems} />
 
         <MenuSection

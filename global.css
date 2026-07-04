@@ -35,6 +35,7 @@
     --tk-text-primary-reversed: #ffffff; /* alias → gray.white */
     --tk-text-action: #e5ac03; /* alias → brand.darker */
     --tk-text-action-emphasis: #e5ac03; /* alias → brand.darker */
+    --tk-text-informational: #1489e6; /* hyperlinks / inline external links */
 
     /* Background — gray (default surface family) */
     --tk-bg-primary: #ffffff;
@@ -126,6 +127,7 @@
     --tk-text-primary-reversed: #000000; /* alias → gray.black */
     --tk-text-action: #ffd400; /* alias → brand.primary */
     --tk-text-action-emphasis: #ffffff; /* alias → gray.white */
+    --tk-text-informational: #14a5ff; /* hyperlinks / inline external links */
 
     /* Background — gray (default surface family) */
     --tk-bg-primary: #000000;

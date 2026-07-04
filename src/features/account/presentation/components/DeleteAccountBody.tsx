@@ -142,7 +142,7 @@ export const DeleteAccountBody = ({
           <Text
             accessibilityRole="link"
             onPress={onOpenPrivacyPolicy}
-            className="text-text-informational"
+            className="text-tk-text-informational"
           >
             Privacy Policy
           </Text>

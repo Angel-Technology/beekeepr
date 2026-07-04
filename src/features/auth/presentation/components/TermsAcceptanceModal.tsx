@@ -96,7 +96,7 @@ export const TermsAcceptanceModal = ({
             <Text className="font-lexend-regular text-sm leading-5 text-tk-text-primary">
               I have read & agree to the{' '}
               <Text
-                className="font-lexend-regular text-sm text-text-informational"
+                className="font-lexend-regular text-sm text-tk-text-informational"
                 onPress={() => {
                   openLegalLink(legalLinks.terms);
                 }}
@@ -117,7 +117,7 @@ export const TermsAcceptanceModal = ({
             <Text className="font-lexend-regular text-sm leading-5 text-tk-text-primary">
               I have read & agree to the{' '}
               <Text
-                className="font-lexend-regular text-sm text-text-informational"
+                className="font-lexend-regular text-sm text-tk-text-informational"
                 onPress={() => {
                   openLegalLink(legalLinks.privacy);
                 }}
@@ -138,7 +138,7 @@ export const TermsAcceptanceModal = ({
             <Text className="font-lexend-regular text-sm leading-5 text-tk-text-primary">
               I have read & agree to the{' '}
               <Text
-                className="font-lexend-regular text-sm text-text-informational"
+                className="font-lexend-regular text-sm text-tk-text-informational"
                 onPress={() => {
                   openLegalLink(legalLinks.csae);
                 }}
@@ -150,7 +150,7 @@ export const TermsAcceptanceModal = ({
         />
       </View>
 
-      <Text className="font-lexend-regular text-footnote leading-[18px] text-tk-text-tertiary">
+      <Text className="font-lexend-regular text-footnote leading-[18px] text-tk-text-primary">
         By selecting the boxes above, you&apos;re confirming that you&apos;re at
         least 18 years of age and you&apos;re agreeing to our Terms of Use &amp;
         Privacy Policy.

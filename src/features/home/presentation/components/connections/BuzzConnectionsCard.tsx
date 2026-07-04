@@ -24,7 +24,7 @@ export const BuzzConnectionsCard = ({
     <InfoSection title="MY BUZZ BADGE CONNECTIONS">
       {isEmpty ? (
         <FormCard className="gap-3 p-3">
-          <Text className="px-4 pb-4 pt-2 font-lexend-regular text-sm leading-5 text-tk-text-primary">
+          <Text className="text-tk-text-primary px-4 pb-4 pt-2 font-lexend-regular text-sm leading-5">
             Keep track of your Buzz Badge connections here. You can add, remove
             and flag people.
           </Text>
@@ -33,15 +33,15 @@ export const BuzzConnectionsCard = ({
             handle="member"
             muted
             trailing={<BuzzBadgeMuted color={mutedBadgeColor} />}
-            className="rounded-3 border-0 bg-tk-bg-elevated-secondary px-5"
+            className="bg-tk-bg-elevated-secondary rounded-3 border-0 px-5"
           />
         </FormCard>
       ) : (
-        <FormCard className="gap-0 px-6 py-2">
+        <FormCard className="gap-0 px-5 py-2">
           {connections.map((connection, index) => (
             <Fragment key={connection.id}>
               {index > 0 ? (
-                <View className="h-px w-full bg-tk-border-secondary" />
+                <View className="bg-tk-border-secondary h-px w-full" />
               ) : null}
               <BuzzConnectionRow
                 nickname={connection.nickname ?? ''}

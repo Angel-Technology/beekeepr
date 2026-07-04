@@ -51,7 +51,7 @@ export const VerificationLearnMoreBody = ({
     <Container
       safeArea
       safeAreaEdges={['top', 'bottom']}
-      className="bg-tk-bg-primary"
+      className="bg-tk-bg-primary py-6"
     >
       <View className="w-full">
         <View className="w-full flex-row items-start gap-3">

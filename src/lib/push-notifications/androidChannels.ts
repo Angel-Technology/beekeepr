@@ -23,7 +23,10 @@ if (Platform.OS === 'android') {
     importance: Notifications.AndroidImportance.HIGH,
     lightColor: '#FFD400',
     lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
-    sound: 'default',
+    // Omit `sound` — expo-notifications treats any non-null string as a
+    // custom filename it looks up in the app bundle, and a missing file
+    // throws "Custom sound '<name>' not found." Leaving it undefined
+    // opts into the OS system default notification sound instead.
     vibrationPattern: [0, 250, 250, 250],
   }).catch((error) => {
     // Best-effort — a channel registration failure shouldn't crash the
