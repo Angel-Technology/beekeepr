@@ -1,42 +1,34 @@
 import { useCallback } from 'react';
-import { Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import {
-  ArchiveRestore,
-  ChevronLeft,
-  CreditCard,
-  Trash,
-} from 'lucide-react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppHeader, IconButton, Input } from '@components';
-import { themedColors, useThemedColor } from '@common';
 import { useAuthSession } from '@features/auth';
 import { useErrorModal } from '@src/lib/error-modal';
 import { useRevenueCat } from '@src/lib/revenuecat';
-import { MenuSection } from '../components/MenuSection';
-
-const DELETE_ACCOUNT_COLOR = '#FF0000';
-const MENU_ICON_SIZE = 20;
+import { AccountBody } from '../components/AccountBody';
 
 /**
- * Account settings hub. Holds the auth email (read-only), subscription
- * controls (Restore Purchase + Manage Subscription when there's
- * history), and the destructive Delete Account entry point.
+ * Connected wrapper for the account settings hub. Pulls the auth session
+ * (for the read-only email), the RevenueCat state + restore/manage
+ * calls, and the router; hands them to `AccountBody` as props.
  *
- * These used to live inline in the menu drawer. Splitting them into a
- * dedicated screen keeps the drawer focused on navigation targets and
- * keeps the account-level actions in one predictable place.
+ * Holds the auth email (read-only), subscription controls (Restore
+ * Purchase + Manage Subscription when there's history), and the
+ * destructive Delete Account entry point. These used to live inline in
+ * the menu drawer. Splitting them into a dedicated screen keeps the
+ * drawer focused on navigation targets and keeps the account-level
+ * actions in one predictable place.
+ *
+ * Why a thin wrapper: the body's JSX is the source of truth for what
+ * the screen looks like, and Storybook renders that body directly.
+ * Extracting it means the same pixels ship in production and in
+ * stories, with no parallel preview composition to keep in sync.
  */
 export const AccountScreen = () => {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const { data: user } = useAuthSession();
   const { isPro, isLapsed, restorePurchases, openManageSubscription } =
     useRevenueCat();
   const { showError, showFromError } = useErrorModal();
   const hasSubscriptionHistory = isPro || isLapsed;
-  const chevronColor = useThemedColor(themedColors.text.primary);
-  const menuIconColor = useThemedColor(themedColors.text.primary);
 
   const handleManageSubscription = useCallback(async () => {
     try {
@@ -61,98 +53,17 @@ export const AccountScreen = () => {
   }, [restorePurchases, showError, showFromError]);
 
   return (
-    <View className="bg-tk-bg-primary flex-1">
-      <AppHeader
-        topInset={insets.top}
-        left={
-          <IconButton
-            accessibilityLabel="Go back"
-            className="border-none bg-transparent"
-            icon={
-              <ChevronLeft size={24} strokeWidth={2.2} color={chevronColor} />
-            }
-            onPress={() => router.back()}
-          />
-        }
-        center={
-          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
-            Account
-          </Text>
-        }
-      />
-
-      <View
-        className="flex-1"
-        style={{
-          paddingHorizontal: 24,
-          paddingTop: 24,
-          paddingBottom: insets.bottom + 24,
-          gap: 16,
-        }}
-      >
-        <View className="w-full gap-2 px-1">
-          <Text className="text-tk-text-secondary font-lexend-regular text-footnote leading-[18px]">
-            EMAIL ADDRESS
-          </Text>
-          <Text className="text-tk-text-secondary font-lexend-regular text-footnote leading-[18px]">
-            This is the email address being used for your login and email
-            communication.
-          </Text>
-        </View>
-
-        <View className="border-tk-border-secondary w-full rounded-lg border p-4">
-          <Input
-            label="Email address"
-            value={user?.email ?? ''}
-            onChangeText={() => {}}
-            disabled
-          />
-        </View>
-
-        <MenuSection
-          items={[
-            {
-              label: 'Restore Purchase',
-              icon: (
-                <ArchiveRestore size={MENU_ICON_SIZE} color={menuIconColor} />
-              ),
-              onPress: () => {
-                void handleRestorePurchases();
-              },
-            },
-            // Only surface Manage Subscription once the user has (or
-            // had) a paid plan — RevenueCat's manage-subscription
-            // deep link errors for accounts with no subscription
-            // history at all.
-            ...(hasSubscriptionHistory
-              ? [
-                  {
-                    label: 'Manage Subscription',
-                    icon: (
-                      <CreditCard size={MENU_ICON_SIZE} color={menuIconColor} />
-                    ),
-                    onPress: () => {
-                      void handleManageSubscription();
-                    },
-                  },
-                ]
-              : []),
-          ]}
-        />
-
-        <MenuSection
-          items={[
-            {
-              label: 'Delete Account',
-              icon: (
-                <Trash size={MENU_ICON_SIZE} color={DELETE_ACCOUNT_COLOR} />
-              ),
-              labelStyle: { color: DELETE_ACCOUNT_COLOR },
-              onPress: () => router.push('/delete-account'),
-            },
-          ]}
-        />
-      </View>
-    </View>
+    <AccountBody
+      email={user?.email ?? ''}
+      hasSubscriptionHistory={hasSubscriptionHistory}
+      onGoBack={() => router.back()}
+      onRestorePurchases={() => {
+        void handleRestorePurchases();
+      }}
+      onManageSubscription={() => {
+        void handleManageSubscription();
+      }}
+      onDeleteAccount={() => router.push('/delete-account')}
+    />
   );
 };

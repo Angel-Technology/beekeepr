@@ -70,7 +70,7 @@ export const useSearchTab = (query: string) => {
     : !isMember
       ? 'member'
       : null;
-  const isSearchDisabled = gateState !== null;
+  const isSearchDisabled = gateState !== null || isDenied;
 
   // Don't even debounce a query the user can't run — gated state forces
   // the underlying hook to settle on an empty fetch.

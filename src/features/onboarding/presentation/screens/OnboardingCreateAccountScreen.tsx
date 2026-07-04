@@ -1,62 +1,35 @@
-import { useRouter } from 'expo-router';
-import { Platform, View } from 'react-native';
-import { Image } from 'expo-image';
+import { useOnboardingCreateAccount } from '../../hooks/useOnboardingCreateAccount';
+import { OnboardingCreateAccountBody } from '../components/OnboardingCreateAccountBody';
 
-import { appImages } from '@assets/images';
-import { themedColors, useThemedColor } from '@common';
-import AppleIcon from '@assets/svg/AppleIcon';
-import GoogleIcon from '@assets/svg/GoogleIcon';
-import { BrandMark, Button, Container, VerticalSpacer } from '@components';
-import { useAuthActions } from '@features/auth';
-
+/**
+ * Connected wrapper for the onboarding "create account" screen. Pulls
+ * the platform flag, sign-in pending states, and navigation handlers
+ * from `useOnboardingCreateAccount`, then passes them into
+ * `OnboardingCreateAccountBody` for rendering.
+ *
+ * Why a thin wrapper: the body's JSX is the source of truth for what the
+ * screen looks like, and Storybook renders that body directly. Extracting
+ * it from the screen means there's no parallel preview composition to
+ * keep in sync — same pixels in production and in stories.
+ */
 export const OnboardingCreateAccountScreen = () => {
-  const router = useRouter();
-  const { signInWithGoogle, signInWithApple } = useAuthActions();
-  const appleIconColor = useThemedColor(themedColors.text.primary);
+  const {
+    showAppleButton,
+    isApplePending,
+    isGooglePending,
+    handleContinueWithApple,
+    handleContinueWithGoogle,
+    handleContinueWithEmail,
+  } = useOnboardingCreateAccount();
 
   return (
-    <Container
-      safeArea
-      safeAreaEdges={['top', 'bottom']}
-      className="bg-tk-bg-primary flex-1"
-    >
-      <VerticalSpacer size="lg" />
-      <BrandMark />
-
-      <View className="w-full flex-1 items-center justify-end self-stretch">
-        <Image
-          source={appImages.illustrationLetsdothis}
-          contentFit="contain"
-          style={{ width: '100%', height: '100%' }}
-        />
-      </View>
-
-      <View className="w-full gap-4 pb-4">
-        {Platform.OS === 'ios' ? (
-          <Button
-            label="Continue with Apple"
-            variant="outline"
-            iconLeft={<AppleIcon color={appleIconColor} />}
-            loading={signInWithApple.isPending}
-            onPress={() => {
-              signInWithApple.mutate();
-            }}
-          />
-        ) : null}
-        <Button
-          label="Continue with Google"
-          variant="outline"
-          iconLeft={<GoogleIcon />}
-          loading={signInWithGoogle.isPending}
-          onPress={() => {
-            signInWithGoogle.mutate();
-          }}
-        />
-        <Button
-          label="Continue with Email"
-          onPress={() => router.push('/auth/create-account-email')}
-        />
-      </View>
-    </Container>
+    <OnboardingCreateAccountBody
+      showAppleButton={showAppleButton}
+      isApplePending={isApplePending}
+      isGooglePending={isGooglePending}
+      onContinueWithApple={handleContinueWithApple}
+      onContinueWithGoogle={handleContinueWithGoogle}
+      onContinueWithEmail={handleContinueWithEmail}
+    />
   );
 };

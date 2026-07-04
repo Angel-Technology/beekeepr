@@ -19,7 +19,8 @@ import { useAuthSession } from '@features/auth';
 import { PushNotificationsProvider } from '@src/lib/push-notifications';
 
 import '../global.css';
-import { useEffect, type ComponentType } from 'react';
+import { useEffect, useState, type ComponentType } from 'react';
+import { DevSettings } from 'react-native';
 import { QueryProvider } from '@src/lib/tanstack/QueryProvider';
 import { RevenueCatProvider } from '@src/lib/revenuecat';
 import { GlobalLoaderProvider, GlobalLoaderOverlay } from '@src/lib/loader';
@@ -41,10 +42,14 @@ initSentry();
 
 SplashScreen.preventAutoHideAsync();
 
-const storybookEnabled = process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === 'true';
+// Storybook is bundled into every dev build (see `metro.config.js`) so the
+// in-app toggle can flip to it without a Metro restart. In production we only
+// require it when the caller explicitly opted in via the env var.
+const storybookAvailable =
+  __DEV__ || process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === 'true';
 
 let StorybookUIRoot: ComponentType<Record<string, never>> | undefined;
-if (storybookEnabled) {
+if (storybookAvailable) {
   StorybookUIRoot = require('../.rnstorybook').default;
 }
 
@@ -96,10 +101,27 @@ function RootNavigator() {
 }
 
 function RootLayout() {
+  const [storybookEnabled, setStorybookEnabled] = useState(
+    process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === 'true',
+  );
+
   useEffect(() => {
     if (storybookEnabled) {
       SplashScreen.hideAsync();
     }
+  }, [storybookEnabled]);
+
+  // Register a "Toggle Storybook" entry in the React Native dev menu
+  // (shake / Cmd+D on iOS sim / Cmd+M on Android). `addMenuItem` has no
+  // removal API, so we register once — the functional setter reads the
+  // latest value without needing the effect to re-run.
+  useEffect(() => {
+    if (!__DEV__) {
+      return;
+    }
+    DevSettings.addMenuItem('Toggle Storybook', () => {
+      setStorybookEnabled((prev) => !prev);
+    });
   }, []);
 
   if (storybookEnabled && StorybookUIRoot) {
@@ -107,7 +129,18 @@ function RootLayout() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <KeyboardProvider>
           <SafeAreaProvider>
-            <StorybookUIRoot />
+            <ErrorModalProvider>
+              <GlobalLoaderProvider>
+                <BottomSheetModalProvider>
+                  <ThemePreferenceProvider>
+                    <ConfirmDestructiveProvider>
+                      <StorybookUIRoot />
+                    </ConfirmDestructiveProvider>
+                  </ThemePreferenceProvider>
+                  <GlobalLoaderOverlay />
+                </BottomSheetModalProvider>
+              </GlobalLoaderProvider>
+            </ErrorModalProvider>
           </SafeAreaProvider>
         </KeyboardProvider>
       </GestureHandlerRootView>

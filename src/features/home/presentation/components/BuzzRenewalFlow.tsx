@@ -22,9 +22,9 @@ export const BuzzRenewalFlow = ({
   onEnterPromoCode,
 }: BuzzRenewalFlowProps) => {
   return (
-    <Card className="gap-6 rounded-5 border-secondary">
+    <Card className="gap-6">
       <View className="items-center gap-2">
-        <Text className="text-center font-poppins-semiBold text-800 text-text-default">
+        <Text className="text-center font-poppins-semiBold text-800 text-tk-text-primary">
           Welcome back
         </Text>
       </View>
@@ -38,11 +38,11 @@ export const BuzzRenewalFlow = ({
 
       <VerificationStatusPill label="ID verified / No criminal records found" />
 
-      <Text className="text-center font-poppins-regular text-base text-text-default">
+      <Text className="text-center font-poppins-regular text-base text-tk-text-primary">
         Your membership has lapsed. Renew to rejoin TheBuzz community and keep
         your Buzz Badge visible on your dating apps.
       </Text>
-      <Text className="text-center font-poppins-bold text-xl text-text-default">
+      <Text className="text-center font-poppins-bold text-xl text-tk-text-primary">
         $9.99/month
       </Text>
       <View className="gap-3">

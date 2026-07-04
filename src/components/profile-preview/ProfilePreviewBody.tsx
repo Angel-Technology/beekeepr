@@ -8,11 +8,15 @@ import { Info, Phone, UserRound } from 'lucide-react-native';
 import { FormCard } from '../ui/card/FormCard';
 import { SafetyDisclaimerCard } from '../ui/card/SafetyDisclaimerCard';
 import { isRenderableAvatarUrl, themedColors, useThemedColor } from '@common';
-import { ContactVisibility } from '@features/auth/models/auth.types';
+import {
+  BackgroundCheckBadge,
+  ContactVisibility,
+} from '@features/auth/models/auth.types';
 import { useErrorModal } from '@src/lib/error-modal/ErrorModalProvider';
 import { formatJoinedDate } from '@src/features/account/models/formatJoinedDate';
 import { InfoSection } from '@src/features/account/presentation/components/InfoSection';
 import BuzzBadge from '@assets/svg/BuzzBadge';
+import BuzzBadgeMuted from '@assets/svg/BuzzBadgeMuted';
 import GoogleVoiceIcon from '@assets/svg/GoogleVoiceIcon';
 import InstagramIcon from '@assets/svg/InstagramIcon';
 import SignalIcon from '@assets/svg/SignalIcon';
@@ -123,6 +127,10 @@ export const ProfilePreviewBody = ({
   const phoneIconColor = useThemedColor(themedColors.text.primary);
   const textSecondary = useThemedColor(themedColors.text.secondary);
   const avatarIconColor = useThemedColor(themedColors.text.tertiary);
+  const mutedBadgeColor = useThemedColor(themedColors.text.tertiary);
+
+  const isApproved =
+    user.backgroundCheckBadge === BackgroundCheckBadge.Approved;
 
   const displayName = user.nickname?.trim() || 'Member';
   const displayHandle = formatHandle(user.handle);
@@ -255,7 +263,15 @@ export const ProfilePreviewBody = ({
 
       <View className="bg-tk-bg-primary border-tk-border-secondary mx-6 gap-4 rounded-5 border p-4">
         <View className="w-full flex-row items-start justify-center gap-3">
-          <BuzzBadge width={35.875} height={41} />
+          {isApproved ? (
+            <BuzzBadge width={35.875} height={41} />
+          ) : (
+            <BuzzBadgeMuted
+              width={35.875}
+              height={41}
+              color={mutedBadgeColor}
+            />
+          )}
           <View className="flex-1 justify-center">
             <Text className="text-tk-text-primary font-lexend-semiBold text-base leading-6">
               Buzz Badge

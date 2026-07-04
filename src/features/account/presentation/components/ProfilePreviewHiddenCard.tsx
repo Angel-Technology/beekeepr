@@ -16,7 +16,7 @@ export const ProfilePreviewHiddenCard = () => {
   return (
     <View className="bg-tk-bg-primary border-tk-border-secondary h-[76px] w-full flex-row items-center gap-4 rounded-5 border px-5 py-3">
       <View
-        className="items-center justify-center rounded-round border-2 p-3"
+        className="items-center justify-center rounded-round border-2 pb-[9px] pl-3 pr-3 pt-[7px]"
         style={{ borderColor: warningColor }}
       >
         <AlertTriangle size={24} color={textColor} />

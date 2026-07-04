@@ -1,26 +1,28 @@
 import { useMemo } from 'react';
-import { Text, View } from 'react-native';
 import type { DrawerContentComponentProps } from '@react-navigation/drawer';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-  AppHeader,
-  ProfilePreviewBody,
-  type ProfilePreviewUser,
-} from '@components';
+import type { ProfilePreviewUser } from '@components';
 import { useAuthSession } from '@features/auth';
+import { ProfileDrawerContentBody } from './ProfileDrawerContentBody';
 
 /**
- * Right-side drawer content rendered for the signed-in user's own
- * profile preview. The body is the shared `ProfilePreviewBody` — same
- * component the connection preview uses. We only need to map the auth
- * user's `createdAtUtc` field name onto `userCreatedAtUtc` (the shape
- * connection rows use natively).
+ * Connected wrapper for the right-side drawer that shows the signed-in
+ * user's own profile preview. Reads the current user via
+ * `useAuthSession`, reshapes it to the `ProfilePreviewUser` surface the
+ * shared preview body expects, and passes it into
+ * `ProfileDrawerContentBody` for rendering.
  *
- * The "This is how others see you." banner stays here since it's
- * specific to the own-profile context.
+ * Why the reshape: `useAuthSession` returns the auth user with a
+ * `createdAtUtc` field, but every other consumer of `ProfilePreviewBody`
+ * (connection rows, search results) uses `userCreatedAtUtc` — that's
+ * the field name on the connection / search fragments. Mapping here
+ * keeps the shared body agnostic of which query hydrated the user.
+ *
+ * Why a thin wrapper: the body's JSX is the source of truth for what
+ * the drawer looks like, and Storybook renders that body directly.
+ * Extracting the auth read means there's no parallel preview
+ * composition to keep in sync — same pixels in production and stories.
  */
 export const ProfileDrawerContent = (_props: DrawerContentComponentProps) => {
-  const insets = useSafeAreaInsets();
   const { data: user } = useAuthSession();
 
   const previewUser = useMemo<ProfilePreviewUser | null>(() => {
@@ -33,24 +35,5 @@ export const ProfileDrawerContent = (_props: DrawerContentComponentProps) => {
     };
   }, [user]);
 
-  return (
-    <View className="bg-tk-bg-primary flex-1">
-      <AppHeader
-        topInset={insets.top}
-        center={
-          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
-            Preview
-          </Text>
-        }
-      />
-
-      <View className="bg-tk-alerts-success items-center px-4 py-2">
-        <Text className="text-tk-text-primary-reversed font-lexend-regular text-base">
-          This is how others see you.
-        </Text>
-      </View>
-
-      {previewUser ? <ProfilePreviewBody user={previewUser} /> : null}
-    </View>
-  );
+  return <ProfileDrawerContentBody previewUser={previewUser} />;
 };

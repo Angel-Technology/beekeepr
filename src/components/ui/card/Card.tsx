@@ -10,19 +10,20 @@ type CardProps = {
   className?: string;
 };
 
-// Surface kept separate from layout so callers can choose a tone without
-// fighting NativeWind's class precedence on conflicting `bg-` utilities.
+// Surface tokens are theme-aware `tk-*` variables. `bg-tk-bg-callout` is the
+// brand-tinted surface that resolves to a neutral elevated surface in dark
+// mode, so the `brand` card doesn't glow yellow-cream at night.
 const SURFACE_BY_TONE: Record<CardTone, string> = {
-  default: 'bg-white',
-  brand: 'bg-brand-lighter',
-  muted: 'bg-bg-weak',
+  default: 'bg-tk-bg-primary',
+  brand: 'bg-tk-bg-callout',
+  muted: 'bg-tk-bg-secondary',
 };
 
 export const Card = ({ children, tone = 'default', className }: CardProps) => {
   return (
     <View
       className={clsx(
-        'border border-border-weak p-lg',
+        'rounded-5 border border-tk-border-secondary p-lg',
         SURFACE_BY_TONE[tone],
         className,
       )}
