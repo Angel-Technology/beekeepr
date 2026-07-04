@@ -10,11 +10,12 @@ import { BaseBottomSheet, CompactButton } from '@components';
 import { themedColors, useThemedColor } from '@common';
 
 /**
- * DiceBear styles offered in the picker. Adventurer leads (product
- * default) and the rest are an opinionated cross-section of the v9
- * library covering illustration, emoji, pixel, and abstract looks. To
- * add a new style: (1) include it here, (2) confirm the slug matches
- * `api.dicebear.com/9.x/{slug}/svg`.
+ * DiceBear styles offered in the picker. The first entry is the product
+ * default that the picker opens on — reorder freely; the initial
+ * `useState` below reads from `STYLES[0]`. The set is an opinionated
+ * cross-section of the v9 library covering illustration, emoji, pixel,
+ * and abstract looks. To add a new style: (1) include it here,
+ * (2) confirm the slug matches `api.dicebear.com/9.x/{slug}/svg`.
  */
 const STYLES: ReadonlyArray<{
   readonly id: AvatarStyle;
@@ -99,7 +100,7 @@ export const AvatarPickerSheet = ({
 }: AvatarPickerSheetProps) => {
   const insets = useSafeAreaInsets();
   const placeholderIconColor = useThemedColor(themedColors.text.tertiary);
-  const [style, setStyle] = useState<AvatarStyle>('adventurer');
+  const [style, setStyle] = useState<AvatarStyle>(STYLES[0].id);
   // Seeds live in state so "Shuffle" re-renders the grid with fresh URLs
   // — and so a switch between styles keeps the same seeds for a
   // "same-character-different-styles" comparison.

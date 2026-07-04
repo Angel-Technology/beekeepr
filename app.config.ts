@@ -90,6 +90,17 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       // iOS app icon (static). Pick the best looking one (usually light bg).
       icon: APP.icon,
 
+      // Push entitlement value written into `Buzzkeepr.entitlements` on
+      // `expo prebuild`. `production` is required for TestFlight / App
+      // Store builds so device tokens map to prod APNs. The
+      // `expo-notifications` plugin defaults to `development` (safe for
+      // local sideloads), which we override here since our Fastlane
+      // build always ships to TestFlight — never sideloaded.
+      entitlements: {
+        ...config.ios?.entitlements,
+        'aps-environment': 'production',
+      },
+
       config: {
         ...config.ios?.config,
         usesNonExemptEncryption: false,
