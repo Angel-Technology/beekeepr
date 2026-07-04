@@ -18,8 +18,11 @@ export type ProfileFormAction =
   | { type: 'saveFailed' }
   | { type: 'fieldRevertedToBaseline'; field: ProfileField };
 
+// Handles are space-free by contract — strip any leading `@`s AND all
+// whitespace (internal + edge). Handles a user paste of `"@jane doe"`
+// as cleanly as a keystroke of ` jane`.
 export const stripHandlePrefix = (value: string): string =>
-  value.replace(/^@+/, '').trim();
+  value.replace(/^@+/, '').replace(/\s+/g, '');
 
 export const seedFromUser = (user: AuthUser | null): ProfileFormValues => ({
   nickname: user?.nickname ?? '',
