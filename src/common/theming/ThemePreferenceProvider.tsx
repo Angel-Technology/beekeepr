@@ -1,12 +1,5 @@
-import {
-  createContext,
-  useContext,
-  type PropsWithChildren,
-} from 'react';
-import {
-  useThemePreference,
-  type ThemePreference,
-} from './useThemePreference';
+import { createContext, useContext, type PropsWithChildren } from 'react';
+import { useThemePreference, type ThemePreference } from './useThemePreference';
 
 type ThemePreferenceContextValue = {
   preference: ThemePreference;

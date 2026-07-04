@@ -36,11 +36,11 @@ export const BuzzScreenSkeleton = () => (
       {/* `FormCard`-shaped wrapper around the rows. Same border /
           radius / padding the populated `BuzzConnectionsCard` uses
           (`gap-0 px-6 py-2`). */}
-      <View className="border-tk-border-secondary bg-tk-bg-primary self-stretch rounded-5 border px-6 py-2">
+      <View className="self-stretch rounded-5 border border-tk-border-secondary bg-tk-bg-primary px-6 py-2">
         {Array.from({ length: ROW_COUNT }).map((_, index) => (
           <Fragment key={index}>
             {index > 0 ? (
-              <View className="bg-tk-border-secondary h-px w-full" />
+              <View className="h-px w-full bg-tk-border-secondary" />
             ) : null}
             <SkeletonRow />
           </Fragment>

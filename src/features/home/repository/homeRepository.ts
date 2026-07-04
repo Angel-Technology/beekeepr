@@ -70,7 +70,10 @@ export const homeRepository = {
     });
   },
   declineInvite(variables: DeclineInviteMutationVariables) {
-    return executeGraphQL<DeclineInviteMutation, DeclineInviteMutationVariables>({
+    return executeGraphQL<
+      DeclineInviteMutation,
+      DeclineInviteMutationVariables
+    >({
       document: DeclineInviteDocument,
       variables,
     });

@@ -51,11 +51,11 @@ export const CriminalIntroSection = ({
         <View className="w-full gap-2">
           <View className="gap-6">
             <StepBadge current={2} total={2} />
-            <Text className="text-tk-text-primary font-poppins-semiBold text-title-4">
+            <Text className="font-poppins-semiBold text-title-4 text-tk-text-primary">
               Criminal record search
             </Text>
           </View>
-          <Text className="text-tk-text-secondary font-lexend-regular text-base leading-[24px] -tracking-[0.3px]">
+          <Text className="font-lexend-regular text-base leading-[24px] -tracking-[0.3px] text-tk-text-secondary">
             Now we&rsquo;ll check our criminal database and sex offender
             registry.
           </Text>

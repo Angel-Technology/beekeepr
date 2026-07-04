@@ -1,8 +1,5 @@
 import type { DrawerContentComponentProps } from '@react-navigation/drawer';
-import {
-  useConfirmDestructive,
-  type ProfilePreviewUser,
-} from '@components';
+import { useConfirmDestructive, type ProfilePreviewUser } from '@components';
 import { useBlockUser } from '../../../hooks/useBlockUser';
 import { useCancelInvite } from '../../../hooks/useCancelInvite';
 import { useFlagUser } from '../../../hooks/useFlagUser';

@@ -72,7 +72,7 @@ export const InfoCard = ({
           {icon}
           <Text
             className={clsx(
-              'text-tk-text-secondary flex-1 font-poppins-semiBold text-lg',
+              'flex-1 font-poppins-semiBold text-lg text-tk-text-secondary',
               titleClassName,
             )}
           >
@@ -84,11 +84,11 @@ export const InfoCard = ({
             accessibilityRole="button"
             accessibilityLabel={actionLabel}
             onPress={onPressAction}
-            className="bg-tk-actions-neutral-background-tinted rounded-round px-3 py-1.5"
+            className="rounded-round bg-tk-actions-neutral-background-tinted px-3 py-1.5"
           >
             <Text
               className={clsx(
-                'text-tk-text-secondary font-lexend-semiBold text-base',
+                'font-lexend-semiBold text-base text-tk-text-secondary',
                 actionLabelClassName,
               )}
             >

@@ -133,7 +133,7 @@ export const BuzzVerifyFlow = ({
           size="sm"
           className="bg-tk-brand-primary"
         />
-        <Text className="text-tk-text-primary text-center font-poppins-semiBold text-title-2 leading-[1.2]">
+        <Text className="text-center font-poppins-semiBold text-title-2 leading-[1.2] text-tk-text-primary">
           Stand out!
         </Text>
         <Image
@@ -142,10 +142,10 @@ export const BuzzVerifyFlow = ({
           style={{ width: 180, height: 263 }}
         />
         <View className="w-full items-center gap-2">
-          <Text className="text-tk-text-primary text-center font-lexend-regular text-title-4">
+          <Text className="text-center font-lexend-regular text-title-4 text-tk-text-primary">
             30-Day Free Trial
           </Text>
-          <Text className="text-tk-text-primary text-center font-poppins-regular text-base">
+          <Text className="text-center font-poppins-regular text-base text-tk-text-primary">
             $9.99/month
           </Text>
         </View>
@@ -160,15 +160,15 @@ export const BuzzVerifyFlow = ({
       ) : null}
 
       {/* The Buzz Badge represents */}
-      <View className="bg-tk-bg-callout w-full gap-4 rounded-4 p-4">
-        <Text className="text-tk-text-primary font-poppins-semiBold text-base leading-[1.25]">
+      <View className="w-full gap-4 rounded-4 bg-tk-bg-callout p-4">
+        <Text className="font-poppins-semiBold text-base leading-[1.25] text-tk-text-primary">
           The Buzz Badge represents:
         </Text>
         <View className="w-full gap-2">
           {REPRESENTS_ITEMS.map(({ id, label, Icon }) => (
             <View key={id} className="w-full flex-row items-center gap-3">
               <Icon size={16} color={representsIconColor} />
-              <Text className="text-tk-text-secondary flex-1 font-sourceSans-semiBold text-callout leading-[1.3]">
+              <Text className="flex-1 font-sourceSans-semiBold text-callout leading-[1.3] text-tk-text-secondary">
                 {label}
               </Text>
             </View>
@@ -178,7 +178,7 @@ export const BuzzVerifyFlow = ({
 
       {/* Testimonials */}
       <View className="w-full gap-4">
-        <Text className="text-tk-text-primary font-lexend-semiBold text-base leading-6">
+        <Text className="font-lexend-semiBold text-base leading-6 text-tk-text-primary">
           We interviewed over 100 women and this is what they had to say:
         </Text>
         {TESTIMONIALS.map(({ id, image, aspectRatio, quote }) => (
@@ -192,7 +192,7 @@ export const BuzzVerifyFlow = ({
               }}
             />
             <Text
-              className="text-tk-text-secondary font-lexend-regular text-base leading-6"
+              className="font-lexend-regular text-base leading-6 text-tk-text-secondary"
               style={{ letterSpacing: -0.3 }}
             >
               {quote}

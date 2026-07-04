@@ -15,7 +15,7 @@ export const SafetyDisclaimerCard = () => {
   const textPrimary = useThemedColor(themedColors.text.primary);
 
   return (
-    <View className="bg-tk-bg-secondary w-full gap-3 rounded-5 p-4">
+    <View className="w-full gap-3 rounded-5 bg-tk-bg-secondary p-4">
       <View className="w-full flex-row items-center gap-3">
         <View
           className="items-center justify-center rounded-round border-2 p-2"
@@ -23,22 +23,22 @@ export const SafetyDisclaimerCard = () => {
         >
           <ShieldAlert size={24} color={textPrimary} />
         </View>
-        <Text className="text-tk-text-primary flex-1 font-lexend-semiBold text-base leading-6">
+        <Text className="flex-1 font-lexend-semiBold text-base leading-6 text-tk-text-primary">
           Safety is not a guarantee!
         </Text>
       </View>
-      <Text className="text-tk-text-primary font-lexend-regular text-footnote leading-[18px]">
+      <Text className="font-lexend-regular text-footnote leading-[18px] text-tk-text-primary">
         <Text className="font-lexend-regular">
           The Buzz Badge is not a guarantee of safety!{' '}
         </Text>
         It’s a meaningful signal from someone who chose to be accountable.
       </Text>
-      <Text className="text-tk-text-primary font-lexend-regular text-footnote leading-[18px]">
+      <Text className="font-lexend-regular text-footnote leading-[18px] text-tk-text-primary">
         Always use discernment and recommended safety practices when meeting
         anyone new.
       </Text>
       <Divider className="my-2" />
-      <Text className="text-tk-text-secondary font-lexend-regular text-caption leading-4">
+      <Text className="font-lexend-regular text-caption leading-4 text-tk-text-secondary">
         BUZZKEEPR™ DOES NOT CLAIM THAT PEOPLE ARE SAFE! We can only find records
         if they exist and we have access to them. If we don’t find records, this
         doesn’t mean they didn’t commit a crime.

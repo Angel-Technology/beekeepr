@@ -228,7 +228,9 @@ export const useContactForm = (user: AuthUser | null) => {
     return 'idle';
   };
 
-  const derivedFieldStatus = CONTACT_FIELDS.reduce<Record<ContactField, FieldStatus>>(
+  const derivedFieldStatus = CONTACT_FIELDS.reduce<
+    Record<ContactField, FieldStatus>
+  >(
     (acc, field) => {
       acc[field] = deriveStatus(field);
       return acc;

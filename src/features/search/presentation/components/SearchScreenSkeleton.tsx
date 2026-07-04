@@ -15,7 +15,7 @@ export const SearchScreenSkeleton = () => (
       <Shimmer className="h-5 w-44 rounded-1" />
     </View>
 
-    <View className="border-tk-border-secondary bg-tk-bg-primary gap-3 self-stretch rounded-5 border p-6">
+    <View className="gap-3 self-stretch rounded-5 border border-tk-border-secondary bg-tk-bg-primary p-6">
       <Shimmer className="h-3 w-28 rounded-1" />
       <Shimmer className="h-8 w-full rounded-2" />
     </View>

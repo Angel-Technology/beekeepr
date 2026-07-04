@@ -38,13 +38,13 @@ export const PrivacyOptionRow = ({
               : 'bg-tk-actions-neutral-background-solid-hover',
           )}
         >
-          <Text className="text-tk-text-primary-reversed font-lexend-regular text-caption">
+          <Text className="font-lexend-regular text-caption text-tk-text-primary-reversed">
             {badgeLabel}
           </Text>
         </View>
       ) : null}
       <Text
-        className="text-tk-text-primary font-lexend-regular text-base"
+        className="font-lexend-regular text-base text-tk-text-primary"
         style={{ letterSpacing: -0.3 }}
       >
         {title}

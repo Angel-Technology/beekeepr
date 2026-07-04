@@ -16,12 +16,12 @@ export const InfoSection = ({
     {title || description ? (
       <View className="gap-2 px-1">
         {title ? (
-          <Text className="text-tk-text-secondary font-lexend-regular text-footnote uppercase leading-[18px]">
+          <Text className="font-lexend-regular text-footnote uppercase leading-[18px] text-tk-text-secondary">
             {title}
           </Text>
         ) : null}
         {description ? (
-          <Text className="text-tk-text-secondary font-lexend-regular text-footnote leading-[18px]">
+          <Text className="font-lexend-regular text-footnote leading-[18px] text-tk-text-secondary">
             {description}
           </Text>
         ) : null}

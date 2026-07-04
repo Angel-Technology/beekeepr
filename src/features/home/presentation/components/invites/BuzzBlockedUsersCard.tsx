@@ -30,16 +30,14 @@ export const BuzzBlockedUsersCard = ({
         {blockedUsers.map((user, index) => (
           <Fragment key={user.id}>
             {index > 0 ? (
-              <View className="bg-tk-border-secondary h-px w-full" />
+              <View className="h-px w-full bg-tk-border-secondary" />
             ) : null}
             <BuzzConnectionRow
               nickname={user.nickname ?? ''}
               handle={user.handle ?? ''}
               imageUrl={user.imageUrl}
               onPress={
-                onPressBlockedUser
-                  ? () => onPressBlockedUser(user)
-                  : undefined
+                onPressBlockedUser ? () => onPressBlockedUser(user) : undefined
               }
               trailing={
                 <CompactButton

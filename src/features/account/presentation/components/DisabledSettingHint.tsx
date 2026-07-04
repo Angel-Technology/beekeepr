@@ -27,15 +27,15 @@ export const DisabledSettingHint = ({
   const textColor = useThemedColor(themedColors.text.primary);
 
   return (
-    <View className="border-tk-border-secondary bg-tk-bg-primary w-full flex-row items-center gap-4 rounded-5 border px-3 py-3">
+    <View className="w-full flex-row items-center gap-4 rounded-5 border border-tk-border-secondary bg-tk-bg-primary px-3 py-3">
       <View
         className="items-center justify-center rounded-round border-2 pb-[9px] pl-3 pr-3 pt-[7px]"
         style={{ borderColor: warningColor }}
       >
         <TriangleAlert size={16} color={textColor} />
       </View>
-      <Text className="text-tk-text-tertiary flex-1 font-lexend-regular text-footnote leading-[18px]">
-        <Text className="text-tk-text-primary font-lexend-semiBold">
+      <Text className="flex-1 font-lexend-regular text-footnote leading-[18px] text-tk-text-tertiary">
+        <Text className="font-lexend-semiBold text-tk-text-primary">
           This setting is disabled.{' '}
         </Text>
         {`Toggle on “${requiredSetting}” to enable.`}

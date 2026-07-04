@@ -113,11 +113,11 @@ export const SearchBody = ({
   const placeholderColor = useThemedColor(themedColors.text.tertiary);
 
   return (
-    <View className="bg-tk-bg-primary flex-1">
+    <View className="flex-1 bg-tk-bg-primary">
       <AppHeader
         topInset={insets.top}
         center={
-          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
+          <Text className="font-poppins-semiBold text-base text-tk-text-primary">
             Search
           </Text>
         }
@@ -175,7 +175,7 @@ export const SearchBody = ({
                 {gateState ? (
                   <>
                     <Text
-                      className="text-tk-text-secondary font-lexend-regular text-base leading-6"
+                      className="font-lexend-regular text-base leading-6 text-tk-text-secondary"
                       style={{ letterSpacing: -0.3 }}
                     >
                       {GATE_COPY[gateState]}
@@ -188,7 +188,7 @@ export const SearchBody = ({
                 ) : null}
                 {isDenied ? (
                   <Text
-                    className="text-tk-text-secondary font-lexend-regular text-base leading-6"
+                    className="font-lexend-regular text-base leading-6 text-tk-text-secondary"
                     style={{ letterSpacing: -0.3 }}
                   >
                     Only members have access to the Buzz Badge community.

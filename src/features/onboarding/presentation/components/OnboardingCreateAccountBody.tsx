@@ -56,7 +56,7 @@ export const OnboardingCreateAccountBody = ({
     <Container
       safeArea
       safeAreaEdges={['top', 'bottom']}
-      className="bg-tk-bg-primary flex-1"
+      className="flex-1 bg-tk-bg-primary"
     >
       <VerticalSpacer size="lg" />
       <BrandMark />

@@ -191,7 +191,7 @@ export const BuzzBody = ({
   });
 
   return (
-    <View className="bg-tk-bg-primary flex-1">
+    <View className="flex-1 bg-tk-bg-primary">
       <AnimatedKeyboardAwareScrollView
         className="flex-1"
         contentContainerStyle={{
@@ -246,7 +246,7 @@ export const BuzzBody = ({
           <View className="pl-5">
             <IconButton
               accessibilityLabel="Open profile"
-              className="bg-tk-bg-primary border-tk-border-secondary size-[30px] overflow-hidden rounded-round border p-0"
+              className="size-[30px] overflow-hidden rounded-round border border-tk-border-secondary bg-tk-bg-primary p-0"
               icon={
                 profileImageUrl ? (
                   <SvgUri uri={profileImageUrl} width={28} height={28} />
@@ -264,7 +264,7 @@ export const BuzzBody = ({
         }
         center={
           <View className="flex-row items-start justify-center gap-1">
-            <Text className="text-tk-text-primary font-poppins-semiBold text-base">
+            <Text className="font-poppins-semiBold text-base text-tk-text-primary">
               Buzz Badge
             </Text>
           </View>

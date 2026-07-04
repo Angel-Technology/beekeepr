@@ -49,11 +49,11 @@ export const StatePickerField = ({
         accessibilityRole="button"
         accessibilityLabel={`${label}, ${value || 'not set'}`}
         onPress={() => setIsOpen(true)}
-        className="border-tk-border-secondary min-h-[44px] flex-row items-center self-stretch border-b bg-transparent"
+        className="min-h-[44px] flex-row items-center self-stretch border-b border-tk-border-secondary bg-transparent"
       >
         <View className="flex-1">
           {label ? (
-            <Text className="text-tk-text-secondary font-lexend-regular text-xs">
+            <Text className="font-lexend-regular text-xs text-tk-text-secondary">
               {label}
             </Text>
           ) : null}
@@ -90,9 +90,9 @@ export const StatePickerField = ({
                 accessibilityRole="button"
                 accessibilityState={{ selected: isSelected }}
                 onPress={() => handleSelect(item.name)}
-                className="border-tk-border-secondary w-full flex-row items-center justify-between border-b py-4"
+                className="w-full flex-row items-center justify-between border-b border-tk-border-secondary py-4"
               >
-                <Text className="text-tk-text-primary font-lexend-regular text-base">
+                <Text className="font-lexend-regular text-base text-tk-text-primary">
                   {item.name}
                 </Text>
                 {isSelected ? (

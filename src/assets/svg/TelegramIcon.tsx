@@ -1,10 +1,5 @@
 import type { JSX } from 'react';
-import Svg, {
-  Defs,
-  LinearGradient,
-  Path,
-  Stop,
-} from 'react-native-svg';
+import Svg, { Defs, LinearGradient, Path, Stop } from 'react-native-svg';
 
 type TelegramIconProps = {
   width?: number | string;

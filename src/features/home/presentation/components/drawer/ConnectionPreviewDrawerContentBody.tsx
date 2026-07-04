@@ -132,7 +132,7 @@ export const ConnectionPreviewDrawerContentBody = ({
   };
 
   return (
-    <View className="bg-tk-bg-primary flex-1">
+    <View className="flex-1 bg-tk-bg-primary">
       <AppHeader
         topInset={insets.top}
         left={

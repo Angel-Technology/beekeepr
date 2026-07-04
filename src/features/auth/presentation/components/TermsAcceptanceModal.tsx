@@ -52,22 +52,22 @@ export const TermsAcceptanceModal = ({
       dismissOnBackdropPress={false}
       contentClassName="gap-4 rounded-4"
     >
-      <Text className="border-tk-border-secondary text-tk-text-primary border-b pb-4 font-poppins-semiBold text-xl leading-tight">
+      <Text className="border-b border-tk-border-secondary pb-4 font-poppins-semiBold text-xl leading-tight text-tk-text-primary">
         User Compliance Agreement
       </Text>
 
-      <Text className="text-tk-text-secondary font-lexend-regular text-sm leading-5">
+      <Text className="font-lexend-regular text-sm leading-5 text-tk-text-secondary">
         Buzzkeepr™ is not a Consumer Reporting Agency (CRA) as defined by the
         Fair Credit Reporting Act (FCRA).{' '}
-        <Text className="text-tk-text-primary font-lexend-semiBold">
+        <Text className="font-lexend-semiBold text-tk-text-primary">
           The information we provide cannot be used for employment, credit or
           tenant screening, or related purpose.
         </Text>
       </Text>
 
-      <Text className="text-tk-text-secondary font-lexend-regular text-sm leading-5">
+      <Text className="font-lexend-regular text-sm leading-5 text-tk-text-secondary">
         We require age verification to use our services.{' '}
-        <Text className="text-tk-text-primary font-lexend-semiBold">
+        <Text className="font-lexend-semiBold text-tk-text-primary">
           We strictly prohibit any predatory behavior towards children.
         </Text>
       </Text>
@@ -80,7 +80,7 @@ export const TermsAcceptanceModal = ({
           checkmarkStroke={checkmarkColor}
           uncheckedStroke={checkboxColor}
           label={
-            <Text className="text-tk-text-primary font-lexend-regular text-sm leading-5">
+            <Text className="font-lexend-regular text-sm leading-5 text-tk-text-primary">
               I am 18+ years old
             </Text>
           }
@@ -93,7 +93,7 @@ export const TermsAcceptanceModal = ({
           checkmarkStroke={checkmarkColor}
           uncheckedStroke={checkboxColor}
           label={
-            <Text className="text-tk-text-primary font-lexend-regular text-sm leading-5">
+            <Text className="font-lexend-regular text-sm leading-5 text-tk-text-primary">
               I have read & agree to the{' '}
               <Text
                 className="font-lexend-regular text-sm text-text-informational"
@@ -114,7 +114,7 @@ export const TermsAcceptanceModal = ({
           checkmarkStroke={checkmarkColor}
           uncheckedStroke={checkboxColor}
           label={
-            <Text className="text-tk-text-primary font-lexend-regular text-sm leading-5">
+            <Text className="font-lexend-regular text-sm leading-5 text-tk-text-primary">
               I have read & agree to the{' '}
               <Text
                 className="font-lexend-regular text-sm text-text-informational"
@@ -135,7 +135,7 @@ export const TermsAcceptanceModal = ({
           checkmarkStroke={checkmarkColor}
           uncheckedStroke={checkboxColor}
           label={
-            <Text className="text-tk-text-primary font-lexend-regular text-sm leading-5">
+            <Text className="font-lexend-regular text-sm leading-5 text-tk-text-primary">
               I have read & agree to the{' '}
               <Text
                 className="font-lexend-regular text-sm text-text-informational"
@@ -150,7 +150,7 @@ export const TermsAcceptanceModal = ({
         />
       </View>
 
-      <Text className="text-tk-text-tertiary font-lexend-regular text-footnote leading-[18px]">
+      <Text className="font-lexend-regular text-footnote leading-[18px] text-tk-text-tertiary">
         By selecting the boxes above, you&apos;re confirming that you&apos;re at
         least 18 years of age and you&apos;re agreeing to our Terms of Use &amp;
         Privacy Policy.

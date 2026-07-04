@@ -73,7 +73,7 @@ export const BuzzInvitesCard = ({
     <InfoSection title="INBOX">
       {isEmpty ? (
         <FormCard className="gap-3 p-3">
-          <Text className="text-tk-text-primary px-4 pb-4 pt-2 font-lexend-regular text-sm">
+          <Text className="px-4 pb-4 pt-2 font-lexend-regular text-sm text-tk-text-primary">
             Manage Buzz Badge member invites here.
           </Text>
           <BuzzConnectionRow
@@ -89,7 +89,7 @@ export const BuzzInvitesCard = ({
                 disabled
               />
             }
-            className="bg-tk-bg-elevated-secondary rounded-3 border-0 px-5"
+            className="rounded-3 border-0 bg-tk-bg-elevated-secondary px-5"
           />
         </FormCard>
       ) : (
@@ -97,7 +97,7 @@ export const BuzzInvitesCard = ({
           {invites.map((invite, index) => (
             <Fragment key={invite.id}>
               {index > 0 ? (
-                <View className="bg-tk-border-secondary h-px w-full" />
+                <View className="h-px w-full bg-tk-border-secondary" />
               ) : null}
               <BuzzConnectionRow
                 nickname={invite.nickname ?? ''}

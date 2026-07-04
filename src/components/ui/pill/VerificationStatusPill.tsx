@@ -91,7 +91,7 @@ export const VerificationStatusPill = ({
       )}
       <Text
         className={clsx(
-          'text-tk-gray-black font-sourceSans-semiBold',
+          'font-sourceSans-semiBold text-tk-gray-black',
           textClassName ? null : sizeStyles.text,
           textClassName,
         )}

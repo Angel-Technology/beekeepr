@@ -57,7 +57,7 @@ export const ConfirmDestructiveModal = ({
     >
       <View className="gap-4">
         <View className="w-full flex-row items-center justify-between">
-          <Text className="text-tk-text-primary font-poppins-semiBold text-title-4">
+          <Text className="font-poppins-semiBold text-title-4 text-tk-text-primary">
             {title}
           </Text>
           <TouchableOpacity
@@ -71,7 +71,7 @@ export const ConfirmDestructiveModal = ({
           </TouchableOpacity>
         </View>
 
-        <Text className="text-tk-text-primary font-lexend-regular text-base">
+        <Text className="font-lexend-regular text-base text-tk-text-primary">
           {description}
         </Text>
 

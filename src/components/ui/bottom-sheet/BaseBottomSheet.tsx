@@ -116,7 +116,7 @@ export const BaseBottomSheet = ({
         />
         {title ? (
           <View className="w-full flex-row items-center justify-between px-6 pb-4 pt-2">
-            <Text className="text-tk-text-primary font-poppins-semiBold text-title-4">
+            <Text className="font-poppins-semiBold text-title-4 text-tk-text-primary">
               {title}
             </Text>
             <TouchableOpacity

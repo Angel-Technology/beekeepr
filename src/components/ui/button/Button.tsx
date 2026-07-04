@@ -77,7 +77,7 @@ export const Button = ({
       onPress={onPress}
       className={clsx(
         'min-h-[56px] flex-row items-center justify-center gap-4 self-stretch rounded-round px-4 py-2',
-        isOutline && 'border-tk-border-secondary border',
+        isOutline && 'border border-tk-border-secondary',
         isDisabled
           ? 'bg-tk-actions-disabled-background'
           : isOutline

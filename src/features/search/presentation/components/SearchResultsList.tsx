@@ -36,7 +36,7 @@ export const SearchResultsList = ({
   if (results.length === 0) {
     return (
       <View className="px-1">
-        <Text className="text-tk-text-secondary font-lexend-regular text-footnote">
+        <Text className="font-lexend-regular text-footnote text-tk-text-secondary">
           No members found.
         </Text>
       </View>
@@ -47,7 +47,7 @@ export const SearchResultsList = ({
       {results.map((user, index) => (
         <Fragment key={user.id}>
           {index > 0 ? (
-            <View className="bg-tk-border-secondary h-px w-full" />
+            <View className="h-px w-full bg-tk-border-secondary" />
           ) : null}
           <SearchResultRow
             user={user}

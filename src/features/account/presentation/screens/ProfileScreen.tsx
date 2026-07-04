@@ -31,7 +31,8 @@ export const ProfileScreen = () => {
   const profileForm = useProfileForm(user ?? null);
   const contactForm = useContactForm(user ?? null);
 
-  const profileShared = profileForm.profileVisibility === ProfileVisibility.Public;
+  const profileShared =
+    profileForm.profileVisibility === ProfileVisibility.Public;
   // Connections is now the only contact-share switch — the "Everyone"
   // public option was dropped per product and the enum value with it.
   // Off → `Private`, on → `ConnectionsOnly`.

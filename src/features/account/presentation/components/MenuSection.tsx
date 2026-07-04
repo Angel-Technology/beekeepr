@@ -24,7 +24,7 @@ export const MenuSection = ({ items }: MenuSectionProps) => {
   const chevronColor = useThemedColor(themedColors.text.primary);
 
   return (
-    <View className="border-tk-border-secondary w-full self-stretch overflow-hidden rounded-lg border">
+    <View className="w-full self-stretch overflow-hidden rounded-lg border border-tk-border-secondary">
       {items.map((item, index) => {
         const isLast = index === items.length - 1;
 
@@ -39,11 +39,11 @@ export const MenuSection = ({ items }: MenuSectionProps) => {
             <View
               className={clsx(
                 'w-full flex-row items-center gap-4 py-4',
-                !isLast && 'border-tk-border-secondary border-b',
+                !isLast && 'border-b border-tk-border-secondary',
               )}
             >
               <Text
-                className="text-tk-text-primary flex-1 font-lexend-regular text-base leading-6"
+                className="flex-1 font-lexend-regular text-base leading-6 text-tk-text-primary"
                 style={[{ letterSpacing: -0.3 }, item.labelStyle]}
               >
                 {item.label}

@@ -65,7 +65,7 @@ export const CreateAccountEmailBody = ({
     <Container
       safeArea
       safeAreaEdges={['top', 'bottom']}
-      className="bg-tk-bg-primary flex-1"
+      className="flex-1 bg-tk-bg-primary"
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View className="flex-1 self-stretch">
@@ -75,11 +75,11 @@ export const CreateAccountEmailBody = ({
 
           <View className="flex-1 justify-start gap-7 self-stretch ">
             <View className="gap-4 self-stretch">
-              <Text className="text-tk-text-primary text-center font-poppins-semiBold text-2xl">
+              <Text className="text-center font-poppins-semiBold text-2xl text-tk-text-primary">
                 Enter email
               </Text>
               <Text
-                className="text-tk-text-primary text-center font-lexend-regular text-base"
+                className="text-center font-lexend-regular text-base text-tk-text-primary"
                 style={{ letterSpacing: -0.3 }}
               >
                 We’ll send you a{' '}
@@ -108,7 +108,7 @@ export const CreateAccountEmailBody = ({
             </FormCard>
 
             {serverError ? (
-              <Text className="text-tk-alerts-danger font-lexend-regular text-sm">
+              <Text className="font-lexend-regular text-sm text-tk-alerts-danger">
                 {serverError}
               </Text>
             ) : null}

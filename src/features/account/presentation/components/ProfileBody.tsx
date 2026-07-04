@@ -200,7 +200,7 @@ export const ProfileBody = ({
   } = contactForm;
 
   return (
-    <View className="bg-tk-bg-primary flex-1">
+    <View className="flex-1 bg-tk-bg-primary">
       <AppHeader
         topInset={insets.top}
         left={
@@ -214,7 +214,7 @@ export const ProfileBody = ({
           />
         }
         center={
-          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
+          <Text className="font-poppins-semiBold text-base text-tk-text-primary">
             My Profile
           </Text>
         }
@@ -231,6 +231,7 @@ export const ProfileBody = ({
         bottomOffset={100}
         keyboardShouldPersistTaps="handled"
       >
+        {/* here */}
         <InfoSection title="Preview">
           {profileShared ? (
             <ProfilePreviewCard
@@ -250,9 +251,9 @@ export const ProfileBody = ({
               accessibilityRole="button"
               accessibilityLabel="Select avatar"
               onPress={openAvatarPicker}
-              className="border-tk-border-secondary bg-tk-bg-primary w-full flex-row items-center gap-3 rounded-3 border py-4 pl-4 pr-2"
+              className="w-full flex-row items-center gap-3 rounded-3 border border-tk-border-secondary bg-tk-bg-primary py-4 pl-4 pr-2"
             >
-              <Text className="text-tk-text-primary flex-1 font-lexend-semiBold text-sm">
+              <Text className="flex-1 font-lexend-semiBold text-sm text-tk-text-primary">
                 Select Avatar
               </Text>
               {/* CircleCheck reads as the FieldStatusIcon success state, so
@@ -292,12 +293,12 @@ export const ProfileBody = ({
                 <FieldStatusIcon status={profileFieldStatus.handle} />
               }
             />
-            <Text className="text-tk-text-tertiary px-1 font-lexend-regular text-caption leading-4">
+            <Text className="px-1 font-lexend-regular text-caption leading-4 text-tk-text-tertiary">
               {HANDLE_HELPER}
             </Text>
 
-            <View className="bg-tk-bg-secondary gap-6 rounded-5 p-4">
-              <Text className="text-tk-text-secondary font-lexend-regular text-footnote uppercase leading-[18px]">
+            <View className="gap-6 rounded-5 bg-tk-bg-secondary p-4">
+              <Text className="font-lexend-regular text-footnote uppercase leading-[18px] text-tk-text-secondary">
                 Privacy Settings
               </Text>
               {/* Single backend-driven toggle. Per the Figma + product spec
@@ -447,7 +448,7 @@ export const ProfileBody = ({
               }
             />
 
-            <Text className="text-tk-text-tertiary px-1 font-lexend-regular text-caption leading-4">
+            <Text className="px-1 font-lexend-regular text-caption leading-4 text-tk-text-tertiary">
               {CONTACT_FOOTER_PROMPT}
               <Text className="text-text-informational">
                 support@buzzkeepr.com
@@ -455,8 +456,8 @@ export const ProfileBody = ({
               .
             </Text>
 
-            <View className="bg-tk-bg-secondary gap-6 rounded-5 p-4">
-              <Text className="text-tk-text-secondary font-lexend-regular text-footnote uppercase leading-[18px]">
+            <View className="gap-6 rounded-5 bg-tk-bg-secondary p-4">
+              <Text className="font-lexend-regular text-footnote uppercase leading-[18px] text-tk-text-secondary">
                 Privacy Settings
               </Text>
 

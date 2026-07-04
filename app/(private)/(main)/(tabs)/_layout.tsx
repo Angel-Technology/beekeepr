@@ -36,7 +36,9 @@ export default function PrivateTabsLayout() {
           name="search-records"
           options={{
             title: 'Search',
-            tabBarIcon: ({ color }) => <Search size={ICON_SIZE} color={color} />,
+            tabBarIcon: ({ color }) => (
+              <Search size={ICON_SIZE} color={color} />
+            ),
           }}
         />
         <Tabs.Screen

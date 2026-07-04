@@ -39,7 +39,7 @@ export const BuzzSafetyDisclaimerModal = ({
       <View className="w-full flex-row items-center justify-between gap-3 py-2">
         <Text
           numberOfLines={1}
-          className="text-tk-text-primary flex-1 font-poppins-semiBold text-xl leading-tight"
+          className="flex-1 font-poppins-semiBold text-xl leading-tight text-tk-text-primary"
         >
           Safety is not a guarantee!
         </Text>
@@ -56,25 +56,25 @@ export const BuzzSafetyDisclaimerModal = ({
       <View className="w-full gap-7">
         <View className="w-full gap-4">
           <View className="w-full flex-row items-start gap-3">
-            <View className="border-tk-alerts-danger items-center justify-center rounded-round border-2 p-2">
+            <View className="items-center justify-center rounded-round border-2 border-tk-alerts-danger p-2">
               <ShieldAlert size={20} color={textColor} strokeWidth={2.2} />
             </View>
-            <Text className="text-tk-text-primary flex-1 font-lexend-regular text-sm leading-5">
+            <Text className="flex-1 font-lexend-regular text-sm leading-5 text-tk-text-primary">
               The Buzz Badge is not a guarantee of safety! It&apos;s a
               meaningful signal from someone who chose to be accountable.
             </Text>
           </View>
 
-          <View className="bg-tk-border-secondary h-px w-full" />
+          <View className="h-px w-full bg-tk-border-secondary" />
 
-          <Text className="text-tk-text-secondary font-lexend-regular text-sm leading-5">
+          <Text className="font-lexend-regular text-sm leading-5 text-tk-text-secondary">
             BUZZKEEPR™ DOES NOT CLAIM THAT PEOPLE ARE SAFE! We can only find
             records if they exist and we have access to them. If we don&apos;t
             find records, this doesn&apos;t mean they didn&apos;t commit a
             crime.
           </Text>
 
-          <Text className="text-tk-text-primary font-lexend-semiBold text-base leading-6">
+          <Text className="font-lexend-semiBold text-base leading-6 text-tk-text-primary">
             Always use discernment and recommended safety practices when meeting
             anyone new.
           </Text>
@@ -88,7 +88,7 @@ export const BuzzSafetyDisclaimerModal = ({
             checkmarkStroke={checkmarkColor}
             uncheckedStroke={textColor}
             label={
-              <Text className="text-tk-text-primary font-lexend-regular text-sm leading-5">
+              <Text className="font-lexend-regular text-sm leading-5 text-tk-text-primary">
                 Don&apos;t show this to me again
               </Text>
             }

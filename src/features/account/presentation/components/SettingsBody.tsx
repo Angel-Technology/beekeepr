@@ -26,7 +26,7 @@ export const SettingsBody = ({ onGoBack }: SettingsBodyProps) => {
   const chevronColor = useThemedColor(themedColors.text.primary);
 
   return (
-    <View className="bg-tk-bg-primary flex-1">
+    <View className="flex-1 bg-tk-bg-primary">
       <AppHeader
         topInset={insets.top}
         left={
@@ -40,7 +40,7 @@ export const SettingsBody = ({ onGoBack }: SettingsBodyProps) => {
           />
         }
         center={
-          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
+          <Text className="font-poppins-semiBold text-base text-tk-text-primary">
             Settings
           </Text>
         }

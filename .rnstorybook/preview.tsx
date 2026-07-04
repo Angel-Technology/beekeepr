@@ -19,23 +19,23 @@ const StoryHeader = ({ title, name }: { title: string; name: string }) => {
           expanded ? 'Collapse story header' : 'Expand story header'
         }
         onPress={() => setExpanded((prev) => !prev)}
-        className="bg-tk-bg-elevated-secondary flex-row items-center gap-1 self-start rounded-round px-3 py-1"
+        className="flex-row items-center gap-1 self-start rounded-round bg-tk-bg-elevated-secondary px-3 py-1"
       >
         {expanded ? (
           <ChevronDown size={12} color="#9CA3AF" />
         ) : (
           <ChevronRight size={12} color="#9CA3AF" />
         )}
-        <Text className="text-tk-text-tertiary font-poppins-semiBold text-200">
+        <Text className="font-poppins-semiBold text-200 text-tk-text-tertiary">
           {name}
         </Text>
       </TouchableOpacity>
       {expanded ? (
         <View className="gap-1">
-          <Text className="text-tk-text-secondary font-poppins-semiBold text-300">
+          <Text className="font-poppins-semiBold text-300 text-tk-text-secondary">
             {title}
           </Text>
-          <Text className="text-tk-text-primary font-poppins-semiBold text-500">
+          <Text className="font-poppins-semiBold text-500 text-tk-text-primary">
             {name}
           </Text>
         </View>
@@ -47,7 +47,7 @@ const StoryHeader = ({ title, name }: { title: string; name: string }) => {
 const preview: Preview = {
   decorators: [
     (Story, context) => (
-      <View className="bg-tk-bg-primary flex-1">
+      <View className="flex-1 bg-tk-bg-primary">
         <StoryHeader title={context.title} name={context.name} />
         <View className="flex-1">
           <Story />

@@ -23,20 +23,20 @@ export const DatingAdviceCard = ({
   advice,
 }: DatingAdviceCardProps) => {
   return (
-    <View className="bg-tk-bg-primary border-tk-border-secondary w-full gap-2 rounded-5 border p-4">
-      <Text className="text-tk-text-primary font-lexend-semiBold text-base leading-6">
+    <View className="w-full gap-2 rounded-5 border border-tk-border-secondary bg-tk-bg-primary p-4">
+      <Text className="font-lexend-semiBold text-base leading-6 text-tk-text-primary">
         {title}
       </Text>
 
       <View className="w-full gap-2">
-        <Text className="text-tk-text-secondary font-lexend-regular text-sm leading-5">
+        <Text className="font-lexend-regular text-sm leading-5 text-tk-text-secondary">
           {statistic}
         </Text>
-        <Text className="text-tk-text-secondary font-lexend-regular text-sm leading-5">
+        <Text className="font-lexend-regular text-sm leading-5 text-tk-text-secondary">
           {source}
         </Text>
 
-        <View className="bg-tk-border-secondary h-px w-full" />
+        <View className="h-px w-full bg-tk-border-secondary" />
 
         <View className="w-full flex-row items-start gap-2">
           <View className="pt-0.5">
@@ -46,7 +46,7 @@ export const DatingAdviceCard = ({
             {advice.map((paragraph, index) => (
               <Text
                 key={index}
-                className="text-tk-text-primary font-lexend-regular text-sm leading-5"
+                className="font-lexend-regular text-sm leading-5 text-tk-text-primary"
               >
                 {paragraph}
               </Text>

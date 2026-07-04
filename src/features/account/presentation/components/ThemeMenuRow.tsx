@@ -70,7 +70,7 @@ export const ThemeMenuRow = () => {
 
   return (
     <View
-      className="bg-tk-bg-elevated-secondary self-stretch overflow-hidden rounded-round p-1"
+      className="self-stretch overflow-hidden rounded-round bg-tk-bg-elevated-secondary p-1"
       onLayout={(event) => setContainerWidth(event.nativeEvent.layout.width)}
     >
       <View className="relative flex-row items-center">
@@ -86,7 +86,7 @@ export const ThemeMenuRow = () => {
               },
               sliderStyle,
             ]}
-            className="bg-tk-bg-primary border-tk-border-secondary rounded-round border shadow-small"
+            className="rounded-round border border-tk-border-secondary bg-tk-bg-primary shadow-small"
           />
         ) : null}
 

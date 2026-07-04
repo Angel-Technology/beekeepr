@@ -3,6 +3,7 @@ import {
   CancelAccountDeletionDocument,
   CheckHandleAvailabilityDocument,
   RedeemPromoCodeDocument,
+  PushPlatform,
   RegisterPushTokenDocument,
   RequestAccountDeletionDocument,
   UnregisterPushTokenDocument,
@@ -68,13 +69,23 @@ export const accountRepository = {
       variables,
     });
   },
-  registerPushToken(variables: RegisterPushTokenMutationVariables) {
+  // Map the caller's plain-string `platform` to the codegen enum here so
+  // the service layer doesn't need to reach into `graphql/generated`
+  // (feature-layer boundary rule) — and callers don't see the `I_OS`
+  // codegen quirk.
+  registerPushToken(input: { token: string; platform: 'ios' | 'android' }) {
     return executeGraphQL<
       RegisterPushTokenMutation,
       RegisterPushTokenMutationVariables
     >({
       document: RegisterPushTokenDocument,
-      variables,
+      variables: {
+        input: {
+          token: input.token,
+          platform:
+            input.platform === 'ios' ? PushPlatform.IOs : PushPlatform.Android,
+        },
+      },
     });
   },
   unregisterPushToken(variables: UnregisterPushTokenMutationVariables) {

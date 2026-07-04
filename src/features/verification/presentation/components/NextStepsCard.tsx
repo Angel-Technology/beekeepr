@@ -50,7 +50,7 @@ export const NextStepsCard = ({
 
   return (
     <View
-      className="bg-tk-bg-primary w-full gap-4 rounded-5 border-2 p-4"
+      className="w-full gap-4 rounded-5 border-2 bg-tk-bg-primary p-4"
       style={{ borderColor: dangerColor }}
     >
       <View className="w-full flex-row items-center gap-3">
@@ -60,7 +60,7 @@ export const NextStepsCard = ({
         >
           <ShieldAlert size={20} color={textColor} />
         </View>
-        <Text className="text-tk-text-primary flex-1 font-poppins-semiBold text-base leading-[1.25]">
+        <Text className="flex-1 font-poppins-semiBold text-base leading-[1.25] text-tk-text-primary">
           {title}
         </Text>
         <TouchableOpacity
@@ -68,9 +68,9 @@ export const NextStepsCard = ({
           accessibilityLabel={actionLabel}
           onPress={onPressAppeal}
           activeOpacity={0.6}
-          className="border-tk-actions-neutral-border-default flex-row items-center justify-center rounded-round border px-4 py-3"
+          className="flex-row items-center justify-center rounded-round border border-tk-actions-neutral-border-default px-4 py-3"
         >
-          <Text className="text-tk-text-primary font-lexend-semiBold text-sm">
+          <Text className="font-lexend-semiBold text-sm text-tk-text-primary">
             {actionLabel}
           </Text>
         </TouchableOpacity>
@@ -78,14 +78,14 @@ export const NextStepsCard = ({
 
       <View className="w-full gap-2">
         {lead ? (
-          <Text className="text-tk-text-primary font-lexend-semiBold text-base leading-6">
+          <Text className="font-lexend-semiBold text-base leading-6 text-tk-text-primary">
             {lead}
           </Text>
         ) : null}
         {paragraphs.map((paragraph) => (
           <Text
             key={paragraph}
-            className="text-tk-text-secondary font-lexend-regular text-footnote leading-[18px]"
+            className="font-lexend-regular text-footnote leading-[18px] text-tk-text-secondary"
           >
             {paragraph}
           </Text>

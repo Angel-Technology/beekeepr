@@ -303,25 +303,31 @@ countdown card is suppressed when \`isOnTrial\` is false.
   },
 };
 
+// Component wrapper so `useState` is legal inside the story `render`.
+// The rules-of-hooks lint rejects hooks in plain functions — extracting
+// into an uppercase-named component satisfies it.
+const SafetyDisclaimerRender = (args: ComponentProps<typeof BuzzBody>) => {
+  const [visible, setVisible] = useState(args.showSafetyDisclaimer);
+  return (
+    <BuzzBody
+      {...args}
+      showSafetyDisclaimer={visible}
+      onDismissSafetyDisclaimer={(shouldPersist) => {
+        setVisible(false);
+        args.onDismissSafetyDisclaimer(shouldPersist);
+      }}
+    />
+  );
+};
+
 export const SafetyDisclaimer: Story = {
   args: { flow: 'welcome', showSafetyDisclaimer: true },
   // Local state wrapper so tapping the X or "Got it!" actually closes
   // the modal — the actions addon still fires so callers can observe
   // the `shouldPersist` boolean in the Actions panel.
-  render: (args) => {
-    const bodyArgs = args as ComponentProps<typeof BuzzBody>;
-    const [visible, setVisible] = useState(bodyArgs.showSafetyDisclaimer);
-    return (
-      <BuzzBody
-        {...bodyArgs}
-        showSafetyDisclaimer={visible}
-        onDismissSafetyDisclaimer={(shouldPersist) => {
-          setVisible(false);
-          bodyArgs.onDismissSafetyDisclaimer(shouldPersist);
-        }}
-      />
-    );
-  },
+  render: (args) => (
+    <SafetyDisclaimerRender {...(args as ComponentProps<typeof BuzzBody>)} />
+  ),
   parameters: {
     notes: `
 ## Safety disclaimer

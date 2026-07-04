@@ -2,7 +2,12 @@ import type { ReactNode } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { SvgUri } from 'react-native-svg';
 import { UserRound } from 'lucide-react-native';
-import { cn, isRenderableAvatarUrl, themedColors, useThemedColor } from '@common';
+import {
+  cn,
+  isRenderableAvatarUrl,
+  themedColors,
+  useThemedColor,
+} from '@common';
 
 type BuzzConnectionRowProps = {
   nickname: string;
@@ -50,11 +55,11 @@ export const BuzzConnectionRow = ({
     <Container
       onPress={onPress}
       className={cn(
-        'border-tk-border-secondary bg-tk-bg-primary w-full flex-row items-center gap-3 rounded-4 border px-1 py-4',
+        'w-full flex-row items-center gap-3 rounded-4 border border-tk-border-secondary bg-tk-bg-primary px-1 py-4',
         className,
       )}
     >
-      <View className="bg-tk-bg-elevated-tertiary size-[44px] items-center justify-center overflow-hidden rounded-round">
+      <View className="size-[44px] items-center justify-center overflow-hidden rounded-round bg-tk-bg-elevated-tertiary">
         {hasAvatar ? (
           <SvgUri uri={imageUrl} width={AVATAR_SIZE} height={AVATAR_SIZE} />
         ) : (

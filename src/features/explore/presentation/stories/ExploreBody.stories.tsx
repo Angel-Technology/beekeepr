@@ -13,10 +13,7 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-native';
 
-import {
-  ExploreBody,
-  type DatingAdviceItem,
-} from '../components/ExploreBody';
+import { ExploreBody, type DatingAdviceItem } from '../components/ExploreBody';
 
 const FIXTURE_ITEMS: readonly DatingAdviceItem[] = [
   {

@@ -47,7 +47,7 @@ export const DetailCard = ({
     >
       <Text
         className={clsx(
-          'text-tk-text-primary text-base leading-6',
+          'text-base leading-6 text-tk-text-primary',
           titleClassName ? null : 'font-lexend-semiBold',
           titleClassName,
         )}
@@ -63,7 +63,7 @@ export const DetailCard = ({
             {typeof item === 'string' || !item.icon ? (
               <Text
                 className={clsx(
-                  'text-tk-text-secondary shrink-0 text-subhead leading-5',
+                  'shrink-0 text-subhead leading-5 text-tk-text-secondary',
                   itemTextClassName ? null : 'font-lexend-regular',
                   itemTextClassName,
                 )}
@@ -76,7 +76,7 @@ export const DetailCard = ({
             {typeof item === 'string' ? (
               <Text
                 className={clsx(
-                  'text-tk-text-secondary flex-1 text-subhead leading-5',
+                  'flex-1 text-subhead leading-5 text-tk-text-secondary',
                   itemTextClassName ? null : 'font-lexend-regular',
                   itemTextClassName,
                 )}
@@ -86,7 +86,7 @@ export const DetailCard = ({
             ) : typeof item.label === 'string' ? (
               <Text
                 className={clsx(
-                  'text-tk-text-secondary flex-1 text-subhead leading-5',
+                  'flex-1 text-subhead leading-5 text-tk-text-secondary',
                   itemTextClassName ? null : 'font-lexend-regular',
                   itemTextClassName,
                 )}

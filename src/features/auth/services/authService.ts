@@ -115,8 +115,7 @@ export const authService = {
       if (payload.signInWithGoogle.error) {
         throw authError({
           kind: 'unknown',
-          userMessage:
-            "We couldn't sign you in with Google. Please try again.",
+          userMessage: "We couldn't sign you in with Google. Please try again.",
           rawMessage: payload.signInWithGoogle.error,
         });
       }
@@ -124,8 +123,7 @@ export const authService = {
       if (!payload.signInWithGoogle.session) {
         throw authError({
           kind: 'unknown',
-          userMessage:
-            "We couldn't sign you in with Google. Please try again.",
+          userMessage: "We couldn't sign you in with Google. Please try again.",
           rawMessage: 'Google sign-in succeeded but no session was returned.',
         });
       }
@@ -133,8 +131,7 @@ export const authService = {
       if (!payload.signInWithGoogle.user) {
         throw authError({
           kind: 'unknown',
-          userMessage:
-            "We couldn't sign you in with Google. Please try again.",
+          userMessage: "We couldn't sign you in with Google. Please try again.",
           rawMessage: 'Google sign-in succeeded but no user was returned.',
         });
       }
@@ -156,8 +153,7 @@ export const authService = {
       }
       throw authError({
         kind: 'unknown',
-        userMessage:
-          "We couldn't sign you in with Google. Please try again.",
+        userMessage: "We couldn't sign you in with Google. Please try again.",
         rawMessage: rawMessageOf(e),
       });
     }
@@ -256,8 +252,7 @@ export const authService = {
         throw authError({
           kind: 'unknown',
           userMessage: "We couldn't update your account. Please try again.",
-          rawMessage:
-            'Terms acceptance succeeded but no user was returned.',
+          rawMessage: 'Terms acceptance succeeded but no user was returned.',
         });
       }
 

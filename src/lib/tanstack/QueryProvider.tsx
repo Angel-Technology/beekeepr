@@ -30,10 +30,7 @@ export const QueryProvider = ({ children }: PropsWithChildren) => {
   const [queryClient] = useState(createQueryClient);
 
   useEffect(() => {
-    const subscription = AppState.addEventListener(
-      'change',
-      onAppStateChange,
-    );
+    const subscription = AppState.addEventListener('change', onAppStateChange);
     return () => subscription.remove();
   }, []);
 

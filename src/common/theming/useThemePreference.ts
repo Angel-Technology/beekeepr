@@ -16,8 +16,7 @@ const STORAGE_KEY = storageKeys.themePreference;
 const VALID: ReadonlyArray<ThemePreference> = ['system', 'light', 'dark'];
 
 const isValidPreference = (value: unknown): value is ThemePreference =>
-  typeof value === 'string' &&
-  VALID.includes(value as ThemePreference);
+  typeof value === 'string' && VALID.includes(value as ThemePreference);
 
 const apply = (pref: ThemePreference) => colorScheme.set(pref);
 

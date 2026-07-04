@@ -98,7 +98,7 @@ export const DeleteAccountBody = ({
   };
 
   return (
-    <View className="bg-tk-bg-primary flex-1">
+    <View className="flex-1 bg-tk-bg-primary">
       <AppHeader
         topInset={insets.top}
         left={
@@ -112,7 +112,7 @@ export const DeleteAccountBody = ({
           />
         }
         center={
-          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
+          <Text className="font-poppins-semiBold text-base text-tk-text-primary">
             Delete Account
           </Text>
         }
@@ -129,11 +129,11 @@ export const DeleteAccountBody = ({
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Text className="text-tk-text-primary font-lexend-semiBold text-base leading-6">
+        <Text className="font-lexend-semiBold text-base leading-6 text-tk-text-primary">
           Are you sure you want to delete your account?
         </Text>
 
-        <Text className="text-tk-text-secondary font-lexend-regular text-sm leading-5">
+        <Text className="font-lexend-regular text-sm leading-5 text-tk-text-secondary">
           Your account will be scheduled for deletion and deactivated
           immediately. You will have 72 hours to restore your account if you
           change your mind. After 72 hours, your account and associated data
@@ -158,7 +158,7 @@ export const DeleteAccountBody = ({
           itemTextClassName="font-lexend-regular text-xs leading-[18px] text-tk-text-secondary"
         />
 
-        <Text className="text-tk-text-secondary font-lexend-regular text-sm leading-5">
+        <Text className="font-lexend-regular text-sm leading-5 text-tk-text-secondary">
           If you log back in within 72 hours, your account will be restored.
         </Text>
 

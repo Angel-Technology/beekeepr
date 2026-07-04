@@ -20,7 +20,7 @@ export const VerificationTopNav = ({
         icon={<ChevronLeft size={24} strokeWidth={2.2} color={iconColor} />}
         onPress={onPressBack}
       />
-      <Text className="text-tk-text-primary font-poppins-semiBold text-base">
+      <Text className="font-poppins-semiBold text-base text-tk-text-primary">
         Get the Buzz Badge
       </Text>
       <View className="h-[44px] w-[44px]" />

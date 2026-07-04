@@ -11,8 +11,7 @@ export const useUnblockUser = () => {
   const queryClient = useQueryClient();
 
   const unblock = useMutation({
-    mutationFn: (targetUserId: string) =>
-      homeService.unblockUser(targetUserId),
+    mutationFn: (targetUserId: string) => homeService.unblockUser(targetUserId),
     onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: homeQueryKeys.blockedUsers(),

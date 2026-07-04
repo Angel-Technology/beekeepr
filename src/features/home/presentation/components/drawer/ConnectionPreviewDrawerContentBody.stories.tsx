@@ -49,6 +49,7 @@ const makeUser = (
   telegramHandle: null,
   snapchatHandle: 'ava.palmer',
   signalPhone: null,
+  ...overrides,
 });
 
 const DEFAULT_USER = makeUser();
@@ -125,7 +126,14 @@ const meta = {
   argTypes: {
     source: {
       control: { type: 'select' },
-      options: [null, 'connection', 'invite', 'sent-invite', 'blocked', 'search'],
+      options: [
+        null,
+        'connection',
+        'invite',
+        'sent-invite',
+        'blocked',
+        'search',
+      ],
     },
     friendshipState: {
       control: { type: 'select' },

@@ -54,7 +54,7 @@ export const MenuDrawerContent = ({
   );
 
   return (
-    <View className="bg-tk-bg-primary flex-1">
+    <View className="flex-1 bg-tk-bg-primary">
       <AppHeader
         topInset={insets.top}
         left={
@@ -68,7 +68,7 @@ export const MenuDrawerContent = ({
           />
         }
         center={
-          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
+          <Text className="font-poppins-semiBold text-base text-tk-text-primary">
             Menu
           </Text>
         }
@@ -150,10 +150,10 @@ export const MenuDrawerContent = ({
           />
 
           <View className="w-full items-center">
-            <Text className="text-tk-text-tertiary font-lexend-regular text-caption leading-4">
+            <Text className="font-lexend-regular text-caption leading-4 text-tk-text-tertiary">
               Version {APP_VERSION}
             </Text>
-            <Text className="text-tk-text-tertiary font-lexend-regular text-caption leading-4">
+            <Text className="font-lexend-regular text-caption leading-4 text-tk-text-tertiary">
               Created with integrity.
             </Text>
           </View>

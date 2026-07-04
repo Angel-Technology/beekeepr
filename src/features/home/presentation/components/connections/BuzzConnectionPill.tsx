@@ -63,7 +63,7 @@ export const BuzzConnectionPill = ({
 
   return (
     <View
-      className="bg-tk-bg-elevated-secondary self-stretch overflow-hidden rounded-round p-1"
+      className="self-stretch overflow-hidden rounded-round bg-tk-bg-elevated-secondary p-1"
       onLayout={(event) => setContainerWidth(event.nativeEvent.layout.width)}
     >
       <View className="relative flex-row items-center">
@@ -79,7 +79,7 @@ export const BuzzConnectionPill = ({
               },
               animatedPillStyle,
             ]}
-            className="bg-tk-bg-primary border-tk-border-secondary rounded-round border shadow-small"
+            className="rounded-round border border-tk-border-secondary bg-tk-bg-primary shadow-small"
           />
         ) : null}
 
@@ -114,7 +114,7 @@ export const BuzzConnectionPill = ({
                   {tab.label}
                 </Text>
                 {showBadge ? (
-                  <View className="bg-tk-alerts-danger absolute -right-4 -top-1.5 items-center justify-center rounded-full px-1">
+                  <View className="absolute -right-4 -top-1.5 items-center justify-center rounded-full bg-tk-alerts-danger px-1">
                     <Text className="font-lexend-semiBold text-xs text-white">
                       {badgeLabel}
                     </Text>

@@ -31,7 +31,7 @@ export const BuzzSentInvitesCard = ({
         {invites.map((invite, index) => (
           <Fragment key={invite.id}>
             {index > 0 ? (
-              <View className="bg-tk-border-secondary h-px w-full" />
+              <View className="h-px w-full bg-tk-border-secondary" />
             ) : null}
             <BuzzConnectionRow
               nickname={invite.nickname ?? ''}

@@ -11,11 +11,15 @@ export const useDismissibleOnce = (key: string) => {
     let cancelled = false;
     AsyncStorage.getItem(key)
       .then((value) => {
-        if (cancelled) return;
+        if (cancelled) {
+          return;
+        }
         setHasSeen(value === 'true');
       })
       .catch(() => {
-        if (cancelled) return;
+        if (cancelled) {
+          return;
+        }
         setHasSeen(false);
       });
     return () => {

@@ -144,9 +144,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         // Writes the iOS push entitlement to the generated .entitlements
         // file on `expo prebuild`. `color` sets the Android tint for the
-        // notification small icon. Add an `icon` entry pointing at a
-        // 96×96 monochrome PNG when we have a dedicated asset; for now
-        // Android falls back to the app icon.
+        // notification small icon.
+        //
+        // TODO(android-push-icon): add a dedicated monochrome white-on-
+        // transparent 96×96 PNG (e.g. `src/assets/images/notification-icon.png`)
+        // and reference it via an `icon` entry here. Without one, Android
+        // uses the colored app icon as the status-bar small icon, which
+        // renders as a white blob (Android draws small icons as flat
+        // silhouettes). Blocking for a polished Android launch.
         'expo-notifications',
         {
           color: '#FFD400',

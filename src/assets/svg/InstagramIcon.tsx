@@ -1,11 +1,5 @@
 import type { JSX } from 'react';
-import Svg, {
-  Defs,
-  G,
-  Path,
-  RadialGradient,
-  Stop,
-} from 'react-native-svg';
+import Svg, { Defs, G, Path, RadialGradient, Stop } from 'react-native-svg';
 
 type InstagramIconProps = {
   width?: number | string;

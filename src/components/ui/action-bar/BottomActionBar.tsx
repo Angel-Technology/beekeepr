@@ -24,7 +24,7 @@ export const BottomActionBar = ({
   return (
     <View
       className={cn(
-        'bg-tk-bg-primary w-full gap-3 px-6 pt-4 shadow-bottom-bar',
+        'w-full gap-3 bg-tk-bg-primary px-6 pt-4 shadow-bottom-bar',
         className,
       )}
       style={{

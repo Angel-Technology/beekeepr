@@ -35,7 +35,7 @@ export const WhatWeDoSlide = ({
       </View>
 
       <View className="w-full items-center gap-4">
-        <Text className="text-tk-gray-black w-full text-center font-poppins-semiBold text-2xl leading-tight">
+        <Text className="w-full text-center font-poppins-semiBold text-2xl leading-tight text-tk-gray-black">
           {title}
         </Text>
         <View className="w-full items-center">{body}</View>

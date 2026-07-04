@@ -36,7 +36,7 @@ export const ProfileActionsMenu = ({
 
   return (
     <View
-      className="bg-tk-bg-elevated-primary absolute w-[115px] gap-2 rounded-5 py-3"
+      className="absolute w-[115px] gap-2 rounded-5 bg-tk-bg-elevated-primary py-3"
       style={{
         top: insets.top + APP_HEADER_HEIGHT + MENU_GAP,
         right: 16,
@@ -73,7 +73,7 @@ const MenuItem = ({ label, icon, onPress }: MenuItemProps) => (
     className="min-h-7 w-full flex-row items-center gap-2 rounded-1 px-3 py-0"
   >
     {icon}
-    <Text className="text-tk-text-primary flex-1 font-lexend-regular text-sm">
+    <Text className="flex-1 font-lexend-regular text-sm text-tk-text-primary">
       {label}
     </Text>
   </Pressable>

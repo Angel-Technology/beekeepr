@@ -1,5 +1,4 @@
 import { accountRepository } from '../repository/accountRepository';
-import { PushPlatform } from '../graphql/generated/account.generated';
 import type {
   AccountDeletionState,
   HandleAvailability,
@@ -133,16 +132,17 @@ export const accountService = {
    * backend can target them. Idempotent on the server side — re-posting
    * the same token is a no-op and refreshes `last_seen_at`.
    *
-   * `platform` is the `react-native` `Platform.OS` string; we map to
-   * the backend's `PushPlatform` enum here so callers don't see the
-   * `I_OS` codegen quirk.
+   * `platform` is the `react-native` `Platform.OS` string; the repository
+   * maps it to the backend's `PushPlatform` enum so callers don't see the
+   * `I_OS` codegen quirk (and services stay clear of `graphql/generated`).
    */
-  async registerPushToken(token: string, platform: 'ios' | 'android'): Promise<void> {
+  async registerPushToken(
+    token: string,
+    platform: 'ios' | 'android',
+  ): Promise<void> {
     const payload = await accountRepository.registerPushToken({
-      input: {
-        token,
-        platform: platform === 'ios' ? PushPlatform.IOs : PushPlatform.Android,
-      },
+      token,
+      platform,
     });
     if (payload.registerPushToken.error) {
       throw new Error(payload.registerPushToken.error);

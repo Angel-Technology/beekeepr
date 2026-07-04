@@ -110,7 +110,8 @@ export const DATING_ADVICE: readonly DatingAdvice[] = [
     title: 'Keep your phone near you',
     statistic:
       'Statistics: The Department of Justice found that keeping a phone accessible increases the likelihood of contacting help by 25%.',
-    source: 'Source: Department of Justice, “Mobile Phones and Personal Safety,” DOJ',
+    source:
+      'Source: Department of Justice, “Mobile Phones and Personal Safety,” DOJ',
     advice: [
       'Never go on a date without your phone. I’m not sure I even have to say this, pretty obvious.',
       'Pro-tip: Do NOT put your phone on silent, do not disturb or sleep mode. Text a friend and/or family member to let them know when your date started. And text them again when it ends. And always check your phone if someone texts you.',

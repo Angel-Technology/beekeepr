@@ -17,7 +17,7 @@ type BuzzMembershipFlowProps = {
 };
 
 const YellowCheckIcon = () => (
-  <View className="bg-tk-brand-primary mt-[2px] rounded-full p-1.5">
+  <View className="mt-[2px] rounded-full bg-tk-brand-primary p-1.5">
     <Check size={10} color="#000000" strokeWidth={3} />
   </View>
 );
@@ -48,13 +48,13 @@ export const BuzzMembershipFlow = ({
       </View>
 
       <View className="items-center gap-2">
-        <Text className="text-tk-text-primary text-center font-poppins-semiBold text-700 leading-tight">
+        <Text className="text-center font-poppins-semiBold text-700 leading-tight text-tk-text-primary">
           Congrats, you&rsquo;re in!
         </Text>
-        <Text className="text-tk-text-primary text-center font-lexend-regular text-xl">
+        <Text className="text-center font-lexend-regular text-xl text-tk-text-primary">
           30-Day Free Trial
         </Text>
-        <Text className="text-tk-text-primary text-center font-poppins-regular text-base">
+        <Text className="text-center font-poppins-regular text-base text-tk-text-primary">
           $9.99/month
         </Text>
       </View>
@@ -114,18 +114,18 @@ export const BuzzMembershipFlow = ({
 
             <View className="flex-1 flex-col items-center justify-center gap-2 pt-6">
               <View>
-                <Text className="text-tk-text-primary text-center font-poppins-semiBold text-700 leading-tight">
+                <Text className="text-center font-poppins-semiBold text-700 leading-tight text-tk-text-primary">
                   30-Day
                 </Text>
-                <Text className="text-tk-text-primary text-center font-poppins-semiBold text-700 leading-tight">
+                <Text className="text-center font-poppins-semiBold text-700 leading-tight text-tk-text-primary">
                   Free Trial
                 </Text>
               </View>
               <View>
-                <Text className="text-tk-text-tertiary text-center font-sourceSans-regular text-base">
+                <Text className="text-center font-sourceSans-regular text-base text-tk-text-tertiary">
                   Try 30 days for free,
                 </Text>
-                <Text className="text-tk-text-tertiary text-center font-sourceSans-regular text-base">
+                <Text className="text-center font-sourceSans-regular text-base text-tk-text-tertiary">
                   then $9.99/month.
                 </Text>
               </View>
@@ -157,7 +157,7 @@ export const BuzzMembershipFlow = ({
         </View>
 
         <View className="w-full gap-6">
-          <Text className="text-tk-text-primary font-poppins-semiBold text-xl">
+          <Text className="font-poppins-semiBold text-xl text-tk-text-primary">
             How your trial works
           </Text>
           <VerificationTrialStepper

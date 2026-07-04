@@ -17,12 +17,12 @@ const FieldGroup = ({ label, children }: SectionProps) => {
   return (
     <View className="w-full">
       <View className="w-full flex-row items-center justify-between px-4 pb-3 pt-6">
-        <Text className="text-tk-text-tertiary font-lexend-regular text-200 leading-none">
+        <Text className="font-lexend-regular text-200 leading-none text-tk-text-tertiary">
           {label}
         </Text>
         <CircleHelp size={16} color={helpIconColor} />
       </View>
-      <View className="bg-tk-bg-elevated-secondary w-full gap-4 rounded-5 p-6">
+      <View className="w-full gap-4 rounded-5 bg-tk-bg-elevated-secondary p-6">
         {children}
       </View>
     </View>
@@ -74,10 +74,10 @@ export const CriminalFormSection = ({
       bottomOffset={100}
     >
       <View className="w-full gap-2">
-        <Text className="text-tk-text-primary font-poppins-semiBold text-title-4">
+        <Text className="font-poppins-semiBold text-title-4 text-tk-text-primary">
           Find my records
         </Text>
-        <Text className="text-tk-text-secondary font-lexend-regular text-base leading-[24px] -tracking-[0.3px]">
+        <Text className="font-lexend-regular text-base leading-[24px] -tracking-[0.3px] text-tk-text-secondary">
           To search for your records, please provide your phone number and tap
           submit.
         </Text>
@@ -114,7 +114,7 @@ export const CriminalFormSection = ({
           type="phone"
           placeholder="(555) 555-5555"
           autoFocus
-          className="bg-tk-bg-primary rounded-3 p-2"
+          className="rounded-3 bg-tk-bg-primary p-2"
         />
         <Input
           label="Date of Birth (mm/dd/yyyy)"
@@ -125,7 +125,7 @@ export const CriminalFormSection = ({
       </FieldGroup>
 
       <FieldGroup label="STATE OF RESIDENCE">
-        <View className="bg-tk-bg-primary border-tk-border-secondary w-full rounded-3 border p-2">
+        <View className="w-full rounded-3 border border-tk-border-secondary bg-tk-bg-primary p-2">
           <StatePickerField
             value={licenseState}
             onChange={onChangeLicenseState}

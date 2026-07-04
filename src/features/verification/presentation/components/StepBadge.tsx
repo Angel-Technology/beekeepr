@@ -11,8 +11,8 @@ type StepBadgeProps = {
 // not a hot color.
 export const StepBadge = ({ current, total }: StepBadgeProps) => {
   return (
-    <View className="bg-tk-bg-callout self-start rounded-2 px-1.5 py-0.5">
-      <Text className="text-tk-text-primary font-lexend-regular text-200">
+    <View className="self-start rounded-2 bg-tk-bg-callout px-1.5 py-0.5">
+      <Text className="font-lexend-regular text-200 text-tk-text-primary">
         STEP {current} of {total}
       </Text>
     </View>

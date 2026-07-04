@@ -36,7 +36,7 @@ export const LegalBody = ({
   const chevronColor = useThemedColor(themedColors.text.primary);
 
   return (
-    <View className="bg-tk-bg-primary flex-1">
+    <View className="flex-1 bg-tk-bg-primary">
       <AppHeader
         topInset={insets.top}
         left={
@@ -50,7 +50,7 @@ export const LegalBody = ({
           />
         }
         center={
-          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
+          <Text className="font-poppins-semiBold text-base text-tk-text-primary">
             Legal
           </Text>
         }

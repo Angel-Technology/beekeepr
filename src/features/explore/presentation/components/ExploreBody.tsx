@@ -77,7 +77,7 @@ export const ExploreBody = ({ items, onOpenMenu }: ExploreBodyProps) => {
   });
 
   return (
-    <View className="bg-tk-bg-primary flex-1">
+    <View className="flex-1 bg-tk-bg-primary">
       <Animated.ScrollView
         className="flex-1"
         contentContainerStyle={{
@@ -110,7 +110,7 @@ export const ExploreBody = ({ items, onOpenMenu }: ExploreBodyProps) => {
         showTopMask
         topMaskHeight={topMaskHeight}
         center={
-          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
+          <Text className="font-poppins-semiBold text-base text-tk-text-primary">
             Explore
           </Text>
         }

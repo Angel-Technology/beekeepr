@@ -81,7 +81,7 @@ export const AccountBody = ({
   ];
 
   return (
-    <View className="bg-tk-bg-primary flex-1">
+    <View className="flex-1 bg-tk-bg-primary">
       <AppHeader
         topInset={insets.top}
         left={
@@ -95,7 +95,7 @@ export const AccountBody = ({
           />
         }
         center={
-          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
+          <Text className="font-poppins-semiBold text-base text-tk-text-primary">
             Account
           </Text>
         }
@@ -111,16 +111,16 @@ export const AccountBody = ({
         }}
       >
         <View className="w-full gap-2 px-1">
-          <Text className="text-tk-text-secondary font-lexend-regular text-footnote leading-[18px]">
+          <Text className="font-lexend-regular text-footnote leading-[18px] text-tk-text-secondary">
             EMAIL ADDRESS
           </Text>
-          <Text className="text-tk-text-secondary font-lexend-regular text-footnote leading-[18px]">
+          <Text className="font-lexend-regular text-footnote leading-[18px] text-tk-text-secondary">
             This is the email address being used for your login and email
             communication.
           </Text>
         </View>
 
-        <View className="border-tk-border-secondary w-full rounded-lg border p-4">
+        <View className="w-full rounded-lg border border-tk-border-secondary p-4">
           <Input
             label="Email address"
             value={email}

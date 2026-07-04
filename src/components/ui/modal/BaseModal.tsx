@@ -71,7 +71,7 @@ export const BaseModal = ({
           />
           <View
             className={clsx(
-              'bg-tk-bg-primary w-full max-w-[360px] rounded-5 p-lg',
+              'w-full max-w-[360px] rounded-5 bg-tk-bg-primary p-lg',
               contentClassName,
             )}
           >

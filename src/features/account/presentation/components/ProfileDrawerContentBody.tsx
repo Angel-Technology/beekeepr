@@ -34,18 +34,18 @@ export const ProfileDrawerContentBody = ({
   const insets = useSafeAreaInsets();
 
   return (
-    <View className="bg-tk-bg-primary flex-1">
+    <View className="flex-1 bg-tk-bg-primary">
       <AppHeader
         topInset={insets.top}
         center={
-          <Text className="text-tk-text-primary font-poppins-semiBold text-base">
+          <Text className="font-poppins-semiBold text-base text-tk-text-primary">
             Preview
           </Text>
         }
       />
 
-      <View className="bg-tk-alerts-success items-center px-4 py-2">
-        <Text className="text-tk-text-primary-reversed font-lexend-regular text-base">
+      <View className="items-center bg-tk-alerts-success px-4 py-2">
+        <Text className="font-lexend-regular text-base text-tk-text-primary-reversed">
           This is how others see you.
         </Text>
       </View>

@@ -70,7 +70,7 @@ export const Input = ({
   return (
     <View className={clsx('gap- self-stretch', className)}>
       {label ? (
-        <Text className="text-tk-text-secondary font-lexend-regular text-xs">
+        <Text className="font-lexend-regular text-xs text-tk-text-secondary">
           {label}
         </Text>
       ) : null}
@@ -79,8 +79,8 @@ export const Input = ({
         className={clsx(
           'min-h-[44px] flex-row items-center self-stretch bg-transparent',
           hasError && isFocused
-            ? 'border-tk-alerts-danger border-b-2'
-            : 'border-tk-border-secondary border-b',
+            ? 'border-b-2 border-tk-alerts-danger'
+            : 'border-b border-tk-border-secondary',
           disabled && 'opacity-60',
         )}
       >
@@ -108,7 +108,7 @@ export const Input = ({
           }}
           onSubmitEditing={onSubmitEditing}
           className={clsx(
-            'text-tk-text-primary flex-1 font-lexend-regular text-base leading-tight',
+            'flex-1 font-lexend-regular text-base leading-tight text-tk-text-primary',
             inputClassName,
           )}
           style={{ letterSpacing: -0.3 }}
@@ -117,7 +117,7 @@ export const Input = ({
       </View>
 
       {hasError ? (
-        <Text className="text-tk-alerts-danger font-lexend-regular text-sm leading-5">
+        <Text className="font-lexend-regular text-sm leading-5 text-tk-alerts-danger">
           {error}
         </Text>
       ) : null}

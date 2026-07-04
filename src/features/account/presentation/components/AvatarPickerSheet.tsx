@@ -154,7 +154,7 @@ export const AvatarPickerSheet = ({
       <View className="flex-1 gap-6 pt-2">
         <View className="items-center px-6">
           <View
-            className="bg-tk-bg-elevated-secondary items-center justify-center overflow-hidden rounded-round"
+            className="items-center justify-center overflow-hidden rounded-round bg-tk-bg-elevated-secondary"
             style={{ width: PREVIEW_SIZE, height: PREVIEW_SIZE }}
           >
             {previewUrl ? (
@@ -229,7 +229,7 @@ export const AvatarPickerSheet = ({
                   style={{ width: TILE_SIZE + 8, height: TILE_SIZE + 8 }}
                 >
                   <View
-                    className="bg-tk-bg-elevated-secondary overflow-hidden rounded-round"
+                    className="overflow-hidden rounded-round bg-tk-bg-elevated-secondary"
                     style={{ width: TILE_SIZE, height: TILE_SIZE }}
                   >
                     <SvgUri uri={url} width={TILE_SIZE} height={TILE_SIZE} />

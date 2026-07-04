@@ -36,7 +36,7 @@ export const ErrorModal = ({
     >
       <View className="gap-4">
         <View className="w-full flex-row items-center justify-between">
-          <Text className="text-tk-text-primary font-poppins-semiBold text-title-4">
+          <Text className="font-poppins-semiBold text-title-4 text-tk-text-primary">
             {title}
           </Text>
           <TouchableOpacity
@@ -49,7 +49,7 @@ export const ErrorModal = ({
           </TouchableOpacity>
         </View>
 
-        <Text className="text-tk-text-secondary font-lexend-regular text-base leading-[24px] -tracking-[0.3px]">
+        <Text className="font-lexend-regular text-base leading-[24px] -tracking-[0.3px] text-tk-text-secondary">
           {message}
         </Text>
 

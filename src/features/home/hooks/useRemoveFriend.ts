@@ -11,8 +11,7 @@ export const useRemoveFriend = () => {
   const queryClient = useQueryClient();
 
   const remove = useMutation({
-    mutationFn: (otherUserId: string) =>
-      homeService.removeFriend(otherUserId),
+    mutationFn: (otherUserId: string) => homeService.removeFriend(otherUserId),
     onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: homeQueryKeys.connections(),

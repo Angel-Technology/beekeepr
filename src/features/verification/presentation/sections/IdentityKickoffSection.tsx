@@ -56,12 +56,12 @@ export const IdentityKickoffSection = ({
         <View className="w-full gap-2">
           <View className="gap-6">
             <StepBadge current={1} total={2} />
-            <Text className="text-tk-text-primary font-poppins-semiBold text-title-4">
+            <Text className="font-poppins-semiBold text-title-4 text-tk-text-primary">
               Verify your identity
             </Text>
           </View>
 
-          <Text className="text-tk-text-secondary font-lexend-regular text-base leading-[24px] -tracking-[0.3px]">
+          <Text className="font-lexend-regular text-base leading-[24px] -tracking-[0.3px] text-tk-text-secondary">
             First we’ll take you to our partner to confirm your identity.
             They’ll ask you to scan your government ID and take a selfie.
           </Text>

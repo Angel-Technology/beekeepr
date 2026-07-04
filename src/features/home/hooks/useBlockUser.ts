@@ -12,8 +12,7 @@ export const useBlockUser = () => {
   const queryClient = useQueryClient();
 
   const block = useMutation({
-    mutationFn: (targetUserId: string) =>
-      homeService.blockUser(targetUserId),
+    mutationFn: (targetUserId: string) => homeService.blockUser(targetUserId),
     onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: homeQueryKeys.blockedUsers(),
@@ -32,7 +31,6 @@ export const useBlockUser = () => {
 
   return {
     block: block.mutate,
-    blockPendingId:
-      block.isPending && block.variables ? block.variables : null,
+    blockPendingId: block.isPending && block.variables ? block.variables : null,
   };
 };

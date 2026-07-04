@@ -1,9 +1,5 @@
 import { homeRepository } from '../repository/homeRepository';
-import type {
-  BlockedUser,
-  Connection,
-  Invite,
-} from '../models/home.types';
+import type { BlockedUser, Connection, Invite } from '../models/home.types';
 
 const DEFAULT_PAGE_SIZE = 50;
 

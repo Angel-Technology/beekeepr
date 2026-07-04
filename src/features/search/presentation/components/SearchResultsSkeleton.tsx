@@ -26,7 +26,7 @@ export const SearchResultsSkeleton = () => (
     {Array.from({ length: ROW_COUNT }).map((_, index) => (
       <Fragment key={index}>
         {index > 0 ? (
-          <View className="bg-tk-border-secondary h-px w-full" />
+          <View className="h-px w-full bg-tk-border-secondary" />
         ) : null}
         <SkeletonRow />
       </Fragment>
