@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { authQueryKeys, type AuthUser } from '@features/auth';
+import {
+  authQueryKeys,
+  ContactVisibility,
+  ProfileVisibility,
+  type AuthUser,
+} from '@features/auth';
 import { accountService } from '../services/accountService';
 import type {
   FieldStatus,
@@ -99,12 +104,37 @@ export const useProfileForm = (user: AuthUser | null) => {
           previous
             ? {
                 ...previous,
-                displayName: updated.displayName ?? previous.displayName,
                 nickname: updated.nickname ?? previous.nickname,
                 handle: updated.handle ?? previous.handle,
                 imageUrl: updated.imageUrl ?? previous.imageUrl,
+                googleVoicePhone:
+                  updated.googleVoicePhone ?? previous.googleVoicePhone,
+                whatsAppPhone: updated.whatsAppPhone ?? previous.whatsAppPhone,
+                instagramHandle:
+                  updated.instagramHandle ?? previous.instagramHandle,
+                telegramHandle:
+                  updated.telegramHandle ?? previous.telegramHandle,
+                snapchatHandle:
+                  updated.snapchatHandle ?? previous.snapchatHandle,
+                signalPhone: updated.signalPhone ?? previous.signalPhone,
+                profileVisibility: updated.profileVisibility,
+                contactVisibility: updated.contactVisibility,
               }
             : previous,
+      );
+    },
+    [queryClient],
+  );
+
+  // Optimistic-patch helper for the visibility toggles: writes the new value
+  // straight into the cached session so the switch reflects the change on
+  // the next frame, then fires the mutation. `mergeIntoSession` reconciles
+  // on success; on error the mutation's onError reverts via the cache.
+  const patchSession = useCallback(
+    (patch: Partial<AuthUser>) => {
+      queryClient.setQueryData<AuthUser | null>(
+        authQueryKeys.session(),
+        (previous) => (previous ? { ...previous, ...patch } : previous),
       );
     },
     [queryClient],
@@ -158,11 +188,89 @@ export const useProfileForm = (user: AuthUser | null) => {
     [setStatus, updateMutation],
   );
 
+  /**
+   * Source of truth for the Share Profile toggle. The local UI doesn't keep
+   * a copy — it reads `profileVisibility` straight off the cached session,
+   * which `mergeIntoSession` keeps in sync with the backend.
+   */
+  const setProfileVisibility = useCallback(
+    (next: ProfileVisibility) => {
+      if (user?.profileVisibility === next) {
+        return;
+      }
+      patchSession({ profileVisibility: next });
+      updateMutation.mutate({ profileVisibility: next });
+    },
+    [patchSession, updateMutation, user?.profileVisibility],
+  );
+
+  /**
+   * Source of truth for the contact-sharing switch. The "Share with
+   * everyone" / `PUBLIC` rung was dropped — both from the UI and from
+   * the backend's `ContactVisibility` enum — so the only writes are:
+   *
+   *   PRIVATE          → toggle off
+   *   CONNECTIONS_ONLY → toggle on
+   */
+  const setContactVisibility = useCallback(
+    (next: ContactVisibility) => {
+      if (user?.contactVisibility === next) {
+        return;
+      }
+      patchSession({ contactVisibility: next });
+      updateMutation.mutate({ contactVisibility: next });
+    },
+    [patchSession, updateMutation, user?.contactVisibility],
+  );
+
+  /**
+   * Persist the user's chosen avatar URL (the DiceBear picker page calls
+   * this once the user lands on a character). Optimistic write so the
+   * preview card / avatar circle updates immediately while the mutation
+   * round-trips. Passing an empty string clears the avatar back to the
+   * default UserRound placeholder.
+   */
+  const setImageUrl = useCallback(
+    (next: string) => {
+      const normalized = next.trim();
+      if ((user?.imageUrl ?? '') === normalized) {
+        return;
+      }
+      patchSession({ imageUrl: normalized.length > 0 ? normalized : null });
+      updateMutation.mutate({ imageUrl: normalized });
+    },
+    [patchSession, updateMutation, user?.imageUrl],
+  );
+
+  const deriveStatus = (field: ProfileField): FieldStatus => {
+    const explicit = fieldStatus[field];
+    if (explicit !== 'idle') {
+      return explicit;
+    }
+    const current = normalize(wireValueForField(field, state.values));
+    const baseline = normalize(wireValueForField(field, state.baseline));
+    if (current.length > 0 && current === baseline) {
+      return 'success';
+    }
+    return 'idle';
+  };
+
+  const derivedFieldStatus: Record<ProfileField, FieldStatus> = {
+    nickname: deriveStatus('nickname'),
+    handle: deriveStatus('handle'),
+  };
+
   return {
     values: state.values,
     setField,
     submitField,
     fieldLabel: FIELD_LABEL,
-    fieldStatus,
+    fieldStatus: derivedFieldStatus,
+    profileVisibility: user?.profileVisibility ?? ProfileVisibility.Public,
+    contactVisibility: user?.contactVisibility ?? ContactVisibility.Private,
+    setProfileVisibility,
+    setContactVisibility,
+    imageUrl: user?.imageUrl ?? null,
+    setImageUrl,
   } as const;
 };

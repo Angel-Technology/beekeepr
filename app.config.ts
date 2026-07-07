@@ -47,19 +47,39 @@ const ciVersionCode = Number.parseInt(
 const androidVersionCode =
   Number.isFinite(ciVersionCode) && ciVersionCode > 0 ? ciVersionCode : 1;
 
+// EAS project ID. `eas init` can't write this back into a dynamic
+// config (function-export `app.config.ts`), so we own it here. Sync
+// with the project's `eas init`/dashboard if it ever changes.
+const EAS_PROJECT_ID = '0cba096a-e51e-4ae3-89e8-1c29bacbed90';
+
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
 
     name: APP.name,
     slug: APP.slug,
+    // EAS account that owns the project (`eas init` writes this; we
+    // own it here because the dynamic config can't be auto-mutated).
+    owner: 'wemsamuel',
     version: config.version ?? '0.0.1',
     orientation: 'portrait',
     scheme: APP.scheme,
-    userInterfaceStyle: 'light',
+    // Lets iOS support both appearances at the platform level. The
+    // app's effective theme is driven by NativeWind via
+    // `ThemePreferenceProvider` — the user picks System / Light / Dark
+    // in the menu and the choice is persisted.
+    userInterfaceStyle: 'automatic',
 
     // Fallback icon (Expo requires this; use your preferred default)
     icon: APP.icon,
+
+    extra: {
+      ...config.extra,
+      eas: {
+        ...(config.extra?.eas ?? {}),
+        projectId: EAS_PROJECT_ID,
+      },
+    },
 
     ios: {
       ...config.ios,
@@ -69,6 +89,17 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 
       // iOS app icon (static). Pick the best looking one (usually light bg).
       icon: APP.icon,
+
+      // Push entitlement value written into `Buzzkeepr.entitlements` on
+      // `expo prebuild`. `production` is required for TestFlight / App
+      // Store builds so device tokens map to prod APNs. The
+      // `expo-notifications` plugin defaults to `development` (safe for
+      // local sideloads), which we override here since our Fastlane
+      // build always ships to TestFlight — never sideloaded.
+      entitlements: {
+        ...config.ios?.entitlements,
+        'aps-environment': 'production',
+      },
 
       config: {
         ...config.ios?.config,
@@ -83,6 +114,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             CFBundleURLSchemes: [APP.scheme],
           },
         ],
+        // Lets the OS wake the app for silent / background pushes
+        // (e.g. invalidating a TanStack cache from a `data-only`
+        // notification). Without this, only foreground / tap delivery
+        // works.
+        UIBackgroundModes: ['remote-notification'],
         NSCameraUsageDescription:
           "Buzzkeepr uses the camera to capture your driver's license and selfie for identity verification.",
         NSFaceIDUsageDescription:
@@ -117,12 +153,28 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       '@react-native-community/datetimepicker',
       '@sentry/react-native/expo',
       [
+        // Writes the iOS push entitlement to the generated .entitlements
+        // file on `expo prebuild`. `color` sets the Android tint for the
+        // notification small icon.
+        //
+        // TODO(android-push-icon): add a dedicated monochrome white-on-
+        // transparent 96×96 PNG (e.g. `src/assets/images/notification-icon.png`)
+        // and reference it via an `icon` entry here. Without one, Android
+        // uses the colored app icon as the status-bar small icon, which
+        // renders as a white blob (Android draws small icons as flat
+        // silhouettes). Blocking for a polished Android launch.
+        'expo-notifications',
+        {
+          color: '#FFD400',
+        },
+      ],
+      [
         'expo-splash-screen',
         {
-          image: './src/assets/images/splash-icon.png',
+          image: './src/assets/images/splash-icon-light.png',
           dark: {
-            image: './src/assets/images/splash-icon.png',
-            backgroundColor: '#FFFFFF',
+            image: './src/assets/images/splash-icon-dark.png',
+            backgroundColor: '#000000',
           },
           backgroundColor: '#FFFFFF',
           resizeMode: 'cover',

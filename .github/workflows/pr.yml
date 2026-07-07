@@ -2,7 +2,7 @@ name: PR - Quality Checks
 
 on:
   pull_request:
-    branches: [dev, main]
+    branches: [develop, main]
   workflow_dispatch: {}
 
 concurrency:

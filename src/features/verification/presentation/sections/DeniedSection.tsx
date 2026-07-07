@@ -42,10 +42,10 @@ export const DeniedSection = ({
         showsVerticalScrollIndicator={false}
       >
         <View className="w-full gap-1">
-          <Text className="font-poppins-semiBold text-title-3 leading-tight text-text-default">
+          <Text className="font-poppins-semiBold text-title-3 leading-tight text-tk-text-primary">
             Oh no! Something went wrong.
           </Text>
-          <Text className="font-lexend-regular text-lg text-text-tertiary">
+          <Text className="font-lexend-regular text-lg text-tk-text-tertiary">
             Looks like we weren&rsquo;t able to get you into TheBuzz Community
             at this time.
           </Text>
@@ -58,12 +58,12 @@ export const DeniedSection = ({
         <NextStepsCard
           paragraphs={NEXT_STEPS_PARAGRAPHS}
           onPressAppeal={onAppealDecision}
-        />
-
-        <PrivacyComplianceCard
-          bullets={PRIVACY_BULLETS}
-          onPressMoreInfo={onMoreInfo}
-        />
+        >
+          <PrivacyComplianceCard
+            bullets={PRIVACY_BULLETS}
+            onPressMoreInfo={onMoreInfo}
+          />
+        </NextStepsCard>
       </ScrollView>
 
       <View className="w-full px-2 pt-4">

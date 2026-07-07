@@ -1,12 +1,14 @@
-import { Image } from 'expo-image';
-import { Text, View } from 'react-native';
-import { User } from 'lucide-react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { SvgUri } from 'react-native-svg';
+import { ChevronRight, UserRound } from 'lucide-react-native';
+
+import { isRenderableAvatarUrl, themedColors, useThemedColor } from '@common';
 
 type ProfilePreviewCardProps = {
   nickname: string;
   handle: string;
   imageUrl?: string | null;
-  joinedDate?: string;
+  onPress?: () => void;
 };
 
 const AVATAR_SIZE = 44;
@@ -19,77 +21,50 @@ const formatHandle = (handle: string) => {
   return trimmed.startsWith('@') ? trimmed : `@${trimmed}`;
 };
 
-/**
- * Pull the first grapheme cluster from the nickname so multi-codepoint
- * emoji (ZWJ sequences, flags, skin tone) render as one glyph instead of
- * being chopped mid-codepoint. Falls back to the first character of the
- * trimmed string when `Intl.Segmenter` isn't available on the engine.
- */
-const firstGrapheme = (value: string): string => {
-  const trimmed = value.trim();
-  if (trimmed.length === 0) {
-    return '';
-  }
-  const Segmenter =
-    typeof Intl !== 'undefined'
-      ? (Intl as { Segmenter?: typeof Intl.Segmenter }).Segmenter
-      : undefined;
-  if (Segmenter) {
-    const segmenter = new Segmenter(undefined, { granularity: 'grapheme' });
-    const iterator = segmenter.segment(trimmed)[Symbol.iterator]();
-    const next = iterator.next();
-    if (!next.done) {
-      return next.value.segment;
-    }
-  }
-  return Array.from(trimmed)[0] ?? '';
-};
-
 export const ProfilePreviewCard = ({
   nickname,
   handle,
   imageUrl,
+  onPress,
 }: ProfilePreviewCardProps) => {
   const displayedHandle = formatHandle(handle);
-  const fallbackGrapheme = firstGrapheme(nickname);
+  const avatarIconColor = useThemedColor(themedColors.text.tertiary);
+  const chevronColor = useThemedColor(themedColors.text.primary);
+  // Reject Google / Apple `picture` URLs the backend stores on social
+  // sign-in — those are raster and `SvgUri` crashes on them.
+  const hasAvatar = isRenderableAvatarUrl(imageUrl);
+  const isPressable = Boolean(onPress);
+  const Container = isPressable ? TouchableOpacity : View;
 
   return (
-    <View className="w-full flex-row items-center gap-5 rounded-5 border border-border-weak bg-bg-default p-5">
-      <View className="size-[44px] items-center justify-center overflow-hidden rounded-round bg-brand-primary">
-        {imageUrl ? (
-          <Image
-            source={{ uri: imageUrl }}
-            style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
-          />
-        ) : fallbackGrapheme.length > 0 ? (
-          <Text
-            className="font-lexend-semiBold text-base leading-6 text-text-default"
-            allowFontScaling={false}
-          >
-            {fallbackGrapheme}
-          </Text>
+    <Container
+      onPress={onPress}
+      className="border-tk-border-secondary bg-tk-bg-primary w-full flex-row items-center gap-3 rounded-5 border p-4"
+    >
+      <View className="bg-tk-bg-elevated-secondary size-[44px] items-center justify-center overflow-hidden rounded-round">
+        {hasAvatar ? (
+          <SvgUri uri={imageUrl} width={AVATAR_SIZE} height={AVATAR_SIZE} />
         ) : (
-          <User size={22} color="#000000" />
+          <UserRound size={24} color={avatarIconColor} />
         )}
       </View>
-      <View className="min-w-0 flex-1 flex-row items-center gap-3">
-        <View className="min-w-0 flex-1">
+      <View className="min-w-0 flex-1">
+        <Text
+          className="text-tk-text-primary font-lexend-semiBold text-base"
+          numberOfLines={1}
+        >
+          {nickname || ''}
+        </Text>
+        {displayedHandle ? (
           <Text
-            className="font-lexend-semiBold text-base leading-6 text-text-default"
+            className="text-tk-text-secondary font-lexend-regular text-footnote"
             numberOfLines={1}
           >
-            {nickname || ''}
+            {displayedHandle}
           </Text>
-          {displayedHandle ? (
-            <Text
-              className="font-lexend-regular text-footnote leading-200 text-text-secondary"
-              numberOfLines={1}
-            >
-              {displayedHandle}
-            </Text>
-          ) : null}
-        </View>
+        ) : null}
       </View>
-    </View>
+      {onPress ? <ChevronRight size={24} color={chevronColor} /> : null}
+    </Container>
   );
 };

@@ -4,7 +4,6 @@ import type {
   HandleAvailability,
   ProfileUser,
   UpdateProfilePatch,
-  UserSearchResult,
 } from '../models/account.types';
 
 export const accountService = {
@@ -106,12 +105,6 @@ export const accountService = {
   },
 
   /**
-   * Searches the user directory for matches against a nickname / handle /
-   * pin. Returns up to `limit` results (default 10). Empty or
-   * whitespace-only queries short-circuit to an empty list so we don't
-   * waste a round-trip.
-   */
-  /**
    * Checks whether a handle is free to claim. Backend authoritatively
    * decides — this just normalises (strip `@`, trim, lowercase) before
    * sending. Callers should already have run local format validation;
@@ -134,17 +127,39 @@ export const accountService = {
     };
   },
 
-  async searchUsers(query: string, limit = 10): Promise<UserSearchResult[]> {
-    const trimmed = query.trim();
-    if (trimmed.length === 0) {
-      return [];
-    }
-
-    const payload = await accountRepository.searchUsers({
-      query: trimmed,
-      first: limit,
+  /**
+   * Persists the device's push token against the signed-in user so the
+   * backend can target them. Idempotent on the server side — re-posting
+   * the same token is a no-op and refreshes `last_seen_at`.
+   *
+   * `platform` is the `react-native` `Platform.OS` string; the repository
+   * maps it to the backend's `PushPlatform` enum so callers don't see the
+   * `I_OS` codegen quirk (and services stay clear of `graphql/generated`).
+   */
+  async registerPushToken(
+    token: string,
+    platform: 'ios' | 'android',
+  ): Promise<void> {
+    const payload = await accountRepository.registerPushToken({
+      token,
+      platform,
     });
+    if (payload.registerPushToken.error) {
+      throw new Error(payload.registerPushToken.error);
+    }
+  },
 
-    return payload.searchUsers?.nodes ?? [];
+  /**
+   * Drops a device token from the signed-in user. Call on sign-out so
+   * the backend doesn't push to a device that no longer belongs to the
+   * account.
+   */
+  async unregisterPushToken(token: string): Promise<void> {
+    const payload = await accountRepository.unregisterPushToken({
+      input: { token },
+    });
+    if (payload.unregisterPushToken.error) {
+      throw new Error(payload.unregisterPushToken.error);
+    }
   },
 };

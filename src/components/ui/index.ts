@@ -1,4 +1,6 @@
 export * from './action-bar';
+export * from './bottom-sheet';
+export * from './brand-mark';
 export * from './button';
 export * from './card';
 export * from './divider';
@@ -10,4 +12,5 @@ export * from './paper-onboarding';
 export * from './pill';
 export * from './spacing';
 export * from './stepper';
+export * from './switch';
 export * from './tab-bar';

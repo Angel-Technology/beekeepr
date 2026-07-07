@@ -1,5 +1,5 @@
-import { CriminalSearchScreen } from '@features/criminalSearch';
+import { SearchScreen } from '@features/search';
 
 export default function SearchRecordsPage() {
-  return <CriminalSearchScreen />;
+  return <SearchScreen />;
 }

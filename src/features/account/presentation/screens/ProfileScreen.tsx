@@ -1,95 +1,77 @@
-import { Text, View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import { useRouter } from 'expo-router';
-import { ChevronLeft } from 'lucide-react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppHeader, FormCard, IconButton, Input } from '@components';
-import { useAuthSession } from '@features/auth';
+import { useNavigation, useRouter } from 'expo-router';
+import { DrawerActions } from '@react-navigation/native';
+import {
+  ContactVisibility,
+  ProfileVisibility,
+  useAuthSession,
+} from '@features/auth';
+import { useContactForm } from '../../hooks/useContactForm';
 import { useProfileForm } from '../../hooks/useProfileForm';
-import { formatJoinedDate } from '../../models/formatJoinedDate';
-import { FieldStatusIcon } from '../components/FieldStatusIcon';
-import { ProfilePreviewCard } from '../components/ProfilePreviewCard';
+import { ProfileBody } from '../components/ProfileBody';
 
-const PREVIEW_DESCRIPTION =
-  'This is what others will see when searching for you in TheBuzz community.';
-
+/**
+ * Connected wrapper for the My Profile screen. Pulls the auth session,
+ * both form hooks (`useProfileForm` + `useContactForm`), the router, and
+ * the parent navigator (to open the profile-preview drawer); hands them
+ * to `ProfileBody`.
+ *
+ * The two form hooks each own their own state, mutation, and cache
+ * merge; this wrapper just adapts their `setX` names onto the body's
+ * `onX` prop convention and boxes them into `profileForm` /
+ * `contactForm` bundles so the body's signature stays scannable.
+ *
+ * Why a thin wrapper: keeps the body renderable under Storybook without
+ * mocking `useRouter`, `useNavigation`, TanStack Query, or the auth
+ * session — the same pattern verification uses.
+ */
 export const ProfileScreen = () => {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
   const { data: user } = useAuthSession();
-  const { values, setField, submitField, fieldStatus } = useProfileForm(
-    user ?? null,
-  );
+  const profileForm = useProfileForm(user ?? null);
+  const contactForm = useContactForm(user ?? null);
 
-  const joinedDate = formatJoinedDate(user?.createdAtUtc);
+  const profileShared =
+    profileForm.profileVisibility === ProfileVisibility.Public;
+  // Connections is now the only contact-share switch — the "Everyone"
+  // public option was dropped per product and the enum value with it.
+  // Off → `Private`, on → `ConnectionsOnly`.
+  const connectionsOn =
+    profileForm.contactVisibility === ContactVisibility.ConnectionsOnly;
 
   return (
-    <View className="flex-1 bg-bg-default">
-      <AppHeader
-        topInset={insets.top}
-        left={
-          <IconButton
-            accessibilityLabel="Go back"
-            className="border-none bg-transparent"
-            icon={<ChevronLeft size={24} strokeWidth={2.2} color="#000000" />}
-            onPress={() => router.back()}
-          />
-        }
-        center={
-          <Text className="font-poppins-semiBold text-base text-text-default">
-            My Profile
-          </Text>
-        }
-      />
-
-      <KeyboardAwareScrollView
-        className="flex-1"
-        contentContainerStyle={{
-          paddingHorizontal: 24,
-          paddingTop: 24,
-          paddingBottom: insets.bottom + 32,
-          gap: 24,
-        }}
-        bottomOffset={100}
-        keyboardShouldPersistTaps="handled"
-      >
-        <View className="gap-1 px-1">
-          <Text className="font-lexend-semiBold text-base leading-6 text-text-default">
-            Preview
-          </Text>
-          <Text className="font-lexend-regular text-sm leading-5 text-text-secondary">
-            {PREVIEW_DESCRIPTION}
-          </Text>
-        </View>
-
-        <ProfilePreviewCard
-          nickname={values.nickname}
-          handle={values.handle}
-          imageUrl={user?.imageUrl}
-          joinedDate={joinedDate}
-        />
-
-        <FormCard>
-          <Input
-            label="Nickname"
-            value={values.nickname}
-            onChangeText={(next) => setField('nickname', next)}
-            onBlur={() => submitField('nickname')}
-            placeholder="Your nickname"
-            rightAccessory={<FieldStatusIcon status={fieldStatus.nickname} />}
-          />
-          <Input
-            label="Handle"
-            value={values.handle}
-            onChangeText={(next) => setField('handle', next)}
-            onBlur={() => submitField('handle')}
-            placeholder="@yourhandle"
-            autoCapitalize="none"
-            autoCorrect={false}
-            rightAccessory={<FieldStatusIcon status={fieldStatus.handle} />}
-          />
-        </FormCard>
-      </KeyboardAwareScrollView>
-    </View>
+    <ProfileBody
+      profileForm={{
+        values: profileForm.values,
+        fieldStatus: profileForm.fieldStatus,
+        setField: profileForm.setField,
+        submitField: profileForm.submitField,
+      }}
+      contactForm={{
+        values: contactForm.values,
+        fieldStatus: contactForm.fieldStatus,
+        fieldError: contactForm.fieldError,
+        setField: contactForm.setField,
+        submitField: contactForm.submitField,
+      }}
+      imageUrl={profileForm.imageUrl}
+      profileShared={profileShared}
+      connectionsOn={connectionsOn}
+      onGoBack={() => router.back()}
+      onOpenProfileDrawer={() => {
+        navigation.dispatch(DrawerActions.openDrawer());
+      }}
+      onSelectAvatar={profileForm.setImageUrl}
+      onProfileSharedChange={(next) =>
+        profileForm.setProfileVisibility(
+          next ? ProfileVisibility.Public : ProfileVisibility.Private,
+        )
+      }
+      onConnectionsChange={(next) =>
+        profileForm.setContactVisibility(
+          next ? ContactVisibility.ConnectionsOnly : ContactVisibility.Private,
+        )
+      }
+    />
   );
 };

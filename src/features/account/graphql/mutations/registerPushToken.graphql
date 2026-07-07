@@ -1,0 +1,6 @@
+mutation RegisterPushToken($input: RegisterPushTokenInput!) {
+  registerPushToken(input: $input) {
+    error
+    success
+  }
+}

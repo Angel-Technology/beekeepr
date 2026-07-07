@@ -1,12 +1,18 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { BlurView } from 'expo-blur';
 import clsx from 'clsx';
 
+import { themedColors, useThemedColor } from '@common';
+
 export const BOTTOM_TAB_BAR_HEIGHT = 60;
 
-const ACTIVE_ICON_COLOR = '#000000';
-const INACTIVE_ICON_COLOR = 'rgba(0, 0, 0, 0.5)';
 const ICON_SIZE = 24;
 
 /**
@@ -17,6 +23,7 @@ const ICON_SIZE = 24;
  * The bar is absolutely positioned so screen content scrolls underneath the
  * blur. Screens themselves are responsible for padding their content past
  * `BOTTOM_TAB_BAR_HEIGHT + insets.bottom`.
+ *
  */
 export const BottomTabBar = ({
   state,
@@ -24,6 +31,11 @@ export const BottomTabBar = ({
   navigation,
   insets,
 }: BottomTabBarProps) => {
+  const isDark = useColorScheme() === 'dark';
+  const barBg = useThemedColor(themedColors.bg.primary);
+  const activeIconColor = useThemedColor(themedColors.text.primary);
+  const inactiveIconColor = useThemedColor(themedColors.text.tertiary);
+
   return (
     <View
       pointerEvents="box-none"
@@ -32,8 +44,15 @@ export const BottomTabBar = ({
     >
       <BlurView
         intensity={90}
-        tint="light"
-        style={[StyleSheet.absoluteFill, { opacity: 1 }]}
+        tint={isDark ? 'dark' : 'light'}
+        style={StyleSheet.absoluteFill}
+      />
+      <View
+        pointerEvents="none"
+        style={[
+          StyleSheet.absoluteFill,
+          { backgroundColor: barBg, opacity: 0.85 },
+        ]}
       />
       <View
         className="w-full flex-row items-stretch"
@@ -46,7 +65,7 @@ export const BottomTabBar = ({
             typeof options.tabBarLabel === 'string'
               ? options.tabBarLabel
               : (options.title ?? route.name);
-          const iconColor = isFocused ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR;
+          const iconColor = isFocused ? activeIconColor : inactiveIconColor;
 
           const handlePress = () => {
             const event = navigation.emit({
@@ -90,7 +109,7 @@ export const BottomTabBar = ({
               <Text
                 className={clsx(
                   'font-lexend-semiBold text-xs leading-none',
-                  isFocused ? 'text-text-default' : 'text-text-weak',
+                  isFocused ? 'text-tk-text-primary' : 'text-tk-text-tertiary',
                 )}
               >
                 {label}

@@ -257,10 +257,16 @@ platform :ios do
     # automatic signing only mints Apple Development profiles — and those
     # need a registered device on the team. Using a manually-pinned App
     # Store Distribution profile sidesteps that requirement entirely.
+    #
+    # `force: true` regenerates the profile on every build. Slightly slower
+    # than the cached path, but resilient to App Store Connect capability
+    # changes (Push, Sign in with Apple, etc.) — a stale profile that
+    # predates a new capability causes cryptic entitlements-mismatch
+    # failures at codesign time.
     sigh(
       app_identifier: bundle_id,
       api_key: api_key,
-      force: false,
+      force: true,
       output_path: File.join(__dir__, ".tmp")
     )
 

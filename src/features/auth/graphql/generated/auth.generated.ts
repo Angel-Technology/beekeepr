@@ -17,6 +17,12 @@ export type Scalars = {
   UUID: { input: string; output: string; }
 };
 
+export type AcceptFriendRequestPayload = {
+  __typename?: 'AcceptFriendRequestPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  friendship?: Maybe<FriendshipGraph>;
+};
+
 export type AcceptTermsPayload = {
   __typename?: 'AcceptTermsPayload';
   error?: Maybe<Scalars['String']['output']>;
@@ -35,14 +41,54 @@ export enum BackgroundCheckBadge {
   None = 'NONE'
 }
 
+export type BlockUserInput = {
+  targetUserId: Scalars['UUID']['input'];
+};
+
+export type BlockUserPayload = {
+  __typename?: 'BlockUserPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
+/** A connection to a list of items. */
+export type BlockedUsersConnection = {
+  __typename?: 'BlockedUsersConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<BlockedUsersEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<UserConnectionDto>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type BlockedUsersEdge = {
+  __typename?: 'BlockedUsersEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: UserConnectionDto;
+};
+
 export type CancelAccountDeletionPayload = {
   __typename?: 'CancelAccountDeletionPayload';
   error?: Maybe<Scalars['String']['output']>;
   user?: Maybe<UserGraph>;
 };
 
+export type CancelFriendRequestPayload = {
+  __typename?: 'CancelFriendRequestPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
+export enum ContactVisibility {
+  ConnectionsOnly = 'CONNECTIONS_ONLY',
+  Private = 'PRIVATE'
+}
+
 export type CreateUserInput = {
-  displayName?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
 };
 
@@ -51,6 +97,57 @@ export type CreateUserPayload = {
   error?: Maybe<Scalars['String']['output']>;
   user?: Maybe<UserGraph>;
 };
+
+export type DeclineFriendRequestPayload = {
+  __typename?: 'DeclineFriendRequestPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type FlagUserInput = {
+  targetUserId: Scalars['UUID']['input'];
+};
+
+export type FlagUserPayload = {
+  __typename?: 'FlagUserPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
+/** A connection to a list of items. */
+export type FriendsConnection = {
+  __typename?: 'FriendsConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<FriendsEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<UserConnectionDto>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type FriendsEdge = {
+  __typename?: 'FriendsEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: UserConnectionDto;
+};
+
+export type FriendshipGraph = {
+  __typename?: 'FriendshipGraph';
+  addresseeId: Scalars['UUID']['output'];
+  createdAtUtc: Scalars['DateTime']['output'];
+  id: Scalars['UUID']['output'];
+  requesterId: Scalars['UUID']['output'];
+  respondedAtUtc?: Maybe<Scalars['DateTime']['output']>;
+  status: FriendshipStatus;
+};
+
+export enum FriendshipStatus {
+  Accepted = 'ACCEPTED',
+  Pending = 'PENDING'
+}
 
 export type HandleAvailabilityResult = {
   __typename?: 'HandleAvailabilityResult';
@@ -69,6 +166,46 @@ export enum IdentityVerificationStatus {
   NotStarted = 'NOT_STARTED',
   Pending = 'PENDING'
 }
+
+/** A connection to a list of items. */
+export type IncomingFriendRequestsConnection = {
+  __typename?: 'IncomingFriendRequestsConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<IncomingFriendRequestsEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<UserConnectionDto>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type IncomingFriendRequestsEdge = {
+  __typename?: 'IncomingFriendRequestsEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: UserConnectionDto;
+};
+
+/** A connection to a list of items. */
+export type OutgoingFriendRequestsConnection = {
+  __typename?: 'OutgoingFriendRequestsConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<OutgoingFriendRequestsEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<UserConnectionDto>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type OutgoingFriendRequestsEdge = {
+  __typename?: 'OutgoingFriendRequestsEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: UserConnectionDto;
+};
 
 /** Information about pagination in a connection. */
 export type PageInfo = {
@@ -94,6 +231,16 @@ export enum PersonaInquiryStatus {
   Pending = 'PENDING'
 }
 
+export enum ProfileVisibility {
+  Private = 'PRIVATE',
+  Public = 'PUBLIC'
+}
+
+export enum PushPlatform {
+  Android = 'ANDROID',
+  IOs = 'I_OS'
+}
+
 export type RedeemPromoCodeInput = {
   code: Scalars['String']['input'];
 };
@@ -102,6 +249,27 @@ export type RedeemPromoCodePayload = {
   __typename?: 'RedeemPromoCodePayload';
   error?: Maybe<Scalars['String']['output']>;
   subscription?: Maybe<SubscriptionDto>;
+};
+
+export type RegisterPushTokenInput = {
+  platform: PushPlatform;
+  token: Scalars['String']['input'];
+};
+
+export type RegisterPushTokenPayload = {
+  __typename?: 'RegisterPushTokenPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type RemoveFriendInput = {
+  otherUserId: Scalars['UUID']['input'];
+};
+
+export type RemoveFriendPayload = {
+  __typename?: 'RemoveFriendPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type RequestAccountDeletionPayload = {
@@ -122,6 +290,10 @@ export type RequestEmailSignInPayload = {
   success: Scalars['Boolean']['output'];
 };
 
+export type RespondToFriendRequestInput = {
+  otherUserId: Scalars['UUID']['input'];
+};
+
 /** A connection to a list of items. */
 export type SearchUsersConnection = {
   __typename?: 'SearchUsersConnection';
@@ -140,6 +312,16 @@ export type SearchUsersEdge = {
   cursor: Scalars['String']['output'];
   /** The item at the end of the edge. */
   node: UserSearchResultDto;
+};
+
+export type SendFriendRequestInput = {
+  targetUserId: Scalars['UUID']['input'];
+};
+
+export type SendFriendRequestPayload = {
+  __typename?: 'SendFriendRequestPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  friendship?: Maybe<FriendshipGraph>;
 };
 
 export type SignInWithAppleInput = {
@@ -171,6 +353,7 @@ export type SignOutPayload = {
 };
 
 export type StartInstantCriminalCheckInput = {
+  licenseState?: InputMaybe<Scalars['String']['input']>;
   phoneNumber?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -223,9 +406,39 @@ export enum SubscriptionStore {
   Unknown = 'UNKNOWN'
 }
 
+export type UnblockUserInput = {
+  targetUserId: Scalars['UUID']['input'];
+};
+
+export type UnblockUserPayload = {
+  __typename?: 'UnblockUserPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type UnregisterPushTokenInput = {
+  token: Scalars['String']['input'];
+};
+
+export type UnregisterPushTokenPayload = {
+  __typename?: 'UnregisterPushTokenPayload';
+  error?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type UpdateProfileInput = {
+  contactVisibility?: InputMaybe<ContactVisibility>;
+  displayName?: InputMaybe<Scalars['String']['input']>;
+  googleVoicePhone?: InputMaybe<Scalars['String']['input']>;
   handle?: InputMaybe<Scalars['String']['input']>;
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  instagramHandle?: InputMaybe<Scalars['String']['input']>;
   nickname?: InputMaybe<Scalars['String']['input']>;
+  profileVisibility?: InputMaybe<ProfileVisibility>;
+  signalPhone?: InputMaybe<Scalars['String']['input']>;
+  snapchatHandle?: InputMaybe<Scalars['String']['input']>;
+  telegramHandle?: InputMaybe<Scalars['String']['input']>;
+  whatsAppPhone?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateProfilePayload = {
@@ -234,48 +447,103 @@ export type UpdateProfilePayload = {
   user?: Maybe<UserGraph>;
 };
 
+export type UserConnectionDto = {
+  __typename?: 'UserConnectionDto';
+  backgroundCheckBadge: BackgroundCheckBadge;
+  backgroundCheckBadgeExpiresAtUtc?: Maybe<Scalars['DateTime']['output']>;
+  checkrLastCheckAtUtc?: Maybe<Scalars['DateTime']['output']>;
+  connectionCreatedAtUtc: Scalars['DateTime']['output'];
+  contactVisibility: ContactVisibility;
+  displayName?: Maybe<Scalars['String']['output']>;
+  googleVoicePhone?: Maybe<Scalars['String']['output']>;
+  handle?: Maybe<Scalars['String']['output']>;
+  id: Scalars['UUID']['output'];
+  imageUrl?: Maybe<Scalars['String']['output']>;
+  instagramHandle?: Maybe<Scalars['String']['output']>;
+  nickname?: Maybe<Scalars['String']['output']>;
+  profileVisibility: ProfileVisibility;
+  signalPhone?: Maybe<Scalars['String']['output']>;
+  snapchatHandle?: Maybe<Scalars['String']['output']>;
+  telegramHandle?: Maybe<Scalars['String']['output']>;
+  userCreatedAtUtc: Scalars['DateTime']['output'];
+  whatsAppPhone?: Maybe<Scalars['String']['output']>;
+};
+
 export type UserGraph = {
   __typename?: 'UserGraph';
   backgroundCheckBadge: BackgroundCheckBadge;
   backgroundCheckBadgeExpiresAtUtc?: Maybe<Scalars['DateTime']['output']>;
+  checkrLastCheckAtUtc?: Maybe<Scalars['DateTime']['output']>;
+  contactVisibility: ContactVisibility;
   createdAtUtc: Scalars['DateTime']['output'];
   deletedAtUtc?: Maybe<Scalars['DateTime']['output']>;
   displayName?: Maybe<Scalars['String']['output']>;
   email: Scalars['String']['output'];
   emailVerified: Scalars['Boolean']['output'];
+  googleVoicePhone?: Maybe<Scalars['String']['output']>;
   handle?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   identityVerificationStatus: IdentityVerificationStatus;
   imageUrl?: Maybe<Scalars['String']['output']>;
+  instagramHandle?: Maybe<Scalars['String']['output']>;
   nickname?: Maybe<Scalars['String']['output']>;
   personaInquiryId?: Maybe<Scalars['String']['output']>;
   personaInquiryStatus?: Maybe<PersonaInquiryStatus>;
   personaVerifiedAtUtc?: Maybe<Scalars['DateTime']['output']>;
-  phoneNumber?: Maybe<Scalars['String']['output']>;
+  profileVisibility: ProfileVisibility;
+  signalPhone?: Maybe<Scalars['String']['output']>;
+  snapchatHandle?: Maybe<Scalars['String']['output']>;
   subscription: SubscriptionDto;
+  telegramHandle?: Maybe<Scalars['String']['output']>;
   termsAcceptedAtUtc?: Maybe<Scalars['DateTime']['output']>;
   verifiedBirthdate?: Maybe<Scalars['String']['output']>;
   verifiedFirstName?: Maybe<Scalars['String']['output']>;
   verifiedLastName?: Maybe<Scalars['String']['output']>;
   verifiedLicenseState?: Maybe<Scalars['String']['output']>;
   verifiedMiddleName?: Maybe<Scalars['String']['output']>;
+  whatsAppPhone?: Maybe<Scalars['String']['output']>;
 };
 
 export type UserMutations = {
   __typename?: 'UserMutations';
+  acceptFriendRequest: AcceptFriendRequestPayload;
   acceptTerms: AcceptTermsPayload;
+  blockUser: BlockUserPayload;
   cancelAccountDeletion: CancelAccountDeletionPayload;
+  cancelFriendRequest: CancelFriendRequestPayload;
   createUser: CreateUserPayload;
+  declineFriendRequest: DeclineFriendRequestPayload;
+  flagUser: FlagUserPayload;
   redeemPromoCode: RedeemPromoCodePayload;
+  registerPushToken: RegisterPushTokenPayload;
+  removeFriend: RemoveFriendPayload;
   requestAccountDeletion: RequestAccountDeletionPayload;
   requestEmailSignIn: RequestEmailSignInPayload;
+  sendFriendRequest: SendFriendRequestPayload;
   signInWithApple: SignInWithApplePayload;
   signInWithGoogle: SignInWithGooglePayload;
   signOut: SignOutPayload;
   startInstantCriminalCheck: StartInstantCriminalCheckPayload;
   startPersonaInquiry: StartPersonaInquiryPayload;
+  unblockUser: UnblockUserPayload;
+  unregisterPushToken: UnregisterPushTokenPayload;
   updateProfile: UpdateProfilePayload;
   verifyEmailSignIn: VerifyEmailSignInPayload;
+};
+
+
+export type UserMutationsAcceptFriendRequestArgs = {
+  input: RespondToFriendRequestInput;
+};
+
+
+export type UserMutationsBlockUserArgs = {
+  input: BlockUserInput;
+};
+
+
+export type UserMutationsCancelFriendRequestArgs = {
+  input: RespondToFriendRequestInput;
 };
 
 
@@ -284,13 +552,38 @@ export type UserMutationsCreateUserArgs = {
 };
 
 
+export type UserMutationsDeclineFriendRequestArgs = {
+  input: RespondToFriendRequestInput;
+};
+
+
+export type UserMutationsFlagUserArgs = {
+  input: FlagUserInput;
+};
+
+
 export type UserMutationsRedeemPromoCodeArgs = {
   input: RedeemPromoCodeInput;
 };
 
 
+export type UserMutationsRegisterPushTokenArgs = {
+  input: RegisterPushTokenInput;
+};
+
+
+export type UserMutationsRemoveFriendArgs = {
+  input: RemoveFriendInput;
+};
+
+
 export type UserMutationsRequestEmailSignInArgs = {
   input: RequestEmailSignInInput;
+};
+
+
+export type UserMutationsSendFriendRequestArgs = {
+  input: SendFriendRequestInput;
 };
 
 
@@ -309,6 +602,16 @@ export type UserMutationsStartInstantCriminalCheckArgs = {
 };
 
 
+export type UserMutationsUnblockUserArgs = {
+  input: UnblockUserInput;
+};
+
+
+export type UserMutationsUnregisterPushTokenArgs = {
+  input: UnregisterPushTokenInput;
+};
+
+
 export type UserMutationsUpdateProfileArgs = {
   input: UpdateProfileInput;
 };
@@ -320,15 +623,51 @@ export type UserMutationsVerifyEmailSignInArgs = {
 
 export type UserQueries = {
   __typename?: 'UserQueries';
+  blockedUsers?: Maybe<BlockedUsersConnection>;
   checkHandleAvailability: HandleAvailabilityResult;
   currentUser?: Maybe<UserGraph>;
+  friends?: Maybe<FriendsConnection>;
+  incomingFriendRequests?: Maybe<IncomingFriendRequestsConnection>;
+  outgoingFriendRequests?: Maybe<OutgoingFriendRequestsConnection>;
   searchUsers?: Maybe<SearchUsersConnection>;
   userById?: Maybe<UserGraph>;
 };
 
 
+export type UserQueriesBlockedUsersArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type UserQueriesCheckHandleAvailabilityArgs = {
   handle: Scalars['String']['input'];
+};
+
+
+export type UserQueriesFriendsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type UserQueriesIncomingFriendRequestsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type UserQueriesOutgoingFriendRequestsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -348,12 +687,23 @@ export type UserQueriesUserByIdArgs = {
 export type UserSearchResultDto = {
   __typename?: 'UserSearchResultDto';
   backgroundCheckBadge: BackgroundCheckBadge;
+  backgroundCheckBadgeExpiresAtUtc?: Maybe<Scalars['DateTime']['output']>;
+  checkrLastCheckAtUtc?: Maybe<Scalars['DateTime']['output']>;
+  contactVisibility: ContactVisibility;
   createdAtUtc: Scalars['DateTime']['output'];
   displayName?: Maybe<Scalars['String']['output']>;
+  googleVoicePhone?: Maybe<Scalars['String']['output']>;
   handle?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   imageUrl?: Maybe<Scalars['String']['output']>;
+  instagramHandle?: Maybe<Scalars['String']['output']>;
   nickname?: Maybe<Scalars['String']['output']>;
+  profileVisibility: ProfileVisibility;
+  signalPhone?: Maybe<Scalars['String']['output']>;
+  snapchatHandle?: Maybe<Scalars['String']['output']>;
+  telegramHandle?: Maybe<Scalars['String']['output']>;
+  viewerFriendshipState: ViewerFriendshipState;
+  whatsAppPhone?: Maybe<Scalars['String']['output']>;
 };
 
 export type VerifyEmailSignInInput = {
@@ -368,14 +718,28 @@ export type VerifyEmailSignInPayload = {
   user?: Maybe<UserGraph>;
 };
 
+export enum ViewerFriendshipState {
+  Friends = 'FRIENDS',
+  None = 'NONE',
+  RequestReceived = 'REQUEST_RECEIVED',
+  RequestSent = 'REQUEST_SENT'
+}
+
 export type AuthSessionFieldsFragment = { __typename?: 'AuthSessionGraph', token: string, expiresAtUtc: string };
 
-export type AuthUserFieldsFragment = { __typename?: 'UserGraph', id: string, email: string, displayName?: string | null, nickname?: string | null, handle?: string | null, emailVerified: boolean, createdAtUtc: string, identityVerificationStatus: IdentityVerificationStatus, personaInquiryId?: string | null, personaInquiryStatus?: PersonaInquiryStatus | null, personaVerifiedAtUtc?: string | null, verifiedFirstName?: string | null, verifiedMiddleName?: string | null, verifiedLastName?: string | null, verifiedBirthdate?: string | null, verifiedLicenseState?: string | null, phoneNumber?: string | null, imageUrl?: string | null, backgroundCheckBadge: BackgroundCheckBadge, backgroundCheckBadgeExpiresAtUtc?: string | null, termsAcceptedAtUtc?: string | null };
+export type AuthUserFieldsFragment = { __typename?: 'UserGraph', id: string, email: string, nickname?: string | null, handle?: string | null, emailVerified: boolean, createdAtUtc: string, identityVerificationStatus: IdentityVerificationStatus, personaInquiryId?: string | null, personaInquiryStatus?: PersonaInquiryStatus | null, personaVerifiedAtUtc?: string | null, verifiedFirstName?: string | null, verifiedMiddleName?: string | null, verifiedLastName?: string | null, verifiedBirthdate?: string | null, verifiedLicenseState?: string | null, imageUrl?: string | null, backgroundCheckBadge: BackgroundCheckBadge, backgroundCheckBadgeExpiresAtUtc?: string | null, checkrLastCheckAtUtc?: string | null, termsAcceptedAtUtc?: string | null, profileVisibility: ProfileVisibility, contactVisibility: ContactVisibility, googleVoicePhone?: string | null, whatsAppPhone?: string | null, instagramHandle?: string | null, telegramHandle?: string | null, snapchatHandle?: string | null, signalPhone?: string | null };
 
 export type AcceptTermsMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AcceptTermsMutation = { __typename?: 'UserMutations', acceptTerms: { __typename?: 'AcceptTermsPayload', error?: string | null, user?: { __typename?: 'UserGraph', id: string, email: string, displayName?: string | null, nickname?: string | null, handle?: string | null, emailVerified: boolean, createdAtUtc: string, identityVerificationStatus: IdentityVerificationStatus, personaInquiryId?: string | null, personaInquiryStatus?: PersonaInquiryStatus | null, personaVerifiedAtUtc?: string | null, verifiedFirstName?: string | null, verifiedMiddleName?: string | null, verifiedLastName?: string | null, verifiedBirthdate?: string | null, verifiedLicenseState?: string | null, phoneNumber?: string | null, imageUrl?: string | null, backgroundCheckBadge: BackgroundCheckBadge, backgroundCheckBadgeExpiresAtUtc?: string | null, termsAcceptedAtUtc?: string | null } | null } };
+export type AcceptTermsMutation = { __typename?: 'UserMutations', acceptTerms: { __typename?: 'AcceptTermsPayload', error?: string | null, user?: { __typename?: 'UserGraph', id: string, email: string, nickname?: string | null, handle?: string | null, emailVerified: boolean, createdAtUtc: string, identityVerificationStatus: IdentityVerificationStatus, personaInquiryId?: string | null, personaInquiryStatus?: PersonaInquiryStatus | null, personaVerifiedAtUtc?: string | null, verifiedFirstName?: string | null, verifiedMiddleName?: string | null, verifiedLastName?: string | null, verifiedBirthdate?: string | null, verifiedLicenseState?: string | null, imageUrl?: string | null, backgroundCheckBadge: BackgroundCheckBadge, backgroundCheckBadgeExpiresAtUtc?: string | null, checkrLastCheckAtUtc?: string | null, termsAcceptedAtUtc?: string | null, profileVisibility: ProfileVisibility, contactVisibility: ContactVisibility, googleVoicePhone?: string | null, whatsAppPhone?: string | null, instagramHandle?: string | null, telegramHandle?: string | null, snapchatHandle?: string | null, signalPhone?: string | null } | null } };
+
+export type CreateUserMutationVariables = Exact<{
+  input: CreateUserInput;
+}>;
+
+
+export type CreateUserMutation = { __typename?: 'UserMutations', createUser: { __typename?: 'CreateUserPayload', error?: string | null, user?: { __typename?: 'UserGraph', id: string, email: string, nickname?: string | null, handle?: string | null, emailVerified: boolean, createdAtUtc: string, identityVerificationStatus: IdentityVerificationStatus, personaInquiryId?: string | null, personaInquiryStatus?: PersonaInquiryStatus | null, personaVerifiedAtUtc?: string | null, verifiedFirstName?: string | null, verifiedMiddleName?: string | null, verifiedLastName?: string | null, verifiedBirthdate?: string | null, verifiedLicenseState?: string | null, imageUrl?: string | null, backgroundCheckBadge: BackgroundCheckBadge, backgroundCheckBadgeExpiresAtUtc?: string | null, checkrLastCheckAtUtc?: string | null, termsAcceptedAtUtc?: string | null, profileVisibility: ProfileVisibility, contactVisibility: ContactVisibility, googleVoicePhone?: string | null, whatsAppPhone?: string | null, instagramHandle?: string | null, telegramHandle?: string | null, snapchatHandle?: string | null, signalPhone?: string | null } | null } };
 
 export type RequestEmailSignInMutationVariables = Exact<{
   input: RequestEmailSignInInput;
@@ -389,14 +753,14 @@ export type SignInWithAppleMutationVariables = Exact<{
 }>;
 
 
-export type SignInWithAppleMutation = { __typename?: 'UserMutations', signInWithApple: { __typename?: 'SignInWithApplePayload', error?: string | null, session?: { __typename?: 'AuthSessionGraph', token: string, expiresAtUtc: string } | null, user?: { __typename?: 'UserGraph', id: string, email: string, displayName?: string | null, nickname?: string | null, handle?: string | null, emailVerified: boolean, createdAtUtc: string, identityVerificationStatus: IdentityVerificationStatus, personaInquiryId?: string | null, personaInquiryStatus?: PersonaInquiryStatus | null, personaVerifiedAtUtc?: string | null, verifiedFirstName?: string | null, verifiedMiddleName?: string | null, verifiedLastName?: string | null, verifiedBirthdate?: string | null, verifiedLicenseState?: string | null, phoneNumber?: string | null, imageUrl?: string | null, backgroundCheckBadge: BackgroundCheckBadge, backgroundCheckBadgeExpiresAtUtc?: string | null, termsAcceptedAtUtc?: string | null } | null } };
+export type SignInWithAppleMutation = { __typename?: 'UserMutations', signInWithApple: { __typename?: 'SignInWithApplePayload', error?: string | null, session?: { __typename?: 'AuthSessionGraph', token: string, expiresAtUtc: string } | null, user?: { __typename?: 'UserGraph', id: string, email: string, nickname?: string | null, handle?: string | null, emailVerified: boolean, createdAtUtc: string, identityVerificationStatus: IdentityVerificationStatus, personaInquiryId?: string | null, personaInquiryStatus?: PersonaInquiryStatus | null, personaVerifiedAtUtc?: string | null, verifiedFirstName?: string | null, verifiedMiddleName?: string | null, verifiedLastName?: string | null, verifiedBirthdate?: string | null, verifiedLicenseState?: string | null, imageUrl?: string | null, backgroundCheckBadge: BackgroundCheckBadge, backgroundCheckBadgeExpiresAtUtc?: string | null, checkrLastCheckAtUtc?: string | null, termsAcceptedAtUtc?: string | null, profileVisibility: ProfileVisibility, contactVisibility: ContactVisibility, googleVoicePhone?: string | null, whatsAppPhone?: string | null, instagramHandle?: string | null, telegramHandle?: string | null, snapchatHandle?: string | null, signalPhone?: string | null } | null } };
 
 export type SignInWithGoogleMutationVariables = Exact<{
   input: SignInWithGoogleInput;
 }>;
 
 
-export type SignInWithGoogleMutation = { __typename?: 'UserMutations', signInWithGoogle: { __typename?: 'SignInWithGooglePayload', error?: string | null, session?: { __typename?: 'AuthSessionGraph', token: string, expiresAtUtc: string } | null, user?: { __typename?: 'UserGraph', id: string, email: string, displayName?: string | null, nickname?: string | null, handle?: string | null, emailVerified: boolean, createdAtUtc: string, identityVerificationStatus: IdentityVerificationStatus, personaInquiryId?: string | null, personaInquiryStatus?: PersonaInquiryStatus | null, personaVerifiedAtUtc?: string | null, verifiedFirstName?: string | null, verifiedMiddleName?: string | null, verifiedLastName?: string | null, verifiedBirthdate?: string | null, verifiedLicenseState?: string | null, phoneNumber?: string | null, imageUrl?: string | null, backgroundCheckBadge: BackgroundCheckBadge, backgroundCheckBadgeExpiresAtUtc?: string | null, termsAcceptedAtUtc?: string | null } | null } };
+export type SignInWithGoogleMutation = { __typename?: 'UserMutations', signInWithGoogle: { __typename?: 'SignInWithGooglePayload', error?: string | null, session?: { __typename?: 'AuthSessionGraph', token: string, expiresAtUtc: string } | null, user?: { __typename?: 'UserGraph', id: string, email: string, nickname?: string | null, handle?: string | null, emailVerified: boolean, createdAtUtc: string, identityVerificationStatus: IdentityVerificationStatus, personaInquiryId?: string | null, personaInquiryStatus?: PersonaInquiryStatus | null, personaVerifiedAtUtc?: string | null, verifiedFirstName?: string | null, verifiedMiddleName?: string | null, verifiedLastName?: string | null, verifiedBirthdate?: string | null, verifiedLicenseState?: string | null, imageUrl?: string | null, backgroundCheckBadge: BackgroundCheckBadge, backgroundCheckBadgeExpiresAtUtc?: string | null, checkrLastCheckAtUtc?: string | null, termsAcceptedAtUtc?: string | null, profileVisibility: ProfileVisibility, contactVisibility: ContactVisibility, googleVoicePhone?: string | null, whatsAppPhone?: string | null, instagramHandle?: string | null, telegramHandle?: string | null, snapchatHandle?: string | null, signalPhone?: string | null } | null } };
 
 export type SignOutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -408,19 +772,20 @@ export type VerifyEmailSignInMutationVariables = Exact<{
 }>;
 
 
-export type VerifyEmailSignInMutation = { __typename?: 'UserMutations', verifyEmailSignIn: { __typename?: 'VerifyEmailSignInPayload', error?: string | null, session?: { __typename?: 'AuthSessionGraph', token: string, expiresAtUtc: string } | null, user?: { __typename?: 'UserGraph', id: string, email: string, displayName?: string | null, nickname?: string | null, handle?: string | null, emailVerified: boolean, createdAtUtc: string, identityVerificationStatus: IdentityVerificationStatus, personaInquiryId?: string | null, personaInquiryStatus?: PersonaInquiryStatus | null, personaVerifiedAtUtc?: string | null, verifiedFirstName?: string | null, verifiedMiddleName?: string | null, verifiedLastName?: string | null, verifiedBirthdate?: string | null, verifiedLicenseState?: string | null, phoneNumber?: string | null, imageUrl?: string | null, backgroundCheckBadge: BackgroundCheckBadge, backgroundCheckBadgeExpiresAtUtc?: string | null, termsAcceptedAtUtc?: string | null } | null } };
+export type VerifyEmailSignInMutation = { __typename?: 'UserMutations', verifyEmailSignIn: { __typename?: 'VerifyEmailSignInPayload', error?: string | null, session?: { __typename?: 'AuthSessionGraph', token: string, expiresAtUtc: string } | null, user?: { __typename?: 'UserGraph', id: string, email: string, nickname?: string | null, handle?: string | null, emailVerified: boolean, createdAtUtc: string, identityVerificationStatus: IdentityVerificationStatus, personaInquiryId?: string | null, personaInquiryStatus?: PersonaInquiryStatus | null, personaVerifiedAtUtc?: string | null, verifiedFirstName?: string | null, verifiedMiddleName?: string | null, verifiedLastName?: string | null, verifiedBirthdate?: string | null, verifiedLicenseState?: string | null, imageUrl?: string | null, backgroundCheckBadge: BackgroundCheckBadge, backgroundCheckBadgeExpiresAtUtc?: string | null, checkrLastCheckAtUtc?: string | null, termsAcceptedAtUtc?: string | null, profileVisibility: ProfileVisibility, contactVisibility: ContactVisibility, googleVoicePhone?: string | null, whatsAppPhone?: string | null, instagramHandle?: string | null, telegramHandle?: string | null, snapchatHandle?: string | null, signalPhone?: string | null } | null } };
 
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserQuery = { __typename?: 'UserQueries', currentUser?: { __typename?: 'UserGraph', id: string, email: string, displayName?: string | null, nickname?: string | null, handle?: string | null, emailVerified: boolean, createdAtUtc: string, identityVerificationStatus: IdentityVerificationStatus, personaInquiryId?: string | null, personaInquiryStatus?: PersonaInquiryStatus | null, personaVerifiedAtUtc?: string | null, verifiedFirstName?: string | null, verifiedMiddleName?: string | null, verifiedLastName?: string | null, verifiedBirthdate?: string | null, verifiedLicenseState?: string | null, phoneNumber?: string | null, imageUrl?: string | null, backgroundCheckBadge: BackgroundCheckBadge, backgroundCheckBadgeExpiresAtUtc?: string | null, termsAcceptedAtUtc?: string | null } | null };
+export type CurrentUserQuery = { __typename?: 'UserQueries', currentUser?: { __typename?: 'UserGraph', id: string, email: string, nickname?: string | null, handle?: string | null, emailVerified: boolean, createdAtUtc: string, identityVerificationStatus: IdentityVerificationStatus, personaInquiryId?: string | null, personaInquiryStatus?: PersonaInquiryStatus | null, personaVerifiedAtUtc?: string | null, verifiedFirstName?: string | null, verifiedMiddleName?: string | null, verifiedLastName?: string | null, verifiedBirthdate?: string | null, verifiedLicenseState?: string | null, imageUrl?: string | null, backgroundCheckBadge: BackgroundCheckBadge, backgroundCheckBadgeExpiresAtUtc?: string | null, checkrLastCheckAtUtc?: string | null, termsAcceptedAtUtc?: string | null, profileVisibility: ProfileVisibility, contactVisibility: ContactVisibility, googleVoicePhone?: string | null, whatsAppPhone?: string | null, instagramHandle?: string | null, telegramHandle?: string | null, snapchatHandle?: string | null, signalPhone?: string | null } | null };
 
 export const AuthSessionFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthSessionFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AuthSessionGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAtUtc"}}]}}]} as unknown as DocumentNode<AuthSessionFieldsFragment, unknown>;
-export const AuthUserFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthUserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"emailVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryId"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaVerifiedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedFirstName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedMiddleName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLastName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedBirthdate"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLicenseState"}},{"kind":"Field","name":{"kind":"Name","value":"phoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadge"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadgeExpiresAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"termsAcceptedAtUtc"}}]}}]} as unknown as DocumentNode<AuthUserFieldsFragment, unknown>;
-export const AcceptTermsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AcceptTerms"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"acceptTerms"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthUserFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthUserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"emailVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryId"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaVerifiedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedFirstName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedMiddleName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLastName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedBirthdate"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLicenseState"}},{"kind":"Field","name":{"kind":"Name","value":"phoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadge"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadgeExpiresAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"termsAcceptedAtUtc"}}]}}]} as unknown as DocumentNode<AcceptTermsMutation, AcceptTermsMutationVariables>;
+export const AuthUserFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthUserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"emailVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryId"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaVerifiedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedFirstName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedMiddleName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLastName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedBirthdate"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLicenseState"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadge"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadgeExpiresAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"checkrLastCheckAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"termsAcceptedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"profileVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"contactVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"googleVoicePhone"}},{"kind":"Field","name":{"kind":"Name","value":"whatsAppPhone"}},{"kind":"Field","name":{"kind":"Name","value":"instagramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"telegramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"snapchatHandle"}},{"kind":"Field","name":{"kind":"Name","value":"signalPhone"}}]}}]} as unknown as DocumentNode<AuthUserFieldsFragment, unknown>;
+export const AcceptTermsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AcceptTerms"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"acceptTerms"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthUserFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthUserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"emailVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryId"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaVerifiedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedFirstName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedMiddleName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLastName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedBirthdate"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLicenseState"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadge"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadgeExpiresAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"checkrLastCheckAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"termsAcceptedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"profileVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"contactVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"googleVoicePhone"}},{"kind":"Field","name":{"kind":"Name","value":"whatsAppPhone"}},{"kind":"Field","name":{"kind":"Name","value":"instagramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"telegramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"snapchatHandle"}},{"kind":"Field","name":{"kind":"Name","value":"signalPhone"}}]}}]} as unknown as DocumentNode<AcceptTermsMutation, AcceptTermsMutationVariables>;
+export const CreateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthUserFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthUserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"emailVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryId"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaVerifiedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedFirstName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedMiddleName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLastName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedBirthdate"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLicenseState"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadge"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadgeExpiresAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"checkrLastCheckAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"termsAcceptedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"profileVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"contactVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"googleVoicePhone"}},{"kind":"Field","name":{"kind":"Name","value":"whatsAppPhone"}},{"kind":"Field","name":{"kind":"Name","value":"instagramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"telegramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"snapchatHandle"}},{"kind":"Field","name":{"kind":"Name","value":"signalPhone"}}]}}]} as unknown as DocumentNode<CreateUserMutation, CreateUserMutationVariables>;
 export const RequestEmailSignInDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RequestEmailSignIn"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RequestEmailSignInInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"requestEmailSignIn"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<RequestEmailSignInMutation, RequestEmailSignInMutationVariables>;
-export const SignInWithAppleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SignInWithApple"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SignInWithAppleInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signInWithApple"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"session"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthSessionFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthUserFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthSessionFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AuthSessionGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAtUtc"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthUserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"emailVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryId"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaVerifiedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedFirstName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedMiddleName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLastName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedBirthdate"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLicenseState"}},{"kind":"Field","name":{"kind":"Name","value":"phoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadge"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadgeExpiresAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"termsAcceptedAtUtc"}}]}}]} as unknown as DocumentNode<SignInWithAppleMutation, SignInWithAppleMutationVariables>;
-export const SignInWithGoogleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SignInWithGoogle"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SignInWithGoogleInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signInWithGoogle"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"session"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthSessionFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthUserFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthSessionFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AuthSessionGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAtUtc"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthUserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"emailVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryId"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaVerifiedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedFirstName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedMiddleName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLastName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedBirthdate"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLicenseState"}},{"kind":"Field","name":{"kind":"Name","value":"phoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadge"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadgeExpiresAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"termsAcceptedAtUtc"}}]}}]} as unknown as DocumentNode<SignInWithGoogleMutation, SignInWithGoogleMutationVariables>;
+export const SignInWithAppleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SignInWithApple"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SignInWithAppleInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signInWithApple"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"session"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthSessionFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthUserFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthSessionFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AuthSessionGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAtUtc"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthUserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"emailVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryId"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaVerifiedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedFirstName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedMiddleName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLastName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedBirthdate"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLicenseState"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadge"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadgeExpiresAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"checkrLastCheckAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"termsAcceptedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"profileVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"contactVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"googleVoicePhone"}},{"kind":"Field","name":{"kind":"Name","value":"whatsAppPhone"}},{"kind":"Field","name":{"kind":"Name","value":"instagramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"telegramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"snapchatHandle"}},{"kind":"Field","name":{"kind":"Name","value":"signalPhone"}}]}}]} as unknown as DocumentNode<SignInWithAppleMutation, SignInWithAppleMutationVariables>;
+export const SignInWithGoogleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SignInWithGoogle"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SignInWithGoogleInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signInWithGoogle"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"session"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthSessionFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthUserFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthSessionFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AuthSessionGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAtUtc"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthUserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"emailVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryId"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaVerifiedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedFirstName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedMiddleName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLastName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedBirthdate"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLicenseState"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadge"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadgeExpiresAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"checkrLastCheckAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"termsAcceptedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"profileVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"contactVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"googleVoicePhone"}},{"kind":"Field","name":{"kind":"Name","value":"whatsAppPhone"}},{"kind":"Field","name":{"kind":"Name","value":"instagramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"telegramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"snapchatHandle"}},{"kind":"Field","name":{"kind":"Name","value":"signalPhone"}}]}}]} as unknown as DocumentNode<SignInWithGoogleMutation, SignInWithGoogleMutationVariables>;
 export const SignOutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SignOut"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signOut"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}}]}}]}}]} as unknown as DocumentNode<SignOutMutation, SignOutMutationVariables>;
-export const VerifyEmailSignInDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"VerifyEmailSignIn"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"VerifyEmailSignInInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"verifyEmailSignIn"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"session"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthSessionFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthUserFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthSessionFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AuthSessionGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAtUtc"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthUserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"emailVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryId"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaVerifiedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedFirstName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedMiddleName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLastName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedBirthdate"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLicenseState"}},{"kind":"Field","name":{"kind":"Name","value":"phoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadge"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadgeExpiresAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"termsAcceptedAtUtc"}}]}}]} as unknown as DocumentNode<VerifyEmailSignInMutation, VerifyEmailSignInMutationVariables>;
-export const CurrentUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CurrentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthUserFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthUserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"emailVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryId"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaVerifiedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedFirstName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedMiddleName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLastName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedBirthdate"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLicenseState"}},{"kind":"Field","name":{"kind":"Name","value":"phoneNumber"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadge"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadgeExpiresAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"termsAcceptedAtUtc"}}]}}]} as unknown as DocumentNode<CurrentUserQuery, CurrentUserQueryVariables>;
+export const VerifyEmailSignInDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"VerifyEmailSignIn"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"VerifyEmailSignInInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"verifyEmailSignIn"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"session"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthSessionFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthUserFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthSessionFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AuthSessionGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAtUtc"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthUserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"emailVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryId"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaVerifiedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedFirstName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedMiddleName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLastName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedBirthdate"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLicenseState"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadge"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadgeExpiresAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"checkrLastCheckAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"termsAcceptedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"profileVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"contactVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"googleVoicePhone"}},{"kind":"Field","name":{"kind":"Name","value":"whatsAppPhone"}},{"kind":"Field","name":{"kind":"Name","value":"instagramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"telegramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"snapchatHandle"}},{"kind":"Field","name":{"kind":"Name","value":"signalPhone"}}]}}]} as unknown as DocumentNode<VerifyEmailSignInMutation, VerifyEmailSignInMutationVariables>;
+export const CurrentUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CurrentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AuthUserFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthUserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserGraph"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"nickname"}},{"kind":"Field","name":{"kind":"Name","value":"handle"}},{"kind":"Field","name":{"kind":"Name","value":"emailVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"identityVerificationStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryId"}},{"kind":"Field","name":{"kind":"Name","value":"personaInquiryStatus"}},{"kind":"Field","name":{"kind":"Name","value":"personaVerifiedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedFirstName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedMiddleName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLastName"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedBirthdate"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedLicenseState"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadge"}},{"kind":"Field","name":{"kind":"Name","value":"backgroundCheckBadgeExpiresAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"checkrLastCheckAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"termsAcceptedAtUtc"}},{"kind":"Field","name":{"kind":"Name","value":"profileVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"contactVisibility"}},{"kind":"Field","name":{"kind":"Name","value":"googleVoicePhone"}},{"kind":"Field","name":{"kind":"Name","value":"whatsAppPhone"}},{"kind":"Field","name":{"kind":"Name","value":"instagramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"telegramHandle"}},{"kind":"Field","name":{"kind":"Name","value":"snapchatHandle"}},{"kind":"Field","name":{"kind":"Name","value":"signalPhone"}}]}}]} as unknown as DocumentNode<CurrentUserQuery, CurrentUserQueryVariables>;

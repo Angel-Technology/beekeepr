@@ -1,8 +1,9 @@
 import { Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { ArrowRight, Check } from 'lucide-react-native';
 import { Button, DetailCard } from '@components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Congrats from '@src/assets/svg/Congrats';
+import { appImages } from '@assets/images';
 
 type CongratsSectionProps = {
   isStartingTrial: boolean;
@@ -30,25 +31,25 @@ export const CongratsSection = ({
       }}
     >
       <View className="w-full gap-1 px-2">
-        <Text className="font-poppins-semiBold text-title-3 leading-tight text-text-default">
+        <Text className="font-poppins-semiBold text-title-3 leading-tight text-tk-text-primary">
           Congrats, You&rsquo;re in!
         </Text>
-        <Text className="font-lexend-regular text-lg leading-5 text-text-tertiary">
+        <Text className="font-lexend-regular text-lg leading-5 text-tk-text-tertiary">
           You can proudly display your Buzz badge on any dating app we&rsquo;re
           partnered with.
         </Text>
       </View>
 
       <View className="flex-1 items-center justify-center">
-        <Congrats width={200} height={254} />
+        <Image
+          source={appImages.congrats}
+          contentFit="contain"
+          style={{ width: 200, height: 254 }}
+        />
       </View>
 
       <DetailCard
         title="What’s included"
-        className="gap-5 rounded-5 p-4"
-        titleClassName="font-lexend-semiBold text-base text-text-default"
-        itemsClassName="gap-5 flex-start justify-center item-center"
-        itemTextClassName="font-lexend-regular text-subhead leading-5 text-text-secondary"
         items={[
           {
             id: 'buzz-badge',

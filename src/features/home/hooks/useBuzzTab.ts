@@ -1,16 +1,30 @@
-import { useMemo, useState } from 'react';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useCompleteProfile } from '@features/account/hooks/useCompleteProfile';
+import { useCallback, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'expo-router';
 import { useRedeemPromoCode } from '@features/account/hooks/useRedeemPromoCode';
-import { useSearchUsers } from '@features/account/hooks/useSearchUsers';
-import { BackgroundCheckBadge, useAuthSession } from '@features/auth';
+import {
+  authQueryKeys,
+  BackgroundCheckBadge,
+  useAuthSession,
+} from '@features/auth';
 import {
   hasResumableVerification,
   isVerificationDenied,
 } from '@features/verification';
 import { useTrialPurchase } from '@features/verification/hooks/useTrialPurchase';
 import { useRevenueCat } from '@src/lib/revenuecat';
+import type { ConnectionTab } from '../models/connectionTab';
 import type { BuzzFlow } from '../models/buzzFlow.types';
+import { homeQueryKeys } from '../models/homeQueryKeys';
+import type { BlockedUser, Connection, Invite } from '../models/home.types';
+import { useBlockedUsers } from './useBlockedUsers';
+import { useCancelInvite } from './useCancelInvite';
+import { useConnections } from './useConnections';
+import { useIncomingInvites } from './useIncomingInvites';
+import { useOpenProfilePreview } from './useOpenProfilePreview';
+import { useOutgoingInvites } from './useOutgoingInvites';
+import { useRespondToInvite } from './useRespondToInvite';
+import { useUnblockUser } from './useUnblockUser';
 
 const TRIAL_LENGTH_DAYS = 30;
 const REMINDER_LEAD_DAYS = 5;
@@ -34,10 +48,8 @@ const formatLongDate = (value: Date) =>
  *
  * Flow derivation:
  * - `'denied'`: terminal Persona-declined or Checkr-denied user.
- * - `'active'`: transient state right after submitting the criminal-check
- *   form, before the cache re-derives.
  * - `'welcome'`: badge approved AND user has an active subscription
- *   (`isPro`) — the search community body.
+ *   (`isPro`) — the connections home.
  * - `'verify'`: everything else — either the user hasn't completed
  *   verification, or they're approved but haven't started / have lapsed
  *   their membership. CTA copy + destination shift based on which sub-case
@@ -51,25 +63,75 @@ const formatLongDate = (value: Date) =>
  */
 export const useBuzzTab = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: user, isPending: isUserPending } = useAuthSession();
-  const { isReady: isRevenueCatReady, isPro, isLapsed } = useRevenueCat();
-  const { isPurchasing, startTrial } = useTrialPurchase();
-
-  const [searchQuery, setSearchQuery] = useState('');
   const {
-    debouncedQuery: searchDebouncedQuery,
-    results: searchResults,
-    isFetching: isSearchFetching,
-  } = useSearchUsers(searchQuery);
+    isReady: isRevenueCatReady,
+    isPro,
+    isLapsed,
+    isOnTrial,
+    trialDaysRemaining,
+  } = useRevenueCat();
+  const { isPurchasing, startTrial } = useTrialPurchase();
+  const { data: connections } = useConnections();
+  const { data: invites } = useIncomingInvites();
+  const { data: sentInvites } = useOutgoingInvites();
+  const { data: blockedUsers } = useBlockedUsers();
+  const {
+    accept: acceptInvite,
+    decline: declineInvite,
+    acceptPendingId,
+    declinePendingId,
+  } = useRespondToInvite();
+  const { cancel: cancelInvite, cancelPendingId } = useCancelInvite();
+  const { unblock: unblockUser, unblockPendingId } = useUnblockUser();
+  const openProfilePreview = useOpenProfilePreview();
 
-  // "Create a profile" modal visibility + form state. Lives here so the
-  // presentation layer stays dumb and so `useCompleteProfile.onSaved` can
-  // close the modal directly when the mutation resolves (cleaner than
-  // letting the parent infer dismissal from `isProfileIncomplete`).
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const profileForm = useCompleteProfile({
-    onSaved: () => setShowProfileModal(false),
-  });
+  // Bound preview-opener per source so cards can stay dumb (don't have
+  // to know what `PreviewSource` is). Each variant just calls the right
+  // string on the way through.
+  const onPressConnection = (connection: Connection) =>
+    openProfilePreview(connection, 'connection');
+  const onPressInvite = (invite: Invite) =>
+    openProfilePreview(invite, 'invite');
+  const onPressSentInvite = (invite: Invite) =>
+    openProfilePreview(invite, 'sent-invite');
+  const onPressBlockedUser = (blockedUser: BlockedUser) =>
+    openProfilePreview(blockedUser, 'blocked');
+
+  // Pill state is owned at the orchestration layer so the active tab can
+  // be reset alongside other welcome-flow state if/when we ever need to.
+  const [activeConnectionTab, setActiveConnectionTab] =
+    useState<ConnectionTab>('connections');
+
+  // Pull-to-refresh on the Buzz tab. Invalidates every cache the screen
+  // reads off so the badge crest, connections, both invite directions,
+  // and the blocked list all round-trip. Returns a Promise that
+  // resolves when every refetch lands so `RefreshControl` can drop the
+  // spinner at the right moment.
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const onRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: authQueryKeys.session() }),
+        queryClient.invalidateQueries({
+          queryKey: homeQueryKeys.connections(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: homeQueryKeys.incomingInvites(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: homeQueryKeys.outgoingInvites(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: homeQueryKeys.blockedUsers(),
+        }),
+      ]);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [queryClient]);
 
   // Promo-code modal is shared by membership + renewal CTAs. The flow on
   // success: hook refreshes RC → `isPro` flips → flow derivation drops
@@ -79,8 +141,6 @@ export const useBuzzTab = () => {
   const promoCodeForm = useRedeemPromoCode({
     onRedeemed: () => setShowPromoModal(false),
   });
-  const params = useLocalSearchParams<{ backgroundCheck?: string }>();
-  const hasSubmittedBackgroundCheck = params.backgroundCheck === 'submitted';
   const badge = user?.backgroundCheckBadge ?? BackgroundCheckBadge.None;
   const isDenied = isVerificationDenied(user);
   const isApproved = badge === BackgroundCheckBadge.Approved;
@@ -100,14 +160,8 @@ export const useBuzzTab = () => {
     if (isResolving) {
       return null;
     }
-    // Denied (Persona Declined or Checkr Denied) trumps the post-submit
-    // celebration — we don't want to flash a welcome screen before the
-    // denied screen lands.
     if (isDenied) {
       return 'denied';
-    }
-    if (hasSubmittedBackgroundCheck) {
-      return 'active';
     }
     if (isApproved && isPro) {
       return 'welcome';
@@ -123,15 +177,7 @@ export const useBuzzTab = () => {
       return 'membership';
     }
     return 'verify';
-  }, [
-    isResolving,
-    isApproved,
-    isPro,
-    isDenied,
-    hasSubmittedBackgroundCheck,
-    needsMembership,
-    needsRenewal,
-  ]);
+  }, [isResolving, isApproved, isPro, isDenied, needsMembership, needsRenewal]);
 
   const ctaLabel = needsRenewal
     ? 'Renew membership'
@@ -167,6 +213,8 @@ export const useBuzzTab = () => {
     ctaLabel,
     onGetStarted,
     onLearnMore,
+    isRefreshing,
+    onRefresh,
     membershipProps: {
       isPurchasing,
       reminderLabel: `In ${TRIAL_LENGTH_DAYS - REMINDER_LEAD_DAYS} days`,
@@ -197,32 +245,26 @@ export const useBuzzTab = () => {
       },
     },
     welcomeProps: {
-      searchQuery,
-      searchDebouncedQuery,
-      searchResults,
-      isSearchFetching,
-      onChangeSearchQuery: setSearchQuery,
-      // Subscribed users without nickname/handle can't be found by others
-      // in the search — surface the soft-nag modal until they fill it in
-      // (or explicitly dismiss).
-      isProfileIncomplete: !user?.nickname || !user?.handle,
-      showProfileModal,
-      onOpenProfileModal: () => setShowProfileModal(true),
-      profileForm: {
-        nickname: profileForm.nickname,
-        handle: profileForm.handle,
-        onChangeNickname: profileForm.setNickname,
-        onChangeHandle: profileForm.setHandle,
-        nicknameStatus: profileForm.nicknameStatus,
-        handleStatus: profileForm.handleStatus,
-        handleReason: profileForm.handleReason,
-        isValid: profileForm.isValid,
-        isSaving: profileForm.isSaving,
-        onSave: profileForm.save,
-      },
-    },
-    resetSubmittedBackgroundCheck: () => {
-      router.replace('/');
+      connections: connections ?? [],
+      invites: invites ?? [],
+      sentInvites: sentInvites ?? [],
+      blockedUsers: blockedUsers ?? [],
+      isOnTrial,
+      trialDaysRemaining,
+      activeTab: activeConnectionTab,
+      onChangeTab: setActiveConnectionTab,
+      onAcceptInvite: acceptInvite,
+      onDeclineInvite: declineInvite,
+      onCancelInvite: cancelInvite,
+      onUnblockUser: unblockUser,
+      onPressConnection,
+      onPressInvite,
+      onPressSentInvite,
+      onPressBlockedUser,
+      acceptPendingId,
+      declinePendingId,
+      cancelPendingId,
+      unblockPendingId,
     },
   };
 };

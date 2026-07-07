@@ -7,6 +7,8 @@ type DividerProps = {
 
 export const Divider = ({ className }: DividerProps) => {
   return (
-    <View className={clsx('h-px self-stretch bg-border-subtle', className)} />
+    <View
+      className={clsx('h-px self-stretch bg-tk-border-tertiary', className)}
+    />
   );
 };

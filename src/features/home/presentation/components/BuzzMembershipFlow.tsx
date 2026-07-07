@@ -1,11 +1,12 @@
 import { Text, View, useWindowDimensions } from 'react-native';
+import { Image } from 'expo-image';
 import { ArrowRight, Check } from 'lucide-react-native';
 import { Button, Card, DetailCard, VerificationStatusPill } from '@components';
-import IllustrationAward from '@src/assets/svg/IllustrationAward';
+import { themedColors, useThemedColor } from '@common';
 import IntroBeeIcon from '@src/assets/svg/IntroBeeIcon';
 import LineBuzz from '@src/assets/svg/LineBuzz';
 import { VerificationTrialStepper } from '@features/verification/presentation/components/VerificationTrialStepper';
-import Congrats from '@src/assets/svg/Congrats';
+import { appImages } from '@assets/images';
 
 type BuzzMembershipFlowProps = {
   isPurchasing: boolean;
@@ -16,7 +17,7 @@ type BuzzMembershipFlowProps = {
 };
 
 const YellowCheckIcon = () => (
-  <View className="mt-[2px] rounded-full bg-brand-highlight p-1.5">
+  <View className="mt-[2px] rounded-full bg-tk-brand-primary p-1.5">
     <Check size={10} color="#000000" strokeWidth={3} />
   </View>
 );
@@ -34,6 +35,8 @@ export const BuzzMembershipFlow = ({
   // intrinsic aspect ratio.
   const buzzWidth = Math.max(windowWidth - 200, 180);
   const buzzHeight = (buzzWidth * 63) / 282;
+  const lineStroke = useThemedColor(themedColors.border.tertiary);
+  const beeColor = useThemedColor(themedColors.text.primary);
 
   return (
     <View className="w-full gap-7">
@@ -45,19 +48,23 @@ export const BuzzMembershipFlow = ({
       </View>
 
       <View className="items-center gap-2">
-        <Text className="text-center font-poppins-semiBold text-700 leading-tight text-text-default">
+        <Text className="text-center font-poppins-semiBold text-700 leading-tight text-tk-text-primary">
           Congrats, you&rsquo;re in!
         </Text>
-        <Text className="text-center font-lexend-regular text-xl text-text-default">
+        <Text className="text-center font-lexend-regular text-xl text-tk-text-primary">
           30-Day Free Trial
         </Text>
-        <Text className="text-center font-poppins-regular text-base text-text-default">
+        <Text className="text-center font-poppins-regular text-base text-tk-text-primary">
           $9.99/month
         </Text>
       </View>
 
       <View className="items-center">
-        <Congrats width={200} height={254} />
+        <Image
+          source={appImages.congrats}
+          contentFit="contain"
+          style={{ width: 200, height: 254 }}
+        />
       </View>
 
       <View className="w-full gap-4">
@@ -77,10 +84,6 @@ export const BuzzMembershipFlow = ({
 
       <DetailCard
         title="What’s included"
-        className="gap-4 rounded-5 bg-brand-secondary p-4"
-        titleClassName="font-lexend-semiBold text-base leading-6 text-text-default"
-        itemsClassName="gap-4 pl-0"
-        itemTextClassName="font-lexend-regular text-sm leading-5 text-text-secondary"
         items={[
           {
             id: 'buzz-badge',
@@ -96,25 +99,33 @@ export const BuzzMembershipFlow = ({
         ]}
       />
 
-      <Card className="gap-6 rounded-5 border-secondary px-4 pb-6 pt-4">
+      <Card className="gap-6 px-4 pb-6 pt-4">
         <View className="w-full">
           <View className="w-full flex-row items-start gap-3">
-            <IllustrationAward width={123} height={180.795} />
+            <Image
+              source={appImages.standoutBee}
+              contentFit="contain"
+              style={{
+                width: 123,
+                height: 180.795,
+                transform: [{ scaleX: -1 }],
+              }}
+            />
 
             <View className="flex-1 flex-col items-center justify-center gap-2 pt-6">
               <View>
-                <Text className="text-center font-poppins-semiBold text-700 leading-tight text-text-default">
+                <Text className="text-center font-poppins-semiBold text-700 leading-tight text-tk-text-primary">
                   30-Day
                 </Text>
-                <Text className="text-center font-poppins-semiBold text-700 leading-tight text-text-default">
+                <Text className="text-center font-poppins-semiBold text-700 leading-tight text-tk-text-primary">
                   Free Trial
                 </Text>
               </View>
               <View>
-                <Text className="text-center font-sourceSans-regular text-base text-text-tertiary">
+                <Text className="text-center font-sourceSans-regular text-base text-tk-text-tertiary">
                   Try 30 days for free,
                 </Text>
-                <Text className="text-center font-sourceSans-regular text-base text-text-tertiary">
+                <Text className="text-center font-sourceSans-regular text-base text-tk-text-tertiary">
                   then $9.99/month.
                 </Text>
               </View>
@@ -122,7 +133,7 @@ export const BuzzMembershipFlow = ({
           </View>
 
           <View
-            className="absolute right-1 top-[140px]"
+            className="absolute right-7 top-[160px]"
             style={{ width: buzzWidth, height: buzzHeight }}
             pointerEvents="none"
           >
@@ -130,23 +141,23 @@ export const BuzzMembershipFlow = ({
               className="w-full"
               style={{ transform: [{ rotate: '4.648deg' }] }}
             >
-              <LineBuzz width={buzzWidth} height={buzzHeight} />
+              <LineBuzz
+                width={buzzWidth}
+                height={buzzHeight}
+                stroke={lineStroke}
+              />
             </View>
             <View
               className="absolute -right-[11px] top-0"
               style={{ transform: [{ rotate: '19.052deg' }] }}
             >
-              <IntroBeeIcon
-                width={18}
-                height={18}
-                color="rgba(0, 0, 0, 0.88)"
-              />
+              <IntroBeeIcon width={18} height={18} color={beeColor} />
             </View>
           </View>
         </View>
 
         <View className="w-full gap-6">
-          <Text className="font-poppins-semiBold text-xl text-text-default">
+          <Text className="font-poppins-semiBold text-xl text-tk-text-primary">
             How your trial works
           </Text>
           <VerificationTrialStepper

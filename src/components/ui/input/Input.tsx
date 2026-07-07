@@ -10,6 +10,8 @@ import {
   type TextInputSubmitEditingEventData,
 } from 'react-native';
 
+import { themedColors, useThemedColor } from '@common';
+
 type InputType = 'text' | 'email' | 'phone' | 'numeric' | 'password';
 
 type InputProps = {
@@ -63,23 +65,22 @@ export const Input = ({
 }: InputProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const hasError = Boolean(error);
+  const placeholderColor = useThemedColor(themedColors.text.quaternary);
 
   return (
-    <View className={clsx('gap-2 self-stretch', className)}>
+    <View className={clsx('gap- self-stretch', className)}>
       {label ? (
-        <Text className="font-lexend-regular text-sm leading-5 text-text-secondary">
+        <Text className="font-lexend-regular text-xs text-tk-text-secondary">
           {label}
         </Text>
       ) : null}
 
       <View
         className={clsx(
-          'min-h-[44px] flex-row items-center self-stretch rounded-round bg-bg-default pl-4 pr-3',
-          hasError
-            ? 'border-2 border-text-critical'
-            : isFocused
-              ? 'border-2 border-brand-highlight'
-              : 'border border-border-weak',
+          'min-h-[44px] flex-row items-center self-stretch bg-transparent',
+          hasError && isFocused
+            ? 'border-b-2 border-tk-alerts-danger'
+            : 'border-b border-tk-border-secondary',
           disabled && 'opacity-60',
         )}
       >
@@ -88,7 +89,7 @@ export const Input = ({
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          placeholderTextColor="rgba(0,0,0,0.3)"
+          placeholderTextColor={placeholderColor}
           editable={!disabled}
           autoFocus={autoFocus}
           keyboardType={KEYBOARD_BY_TYPE[type]}
@@ -107,7 +108,7 @@ export const Input = ({
           }}
           onSubmitEditing={onSubmitEditing}
           className={clsx(
-            'flex-1 font-lexend-regular text-base leading-tight text-text-default',
+            'flex-1 font-lexend-regular text-base leading-tight text-tk-text-primary',
             inputClassName,
           )}
           style={{ letterSpacing: -0.3 }}
@@ -116,7 +117,7 @@ export const Input = ({
       </View>
 
       {hasError ? (
-        <Text className="font-lexend-regular text-sm leading-5 text-text-critical">
+        <Text className="font-lexend-regular text-sm leading-5 text-tk-alerts-danger">
           {error}
         </Text>
       ) : null}

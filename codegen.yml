@@ -36,3 +36,27 @@ generates:
       - typescript
       - typescript-operations
       - typed-document-node
+  src/features/home/graphql/generated/home.generated.ts:
+    config:
+      scalars:
+        DateTime: string
+        UUID: string
+      useTypeImports: true
+    documents:
+      - src/features/home/graphql/**/*.graphql
+    plugins:
+      - typescript
+      - typescript-operations
+      - typed-document-node
+  src/features/search/graphql/generated/search.generated.ts:
+    config:
+      scalars:
+        DateTime: string
+        UUID: string
+      useTypeImports: true
+    documents:
+      - src/features/search/graphql/**/*.graphql
+    plugins:
+      - typescript
+      - typescript-operations
+      - typed-document-node

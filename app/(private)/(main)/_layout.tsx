@@ -1,10 +1,12 @@
 import { Drawer } from 'expo-router/drawer';
-import { MenuDrawerContent } from '@features/account';
+import { DrawerContentSwitcher } from '@features/home/presentation/components/drawer/DrawerContentSwitcher';
+import { themedColors, useThemedColor } from '@common';
 
 export default function PrivateDrawerLayout() {
+  const sceneBg = useThemedColor(themedColors.bg.primary);
   return (
     <Drawer
-      drawerContent={(props) => <MenuDrawerContent {...props} />}
+      drawerContent={(props) => <DrawerContentSwitcher {...props} />}
       screenOptions={{
         headerShown: false,
         drawerType: 'slide',
@@ -13,9 +15,7 @@ export default function PrivateDrawerLayout() {
         drawerStyle: {
           width: '88%',
         },
-        sceneStyle: {
-          backgroundColor: '#FFFFFF',
-        },
+        sceneStyle: { backgroundColor: sceneBg },
       }}
     >
       <Drawer.Screen

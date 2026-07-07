@@ -1,0 +1,6 @@
+mutation CancelInvite($input: RespondToFriendRequestInput!) {
+  cancelFriendRequest(input: $input) {
+    error
+    success
+  }
+}

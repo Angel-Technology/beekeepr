@@ -1,21 +1,39 @@
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   KeyboardProvider,
   KeyboardToolbar,
 } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { colorScheme } from 'nativewind';
+import { ConfirmDestructiveProvider } from '@components';
+import {
+  DEFAULT_THEME,
+  ThemePreferenceProvider,
+  themedColors,
+  useThemedColor,
+} from '@common';
 import { useAuthSession } from '@features/auth';
+import { PushNotificationsProvider } from '@src/lib/push-notifications';
 
 import '../global.css';
-import { useEffect, type ComponentType } from 'react';
+import { useEffect, useState, type ComponentType } from 'react';
+import { DevSettings } from 'react-native';
 import { QueryProvider } from '@src/lib/tanstack/QueryProvider';
 import { RevenueCatProvider } from '@src/lib/revenuecat';
 import { GlobalLoaderProvider, GlobalLoaderOverlay } from '@src/lib/loader';
 import { ErrorModalProvider } from '@src/lib/error-modal';
 import { RootErrorBoundary } from '@src/lib/error-boundary';
 import { initSentry, wrapRootComponent } from '@src/lib/sentry';
+
+// Module-load default so the first paint is correct for the dark-default
+// case before AsyncStorage resolves. `ThemePreferenceProvider` reads the
+// user's stored choice on mount and re-applies via `colorScheme.set` if
+// it differs — users who picked light / system see one extra render on
+// cold start.
+colorScheme.set(DEFAULT_THEME);
 
 // Fire at module load — before any provider mounts — so the SDK is ready to
 // receive `captureException` calls from `RootErrorBoundary` on first render.
@@ -24,15 +42,22 @@ initSentry();
 
 SplashScreen.preventAutoHideAsync();
 
-const storybookEnabled = process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === 'true';
+// Storybook is bundled into every dev build (see `metro.config.js`) so the
+// in-app toggle can flip to it without a Metro restart. In production we only
+// require it when the caller explicitly opted in via the env var.
+const storybookAvailable =
+  __DEV__ || process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === 'true';
 
 let StorybookUIRoot: ComponentType<Record<string, never>> | undefined;
-if (storybookEnabled) {
+if (storybookAvailable) {
   StorybookUIRoot = require('../.rnstorybook').default;
 }
 
 function RootNavigator() {
   const { data: user, isPending } = useAuthSession();
+  // Theme-aware screen container so push/pop transitions don't expose
+  // the Stack's default white background mid-animation.
+  const screenBg = useThemedColor(themedColors.bg.primary);
 
   // Hold the native splash until the auth session has resolved. Hiding
   // unconditionally on mount drops us into the `isPending` `return null`
@@ -52,7 +77,7 @@ function RootNavigator() {
   const isAuthenticated = Boolean(user);
 
   return (
-    <Stack>
+    <Stack screenOptions={{ contentStyle: { backgroundColor: screenBg } }}>
       <Stack.Protected guard={!isAuthenticated}>
         <Stack.Screen
           name="(public)"
@@ -76,10 +101,27 @@ function RootNavigator() {
 }
 
 function RootLayout() {
+  const [storybookEnabled, setStorybookEnabled] = useState(
+    process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === 'true',
+  );
+
   useEffect(() => {
     if (storybookEnabled) {
       SplashScreen.hideAsync();
     }
+  }, [storybookEnabled]);
+
+  // Register a "Toggle Storybook" entry in the React Native dev menu
+  // (shake / Cmd+D on iOS sim / Cmd+M on Android). `addMenuItem` has no
+  // removal API, so we register once — the functional setter reads the
+  // latest value without needing the effect to re-run.
+  useEffect(() => {
+    if (!__DEV__) {
+      return;
+    }
+    DevSettings.addMenuItem('Toggle Storybook', () => {
+      setStorybookEnabled((prev) => !prev);
+    });
   }, []);
 
   if (storybookEnabled && StorybookUIRoot) {
@@ -87,7 +129,18 @@ function RootLayout() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <KeyboardProvider>
           <SafeAreaProvider>
-            <StorybookUIRoot />
+            <ErrorModalProvider>
+              <GlobalLoaderProvider>
+                <BottomSheetModalProvider>
+                  <ThemePreferenceProvider>
+                    <ConfirmDestructiveProvider>
+                      <StorybookUIRoot />
+                    </ConfirmDestructiveProvider>
+                  </ThemePreferenceProvider>
+                  <GlobalLoaderOverlay />
+                </BottomSheetModalProvider>
+              </GlobalLoaderProvider>
+            </ErrorModalProvider>
           </SafeAreaProvider>
         </KeyboardProvider>
       </GestureHandlerRootView>
@@ -103,8 +156,16 @@ function RootLayout() {
               <RevenueCatProvider>
                 <ErrorModalProvider>
                   <GlobalLoaderProvider>
-                    <RootNavigator />
-                    <GlobalLoaderOverlay />
+                    <BottomSheetModalProvider>
+                      <ThemePreferenceProvider>
+                        <ConfirmDestructiveProvider>
+                          <PushNotificationsProvider>
+                            <RootNavigator />
+                          </PushNotificationsProvider>
+                        </ConfirmDestructiveProvider>
+                      </ThemePreferenceProvider>
+                      <GlobalLoaderOverlay />
+                    </BottomSheetModalProvider>
                   </GlobalLoaderProvider>
                 </ErrorModalProvider>
               </RevenueCatProvider>

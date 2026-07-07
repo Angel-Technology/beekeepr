@@ -1,67 +1,103 @@
-import { ActivityIndicator, Text, View } from 'react-native';
-import { Search, X } from 'lucide-react-native';
-import { Card, IconButton, Input } from '@components';
-import { CompleteProfileModal } from '@features/account/presentation/components/CompleteProfileModal';
-import { ProfilePreviewCard } from '@features/account/presentation/components/ProfilePreviewCard';
-import type {
-  FieldStatus,
-  UserSearchResult,
-} from '@features/account/models/account.types';
-import { formatJoinedDate } from '@features/account/models/formatJoinedDate';
-import IllustrationBuzzBadge from '@src/assets/svg/IllustrationBuzzBadge';
-import { useRevenueCat } from '@src/lib/revenuecat';
+import { View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { useConfirmDestructive } from '@components';
+import type { BlockedUser, Connection, Invite } from '../../models/home.types';
+import {
+  BuzzConnectionPill,
+  BuzzConnectionsCard,
+  type ConnectionTab,
+} from './connections';
+import {
+  BuzzBlockedUsersCard,
+  BuzzInvitesCard,
+  BuzzSentInvitesCard,
+} from './invites';
 import { BuzzTrialCountdownCard } from './BuzzTrialCountdownCard';
 
-type ProfileFormProps = {
-  nickname: string;
-  handle: string;
-  onChangeNickname: (next: string) => void;
-  onChangeHandle: (next: string) => void;
-  nicknameStatus: FieldStatus;
-  handleStatus: FieldStatus;
-  handleReason: string | null;
-  isValid: boolean;
-  isSaving: boolean;
-  onSave: () => void;
-};
+const CONFIRM_UNSEND = {
+  title: 'Unsend invite?',
+  description:
+    "They won't see your invite anymore. You can send a new one later.",
+  confirmLabel: 'Unsend',
+} as const;
+
+const CONFIRM_UNBLOCK = {
+  title: 'Unblock user?',
+  description:
+    "They'll be able to send invites and see your profile again. You can re-block them from the drawer at any time.",
+  confirmLabel: 'Unblock',
+} as const;
 
 type BuzzWelcomeFlowProps = {
-  searchQuery: string;
-  searchDebouncedQuery: string;
-  searchResults: UserSearchResult[];
-  isSearchFetching: boolean;
-  onChangeSearchQuery: (next: string) => void;
-  isProfileIncomplete: boolean;
-  showProfileModal: boolean;
-  onOpenProfileModal: () => void;
-  profileForm: ProfileFormProps;
+  connections: readonly Connection[];
+  invites: readonly Invite[];
+  sentInvites: readonly Invite[];
+  blockedUsers: readonly BlockedUser[];
+  isOnTrial: boolean;
+  trialDaysRemaining: number | null;
+  activeTab: ConnectionTab;
+  onChangeTab: (next: ConnectionTab) => void;
+  onAcceptInvite: (otherUserId: string) => void;
+  onDeclineInvite: (otherUserId: string) => void;
+  onCancelInvite: (otherUserId: string) => void;
+  onUnblockUser: (targetUserId: string) => void;
+  onPressConnection: (connection: Connection) => void;
+  onPressInvite: (invite: Invite) => void;
+  onPressSentInvite: (invite: Invite) => void;
+  onPressBlockedUser: (blockedUser: BlockedUser) => void;
+  acceptPendingId: string | null;
+  declinePendingId: string | null;
+  cancelPendingId: string | null;
+  unblockPendingId: string | null;
 };
 
-export const BuzzWelcomeFlow = ({
-  searchQuery,
-  searchDebouncedQuery,
-  searchResults,
-  isSearchFetching,
-  onChangeSearchQuery,
-  isProfileIncomplete,
-  showProfileModal,
-  onOpenProfileModal,
-  profileForm,
-}: BuzzWelcomeFlowProps) => {
-  const { isOnTrial, trialDaysRemaining } = useRevenueCat();
+const ENTER = FadeIn.duration(180);
+const EXIT = FadeOut.duration(120);
 
-  const onSearchInputFocus = () => {
-    if (isProfileIncomplete) {
-      onOpenProfileModal();
+export const BuzzWelcomeFlow = ({
+  connections,
+  invites,
+  sentInvites,
+  blockedUsers,
+  isOnTrial,
+  trialDaysRemaining,
+  activeTab,
+  onChangeTab,
+  onAcceptInvite,
+  onDeclineInvite,
+  onCancelInvite,
+  onUnblockUser,
+  onPressConnection,
+  onPressInvite,
+  onPressSentInvite,
+  onPressBlockedUser,
+  acceptPendingId,
+  declinePendingId,
+  cancelPendingId,
+  unblockPendingId,
+}: BuzzWelcomeFlowProps) => {
+  const confirm = useConfirmDestructive();
+
+  // Gate the two row-level destructive actions through the shared
+  // confirm modal. Accept / Decline stay immediate — Approve is
+  // constructive and Decline is the user's intended action on a
+  // received invite (re-declining is cheap), so the prompt would just
+  // add friction.
+  const handleCancelInvite = async (otherUserId: string) => {
+    const ok = await confirm(CONFIRM_UNSEND);
+    if (!ok) {
+      return;
     }
+    onCancelInvite(otherUserId);
   };
 
-  const trimmedQuery = searchQuery.trim();
-  const isSearching = trimmedQuery.length > 0;
-  // Wait for the debounce to land before swapping the welcome card for
-  // results — otherwise we flash stale results between keystrokes.
-  const shouldShowResults = isSearching && searchDebouncedQuery.length > 0;
-  const hasResults = searchResults.length > 0;
+  const handleUnblockUser = async (targetUserId: string) => {
+    const ok = await confirm(CONFIRM_UNBLOCK);
+    if (!ok) {
+      return;
+    }
+    onUnblockUser(targetUserId);
+  };
 
   return (
     <View className="w-full gap-7">
@@ -69,80 +105,53 @@ export const BuzzWelcomeFlow = ({
         <BuzzTrialCountdownCard daysRemaining={trialDaysRemaining} />
       ) : null}
 
-      <View className="w-full gap-2">
-        <Text className="font-lexend-regular text-sm leading-5 text-text-default">
-          Search TheBuzz Community
-        </Text>
-
-        <Input
-          value={searchQuery}
-          onChangeText={onChangeSearchQuery}
-          onFocus={onSearchInputFocus}
-          placeholder="Nickname, @name, 123456 (pin)"
-          autoCapitalize="none"
-          autoCorrect={false}
-          leftAccessory={<Search size={20} color="rgba(0,0,0,0.5)" />}
-          rightAccessory={
-            isSearching ? (
-              <IconButton
-                accessibilityLabel="Clear search"
-                className="size-6 border-none bg-transparent p-0"
-                icon={<X size={18} color="rgba(0,0,0,0.5)" />}
-                onPress={() => onChangeSearchQuery('')}
-              />
-            ) : null
-          }
-        />
-      </View>
-
-      {shouldShowResults ? (
-        isSearchFetching && !hasResults ? (
-          <View className="items-center py-6">
-            <ActivityIndicator size="small" color="rgba(0,0,0,0.5)" />
-          </View>
-        ) : hasResults ? (
-          <View className="w-full gap-3">
-            {searchResults.map((result) => (
-              <ProfilePreviewCard
-                key={result.id}
-                nickname={result.nickname ?? ''}
-                handle={result.handle ?? ''}
-                imageUrl={result.imageUrl}
-                joinedDate={formatJoinedDate(result.createdAtUtc)}
-              />
-            ))}
-          </View>
-        ) : (
-          <View className="w-full items-center rounded-5 border border-border-weak bg-bg-default p-5">
-            <Text className="font-lexend-regular text-sm leading-5 text-text-secondary">
-              No matches for &ldquo;{searchDebouncedQuery}&rdquo;.
-            </Text>
-          </View>
-        )
-      ) : (
-        <Card className="items-center gap-6 rounded-5 border-none" tone="muted">
-          <View className="w-full gap-2">
-            <Text className="font-lexend-semiBold text-base leading-6 text-text-default">
-              Welcome to TheBuzz Community!
-            </Text>
-            <Text className="font-lexend-regular text-sm leading-5 text-text-secondary">
-              Did you meet someone online or IRL?
-            </Text>
-            <Text className="font-lexend-regular text-sm leading-5 text-text-secondary">
-              You can find them here, by using the search bar above.
-            </Text>
-          </View>
-
-          <View className="items-center justify-center">
-            <IllustrationBuzzBadge />
-          </View>
-        </Card>
-      )}
-
-      <CompleteProfileModal
-        visible={showProfileModal && isProfileIncomplete}
-        {...profileForm}
+      <BuzzConnectionPill
+        active={activeTab}
+        onChange={onChangeTab}
+        inviteCount={invites.length}
       />
+
+      {activeTab === 'connections' ? (
+        <Animated.View
+          key="connections"
+          entering={ENTER}
+          exiting={EXIT}
+          className="w-full gap-7"
+        >
+          <BuzzConnectionsCard
+            connections={connections}
+            onPressConnection={onPressConnection}
+          />
+        </Animated.View>
+      ) : (
+        <Animated.View
+          key="invites"
+          entering={ENTER}
+          exiting={EXIT}
+          className="w-full gap-7"
+        >
+          <BuzzInvitesCard
+            invites={invites}
+            onAccept={onAcceptInvite}
+            onDecline={onDeclineInvite}
+            onPressInvite={onPressInvite}
+            acceptPendingId={acceptPendingId}
+            declinePendingId={declinePendingId}
+          />
+          <BuzzSentInvitesCard
+            invites={sentInvites}
+            onCancel={handleCancelInvite}
+            onPressInvite={onPressSentInvite}
+            cancelPendingId={cancelPendingId}
+          />
+          <BuzzBlockedUsersCard
+            blockedUsers={blockedUsers}
+            onUnblock={handleUnblockUser}
+            onPressBlockedUser={onPressBlockedUser}
+            unblockPendingId={unblockPendingId}
+          />
+        </Animated.View>
+      )}
     </View>
   );
 };

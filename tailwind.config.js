@@ -15,6 +15,13 @@
 
 module.exports = {
   /**
+   * Class-based dark mode so we can drive light/dark via a `.dark` class on
+   * the root, controlled by NativeWind's `useColorScheme()` (follows system
+   * by default — see `app/_layout.tsx`).
+   */
+  darkMode: 'class',
+
+  /**
    * Content paths for Tailwind to scan for class usage
    * Includes all component files and source directories for purging unused styles
    */
@@ -55,6 +62,151 @@ module.exports = {
        * Provides grouped color tokens for branding, surfaces, content, and state
        */
       colors: {
+        // ─────────────────────────────────────────────────────────────────────
+        // Design-token colors — namespaced under `tk` during the migration.
+        //
+        // These mirror the Figma token export 1:1, and each value resolves to a
+        // CSS variable defined under `:root` (light) and `.dark:root` (dark) in
+        // `global.css`. Use these in new code; migrate screens off the legacy
+        // tree below as you touch them.
+        //
+        // Usage examples:
+        //   bg-tk-bg-primary, text-tk-text-primary, border-tk-border-primary,
+        //   bg-tk-actions-brand-background-solid
+        //
+        // When the last legacy reference is gone, drop the `tk-` prefix
+        // project-wide and delete the legacy tree.
+        // ─────────────────────────────────────────────────────────────────────
+        tk: {
+          /** Brand — primary brand identity */
+          brand: {
+            primary: 'var(--tk-brand-primary)',
+            lighter: 'var(--tk-brand-lighter)',
+            darker: 'var(--tk-brand-darker)',
+            accent: 'var(--tk-brand-accent)',
+          },
+
+          /** Text — foreground content colors */
+          text: {
+            primary: 'var(--tk-text-primary)',
+            secondary: 'var(--tk-text-secondary)',
+            tertiary: 'var(--tk-text-tertiary)',
+            quaternary: 'var(--tk-text-quaternary)',
+            'primary-reversed': 'var(--tk-text-primary-reversed)',
+            action: 'var(--tk-text-action)',
+            'action-emphasis': 'var(--tk-text-action-emphasis)',
+            informational: 'var(--tk-text-informational)',
+          },
+
+          /** Background — surface colors. Default = `bg gray`; alt families namespaced. */
+          bg: {
+            primary: 'var(--tk-bg-primary)',
+            secondary: 'var(--tk-bg-secondary)',
+            tertiary: 'var(--tk-bg-tertiary)',
+            callout: 'var(--tk-bg-callout)',
+            elevated: {
+              primary: 'var(--tk-bg-elevated-primary)',
+              secondary: 'var(--tk-bg-elevated-secondary)',
+              tertiary: 'var(--tk-bg-elevated-tertiary)',
+            },
+            purple: {
+              primary: 'var(--tk-bg-purple-primary)',
+              secondary: 'var(--tk-bg-purple-secondary)',
+              tertiary: 'var(--tk-bg-purple-tertiary)',
+              elevated: {
+                primary: 'var(--tk-bg-purple-elevated-primary)',
+                secondary: 'var(--tk-bg-purple-elevated-secondary)',
+                tertiary: 'var(--tk-bg-purple-elevated-tertiary)',
+              },
+            },
+          },
+
+          /** Border — stroke colors */
+          border: {
+            primary: 'var(--tk-border-primary)',
+            secondary: 'var(--tk-border-secondary)',
+            tertiary: 'var(--tk-border-tertiary)',
+          },
+
+          /** Gray — true black/white primitives */
+          gray: {
+            black: 'var(--tk-gray-black)',
+            white: 'var(--tk-gray-white)',
+          },
+
+          /** Alerts — status colors */
+          alerts: {
+            success: 'var(--tk-alerts-success)',
+            warning: 'var(--tk-alerts-warning)',
+            danger: 'var(--tk-alerts-danger)',
+          },
+
+          /** Actions — interactive treatments per role (brand / brand-dynamic / neutral / disabled) */
+          actions: {
+            brand: {
+              text: {
+                default: 'var(--tk-actions-brand-text-default)',
+                hover: 'var(--tk-actions-brand-text-hover)',
+                'on-action': 'var(--tk-actions-brand-text-on-action)',
+              },
+              background: {
+                solid: 'var(--tk-actions-brand-bg-solid)',
+                'solid-hover': 'var(--tk-actions-brand-bg-solid-hover)',
+                tinted: 'var(--tk-actions-brand-bg-tinted)',
+                'tinted-hover': 'var(--tk-actions-brand-bg-tinted-hover)',
+              },
+              border: {
+                default: 'var(--tk-actions-brand-border-default)',
+                hover: 'var(--tk-actions-brand-border-hover)',
+              },
+            },
+            'brand-dynamic': {
+              text: {
+                default: 'var(--tk-actions-brand-dynamic-text-default)',
+                hover: 'var(--tk-actions-brand-dynamic-text-hover)',
+                'on-action': 'var(--tk-actions-brand-dynamic-text-on-action)',
+              },
+              background: {
+                solid: 'var(--tk-actions-brand-dynamic-bg-solid)',
+                'solid-hover': 'var(--tk-actions-brand-dynamic-bg-solid-hover)',
+                tinted: 'var(--tk-actions-brand-dynamic-bg-tinted)',
+                'tinted-hover': 'var(--tk-actions-brand-dynamic-bg-tinted-hover)',
+              },
+              border: {
+                default: 'var(--tk-actions-brand-dynamic-border-default)',
+                hover: 'var(--tk-actions-brand-dynamic-border-hover)',
+              },
+            },
+            neutral: {
+              text: {
+                default: 'var(--tk-actions-neutral-text-default)',
+                hover: 'var(--tk-actions-neutral-text-hover)',
+                'on-action': 'var(--tk-actions-neutral-text-on-action)',
+              },
+              background: {
+                solid: 'var(--tk-actions-neutral-bg-solid)',
+                'solid-hover': 'var(--tk-actions-neutral-bg-solid-hover)',
+                tinted: 'var(--tk-actions-neutral-bg-tinted)',
+                'tinted-hover': 'var(--tk-actions-neutral-bg-tinted-hover)',
+              },
+              border: {
+                default: 'var(--tk-actions-neutral-border-default)',
+                hover: 'var(--tk-actions-neutral-border-hover)',
+              },
+            },
+            disabled: {
+              text: 'var(--tk-actions-disabled-text)',
+              background: 'var(--tk-actions-disabled-background)',
+              border: 'var(--tk-actions-disabled-border)',
+            },
+          },
+        },
+
+        // ─────────────────────────────────────────────────────────────────────
+        // LEGACY — still applies to unmigrated screens. Remove once every
+        // class above has been replaced with a `tk-*` equivalent.
+        // ─────────────────────────────────────────────────────────────────────
+
         /**
          * Direct color aliases
          * @description Convenience tokens for single-word utility usage like border-secondary

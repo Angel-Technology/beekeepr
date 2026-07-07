@@ -1,6 +1,7 @@
-import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
+
+import { cn } from '@common';
 
 type FormCardProps = {
   children: ReactNode;
@@ -10,7 +11,10 @@ type FormCardProps = {
 export const FormCard = ({ children, className }: FormCardProps) => {
   return (
     <View
-      className={clsx('gap-4 self-stretch rounded-5 bg-bg-weak p-6', className)}
+      className={cn(
+        'gap-6 self-stretch rounded-5 border border-tk-border-secondary bg-tk-bg-primary p-6',
+        className,
+      )}
     >
       {children}
     </View>

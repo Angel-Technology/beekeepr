@@ -3,5 +3,4 @@ export type BuzzFlow =
   | 'membership'
   | 'renewal'
   | 'welcome'
-  | 'active'
   | 'denied';

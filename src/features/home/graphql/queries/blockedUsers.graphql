@@ -1,0 +1,7 @@
+query BlockedUsers($first: Int) {
+  blockedUsers(first: $first) {
+    nodes {
+      ...UserConnectionFields
+    }
+  }
+}

@@ -41,13 +41,8 @@ type InfoCardProps = {
   actionLabelClassName?: string;
 };
 
-// Surface kept separate from layout so callers pick a variant without
-// fighting NativeWind precedence on conflicting `bg-` utilities. Same
-// pattern as `Card`, `Pill`, and `CompactButton`.
 const SURFACE_BY_TONE: Record<InfoCardTone, string> = {
-  neutral: 'bg-bg-weak',
-  // Inline rgba until the design system ships a true `bg-bg-criticalSubtle`
-  // — the existing token of that name is actually black/8, not red/8.
+  neutral: 'bg-tk-bg-elevated-secondary',
   critical: 'bg-[rgba(255,0,0,0.08)]',
 };
 
@@ -77,7 +72,7 @@ export const InfoCard = ({
           {icon}
           <Text
             className={clsx(
-              'flex-1 font-poppins-semiBold text-lg text-text-secondary',
+              'flex-1 font-poppins-semiBold text-lg text-tk-text-secondary',
               titleClassName,
             )}
           >
@@ -89,11 +84,11 @@ export const InfoCard = ({
             accessibilityRole="button"
             accessibilityLabel={actionLabel}
             onPress={onPressAction}
-            className="rounded-round bg-bg-mutedSubtle px-3 py-1.5"
+            className="rounded-round bg-tk-actions-neutral-background-tinted px-3 py-1.5"
           >
             <Text
               className={clsx(
-                'font-lexend-semiBold text-base text-text-secondary',
+                'font-lexend-semiBold text-base text-tk-text-secondary',
                 actionLabelClassName,
               )}
             >

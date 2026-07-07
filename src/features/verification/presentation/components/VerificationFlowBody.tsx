@@ -45,6 +45,7 @@ type VerificationFlowBodyProps = {
   isSubmitting: boolean;
   canSubmit: boolean;
   onChangePhoneNumber: (value: string) => void;
+  onChangeLicenseState: (value: string) => void;
   onValidatePhoneNumber: () => void;
   onSubmit: () => void;
   // Congrats-phase trial purchase. `isStartingTrial` drives the button
@@ -86,6 +87,7 @@ export const VerificationFlowBody = ({
   isSubmitting,
   canSubmit,
   onChangePhoneNumber,
+  onChangeLicenseState,
   onValidatePhoneNumber,
   onSubmit,
   isStartingTrial,
@@ -104,7 +106,7 @@ export const VerificationFlowBody = ({
       <Container
         safeArea
         safeAreaEdges={['top']}
-        className={clsx('bg-bg-default px-2')}
+        className={clsx('bg-tk-bg-primary px-2')}
       >
         <View className="-mx-5 self-stretch">
           <VerificationTopNav
@@ -163,6 +165,7 @@ export const VerificationFlowBody = ({
               isSubmitting={isSubmitting}
               canSubmit={canSubmit}
               onChangePhoneNumber={onChangePhoneNumber}
+              onChangeLicenseState={onChangeLicenseState}
               onValidatePhoneNumber={onValidatePhoneNumber}
               onSubmit={onSubmit}
             />

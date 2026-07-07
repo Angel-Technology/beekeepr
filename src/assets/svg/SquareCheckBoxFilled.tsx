@@ -4,12 +4,14 @@ type SquareCheckBoxFilledProps = {
   width?: number;
   height?: number;
   fill?: string;
+  checkmarkStroke?: string;
 };
 
 export const SquareCheckBoxFilled = ({
   width = 16,
   height = 16,
   fill = '#FFBF00',
+  checkmarkStroke = 'white',
 }: SquareCheckBoxFilledProps) => {
   return (
     <Svg width={width} height={height} viewBox="0 0 16 16" fill="none">
@@ -19,7 +21,7 @@ export const SquareCheckBoxFilled = ({
       />
       <Path
         d="M4.5 8.25L7 10.25L11.5 5.75"
-        stroke="white"
+        stroke={checkmarkStroke}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"

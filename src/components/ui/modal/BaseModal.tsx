@@ -1,6 +1,13 @@
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
-import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import {
+  Modal,
+  Pressable,
+  StyleSheet,
+  useColorScheme,
+  View,
+} from 'react-native';
+import { BlurView } from 'expo-blur';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 type BaseModalProps = {
@@ -9,6 +16,7 @@ type BaseModalProps = {
   dismissOnBackdropPress?: boolean;
   onRequestClose?: () => void;
   contentClassName?: string;
+  backdropBlur?: boolean;
 };
 
 export const BaseModal = ({
@@ -17,7 +25,10 @@ export const BaseModal = ({
   dismissOnBackdropPress = false,
   onRequestClose,
   contentClassName,
+  backdropBlur = true,
 }: BaseModalProps) => {
+  const isDark = useColorScheme() === 'dark';
+
   const handleBackdropPress = () => {
     if (!dismissOnBackdropPress) {
       return;
@@ -34,35 +45,40 @@ export const BaseModal = ({
       statusBarTranslucent
       onRequestClose={onRequestClose}
     >
-      <KeyboardAwareScrollView
-        // Scrolls the focused input above the keyboard. `flexGrow: 1` +
-        // `justifyContent: 'center'` keeps the modal centered when content
-        // fits the viewport; once the keyboard opens, the scroll view
-        // shifts the focused input into view automatically.
-        className="bg-black/70"
-        contentContainerStyle={{
-          flexGrow: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          paddingHorizontal: 24,
-        }}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-        bottomOffset={150}
-      >
-        <Pressable
-          style={StyleSheet.absoluteFill}
-          onPress={handleBackdropPress}
-        />
-        <View
-          className={clsx(
-            'w-full max-w-[360px] rounded-5 bg-bg-default p-lg',
-            contentClassName,
-          )}
+      <View style={{ flex: 1 }}>
+        {backdropBlur ? (
+          <BlurView
+            intensity={40}
+            tint={!isDark ? 'dark' : 'light'}
+            style={StyleSheet.absoluteFill}
+          />
+        ) : null}
+        <KeyboardAwareScrollView
+          className={backdropBlur ? 'bg-black/20' : 'bg-black/70'}
+          contentContainerStyle={{
+            flexGrow: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingHorizontal: 24,
+          }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          bottomOffset={150}
         >
-          {children}
-        </View>
-      </KeyboardAwareScrollView>
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={handleBackdropPress}
+          />
+          <View
+            className={clsx(
+              'w-full max-w-[360px] rounded-5 bg-tk-bg-primary p-lg',
+              contentClassName,
+            )}
+          >
+            {children}
+          </View>
+        </KeyboardAwareScrollView>
+      </View>
     </Modal>
   );
 };

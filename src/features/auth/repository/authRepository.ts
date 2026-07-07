@@ -3,6 +3,9 @@ import {
   AcceptTermsDocument,
   type AcceptTermsMutation,
   type AcceptTermsMutationVariables,
+  CreateUserDocument,
+  type CreateUserMutation,
+  type CreateUserMutationVariables,
   CurrentUserDocument,
   type CurrentUserQuery,
   RequestEmailSignInDocument,
@@ -22,12 +25,20 @@ import {
 } from '../graphql/generated/auth.generated';
 import type {
   AppleSignInInput,
+  CreateUserInput,
   EmailVerificationRequestInput,
   GoogleSignInInput,
   VerifyEmailCodeInput,
 } from '../models/auth.types';
 
 export const authRepository = {
+  createUser(input: CreateUserInput) {
+    return executeGraphQL<CreateUserMutation, CreateUserMutationVariables>({
+      document: CreateUserDocument,
+      variables: { input },
+    });
+  },
+
   requestEmailSignIn(input: EmailVerificationRequestInput) {
     return executeGraphQL<
       RequestEmailSignInMutation,

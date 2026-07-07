@@ -11,6 +11,7 @@ type CustomCheckboxProps = {
   className?: string;
   labelClassName?: string;
   checkedFill?: string;
+  checkmarkStroke?: string;
   uncheckedStroke?: string;
 };
 
@@ -21,6 +22,7 @@ export const CustomCheckbox = ({
   className,
   labelClassName,
   checkedFill,
+  checkmarkStroke,
   uncheckedStroke,
 }: CustomCheckboxProps) => {
   return (
@@ -32,7 +34,12 @@ export const CustomCheckbox = ({
     >
       <View className="h-4 w-4 items-center justify-center">
         {checked ? (
-          <SquareCheckBoxFilled width={16} height={16} fill={checkedFill} />
+          <SquareCheckBoxFilled
+            width={16}
+            height={16}
+            fill={checkedFill}
+            checkmarkStroke={checkmarkStroke}
+          />
         ) : (
           <SquareCheckboxUnfilled
             width={16}
@@ -45,7 +52,7 @@ export const CustomCheckbox = ({
       {typeof label === 'string' ? (
         <Text
           className={clsx(
-            'flex-1 font-sourceSans-regular text-base leading-[20.8px] text-text-default',
+            'flex-1 font-sourceSans-regular text-base leading-[20.8px] text-tk-text-primary',
             labelClassName,
           )}
         >

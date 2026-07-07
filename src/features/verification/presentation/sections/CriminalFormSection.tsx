@@ -3,7 +3,9 @@ import { Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { CircleHelp } from 'lucide-react-native';
 import { Button, Input, VerticalSpacer } from '@components';
+import { themedColors, useThemedColor } from '@common';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatePickerField } from '../components/StatePickerField';
 
 type SectionProps = {
   label: string;
@@ -11,15 +13,18 @@ type SectionProps = {
 };
 
 const FieldGroup = ({ label, children }: SectionProps) => {
+  const helpIconColor = useThemedColor(themedColors.text.tertiary);
   return (
     <View className="w-full">
       <View className="w-full flex-row items-center justify-between px-4 pb-3 pt-6">
-        <Text className="font-lexend-regular text-200 leading-none text-text-tertiary">
+        <Text className="font-lexend-regular text-200 leading-none text-tk-text-tertiary">
           {label}
         </Text>
-        <CircleHelp size={16} color="rgba(0,0,0,0.5)" />
+        <CircleHelp size={16} color={helpIconColor} />
       </View>
-      <View className="w-full gap-4 rounded-5 bg-bg-weak p-6">{children}</View>
+      <View className="w-full gap-4 rounded-5 bg-tk-bg-elevated-secondary p-6">
+        {children}
+      </View>
     </View>
   );
 };
@@ -35,6 +40,7 @@ type CriminalFormSectionProps = {
   isSubmitting: boolean;
   canSubmit: boolean;
   onChangePhoneNumber: (value: string) => void;
+  onChangeLicenseState: (value: string) => void;
   onValidatePhoneNumber: () => void;
   onSubmit: () => void;
 };
@@ -50,6 +56,7 @@ export const CriminalFormSection = ({
   isSubmitting,
   canSubmit,
   onChangePhoneNumber,
+  onChangeLicenseState,
   onValidatePhoneNumber,
   onSubmit,
 }: CriminalFormSectionProps) => {
@@ -67,10 +74,10 @@ export const CriminalFormSection = ({
       bottomOffset={100}
     >
       <View className="w-full gap-2">
-        <Text className="font-poppins-semiBold text-title-4 text-text-default">
+        <Text className="font-poppins-semiBold text-title-4 text-tk-text-primary">
           Find my records
         </Text>
-        <Text className="font-lexend-regular text-base leading-[24px] -tracking-[0.3px] text-text-secondary">
+        <Text className="font-lexend-regular text-base leading-[24px] -tracking-[0.3px] text-tk-text-secondary">
           To search for your records, please provide your phone number and tap
           submit.
         </Text>
@@ -99,7 +106,7 @@ export const CriminalFormSection = ({
 
       <FieldGroup label="PHONE & DOB">
         <Input
-          label="Phone Number (assigned by your carrier)"
+          label="Phone Number"
           value={phoneNumber}
           onChangeText={onChangePhoneNumber}
           onBlur={onValidatePhoneNumber}
@@ -107,6 +114,7 @@ export const CriminalFormSection = ({
           type="phone"
           placeholder="(555) 555-5555"
           autoFocus
+          className="rounded-3 bg-tk-bg-primary p-2"
         />
         <Input
           label="Date of Birth (mm/dd/yyyy)"
@@ -117,12 +125,12 @@ export const CriminalFormSection = ({
       </FieldGroup>
 
       <FieldGroup label="STATE OF RESIDENCE">
-        <Input
-          label="Select State"
-          value={licenseState}
-          onChangeText={() => {}}
-          disabled
-        />
+        <View className="w-full rounded-3 border border-tk-border-secondary bg-tk-bg-primary p-2">
+          <StatePickerField
+            value={licenseState}
+            onChange={onChangeLicenseState}
+          />
+        </View>
       </FieldGroup>
       <Button
         label="Submit"

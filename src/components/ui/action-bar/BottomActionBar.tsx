@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
-import clsx from 'clsx';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { cn } from '@common';
 
 type BottomActionBarProps = {
   children: ReactNode;
@@ -22,8 +23,8 @@ export const BottomActionBar = ({
   const insets = useSafeAreaInsets();
   return (
     <View
-      className={clsx(
-        'w-full gap-3 bg-bg-default px-6 pt-4 shadow-bottom-bar',
+      className={cn(
+        'w-full gap-3 bg-tk-bg-primary px-6 pt-4 shadow-bottom-bar',
         className,
       )}
       style={{

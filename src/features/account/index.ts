@@ -1,8 +1,13 @@
 export { MenuDrawerContent } from './presentation/components/MenuDrawerContent';
+export { ProfileDrawerContent } from './presentation/components/ProfileDrawerContent';
+export { InfoSection } from './presentation/components/InfoSection';
 export { MenuSection } from './presentation/components/MenuSection';
 export type { MenuItem } from './presentation/components/MenuSection';
+export { AccountScreen } from './presentation/screens/AccountScreen';
 export { DeleteAccountScreen } from './presentation/screens/DeleteAccountScreen';
+export { LegalScreen } from './presentation/screens/LegalScreen';
 export { ProfileScreen } from './presentation/screens/ProfileScreen';
+export { SettingsScreen } from './presentation/screens/SettingsScreen';
 export { useDeleteAccount } from './hooks/useDeleteAccount';
 export { useProfileForm } from './hooks/useProfileForm';
 export { accountService } from './services/accountService';

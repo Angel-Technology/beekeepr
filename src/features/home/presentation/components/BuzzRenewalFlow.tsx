@@ -1,7 +1,8 @@
 import { ArrowRight } from 'lucide-react-native';
 import { Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { Card, CompactButton, VerificationStatusPill } from '@components';
-import Congrats from '@src/assets/svg/Congrats';
+import { appImages } from '@assets/images';
 
 type BuzzRenewalFlowProps = {
   isPurchasing: boolean;
@@ -21,23 +22,27 @@ export const BuzzRenewalFlow = ({
   onEnterPromoCode,
 }: BuzzRenewalFlowProps) => {
   return (
-    <Card className="gap-6 rounded-5 border-secondary">
+    <Card className="gap-6">
       <View className="items-center gap-2">
-        <Text className="text-center font-poppins-semiBold text-800 text-text-default">
+        <Text className="text-center font-poppins-semiBold text-800 text-tk-text-primary">
           Welcome back
         </Text>
       </View>
       <View className="items-center">
-        <Congrats width={200} height={254} />
+        <Image
+          source={appImages.congrats}
+          contentFit="contain"
+          style={{ width: 200, height: 254 }}
+        />
       </View>
 
       <VerificationStatusPill label="ID verified / No criminal records found" />
 
-      <Text className="text-center font-poppins-regular text-base text-text-default">
+      <Text className="text-center font-poppins-regular text-base text-tk-text-primary">
         Your membership has lapsed. Renew to rejoin TheBuzz community and keep
         your Buzz Badge visible on your dating apps.
       </Text>
-      <Text className="text-center font-poppins-bold text-xl text-text-default">
+      <Text className="text-center font-poppins-bold text-xl text-tk-text-primary">
         $9.99/month
       </Text>
       <View className="gap-3">

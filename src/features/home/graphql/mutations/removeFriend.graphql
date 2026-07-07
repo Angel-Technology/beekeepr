@@ -1,0 +1,6 @@
+mutation RemoveFriend($input: RemoveFriendInput!) {
+  removeFriend(input: $input) {
+    error
+    success
+  }
+}

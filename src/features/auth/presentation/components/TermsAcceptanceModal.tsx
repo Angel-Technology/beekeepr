@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
-import { BaseModal, CompactButton, CustomCheckbox, Divider } from '@components';
+import { BaseModal, CompactButton, CustomCheckbox } from '@components';
+import { themedColors, useThemedColor } from '@common';
 import { environmentConfig } from '@src/lib/config/environment';
 
 type TermsAcceptanceModalProps = {
@@ -22,13 +23,19 @@ export const TermsAcceptanceModal = ({
   const [isAgeConfirmed, setIsAgeConfirmed] = useState(false);
   const [isTermsConfirmed, setIsTermsConfirmed] = useState(false);
   const [isPrivacyConfirmed, setIsPrivacyConfirmed] = useState(false);
+  const [isCsaeConfirmed, setIsCsaeConfirmed] = useState(false);
 
-  const allConfirmed = isAgeConfirmed && isTermsConfirmed && isPrivacyConfirmed;
+  const checkboxColor = useThemedColor(themedColors.text.primary);
+  const checkmarkColor = useThemedColor(themedColors.text.primaryReversed);
+
+  const allConfirmed =
+    isAgeConfirmed && isTermsConfirmed && isPrivacyConfirmed && isCsaeConfirmed;
 
   const legalLinks = useMemo(
     () => ({
       terms: environmentConfig.termsOfUseURL.trim(),
       privacy: environmentConfig.privacyPolicyURL.trim(),
+      csae: environmentConfig.childrenPrivacyURL.trim(),
     }),
     [],
   );
@@ -43,47 +50,58 @@ export const TermsAcceptanceModal = ({
     <BaseModal
       visible={visible}
       dismissOnBackdropPress={false}
-      contentClassName="gap-5"
+      contentClassName="gap-4 rounded-4"
     >
-      <Text className="font-poppins-semiBold text-600 text-text-default">
-        Terms of Use & Privacy Policy
+      <Text className="border-b border-tk-border-secondary pb-4 font-poppins-semiBold text-xl leading-tight text-tk-text-primary">
+        User Compliance Agreement
       </Text>
 
-      <Divider />
-
-      <View className="gap-5">
-        <Text className="font-sourceSans-regular text-base leading-[22px] text-text-secondary">
-          Buzzkeepr is not a Consumer Reporting Agency (CRA) as defined by the
-          Fair Credit Reporting Act (FCRA).{' '}
-          <Text className="font-sourceSans-semiBold text-text-default">
-            The information we provide cannot be used for employment, credit or
-            tenant screening, or related purpose.
-          </Text>
+      <Text className="font-lexend-regular text-sm leading-5 text-tk-text-secondary">
+        Buzzkeepr™ is not a Consumer Reporting Agency (CRA) as defined by the
+        Fair Credit Reporting Act (FCRA).{' '}
+        <Text className="font-lexend-semiBold text-tk-text-primary">
+          The information we provide cannot be used for employment, credit or
+          tenant screening, or related purpose.
         </Text>
+      </Text>
 
+      <Text className="font-lexend-regular text-sm leading-5 text-tk-text-secondary">
+        We require age verification to use our services.{' '}
+        <Text className="font-lexend-semiBold text-tk-text-primary">
+          We strictly prohibit any predatory behavior towards children.
+        </Text>
+      </Text>
+
+      <View className="gap-4">
         <CustomCheckbox
           checked={isAgeConfirmed}
           onChange={() => setIsAgeConfirmed((current) => !current)}
-          checkedFill="#000000"
-          uncheckedStroke="#000000"
-          label="I am 18 years old (or older)"
+          checkedFill={checkboxColor}
+          checkmarkStroke={checkmarkColor}
+          uncheckedStroke={checkboxColor}
+          label={
+            <Text className="font-lexend-regular text-sm leading-5 text-tk-text-primary">
+              I am 18+ years old
+            </Text>
+          }
         />
 
         <CustomCheckbox
           checked={isTermsConfirmed}
           onChange={() => setIsTermsConfirmed((current) => !current)}
-          checkedFill="#000000"
-          uncheckedStroke="#000000"
+          checkedFill={checkboxColor}
+          checkmarkStroke={checkmarkColor}
+          uncheckedStroke={checkboxColor}
           label={
-            <Text className="font-sourceSans-regular text-base leading-[20.8px] text-text-default">
+            <Text className="font-lexend-regular text-sm leading-5 text-tk-text-primary">
               I have read & agree to the{' '}
               <Text
-                className="font-sourceSans-regular text-base text-text-informational underline"
+                className="font-lexend-regular text-sm text-tk-text-informational"
                 onPress={() => {
                   openLegalLink(legalLinks.terms);
                 }}
               >
-                Terms of Use
+                Terms of Service
               </Text>
             </Text>
           }
@@ -92,13 +110,14 @@ export const TermsAcceptanceModal = ({
         <CustomCheckbox
           checked={isPrivacyConfirmed}
           onChange={() => setIsPrivacyConfirmed((current) => !current)}
-          checkedFill="#000000"
-          uncheckedStroke="#000000"
+          checkedFill={checkboxColor}
+          checkmarkStroke={checkmarkColor}
+          uncheckedStroke={checkboxColor}
           label={
-            <Text className="font-sourceSans-regular text-base leading-[20.8px] text-text-default">
+            <Text className="font-lexend-regular text-sm leading-5 text-tk-text-primary">
               I have read & agree to the{' '}
               <Text
-                className="font-sourceSans-regular text-base text-text-informational underline"
+                className="font-lexend-regular text-sm text-tk-text-informational"
                 onPress={() => {
                   openLegalLink(legalLinks.privacy);
                 }}
@@ -109,22 +128,43 @@ export const TermsAcceptanceModal = ({
           }
         />
 
-        <Text className="font-sourceSans-regular text-200 leading-[16px] text-text-weak">
-          By selecting the boxes above, you&apos;re confirming that you&apos;re
-          at least 18 years of age and you&apos;re agreeing to our Terms of Use
-          & Privacy Policy.
-        </Text>
+        <CustomCheckbox
+          checked={isCsaeConfirmed}
+          onChange={() => setIsCsaeConfirmed((current) => !current)}
+          checkedFill={checkboxColor}
+          checkmarkStroke={checkmarkColor}
+          uncheckedStroke={checkboxColor}
+          label={
+            <Text className="font-lexend-regular text-sm leading-5 text-tk-text-primary">
+              I have read & agree to the{' '}
+              <Text
+                className="font-lexend-regular text-sm text-tk-text-informational"
+                onPress={() => {
+                  openLegalLink(legalLinks.csae);
+                }}
+              >
+                Child Sexual Abuse &amp; Exploitation (CSAE) Policy
+              </Text>
+            </Text>
+          }
+        />
       </View>
 
-      <View className="w-full flex-col gap-2">
+      <Text className="font-lexend-regular text-footnote leading-[18px] text-tk-text-primary">
+        By selecting the boxes above, you&apos;re confirming that you&apos;re at
+        least 18 years of age and you&apos;re agreeing to our Terms of Use &amp;
+        Privacy Policy.
+      </Text>
+
+      <View className="w-full flex-col gap-2 pt-2">
         <CompactButton
-          label="Agree & Continue"
+          label="I agree & continue"
           disabled={!allConfirmed}
           loading={isAccepting}
           onPress={onAccept}
         />
         <CompactButton
-          label="I Disagree"
+          label="I disagree"
           variant="outline"
           disabled={isDeclining}
           loading={isDeclining}

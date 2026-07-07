@@ -3,8 +3,10 @@ import {
   CancelAccountDeletionDocument,
   CheckHandleAvailabilityDocument,
   RedeemPromoCodeDocument,
+  PushPlatform,
+  RegisterPushTokenDocument,
   RequestAccountDeletionDocument,
-  SearchUsersDocument,
+  UnregisterPushTokenDocument,
   UpdateProfileDocument,
   type CancelAccountDeletionMutation,
   type CancelAccountDeletionMutationVariables,
@@ -12,10 +14,12 @@ import {
   type CheckHandleAvailabilityQueryVariables,
   type RedeemPromoCodeMutation,
   type RedeemPromoCodeMutationVariables,
+  type RegisterPushTokenMutation,
+  type RegisterPushTokenMutationVariables,
   type RequestAccountDeletionMutation,
   type RequestAccountDeletionMutationVariables,
-  type SearchUsersQuery,
-  type SearchUsersQueryVariables,
+  type UnregisterPushTokenMutation,
+  type UnregisterPushTokenMutationVariables,
   type UpdateProfileMutation,
   type UpdateProfileMutationVariables,
 } from '../graphql/generated/account.generated';
@@ -56,18 +60,40 @@ export const accountRepository = {
       variables,
     });
   },
-  searchUsers(variables: SearchUsersQueryVariables) {
-    return executeGraphQL<SearchUsersQuery, SearchUsersQueryVariables>({
-      document: SearchUsersDocument,
-      variables,
-    });
-  },
   checkHandleAvailability(variables: CheckHandleAvailabilityQueryVariables) {
     return executeGraphQL<
       CheckHandleAvailabilityQuery,
       CheckHandleAvailabilityQueryVariables
     >({
       document: CheckHandleAvailabilityDocument,
+      variables,
+    });
+  },
+  // Map the caller's plain-string `platform` to the codegen enum here so
+  // the service layer doesn't need to reach into `graphql/generated`
+  // (feature-layer boundary rule) — and callers don't see the `I_OS`
+  // codegen quirk.
+  registerPushToken(input: { token: string; platform: 'ios' | 'android' }) {
+    return executeGraphQL<
+      RegisterPushTokenMutation,
+      RegisterPushTokenMutationVariables
+    >({
+      document: RegisterPushTokenDocument,
+      variables: {
+        input: {
+          token: input.token,
+          platform:
+            input.platform === 'ios' ? PushPlatform.IOs : PushPlatform.Android,
+        },
+      },
+    });
+  },
+  unregisterPushToken(variables: UnregisterPushTokenMutationVariables) {
+    return executeGraphQL<
+      UnregisterPushTokenMutation,
+      UnregisterPushTokenMutationVariables
+    >({
+      document: UnregisterPushTokenDocument,
       variables,
     });
   },
