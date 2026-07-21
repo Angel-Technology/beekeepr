@@ -1,4 +1,5 @@
 import {
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -42,16 +43,28 @@ export const BottomTabBar = ({
       className="absolute bottom-0 left-0 right-0"
       style={{ paddingBottom: insets.bottom }}
     >
-      <BlurView
-        intensity={90}
-        tint={isDark ? 'dark' : 'light'}
-        style={StyleSheet.absoluteFill}
-      />
+      {/*
+       * iOS: real blur behind the tab bar.
+       * Android: expo-blur can't reach the underlying view without a
+       * `blurTarget` ref, so we bump the solid fill's opacity to 1 and
+       * skip the blur layer entirely. Reads as a plain opaque bar
+       * (consistent with system Android tab bars).
+       */}
+      {Platform.OS === 'ios' ? (
+        <BlurView
+          intensity={90}
+          tint={isDark ? 'dark' : 'light'}
+          style={StyleSheet.absoluteFill}
+        />
+      ) : null}
       <View
         pointerEvents="none"
         style={[
           StyleSheet.absoluteFill,
-          { backgroundColor: barBg, opacity: 0.85 },
+          {
+            backgroundColor: barBg,
+            opacity: Platform.OS === 'ios' ? 0.85 : 1,
+          },
         ]}
       />
       <View

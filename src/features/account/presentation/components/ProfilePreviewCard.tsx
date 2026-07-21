@@ -1,8 +1,12 @@
 import { Text, TouchableOpacity, View } from 'react-native';
-import { SvgUri } from 'react-native-svg';
 import { ChevronRight, UserRound } from 'lucide-react-native';
 
-import { isRenderableAvatarUrl, themedColors, useThemedColor } from '@common';
+import {
+  isRenderableAvatarUrl,
+  RemoteAvatar,
+  themedColors,
+  useThemedColor,
+} from '@common';
 
 type ProfilePreviewCardProps = {
   nickname: string;
@@ -31,7 +35,7 @@ export const ProfilePreviewCard = ({
   const avatarIconColor = useThemedColor(themedColors.text.tertiary);
   const chevronColor = useThemedColor(themedColors.text.primary);
   // Reject Google / Apple `picture` URLs the backend stores on social
-  // sign-in — those are raster and `SvgUri` crashes on them.
+  // sign-in — those are raster and the SVG parser crashes on them.
   const hasAvatar = isRenderableAvatarUrl(imageUrl);
   const isPressable = Boolean(onPress);
   const Container = isPressable ? TouchableOpacity : View;
@@ -39,25 +43,25 @@ export const ProfilePreviewCard = ({
   return (
     <Container
       onPress={onPress}
-      className="border-tk-border-secondary bg-tk-bg-primary w-full flex-row items-center gap-3 rounded-5 border p-4"
+      className="w-full flex-row items-center gap-3 rounded-5 border border-tk-border-secondary bg-tk-bg-primary p-4"
     >
-      <View className="bg-tk-bg-elevated-secondary size-[44px] items-center justify-center overflow-hidden rounded-round">
+      <View className="size-[44px] items-center justify-center overflow-hidden rounded-round bg-tk-bg-elevated-secondary">
         {hasAvatar ? (
-          <SvgUri uri={imageUrl} width={AVATAR_SIZE} height={AVATAR_SIZE} />
+          <RemoteAvatar uri={imageUrl} size={AVATAR_SIZE} />
         ) : (
           <UserRound size={24} color={avatarIconColor} />
         )}
       </View>
       <View className="min-w-0 flex-1">
         <Text
-          className="text-tk-text-primary font-lexend-semiBold text-base"
+          className="font-lexend-semiBold text-base text-tk-text-primary"
           numberOfLines={1}
         >
           {nickname || ''}
         </Text>
         {displayedHandle ? (
           <Text
-            className="text-tk-text-secondary font-lexend-regular text-footnote"
+            className="font-lexend-regular text-footnote text-tk-text-secondary"
             numberOfLines={1}
           >
             {displayedHandle}

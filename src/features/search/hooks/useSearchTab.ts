@@ -86,13 +86,20 @@ export const useSearchTab = (query: string) => {
   const onAppealDecision = () => openInAppBrowser(environmentConfig.supportURL);
 
   const onGatePress = () => {
-    if (gateState === 'profile') {
-      // TODO: route to a dedicated create-profile flow once it exists.
-      router.push('/profile');
-      return;
-    }
-    if (gateState === 'member') {
-      router.push('/verify-learn-more');
+    switch (gateState) {
+      case 'member':
+        // Route back to the Buzz tab (home). `useBuzzTab` derives the
+        // `verify` / `membership` flow variant there and handles the
+        // trial / membership CTA in-context — deep-linking straight to
+        // `/verify-learn-more` skipped the surrounding pitch.
+        router.push('/');
+        return;
+      case 'profile':
+        // TODO: route to a dedicated create-profile flow once it exists.
+        router.push('/profile');
+        return;
+      case null:
+        return;
     }
   };
 

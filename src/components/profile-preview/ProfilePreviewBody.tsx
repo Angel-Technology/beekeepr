@@ -2,12 +2,16 @@ import type { ReactNode } from 'react';
 import { useCallback } from 'react';
 import { Linking, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { SvgUri } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Info, UserRound } from 'lucide-react-native';
 import { FormCard } from '../ui/card/FormCard';
 import { SafetyDisclaimerCard } from '../ui/card/SafetyDisclaimerCard';
-import { isRenderableAvatarUrl, themedColors, useThemedColor } from '@common';
+import {
+  isRenderableAvatarUrl,
+  RemoteAvatar,
+  themedColors,
+  useThemedColor,
+} from '@common';
 import {
   BackgroundCheckBadge,
   ContactVisibility,
@@ -237,11 +241,7 @@ export const ProfilePreviewBody = ({
       <View className="flex-row items-center gap-3 px-6">
         <View className="bg-tk-bg-elevated-secondary size-[64px] items-center justify-center overflow-hidden rounded-round">
           {isRenderableAvatarUrl(user.imageUrl) ? (
-            <SvgUri
-              uri={user.imageUrl}
-              width={AVATAR_SIZE}
-              height={AVATAR_SIZE}
-            />
+            <RemoteAvatar uri={user.imageUrl} size={AVATAR_SIZE} />
           ) : (
             <UserRound size={30} color={avatarIconColor} />
           )}

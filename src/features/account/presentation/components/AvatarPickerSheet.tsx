@@ -2,12 +2,11 @@ import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { SvgUri } from 'react-native-svg';
 import { UserRound } from 'lucide-react-native';
 import clsx from 'clsx';
 
 import { BaseBottomSheet, CompactButton } from '@components';
-import { themedColors, useThemedColor } from '@common';
+import { RemoteAvatar, themedColors, useThemedColor } from '@common';
 
 /**
  * DiceBear styles offered in the picker. The first entry is the product
@@ -47,11 +46,11 @@ type AvatarStyle =
   | 'micah'
   | 'notionists';
 
-// 20 tiles per style — enough variety to feel browsable without blowing
+// 40 tiles per style — enough variety to feel browsable without blowing
 // the SVG fetch budget too hard. The grid scrolls vertically inside the
 // sheet so tile size stays comfortable on small devices.
-const GRID_SIZE = 20;
-const TILE_SIZE = 64;
+const GRID_SIZE = 30;
+const TILE_SIZE = 88;
 const PREVIEW_SIZE = 144;
 
 const buildAvatarUrl = (style: AvatarStyle, seed: string): string =>
@@ -87,7 +86,7 @@ type AvatarPickerSheetProps = {
  *   2. 144×144 preview of the currently-selected avatar, centered.
  *      Placeholder until the user taps a tile.
  *   3. Horizontal style strip (12 DiceBear styles).
- *   4. Vertically-scrollable grid of `GRID_SIZE` (20) avatars in the
+ *   4. Vertically-scrollable grid of `GRID_SIZE` (40) avatars in the
  *      active style, inside a `BottomSheetScrollView` so vertical
  *      drags still propagate to the sheet handle for swipe-to-close.
  *   5. Footer with Shuffle + Save, pinned outside the scroll region.
@@ -159,11 +158,7 @@ export const AvatarPickerSheet = ({
             style={{ width: PREVIEW_SIZE, height: PREVIEW_SIZE }}
           >
             {previewUrl ? (
-              <SvgUri
-                uri={previewUrl}
-                width={PREVIEW_SIZE}
-                height={PREVIEW_SIZE}
-              />
+              <RemoteAvatar uri={previewUrl} size={PREVIEW_SIZE} />
             ) : (
               <UserRound size={56} color={placeholderIconColor} />
             )}
@@ -174,7 +169,7 @@ export const AvatarPickerSheet = ({
           horizontal
           showsHorizontalScrollIndicator={false}
           style={{ flexGrow: 0 }}
-          contentContainerStyle={{ gap: 8, paddingHorizontal: 0 }}
+          contentContainerStyle={{ gap: 8, paddingHorizontal: 2 }}
         >
           {STYLES.map((s) => {
             const isActive = s.id === style;
@@ -233,7 +228,7 @@ export const AvatarPickerSheet = ({
                     className="overflow-hidden rounded-round bg-tk-bg-elevated-secondary"
                     style={{ width: TILE_SIZE, height: TILE_SIZE }}
                   >
-                    <SvgUri uri={url} width={TILE_SIZE} height={TILE_SIZE} />
+                    <RemoteAvatar uri={url} size={TILE_SIZE} />
                   </View>
                 </Pressable>
               );
