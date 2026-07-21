@@ -30,8 +30,8 @@ sheet where the drawer is already open).
 ## Avatar fallback
 
 \`imageUrl\` is passed through \`isRenderableAvatarUrl\` before being
-handed to \`SvgUri\`. Non-SVG URLs (Google's rasterised \`picture\`
-field, Apple sign-in avatars) are rejected and the neutral
+handed to \`RemoteAvatar\`. Non-SVG URLs (Google's rasterised
+\`picture\` field, Apple sign-in avatars) are rejected and the neutral
 \`UserRound\` icon renders in the avatar circle instead.
 
 ## Handle formatting

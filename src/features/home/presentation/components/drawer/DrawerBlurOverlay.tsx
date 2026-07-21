@@ -1,4 +1,4 @@
-import { StyleSheet, useColorScheme } from 'react-native';
+import { Platform, StyleSheet, useColorScheme } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { useDrawerProgress } from '@react-navigation/drawer';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
@@ -24,11 +24,23 @@ export const DrawerBlurOverlay = () => {
       pointerEvents="none"
       style={[StyleSheet.absoluteFill, animatedStyle]}
     >
-      <BlurView
-        intensity={!isDark ? 80 : 10}
-        tint={!isDark ? 'dark' : 'light'}
-        style={StyleSheet.absoluteFill}
-      />
+      {Platform.OS === 'ios' ? (
+        <BlurView
+          intensity={!isDark ? 80 : 10}
+          tint={!isDark ? 'dark' : 'light'}
+          style={StyleSheet.absoluteFill}
+        />
+      ) : (
+        // Android fallback: a translucent black overlay stands in for
+        // the blur. `expo-blur`'s Dimezis backend requires a
+        // `blurTarget` ref that we can't cleanly hand it here.
+        <Animated.View
+          style={[
+            StyleSheet.absoluteFill,
+            { backgroundColor: 'rgba(0,0,0,0.4)' },
+          ]}
+        />
+      )}
     </Animated.View>
   );
 };

@@ -11,14 +11,13 @@ import Animated, {
 } from 'react-native-reanimated';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { SvgUri } from 'react-native-svg';
 import {
   APP_HEADER_HEIGHT,
   AppHeader,
   BOTTOM_TAB_BAR_HEIGHT,
   IconButton,
 } from '@components';
-import { themedColors, useThemedColor } from '@common';
+import { RemoteAvatar, themedColors, useThemedColor } from '@common';
 import { PromoCodeModal } from '@features/account/presentation/components/PromoCodeModal';
 import { appAnimations } from '@src/assets/animations';
 import type { BuzzFlow } from '../../models/buzzFlow.types';
@@ -71,7 +70,7 @@ type BuzzBodyProps = {
   /**
    * Optional avatar URL rendered in the top-left profile icon. Should
    * already be filtered by `isRenderableAvatarUrl` — the body renders
-   * whatever it receives via `SvgUri`.
+   * whatever it receives via `RemoteAvatar`.
    */
   profileImageUrl: string | null;
   /** Tapping the profile icon (top-left of the app header). */
@@ -242,20 +241,21 @@ export const BuzzBody = ({
         animatedStyle={headerAnimatedStyle}
         showTopMask
         topMaskHeight={topMaskHeight}
+        className="pl-5"
         left={
-          <View className="pl-5">
+          <View className="size-[44px] items-center justify-center overflow-hidden rounded-round bg-tk-bg-elevated-secondary">
             <IconButton
               accessibilityLabel="Open profile"
-              className="size-[30px] overflow-hidden rounded-round border border-tk-border-secondary bg-tk-bg-primary p-0"
+              className="size-[44px] items-center justify-center overflow-hidden rounded-round bg-tk-bg-elevated-secondary"
               icon={
                 profileImageUrl ? (
-                  <SvgUri uri={profileImageUrl} width={28} height={28} />
+                  // Renders at 64 inside the 44-square icon on purpose —
+                  // the surrounding `overflow-hidden` container crops it
+                  // to a "cover"-style zoom so the character fills the
+                  // small profile icon instead of sitting inside padding.
+                  <RemoteAvatar uri={profileImageUrl} size={44} />
                 ) : (
-                  <UserRound
-                    size={18}
-                    strokeWidth={2.2}
-                    color={menuIconColor}
-                  />
+                  <UserRound size={24} color={menuIconColor} />
                 )
               }
               onPress={onOpenProfile}

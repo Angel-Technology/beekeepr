@@ -1,4 +1,5 @@
 export { isRenderableAvatarUrl } from './avatars/isRenderableAvatarUrl';
+export { RemoteAvatar } from './avatars/RemoteAvatar';
 export { cn } from './cn';
 export { colors } from './colors';
 export { useDismissibleOnce } from './hooks/useDismissibleOnce';

@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import {
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   useColorScheme,
@@ -47,11 +48,20 @@ export const BaseModal = ({
     >
       <View style={{ flex: 1 }}>
         {backdropBlur ? (
-          <BlurView
-            intensity={40}
-            tint={!isDark ? 'dark' : 'light'}
-            style={StyleSheet.absoluteFill}
-          />
+          Platform.OS === 'ios' ? (
+            <BlurView
+              intensity={40}
+              tint={!isDark ? 'dark' : 'light'}
+              style={StyleSheet.absoluteFill}
+            />
+          ) : (
+            // Android fallback: expo-blur's `dimezisBlurView` requires a
+            // `blurTarget` ref to the underlying view, which isn't
+            // reachable from a fullscreen `<Modal>` backdrop. A darker
+            // solid overlay reads similarly and skips the frame-cost of
+            // software blur.
+            <View style={StyleSheet.absoluteFill} className="bg-black/60" />
+          )
         ) : null}
         <KeyboardAwareScrollView
           className={backdropBlur ? 'bg-black/20' : 'bg-black/70'}

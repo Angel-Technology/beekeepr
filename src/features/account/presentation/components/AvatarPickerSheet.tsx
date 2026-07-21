@@ -2,12 +2,11 @@ import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { SvgUri } from 'react-native-svg';
 import { UserRound } from 'lucide-react-native';
 import clsx from 'clsx';
 
 import { BaseBottomSheet, CompactButton } from '@components';
-import { themedColors, useThemedColor } from '@common';
+import { RemoteAvatar, themedColors, useThemedColor } from '@common';
 
 /**
  * DiceBear styles offered in the picker. The first entry is the product
@@ -50,7 +49,7 @@ type AvatarStyle =
 // 40 tiles per style — enough variety to feel browsable without blowing
 // the SVG fetch budget too hard. The grid scrolls vertically inside the
 // sheet so tile size stays comfortable on small devices.
-const GRID_SIZE = 40;
+const GRID_SIZE = 30;
 const TILE_SIZE = 88;
 const PREVIEW_SIZE = 144;
 
@@ -155,15 +154,11 @@ export const AvatarPickerSheet = ({
       <View className="flex-1 gap-6 pt-2">
         <View className="items-center px-6">
           <View
-            className="bg-tk-bg-elevated-secondary items-center justify-center overflow-hidden rounded-round"
+            className="items-center justify-center overflow-hidden rounded-round bg-tk-bg-elevated-secondary"
             style={{ width: PREVIEW_SIZE, height: PREVIEW_SIZE }}
           >
             {previewUrl ? (
-              <SvgUri
-                uri={previewUrl}
-                width={PREVIEW_SIZE}
-                height={PREVIEW_SIZE}
-              />
+              <RemoteAvatar uri={previewUrl} size={PREVIEW_SIZE} />
             ) : (
               <UserRound size={56} color={placeholderIconColor} />
             )}
@@ -230,10 +225,10 @@ export const AvatarPickerSheet = ({
                   style={{ width: TILE_SIZE + 8, height: TILE_SIZE + 8 }}
                 >
                   <View
-                    className="bg-tk-bg-elevated-secondary overflow-hidden rounded-round"
+                    className="overflow-hidden rounded-round bg-tk-bg-elevated-secondary"
                     style={{ width: TILE_SIZE, height: TILE_SIZE }}
                   >
-                    <SvgUri uri={url} width={TILE_SIZE} height={TILE_SIZE} />
+                    <RemoteAvatar uri={url} size={TILE_SIZE} />
                   </View>
                 </Pressable>
               );

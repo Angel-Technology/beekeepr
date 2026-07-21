@@ -49,9 +49,9 @@ export const BuzzScreen = () => {
     onRefresh,
   } = useBuzzTab();
   const { data: user } = useAuthSession();
-  // Only render avatars `SvgUri` can actually parse. Backend currently
-  // stores Google / Apple `picture` URLs (raster) on social sign-in,
-  // and `SvgUri` crashes mid-render on those. See
+  // Only render avatars the SVG parser can actually handle. Backend
+  // currently stores Google / Apple `picture` URLs (raster) on social
+  // sign-in, and the parser crashes mid-render on those. See
   // `isRenderableAvatarUrl` for the predicate's why.
   const profileImageUrl = isRenderableAvatarUrl(user?.imageUrl)
     ? user.imageUrl
