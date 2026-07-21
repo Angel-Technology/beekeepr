@@ -47,11 +47,11 @@ type AvatarStyle =
   | 'micah'
   | 'notionists';
 
-// 20 tiles per style — enough variety to feel browsable without blowing
+// 40 tiles per style — enough variety to feel browsable without blowing
 // the SVG fetch budget too hard. The grid scrolls vertically inside the
 // sheet so tile size stays comfortable on small devices.
-const GRID_SIZE = 20;
-const TILE_SIZE = 64;
+const GRID_SIZE = 40;
+const TILE_SIZE = 88;
 const PREVIEW_SIZE = 144;
 
 const buildAvatarUrl = (style: AvatarStyle, seed: string): string =>
@@ -87,7 +87,7 @@ type AvatarPickerSheetProps = {
  *   2. 144×144 preview of the currently-selected avatar, centered.
  *      Placeholder until the user taps a tile.
  *   3. Horizontal style strip (12 DiceBear styles).
- *   4. Vertically-scrollable grid of `GRID_SIZE` (20) avatars in the
+ *   4. Vertically-scrollable grid of `GRID_SIZE` (40) avatars in the
  *      active style, inside a `BottomSheetScrollView` so vertical
  *      drags still propagate to the sheet handle for swipe-to-close.
  *   5. Footer with Shuffle + Save, pinned outside the scroll region.
@@ -155,7 +155,7 @@ export const AvatarPickerSheet = ({
       <View className="flex-1 gap-6 pt-2">
         <View className="items-center px-6">
           <View
-            className="items-center justify-center overflow-hidden rounded-round bg-tk-bg-elevated-secondary"
+            className="bg-tk-bg-elevated-secondary items-center justify-center overflow-hidden rounded-round"
             style={{ width: PREVIEW_SIZE, height: PREVIEW_SIZE }}
           >
             {previewUrl ? (
@@ -174,7 +174,7 @@ export const AvatarPickerSheet = ({
           horizontal
           showsHorizontalScrollIndicator={false}
           style={{ flexGrow: 0 }}
-          contentContainerStyle={{ gap: 8, paddingHorizontal: 0 }}
+          contentContainerStyle={{ gap: 8, paddingHorizontal: 2 }}
         >
           {STYLES.map((s) => {
             const isActive = s.id === style;
@@ -230,7 +230,7 @@ export const AvatarPickerSheet = ({
                   style={{ width: TILE_SIZE + 8, height: TILE_SIZE + 8 }}
                 >
                   <View
-                    className="overflow-hidden rounded-round bg-tk-bg-elevated-secondary"
+                    className="bg-tk-bg-elevated-secondary overflow-hidden rounded-round"
                     style={{ width: TILE_SIZE, height: TILE_SIZE }}
                   >
                     <SvgUri uri={url} width={TILE_SIZE} height={TILE_SIZE} />

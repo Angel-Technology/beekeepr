@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Appearance, type NativeEventSubscription } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colorScheme } from 'nativewind';
 import { storageKeys } from '../storage/keys';
@@ -18,7 +19,8 @@ const VALID: ReadonlyArray<ThemePreference> = ['system', 'light', 'dark'];
 const isValidPreference = (value: unknown): value is ThemePreference =>
   typeof value === 'string' && VALID.includes(value as ThemePreference);
 
-const apply = (pref: ThemePreference) => colorScheme.set(pref);
+const resolveSystemScheme = (): 'light' | 'dark' =>
+  Appearance.getColorScheme() === 'dark' ? 'dark' : 'light';
 
 /**
  * Bridges AsyncStorage ↔ NativeWind's `colorScheme`. Reads the stored
@@ -35,6 +37,24 @@ const apply = (pref: ThemePreference) => colorScheme.set(pref);
 export const useThemePreference = () => {
   const [preference, setPreferenceState] =
     useState<ThemePreference>(DEFAULT_THEME);
+  const systemListener = useRef<NativeEventSubscription | null>(null);
+
+  // NativeWind 4.x maps `colorScheme.set('system')` to
+  // `Appearance.setColorScheme(null)`, which crashes RN 0.83's Kotlin
+  // `AppearanceModule` (non-null `style` param). Resolve the OS scheme
+  // ourselves and keep NativeWind fed with only 'light' | 'dark'.
+  const apply = useCallback((pref: ThemePreference) => {
+    systemListener.current?.remove();
+    systemListener.current = null;
+    if (pref === 'system') {
+      colorScheme.set(resolveSystemScheme());
+      systemListener.current = Appearance.addChangeListener(() => {
+        colorScheme.set(resolveSystemScheme());
+      });
+    } else {
+      colorScheme.set(pref);
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -58,14 +78,19 @@ export const useThemePreference = () => {
       });
     return () => {
       cancelled = true;
+      systemListener.current?.remove();
+      systemListener.current = null;
     };
-  }, []);
+  }, [apply]);
 
-  const setPreference = useCallback((next: ThemePreference) => {
-    setPreferenceState(next);
-    apply(next);
-    void AsyncStorage.setItem(STORAGE_KEY, next);
-  }, []);
+  const setPreference = useCallback(
+    (next: ThemePreference) => {
+      setPreferenceState(next);
+      apply(next);
+      void AsyncStorage.setItem(STORAGE_KEY, next);
+    },
+    [apply],
+  );
 
   return { preference, setPreference };
 };
