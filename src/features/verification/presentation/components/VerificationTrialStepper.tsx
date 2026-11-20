@@ -3,6 +3,7 @@ import { Text } from 'react-native';
 import { BaseStepper } from '@components';
 import { themedColors, useThemedColor } from '@common';
 import IntroBeeIcon from '@src/assets/svg/IntroBeeIcon';
+import { TRIAL_LENGTH_LABEL } from '@src/lib/revenuecat/trial';
 
 type VerificationTrialStepperProps = {
   reminderLabel: string;
@@ -47,7 +48,8 @@ export const VerificationTrialStepper = ({
           description: 'You pay nothing.',
           content: (
             <Text className="font-poppins-regular text-xs leading-[1.3] text-tk-text-tertiary">
-              After you pass our screening, your 30-day free trial begins.
+              After you pass our screening, your {TRIAL_LENGTH_LABEL} free trial
+              begins. Cancel anytime.
             </Text>
           ),
         },

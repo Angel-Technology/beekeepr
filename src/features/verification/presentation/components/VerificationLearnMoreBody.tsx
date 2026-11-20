@@ -5,6 +5,10 @@ import { appImages } from '@assets/images';
 import { Button, Container, IconButton, VerticalSpacer } from '@components';
 import { themedColors, useThemedColor } from '@common';
 import { VerificationTrialStepper } from './VerificationTrialStepper';
+import {
+  TRIAL_LENGTH_DAYS,
+  TRIAL_LENGTH_TITLE,
+} from '@src/lib/revenuecat/trial';
 
 // Figma-spec dimensions for the hero bee.
 const BEE_WIDTH = 123;
@@ -19,7 +23,7 @@ type VerificationLearnMoreBodyProps = {
   reminderLabel: string;
   /**
    * Human-readable long-form date for when the trial ends and billing
-   * starts. Computed by `useVerificationLearnMore` as today + 30 days.
+   * starts. Computed by `useVerificationLearnMore` as today + `TRIAL_LENGTH_DAYS`.
    */
   trialEndLabel: string;
   onGetStarted: () => void;
@@ -27,7 +31,7 @@ type VerificationLearnMoreBodyProps = {
 };
 
 /**
- * Pure presentation layer for the "30-Day Free Trial" learn-more screen.
+ * Pure presentation layer for the "N-Day Free Trial" learn-more screen.
  * Renders the hero bee, trial-explainer copy, the
  * `VerificationTrialStepper` (with reminder + trial-end dates baked in),
  * the "Get started" CTA, and the X close button.
@@ -76,7 +80,7 @@ export const VerificationLearnMoreBody = ({
             <View className="flex-1 flex-col items-center gap-2">
               <View>
                 <Text className="text-center font-poppins-semiBold text-800 leading-tight text-tk-text-primary">
-                  30-Day
+                  {TRIAL_LENGTH_TITLE}
                 </Text>
                 <Text className="text-center font-poppins-semiBold text-800 leading-tight text-tk-text-primary">
                   Free Trial
@@ -84,7 +88,7 @@ export const VerificationLearnMoreBody = ({
               </View>
               <View>
                 <Text className="text-center font-sourceSans-regular text-base text-tk-text-tertiary">
-                  Try 30 days for free,
+                  Try {TRIAL_LENGTH_DAYS} days for free,
                 </Text>
                 <Text className="text-center font-sourceSans-regular text-base text-tk-text-tertiary">
                   then $9.99/month.

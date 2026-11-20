@@ -1,7 +1,8 @@
 import { useRouter } from 'expo-router';
-
-const TRIAL_LENGTH_DAYS = 30;
-const REMINDER_LEAD_DAYS = 5;
+import {
+  REMINDER_LEAD_DAYS,
+  TRIAL_LENGTH_DAYS,
+} from '@src/lib/revenuecat/trial';
 
 const addDays = (value: Date, days: number) => {
   const nextValue = new Date(value);
