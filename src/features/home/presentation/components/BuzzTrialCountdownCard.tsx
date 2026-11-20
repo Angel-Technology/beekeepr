@@ -1,6 +1,7 @@
 import { Text, View } from 'react-native';
 import { Bell } from 'lucide-react-native';
 import { themedColors, useThemedColor } from '@common';
+import { TRIAL_LENGTH_TITLE } from '@src/lib/revenuecat/trial';
 
 type BuzzTrialCountdownCardProps = {
   daysRemaining: number;
@@ -20,7 +21,7 @@ export const BuzzTrialCountdownCard = ({
         <Bell size={16} color={bellColor} strokeWidth={2.4} />
       </View>
       <Text className="flex-1 font-lexend-semiBold text-base text-tk-text-primary">
-        30-Day Free Trial
+        {TRIAL_LENGTH_TITLE} Free Trial
       </Text>
       <View className="rounded-3 bg-tk-brand-primary px-3 py-[9px]">
         <Text className="font-lexend-regular text-sm text-black">

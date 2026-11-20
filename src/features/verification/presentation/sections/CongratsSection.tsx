@@ -4,6 +4,7 @@ import { ArrowRight, Check } from 'lucide-react-native';
 import { Button, DetailCard } from '@components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { appImages } from '@assets/images';
+import { TRIAL_LENGTH_LABEL } from '@src/lib/revenuecat/trial';
 
 type CongratsSectionProps = {
   isStartingTrial: boolean;
@@ -68,7 +69,7 @@ export const CongratsSection = ({
 
       <View className="mt-auto w-full gap-4">
         <Button
-          label="Start 30-day free trial"
+          label={`Start ${TRIAL_LENGTH_LABEL} free trial`}
           className="self-stretch"
           iconRight={<ArrowRight size={24} color="#FFFFFF" strokeWidth={2.2} />}
           loading={isStartingTrial}

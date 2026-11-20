@@ -1,5 +1,5 @@
 /**
- * Stories for the "30-Day Free Trial" learn-more body. Renders the actual
+ * Stories for the "7-Day Free Trial" learn-more body. Renders the actual
  * `VerificationLearnMoreBody` — the same component the connected
  * `VerificationLearnMoreScreen` mounts in production. No inline preview,
  * no duplicated JSX: the screen is a thin connected wrapper that calls
@@ -19,7 +19,7 @@ const componentNotes = `
 # VerificationLearnMoreBody
 
 The trial-explainer body reached from the \`/verification/learn-more\`
-route. Renders the hero bee, "30-Day Free Trial" title, price copy, the
+route. Renders the hero bee, "7-Day Free Trial" title, price copy, the
 \`VerificationTrialStepper\` (with the dynamic reminder + trial-end dates),
 the "Get started" CTA, and the X close button.
 
@@ -27,9 +27,9 @@ the "Get started" CTA, and the X close button.
 
 - \`reminderLabel\` — "In N days" phrasing for when we email the trial
   reminder. \`useVerificationLearnMore\` computes it from the trial length
-  minus the reminder lead time (currently \`In 25 days\`).
+  minus the reminder lead time (currently \`In 2 days\`).
 - \`trialEndLabel\` — long-form date for when the trial ends and billing
-  starts. Computed as today + 30 days.
+  starts. Computed as today + 7 days.
 
 Both labels are shown inside the stepper. Edit the controls to preview
 different phrasing.
@@ -45,7 +45,7 @@ const meta = {
   title: 'Verification / VerificationLearnMoreBody',
   component: VerificationLearnMoreBody,
   args: {
-    reminderLabel: 'In 25 days',
+    reminderLabel: 'In 2 days',
     trialEndLabel: 'March 22',
     // Storybook's action addon replaces these at render time via the
     // `argTypes.action` declarations below — the stubs satisfy TS.

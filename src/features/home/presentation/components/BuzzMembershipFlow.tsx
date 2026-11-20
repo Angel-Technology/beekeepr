@@ -7,6 +7,11 @@ import IntroBeeIcon from '@src/assets/svg/IntroBeeIcon';
 import LineBuzz from '@src/assets/svg/LineBuzz';
 import { VerificationTrialStepper } from '@features/verification/presentation/components/VerificationTrialStepper';
 import { appImages } from '@assets/images';
+import {
+  TRIAL_LENGTH_DAYS,
+  TRIAL_LENGTH_LABEL,
+  TRIAL_LENGTH_TITLE,
+} from '@src/lib/revenuecat/trial';
 
 type BuzzMembershipFlowProps = {
   isPurchasing: boolean;
@@ -52,7 +57,7 @@ export const BuzzMembershipFlow = ({
           Congrats, you&rsquo;re in!
         </Text>
         <Text className="text-center font-lexend-regular text-xl text-tk-text-primary">
-          30-Day Free Trial
+          {TRIAL_LENGTH_TITLE} Free Trial
         </Text>
         <Text className="text-center font-poppins-regular text-base text-tk-text-primary">
           $9.99/month
@@ -69,7 +74,7 @@ export const BuzzMembershipFlow = ({
 
       <View className="w-full gap-4">
         <Button
-          label="Start 30-day free trial"
+          label={`Start ${TRIAL_LENGTH_LABEL} free trial`}
           iconRight={<ArrowRight size={24} color="#FFFFFF" strokeWidth={2.2} />}
           loading={isPurchasing}
           onPress={onStartTrial}
@@ -115,7 +120,7 @@ export const BuzzMembershipFlow = ({
             <View className="flex-1 flex-col items-center justify-center gap-2 pt-6">
               <View>
                 <Text className="text-center font-poppins-semiBold text-700 leading-tight text-tk-text-primary">
-                  30-Day
+                  {TRIAL_LENGTH_TITLE}
                 </Text>
                 <Text className="text-center font-poppins-semiBold text-700 leading-tight text-tk-text-primary">
                   Free Trial
@@ -123,7 +128,7 @@ export const BuzzMembershipFlow = ({
               </View>
               <View>
                 <Text className="text-center font-sourceSans-regular text-base text-tk-text-tertiary">
-                  Try 30 days for free,
+                  Try {TRIAL_LENGTH_DAYS} days for free,
                 </Text>
                 <Text className="text-center font-sourceSans-regular text-base text-tk-text-tertiary">
                   then $9.99/month.
@@ -167,7 +172,7 @@ export const BuzzMembershipFlow = ({
         </View>
         <View className="w-full gap-4">
           <Button
-            label="Start 30-day free trial"
+            label={`Start ${TRIAL_LENGTH_LABEL} free trial`}
             iconRight={
               <ArrowRight size={24} color="#FFFFFF" strokeWidth={2.2} />
             }

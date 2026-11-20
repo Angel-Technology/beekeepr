@@ -13,6 +13,10 @@ import {
 } from '@features/verification';
 import { useTrialPurchase } from '@features/verification/hooks/useTrialPurchase';
 import { useRevenueCat } from '@src/lib/revenuecat';
+import {
+  REMINDER_LEAD_DAYS,
+  TRIAL_LENGTH_DAYS,
+} from '@src/lib/revenuecat/trial';
 import type { ConnectionTab } from '../models/connectionTab';
 import type { BuzzFlow } from '../models/buzzFlow.types';
 import { homeQueryKeys } from '../models/homeQueryKeys';
@@ -25,9 +29,6 @@ import { useOpenProfilePreview } from './useOpenProfilePreview';
 import { useOutgoingInvites } from './useOutgoingInvites';
 import { useRespondToInvite } from './useRespondToInvite';
 import { useUnblockUser } from './useUnblockUser';
-
-const TRIAL_LENGTH_DAYS = 30;
-const REMINDER_LEAD_DAYS = 5;
 
 const addDays = (value: Date, days: number) => {
   const next = new Date(value);
@@ -169,7 +170,7 @@ export const useBuzzTab = () => {
     // Lapsed before fresh — a previously-subscribed user can't use the
     // trial again (Apple/Google won't honor a second free trial for the
     // same subscription group), so we route them to a renewal-focused
-    // view instead of pitching "Start 30-day free trial".
+    // view instead of pitching "Start 7-day free trial".
     if (needsRenewal) {
       return 'renewal';
     }

@@ -66,7 +66,7 @@ const BLOCKED: readonly BlockedUser[] = [];
 
 const membershipProps = {
   isPurchasing: false,
-  reminderLabel: 'In 25 days',
+  reminderLabel: 'In 2 days',
   trialEndLabel: 'March 22, 2026',
   onStartTrial: () => {},
   onEnterPromoCode: () => {},
@@ -84,7 +84,7 @@ const welcomeProps = {
   sentInvites: OUTGOING,
   blockedUsers: BLOCKED,
   isOnTrial: true,
-  trialDaysRemaining: 21,
+  trialDaysRemaining: 4,
   activeTab: 'connections' as const,
   onChangeTab: () => {},
   onAcceptInvite: () => {},
@@ -246,7 +246,7 @@ export const Membership: Story = {
 ## Membership
 
 Approved but no active subscription. Renders \`BuzzMembershipFlow\`
-(30-day trial pitch, promo code path) plus the confetti overlay —
+(7-day trial pitch, promo code path) plus the confetti overlay —
 a one-shot celebration when the badge first clears.
     `.trim(),
   },

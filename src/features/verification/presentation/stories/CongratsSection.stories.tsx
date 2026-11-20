@@ -2,7 +2,7 @@
  * Stories for the celebration body of the verification flow — shown once
  * the user has cleared every prior step (screening, identity, submission)
  * and the backend has flipped them into the `congrats` phase. From here
- * the user either starts the 30-day free trial or enters a promo code.
+ * the user either starts the 7-day free trial or enters a promo code.
  *
  * See `./CongratsSection.docs.md` for context.
  */
@@ -14,13 +14,13 @@ const componentNotes = `
 # CongratsSection
 
 Body of the \`congrats\` phase. The user has finished all verification
-steps and is choosing how to proceed — start the 30-day free trial or
+steps and is choosing how to proceed — start the 7-day free trial or
 redeem a promo code.
 
 ## When to use
 
 Render this section when the parent flow's \`phase === 'congrats'\`. The
-"Start 30-day free trial" CTA triggers \`useTrialPurchase\`; the outline
+"Start 7-day free trial" CTA triggers \`useTrialPurchase\`; the outline
 "Enter promo code" CTA opens the promo code entry surface backed by
 \`useRedeemPromoCode\`.
 
@@ -66,7 +66,7 @@ export const Default: Story = {
 ## Default
 
 Idle congrats state. Both CTAs are enabled — the user can either start
-the 30-day free trial or enter a promo code.
+the 7-day free trial or enter a promo code.
 
 **When this is what you see:** the parent flow's \`phase === 'congrats'\`
 and no trial mutation is in flight.
@@ -80,7 +80,7 @@ export const StartingTrial: Story = {
     notes: `
 ## StartingTrial
 
-The user tapped "Start 30-day free trial" and we're awaiting the trial
+The user tapped "Start 7-day free trial" and we're awaiting the trial
 purchase mutation. The primary button shows the bounce loader and the
 outline "Enter promo code" button is disabled to keep the two paths from
 racing.

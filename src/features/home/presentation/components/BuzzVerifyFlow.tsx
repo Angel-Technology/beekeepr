@@ -10,6 +10,7 @@ import {
 import { themedColors, useThemedColor } from '@common';
 import { appImages } from '@assets/images';
 import type { BuzzFlow } from '../../models/buzzFlow.types';
+import { TRIAL_LENGTH_TITLE } from '@src/lib/revenuecat/trial';
 
 type BuzzVerifyFlowProps = {
   ctaLabel: string;
@@ -143,7 +144,7 @@ export const BuzzVerifyFlow = ({
         />
         <View className="w-full items-center gap-2">
           <Text className="text-center font-lexend-regular text-title-4 text-tk-text-primary">
-            30-Day Free Trial
+            {TRIAL_LENGTH_TITLE} Free Trial
           </Text>
           <Text className="text-center font-poppins-regular text-base text-tk-text-primary">
             $9.99/month

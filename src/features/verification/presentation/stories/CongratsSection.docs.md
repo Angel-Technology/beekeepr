@@ -1,6 +1,6 @@
 # CongratsSection
 
-Body of the `congrats` phase. The user has cleared every verification step and is choosing how to proceed — start the 30-day free trial or redeem a promo code.
+Body of the `congrats` phase. The user has cleared every verification step and is choosing how to proceed — start the 7-day free trial or redeem a promo code.
 
 ## Anatomy
 
@@ -21,7 +21,7 @@ Body of the `congrats` phase. The user has cleared every verification step and i
 │   └──────────────────────────────┘   │
 │                                      │
 │   ┌──────────────────────────────┐   │
-│   │ Start 30-day free trial   →  │   │
+│   │ Start 7-day free trial    →  │   │
 │   └──────────────────────────────┘   │
 │   ┌──────────────────────────────┐   │
 │   │ Enter promo code             │   │

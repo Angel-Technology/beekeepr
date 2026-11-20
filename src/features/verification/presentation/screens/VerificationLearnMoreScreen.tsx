@@ -2,7 +2,7 @@ import { useVerificationLearnMore } from '../../hooks/useVerificationLearnMore';
 import { VerificationLearnMoreBody } from '../components/VerificationLearnMoreBody';
 
 /**
- * Connected wrapper for the "30-Day Free Trial" learn-more screen. Pulls
+ * Connected wrapper for the "7-Day Free Trial" learn-more screen. Pulls
  * the reminder + trial-end labels and the navigation handlers from
  * `useVerificationLearnMore`, then passes them into
  * `VerificationLearnMoreBody` for rendering.
